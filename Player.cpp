@@ -4,7 +4,9 @@
 void Player::Initialize()
 {
 	// Object3d を初期化
+	object3d_ = std::make_unique<Object3d>();
 	object3d_->Initialize(Object3dCommon::GetInstance());
+
 	// モデルを設定
 	ModelManager::GetInstance()->LoadModel("Resources/player.obj");
 	object3d_->SetModel("Resources/player.obj");
