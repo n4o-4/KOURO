@@ -9,7 +9,7 @@ void Player::Initialize()
 
 	// モデルを設定
 	ModelManager::GetInstance()->LoadModel("player.obj");
-	object3d_->SetModel("Resources/player.obj");
+	object3d_->SetModel("player.obj");
 	// 初期位置を設定
 
 	objectTransform_ = std::make_unique<WorldTransform>();
@@ -18,13 +18,13 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	// キー入力で移動
-	if (Input::GetInstance()->PushKey(DIK_W)) { Move({ 0.0f, 0.0f, 1.0f }); }  // 前進
-	if (Input::GetInstance()->PushKey(DIK_S)) { Move({ 0.0f, 0.0f, -1.0f }); } // 後退
-	if (Input::GetInstance()->PushKey(DIK_A)) { Move({ -1.0f, 0.0f, 0.0f }); } // 左移動
-	if (Input::GetInstance()->PushKey(DIK_D)) { Move({ 1.0f, 0.0f, 0.0f }); }  // 右移動
-	// 座標を適用
-	objectTransform_->transform.translate = position_;
+	//// キー入力で移動
+	//if (Input::GetInstance()->PushKey(DIK_W)) { Move({ 0.0f, 0.0f, 1.0f }); }  // 前進
+	//if (Input::GetInstance()->PushKey(DIK_S)) { Move({ 0.0f, 0.0f, -1.0f }); } // 後退
+	//if (Input::GetInstance()->PushKey(DIK_A)) { Move({ -1.0f, 0.0f, 0.0f }); } // 左移動
+	//if (Input::GetInstance()->PushKey(DIK_D)) { Move({ 1.0f, 0.0f, 0.0f }); }  // 右移動
+	//// 座標を適用
+	//objectTransform_->transform.translate = position_;
 
 	objectTransform_->UpdateMatrix();
 	object3d_->Update();
