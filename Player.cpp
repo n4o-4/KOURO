@@ -13,25 +13,55 @@ void Player::Initialize()
 	// 初期位置を設定
 	objectTransform_ = std::make_unique<WorldTransform>();
 	objectTransform_->Initialize();
-	objectTransform_->transform.translate = { 0.0f, -2.0f, 3.0f };
+	objectTransform_->transform.translate = { 0.0f, initialY_, 3.0f };
 }
 
 void Player::Update()
 {
-	// キー入力で移動
-	if (Input::GetInstance()->PushKey(DIK_W)) { Move({ 0.0f, 0.0f, 1.0f }); }  // 前進
-	if (Input::GetInstance()->PushKey(DIK_S)) { Move({ 0.0f, 0.0f, -1.0f }); } // 後退
-	if (Input::GetInstance()->PushKey(DIK_A)) { Move({ -1.0f, 0.0f, 0.0f }); } // 左移動
-	if (Input::GetInstance()->PushKey(DIK_D)) { Move({ 1.0f, 0.0f, 0.0f }); }  // 右移動
-	// 座標を適用
-	//objectTransform_->transform.translate = position_;
+	// 移動処理
+	if (Input::GetInstance()->PushKey(DIK_W)) { Move({ 0.0f, 0.0f, 1.0f }); }
+	if (Input::GetInstance()->PushKey(DIK_S)) { Move({ 0.0f, 0.0f, -1.0f }); }
+	if (Input::GetInstance()->PushKey(DIK_A)) { Move({ -1.0f, 0.0f, 0.0f }); }
+	if (Input::GetInstance()->PushKey(DIK_D)) { Move({ 1.0f, 0.0f, 0.0f }); }
+
+	// ジャンプ処理
+	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+		isJumping_ = true;
+		isFloating_ = false;
+		fallSpeed_ = 0.0f;    // 降下速度リセット
+		objectTransform_->transform.translate.y += speed_;  // 上昇
+	} else if (isJumping_) {
+		if (!isFloating_) {
+			// SPACEを離した瞬間、少しだけ上昇
+			objectTransform_->transform.translate.y += floatBoost_;
+			isFloating_ = true;  // 浮遊状態へ移行
+		} else {
+			// 下降処理（徐々に加速）
+			fallSpeed_ += gravity_;
+			if (fallSpeed_ > maxFallSpeed_) {
+				fallSpeed_ = maxFallSpeed_; // 降下速度の上限を設定
+			}
+			objectTransform_->transform.translate.y -= fallSpeed_;
+
+			// 着地判定
+			if (objectTransform_->transform.translate.y <= initialY_) {
+				objectTransform_->transform.translate.y = initialY_;
+				isJumping_ = false;
+				isFloating_ = false;
+				fallSpeed_ = 0.0f;
+			}
+		}
+	}
 
 	objectTransform_->UpdateMatrix();
-
 	object3d_->SetLocalMatrix(MakeIdentity4x4());
-
 	object3d_->Update();
 }
+
+
+
+
+
 
 void Player::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 {
@@ -53,4 +83,12 @@ void Player::Move(Vector3 direction)
 	objectTransform_->transform.translate.x += direction.x * speed_;
 	objectTransform_->transform.translate.y += direction.y * speed_;
 	objectTransform_->transform.translate.z += direction.z * speed_;
+}
+
+void Player::Jump()
+{
+	if (!isJumping_) {
+		isJumping_ = true;
+		jumpVelocity_ = 0.2f; // 初速度
+	}
 }
