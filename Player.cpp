@@ -11,9 +11,9 @@ void Player::Initialize()
 	ModelManager::GetInstance()->LoadModel("player.obj");
 	object3d_->SetModel("player.obj");
 	// 初期位置を設定
-
 	objectTransform_ = std::make_unique<WorldTransform>();
 	objectTransform_->Initialize();
+	objectTransform_->transform.translate = { 0.0f, -2.0f, 3.0f };
 }
 
 void Player::Update()
@@ -24,7 +24,7 @@ void Player::Update()
 	if (Input::GetInstance()->PushKey(DIK_A)) { Move({ -1.0f, 0.0f, 0.0f }); } // 左移動
 	if (Input::GetInstance()->PushKey(DIK_D)) { Move({ 1.0f, 0.0f, 0.0f }); }  // 右移動
 	// 座標を適用
-	objectTransform_->transform.translate = position_;
+	//objectTransform_->transform.translate = position_;
 
 	objectTransform_->UpdateMatrix();
 
@@ -50,7 +50,7 @@ void Player::Move(Vector3 direction)
 	direction = Normalize(direction);
 
 	// 速度を適用して移動
-	position_.x += direction.x * speed_;
-	position_.y += direction.y * speed_;
-	position_.z += direction.z * speed_;
+	objectTransform_->transform.translate.x += direction.x * speed_;
+	objectTransform_->transform.translate.y += direction.y * speed_;
+	objectTransform_->transform.translate.z += direction.z * speed_;
 }
