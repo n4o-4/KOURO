@@ -14,11 +14,11 @@ public:
 	// XVˆ—
 	virtual void Update();
 
-private:
+protected:
 
-	ViewProjection viewProjection;
+	std::unique_ptr<ViewProjection> viewProjection_ = nullptr;
 
-	Matrix4x4 worldMatrix;
+	Matrix4x4 worldMatrix = MakeIdentity4x4();
 
 };
 

@@ -14,13 +14,10 @@ Camera* Camera::GetInstance()
 
 void Camera::Initialize()
 {
-	viewProjection.Initialize();
 
-	viewProjection.transform.translate = { 0.0f,0.0f,-15.0f };
 
-	viewProjection.Update();
 
-	worldMatrix = MakeAffineMatrix(viewProjection.transform.scale, viewProjection.transform.rotate, viewProjection.transform.translate);
+	BaseCamera::Initialize();
 }
 
 void Camera::Finalize()
@@ -33,7 +30,9 @@ void Camera::Finalize()
 
 void Camera::Update()
 {
-	worldMatrix = MakeAffineMatrix(viewProjection.transform.scale, viewProjection.transform.rotate, viewProjection.transform.translate);
 
-	viewProjection.Update();
+
+
+
+	BaseCamera::Update();
 }

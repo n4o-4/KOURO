@@ -3,18 +3,19 @@
 void BaseCamera::Initialize()
 {
 	// viewProjection‚Ì‰Šú‰»
-	viewProjection.Initialize();
+	viewProjection_ = std::make_unique<ViewProjection>();
+	viewProjection_->Initialize();
 
-	viewProjection.transform.translate = { 0.0f,0.0f,-15.0f };
+	viewProjection_->transform.translate = { 0.0f,0.0f,-15.0f };
 
-	viewProjection.Update();
+	viewProjection_->Update();
 
-	worldMatrix = MakeAffineMatrix(viewProjection.transform.scale, viewProjection.transform.rotate, viewProjection.transform.translate);
+	worldMatrix = MakeAffineMatrix(viewProjection_->transform.scale, viewProjection_->transform.rotate, viewProjection_->transform.translate);
 }
 
 void BaseCamera::Update()
 {
-	worldMatrix = MakeAffineMatrix(viewProjection.transform.scale, viewProjection.transform.rotate, viewProjection.transform.translate);
+	worldMatrix = MakeAffineMatrix(viewProjection_->transform.scale, viewProjection_->transform.rotate, viewProjection_->transform.translate);
 
-	viewProjection.Update();
+	viewProjection_->Update();
 }
