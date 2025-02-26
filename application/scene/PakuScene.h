@@ -2,6 +2,7 @@
 #include "BaseScene.h"
 
 #include "Kouro.h"
+#include "SkyDome.h"
 
 class PakuScene : public BaseScene
 {
@@ -20,5 +21,19 @@ public: // メンバ関数
 	void Draw() override;
 
 
+private:
+
+	std::unique_ptr<SkyDome> skyDome_ = nullptr;
+	std::unique_ptr<Object3d> skyDomeObj_ = nullptr;
+
+	std::unique_ptr<WorldTransform> objectTransform = nullptr;
+
+	std::unique_ptr<Camera> camera = nullptr;
+
+	std::unique_ptr<DirectionalLight> directionalLight = nullptr;
+
+	std::unique_ptr<PointLight> pointLight = nullptr;
+
+	std::unique_ptr<SpotLight> spotLight = nullptr;
 };
 

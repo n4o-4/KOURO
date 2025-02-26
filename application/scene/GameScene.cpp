@@ -64,6 +64,16 @@ void GameScene::Initialize()
 	animationManager->LoadAnimationFile("./Resources/AnimatedCube", "AnimatedCube.gltf");
 
 	animationManager->StartAnimation("AnimatedCube.gltf", 0);
+
+
+	//skyDome
+	//ModelManager::GetInstance()->LoadModel("skyDome/skyDome.obj");
+	//skyDomeObj_ = std::make_unique<Object3d>();
+	//skyDomeObj_->Initialize(Object3dCommon::GetInstance());
+	//skyDomeObj_->SetModel("skyDome/skyDome.obj");
+	//skyDomeObj_->SetCamera(camera.get());
+	//skyDome_->Initialize(std::move(skyDomeObj_));
+
 }
 
 void GameScene::Finalize()
@@ -127,6 +137,9 @@ void GameScene::Update()
 	pointLight->Update();
 
 	spotLight->Update();
+
+
+	//skyDome_->Update();
 }
 
 void GameScene::Draw()
@@ -141,5 +154,8 @@ void GameScene::Draw()
 	
 
 	object3d->Draw(*objectTransform.get(),Camera::GetInstance()->GetViewProjection(),*directionalLight.get(), *pointLight.get(), *spotLight.get());
+
+
+	///skyDome_->Draw();
 
 }

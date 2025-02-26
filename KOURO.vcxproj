@@ -51,6 +51,7 @@
     <ClCompile Include="application\scene\OkaScene.cpp" />
     <ClCompile Include="application\scene\PakuScene.cpp" />
     <ClCompile Include="application\scene\MiyaScene.cpp" />
+    <ClCompile Include="SkyDome.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -100,6 +101,7 @@
     <ClInclude Include="application\scene\OkaScene.h" />
     <ClInclude Include="application\scene\PakuScene.h" />
     <ClInclude Include="application\scene\MiyaScene.h" />
+    <ClInclude Include="SkyDome.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
