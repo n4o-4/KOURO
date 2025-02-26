@@ -25,7 +25,7 @@ private:
 
 	std::unique_ptr<SkyDome> skyDome_ = nullptr;
 
-	std::unique_ptr<WorldTransform> objectTransform = nullptr;
+	//std::unique_ptr<WorldTransform> objectTransform = nullptr;
 
 	std::unique_ptr<Camera> camera = nullptr;
 

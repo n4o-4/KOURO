@@ -1,5 +1,7 @@
 ﻿#include "PakuScene.h"
 
+
+
 void PakuScene::Initialize()
 {
 	BaseScene::Initialize();
@@ -21,17 +23,22 @@ void PakuScene::Initialize()
 void PakuScene::Finalize()
 {
 
-	BaseScene::Update();
+	
 	skyDome_.reset();
 }
 
 void PakuScene::Update()
 {
+
+
+	BaseScene::Update();
 	skyDome_->Update();
 }
 
 void PakuScene::Draw()
 {
+	Object3dCommon::GetInstance()->SetView();
+
 	skyDome_->Draw(Camera::GetInstance()->GetViewProjection(),
 		*directionalLight.get(),
 		*pointLight.get(),
