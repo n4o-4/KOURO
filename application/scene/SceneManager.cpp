@@ -27,6 +27,34 @@ void SceneManager::Finalize()
 
 void SceneManager::Update()
 {
+	// シーンを追加した場合はここに追加
+	const std::vector<std::string> sceneNames = { "TITLE", "GAME", "OKA","PAKU","MARU","MIYA" };
+
+	static int currentSceneIndex = 0;
+
+	ImGui::Begin("Scene");
+
+	if (ImGui::BeginCombo("Scene", sceneNames[currentSceneIndex].c_str()))
+	{
+		for (int i = 0; i < sceneNames.size(); i++)
+		{
+			bool isSelected = (currentSceneIndex == i);
+			if (ImGui::Selectable(sceneNames[i].c_str(), isSelected))
+			{
+				currentSceneIndex = i;
+
+				ChangeScene(sceneNames[i]);
+			}
+			if (isSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::End();
+
 
 	if (nextScene_)
 	{
