@@ -8,9 +8,11 @@ void Player::Initialize()
 	object3d_->Initialize(Object3dCommon::GetInstance());
 
 	// モデルを設定
-	ModelManager::GetInstance()->LoadModel("Resources/player.obj");
+	ModelManager::GetInstance()->LoadModel("player.obj");
 	object3d_->SetModel("Resources/player.obj");
 	// 初期位置を設定
+
+	objectTransform_ = std::make_unique<WorldTransform>();
 	objectTransform_->Initialize();
 }
 

@@ -19,6 +19,7 @@ void BaseScene::Finalize()
 
 void BaseScene::Update()
 {
+	Camera::GetInstance()->Update();
 }
 
 void BaseScene::Draw()

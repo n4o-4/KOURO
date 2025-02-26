@@ -25,12 +25,20 @@ void OkaScene::Finalize()
 
 void OkaScene::Update()
 {
+	BaseScene::Update();
+
 	// プレイヤーの更新
 	player_->Update();
 }
 
 void OkaScene::Draw()
 {
+	SpriteCommon::GetInstance()->SetView();
+
+	//sprite->Draw();
+
+	Object3dCommon::GetInstance()->SetView();
+
 	// プレイヤーの描画
 	player_->Draw(Camera::GetInstance()->GetViewProjection(),
 		*directionalLight.get(),
