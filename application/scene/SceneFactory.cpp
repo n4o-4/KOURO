@@ -1,4 +1,4 @@
-#include "SceneFactory.h"
+ï»¿#include "SceneFactory.h"
 
 std::unique_ptr<BaseScene> SceneFactory::CreateScene(const std::string& sceneName)
 {
@@ -15,7 +15,7 @@ std::unique_ptr<BaseScene> SceneFactory::CreateScene(const std::string& sceneNam
 	
 
 
-	/// ŠeŒÂl‚ÌƒV[ƒ“
+	/// å„å€‹äººã®ã‚·ãƒ¼ãƒ³
 	else if (sceneName == "OKA")
 	{
 		newScene = std::make_unique<OkaScene>();
