@@ -27,6 +27,9 @@ void Player::Update()
 	//objectTransform_->transform.translate = position_;
 
 	objectTransform_->UpdateMatrix();
+
+	object3d_->SetLocalMatrix(MakeIdentity4x4());
+
 	object3d_->Update();
 }
 
