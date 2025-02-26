@@ -5,19 +5,24 @@ void PakuScene::Initialize()
 	BaseScene::Initialize();
 
 
-	//skyDome
-	ModelManager::GetInstance()->LoadModel("skyDome/skyDome.obj");
-	skyDomeObj_ = std::make_unique<Object3d>();
-	skyDomeObj_->Initialize(Object3dCommon::GetInstance());
-	skyDomeObj_->SetModel("skyDome.obj");
-	skyDomeObj_->SetCamera(camera.get());
-	skyDome_->Initialize(std::move(skyDomeObj_));
-	
+	directionalLight = std::make_unique<DirectionalLight>();
+	directionalLight->Initilaize();
 
+	pointLight = std::make_unique<PointLight>();
+	pointLight->Initilize();
+
+	spotLight = std::make_unique<SpotLight>();
+	spotLight->Initialize();
+	
+	skyDome_ = std::make_unique<SkyDome>();
+	skyDome_->Initialize();
 }
 
 void PakuScene::Finalize()
 {
+
+	BaseScene::Update();
+	skyDome_.reset();
 }
 
 void PakuScene::Update()
@@ -27,5 +32,8 @@ void PakuScene::Update()
 
 void PakuScene::Draw()
 {
-	skyDome_->Draw();
+	skyDome_->Draw(Camera::GetInstance()->GetViewProjection(),
+		*directionalLight.get(),
+		*pointLight.get(),
+		*spotLight.get());
 }

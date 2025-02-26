@@ -24,7 +24,6 @@ public: // メンバ関数
 private:
 
 	std::unique_ptr<SkyDome> skyDome_ = nullptr;
-	std::unique_ptr<Object3d> skyDomeObj_ = nullptr;
 
 	std::unique_ptr<WorldTransform> objectTransform = nullptr;
 
