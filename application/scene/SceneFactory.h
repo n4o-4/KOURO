@@ -4,6 +4,11 @@
 #include "TitleScene.h"
 #include "GameScene.h"
 
+#include "OkaScene.h"	
+#include "PakuScene.h"
+#include "MaruScene.h"
+#include "MiyaScene.h"
+
 // このゲーム用のシーン工場
 class SceneFactory : public AbstaractSceneFactory
 {

@@ -31,7 +31,7 @@
     <ClCompile Include="engine\object\DirectionalLight.cpp" />
     <ClCompile Include="engine\object\PointLight.cpp" />
     <ClCompile Include="engine\object\SpotLight.cpp" />
-    <ClCompile Include="LineDrawerBase.cpp" />
+    <ClCompile Include="engine\3d\LineDrawerBase.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -47,6 +47,10 @@
     <ClCompile Include="engine\3d\ParticleEmitter.cpp" />
     <ClCompile Include="engine\3d\ParticleManager.cpp" />
     <ClCompile Include="engine\base\SrvManager.cpp" />
+    <ClCompile Include="application\scene\MaruScene.cpp" />
+    <ClCompile Include="application\scene\OkaScene.cpp" />
+    <ClCompile Include="application\scene\PakuScene.cpp" />
+    <ClCompile Include="MiyaScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -60,6 +64,7 @@
     <ClInclude Include="engine\3d\WorldTransform.h" />
     <ClInclude Include="engine\audio\Audio.h" />
     <ClInclude Include="engine\audio\AudioManager.h" />
+    <ClInclude Include="engine\base\Kouro.h" />
     <ClInclude Include="engine\base\LeakChecker.h" />
     <ClInclude Include="engine\base\OffScreenRendring.h" />
     <ClInclude Include="engine\base\Structs.h" />
@@ -90,7 +95,11 @@
     <ClInclude Include="engine\object\DirectionalLight.h" />
     <ClInclude Include="engine\object\PointLight.h" />
     <ClInclude Include="engine\object\SpotLight.h" />
-    <ClInclude Include="LineDrawerBase.h" />
+    <ClInclude Include="engine\3d\LineDrawerBase.h" />
+    <ClInclude Include="application\scene\MaruScene.h" />
+    <ClInclude Include="application\scene\OkaScene.h" />
+    <ClInclude Include="application\scene\PakuScene.h" />
+    <ClInclude Include="MiyaScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

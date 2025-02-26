@@ -1,4 +1,4 @@
-#include "GameScene.h"
+ï»¿#include "GameScene.h"
 
 #include "imgui.h"
 
@@ -82,7 +82,7 @@ void GameScene::Update()
 			directionalLight->direction_ = Normalize(directionalLight->direction_);
 		}
 		ImGui::DragFloat("directionalLight.intensity", &directionalLight->intensity_, 0.01f);
-		ImGui::TreePop(); // TreeNode‚ð•Â‚¶‚é
+		ImGui::TreePop(); // TreeNodeã‚’é–‰ã˜ã‚‹
 	}
 
 	if (ImGui::TreeNode("pointLight")) {
@@ -91,7 +91,7 @@ void GameScene::Update()
 		ImGui::DragFloat("pointLight.decay", &pointLight->decay_, 0.01f);
 		ImGui::DragFloat("pointLight.radius", &pointLight->radius_, 0.01f);
 		ImGui::DragFloat("pointLight.intensity", &pointLight->intensity_, 0.01f);
-		ImGui::TreePop(); // TreeNode‚ð•Â‚¶‚é
+		ImGui::TreePop(); // TreeNodeã‚’é–‰ã˜ã‚‹
 	}
 
 	if (ImGui::TreeNode("spotLight")) {
@@ -103,7 +103,7 @@ void GameScene::Update()
 		ImGui::DragFloat3("spotLight.position", &spotLight->position_.x, 0.01f);
 		ImGui::DragFloat("spotLight.decay", &spotLight->decay_, 0.01f);
 		ImGui::DragFloat("spotLight.intensity", &spotLight->intensity_, 0.01f);
-		ImGui::TreePop(); // TreeNode‚ð•Â‚¶‚é
+		ImGui::TreePop(); // TreeNodeã‚’é–‰ã˜ã‚‹
 	}
 
 	Matrix4x4 localMatrix = animationManager->GetLocalMatrix();

@@ -12,6 +12,26 @@ std::unique_ptr<BaseScene> SceneFactory::CreateScene(const std::string& sceneNam
     {
         newScene = std::make_unique<GameScene>();
     }
+	
+
+
+	/// 各個人のシーン
+	else if (sceneName == "OKA")
+	{
+		newScene = std::make_unique<OkaScene>();
+	}
+	else if (sceneName == "PAKU")
+	{
+		newScene = std::make_unique<PakuScene>();
+	}
+	else if (sceneName == "MARU")
+	{
+		newScene = std::make_unique<MaruScene>();
+	}
+	else if (sceneName == "MIYA")
+	{
+		newScene = std::make_unique<MiyaScene>();
+	}
 
     return newScene;
 }

@@ -2,21 +2,7 @@
 
 #include "BaseScene.h"
 
-#include "audio.h"
-#include "Input.h"
-#include "Sprite.h"
-#include "SpriteCommon.h"
-#include "TextureManager.h"
-#include "ModelManager.h"
-#include "Object3d.h"
-#include "Camera.h"
-#include "ParticleManager.h"
-#include "ParticleEmitter.h"
-#include "SceneManager.h"
-
-#include "WorldTransform.h"
-
-#include "AnimationManager.h"
+#include "Kouro.h"
 
 class GameScene : public BaseScene
 {
