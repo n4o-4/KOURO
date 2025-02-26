@@ -15,6 +15,10 @@ public: // メンバ関数
 
 	void SetView();
 
+	void Foreground();
+
+	void Background();
+
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
 
 private:
