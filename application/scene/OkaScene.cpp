@@ -1,4 +1,4 @@
-#include "OkaScene.h"
+﻿#include "OkaScene.h"
 
 void OkaScene::Initialize()
 {

@@ -1,4 +1,4 @@
-#include "PakuScene.h"
+﻿#include "PakuScene.h"
 
 void PakuScene::Initialize()
 {

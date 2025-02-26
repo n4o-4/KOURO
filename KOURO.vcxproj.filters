@@ -180,7 +180,7 @@
     <ClCompile Include="application\scene\PakuScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="MiyaScene.cpp">
+    <ClCompile Include="application\scene\MiyaScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -323,7 +323,7 @@
     <ClInclude Include="engine\base\Kouro.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="MiyaScene.h">
+    <ClInclude Include="application\scene\MiyaScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

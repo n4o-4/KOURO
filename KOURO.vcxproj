@@ -50,7 +50,7 @@
     <ClCompile Include="application\scene\MaruScene.cpp" />
     <ClCompile Include="application\scene\OkaScene.cpp" />
     <ClCompile Include="application\scene\PakuScene.cpp" />
-    <ClCompile Include="MiyaScene.cpp" />
+    <ClCompile Include="application\scene\MiyaScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -99,7 +99,7 @@
     <ClInclude Include="application\scene\MaruScene.h" />
     <ClInclude Include="application\scene\OkaScene.h" />
     <ClInclude Include="application\scene\PakuScene.h" />
-    <ClInclude Include="MiyaScene.h" />
+    <ClInclude Include="application\scene\MiyaScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
