@@ -4,6 +4,9 @@
 #include "SrvManager.h"
 #include "Camera.h"
 
+#include "SpriteCommon.h"
+#include "Object3dCommon.h"	
+
 class SceneManager;
 
 // シーン基底クラス
@@ -34,6 +37,14 @@ public:
 	virtual SrvManager* GetSrvManager() { return srvManager_; }
 
 	virtual Camera* GetCamera() { return camera_; }
+
+protected:
+
+	virtual void DrawObject();
+
+	virtual void DrawBackgroundSprite();
+
+	virtual void DrawForegroundSprite();
 
 protected:
 

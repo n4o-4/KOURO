@@ -19,8 +19,28 @@ void BaseScene::Finalize()
 
 void BaseScene::Update()
 {
+	Camera::GetInstance()->Update();
 }
 
 void BaseScene::Draw()
 {
+}
+
+void BaseScene::DrawObject()
+{
+	Object3dCommon::GetInstance()->SetView();
+}
+
+void BaseScene::DrawBackgroundSprite()
+{
+	SpriteCommon::GetInstance()->SetView();
+
+	SpriteCommon::GetInstance()->DrawBackground();
+}
+
+void BaseScene::DrawForegroundSprite()
+{
+	SpriteCommon::GetInstance()->SetView();
+
+	SpriteCommon::GetInstance()->DrawForeground();
 }

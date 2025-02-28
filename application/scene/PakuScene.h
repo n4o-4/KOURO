@@ -2,7 +2,9 @@
 #include "BaseScene.h"
 
 #include "Kouro.h"
-
+#include "SkyDome.h"
+#include "Ground.h"
+#include "Enemy.h"
 class PakuScene : public BaseScene
 {
 public: // メンバ関数
@@ -20,5 +22,20 @@ public: // メンバ関数
 	void Draw() override;
 
 
+private:
+
+	std::unique_ptr<SkyDome> skyDome_ = nullptr;
+
+	std::unique_ptr<Ground> ground_ = nullptr;
+
+	std::unique_ptr<Enemy> enemy_ = nullptr;
+
+	std::unique_ptr<Camera> camera = nullptr;
+
+	std::unique_ptr<DirectionalLight> directionalLight = nullptr;
+
+	std::unique_ptr<PointLight> pointLight = nullptr;
+
+	std::unique_ptr<SpotLight> spotLight = nullptr;
 };
 

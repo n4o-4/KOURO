@@ -1,9 +1,7 @@
 #include "CollisionManager.h"
 #include "BaseObject.h"
-#include "ImguiSetup.h"
 #include <algorithm>
 #include <cmath>
-#include "LineManager.h"
 
 ///=============================================================================
 ///						初期化
