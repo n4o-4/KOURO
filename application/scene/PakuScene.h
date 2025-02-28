@@ -3,7 +3,8 @@
 
 #include "Kouro.h"
 #include "SkyDome.h"
-
+#include "Ground.h"
+#include "Enemy.h"
 class PakuScene : public BaseScene
 {
 public: // メンバ関数
@@ -25,7 +26,9 @@ private:
 
 	std::unique_ptr<SkyDome> skyDome_ = nullptr;
 
-	//std::unique_ptr<WorldTransform> objectTransform = nullptr;
+	std::unique_ptr<Ground> ground_ = nullptr;
+
+	std::unique_ptr<Enemy> enemy_ = nullptr;
 
 	std::unique_ptr<Camera> camera = nullptr;
 

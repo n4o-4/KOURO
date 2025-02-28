@@ -1,7 +1,7 @@
 #pragma once
-
 #include "Kouro.h"
-class SkyDome {
+class Enemy {
+
 
 public:
 	void Initialize();
@@ -13,6 +13,11 @@ private:
 	std::unique_ptr<Object3d> model_ = nullptr;
 
 	std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
+
+
+
+
+
 
 };
 
