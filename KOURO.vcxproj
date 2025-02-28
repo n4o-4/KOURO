@@ -11,6 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="application\collision\BaseObject.cpp" />
+    <ClCompile Include="application\collision\Collider.cpp" />
+    <ClCompile Include="application\collision\CollisionManager.cpp" />
     <ClCompile Include="application\scene\BaseScene.cpp" />
     <ClCompile Include="application\scene\GameScene.cpp" />
     <ClCompile Include="application\scene\SceneFactory.cpp" />
@@ -53,6 +56,9 @@
     <ClCompile Include="application\scene\MiyaScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="application\collision\BaseObject.h" />
+    <ClInclude Include="application\collision\Collider.h" />
+    <ClInclude Include="application\collision\CollisionManager.h" />
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
     <ClInclude Include="application\scene\BaseScene.h" />
     <ClInclude Include="application\scene\GameScene.h" />
