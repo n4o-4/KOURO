@@ -14,11 +14,21 @@ struct AABB {
 
 inline Vector3 Normalize(Vector3 v)
 {
-	Vector3 RVector3;
-	float lenght = sqrtf(v.x * v.x + v.y * v.y);
-	lenght = sqrtf(lenght * lenght + v.z * v.z);
-	RVector3 = { (v.x / lenght),(v.y / lenght),(v.z / lenght) };
-	return RVector3;
+	Vector3 result;
+
+	// ベクトルの長さを計算
+	float length = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+
+	// 長さが 0 の場合、NaN を防ぐためにそのまま返す
+	if (length == 0.0f)
+	{
+		return v; // ゼロベクトルはそのまま返す
+	}
+
+	// 長さが 0 でない場合、正規化
+	result = { v.x / length, v.y / length, v.z / length };
+
+	return result;
 }
 
 inline Vector3 Cross(const Vector3& v1, const Vector3& v2) {

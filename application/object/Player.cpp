@@ -24,6 +24,8 @@ void Player::Update()
 	if (Input::GetInstance()->PushKey(DIK_A)) { Move({ -1.0f, 0.0f, 0.0f }); }
 	if (Input::GetInstance()->PushKey(DIK_D)) { Move({ 1.0f, 0.0f, 0.0f }); }
 
+	Move(Input::GetInstance()->GetLeftStick());
+
 	// ジャンプ処理
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		isJumping_ = true;
