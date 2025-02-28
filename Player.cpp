@@ -58,11 +58,6 @@ void Player::Update()
 	object3d_->Update();
 }
 
-
-
-
-
-
 void Player::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 {
 	// オブジェクトの描画
