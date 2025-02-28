@@ -55,6 +55,7 @@
     <ClCompile Include="application\scene\PakuScene.cpp" />
     <ClCompile Include="application\scene\MiyaScene.cpp" />
     <ClCompile Include="application\object\Player.cpp" />
+    <ClCompile Include="FollowCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -106,6 +107,7 @@
     <ClInclude Include="application\scene\PakuScene.h" />
     <ClInclude Include="application\scene\MiyaScene.h" />
     <ClInclude Include="application\object\Player.h" />
+    <ClInclude Include="FollowCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

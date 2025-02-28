@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include"Kouro.h"
 #include "MyMath.h"
+#include "FollowCamera.h"
 
 class Player
 {
@@ -14,6 +15,10 @@ public:
 	void Jump();// ジャンプ処理
 	//追従カメラ
 	void SetCamera(Camera* camera) { object3d_->SetCamera(camera); }
+	void SetFollowCamera(FollowCamera* camera) { followCamera_ = camera; }
+
+	// 位置取得
+	Vector3 GetPosition() { return objectTransform_->transform.translate; }
 
 private:
 	std::unique_ptr<Object3d> object3d_;// 3Dオブジェクト
@@ -33,4 +38,7 @@ private:
 	float boostVelocity_ = 0.0f; // 追加上昇速度
 	float boostDecay_ = 0.02f;   // 追加上昇の減衰量
 	float maxFallSpeed_ = 0.15f; // 下降速度の最大値
+
+	// カメラ
+	FollowCamera* followCamera_ = nullptr;
 };

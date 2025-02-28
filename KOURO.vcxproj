@@ -33,6 +33,7 @@
     <ClCompile Include="engine\object\PointLight.cpp" />
     <ClCompile Include="engine\object\SpotLight.cpp" />
     <ClCompile Include="engine\3d\LineDrawerBase.cpp" />
+    <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -104,6 +105,7 @@
     <ClInclude Include="application\scene\PakuScene.h" />
     <ClInclude Include="application\scene\MiyaScene.h" />
     <ClInclude Include="application\object\Player.h" />
+    <ClInclude Include="FollowCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
