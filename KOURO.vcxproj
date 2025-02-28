@@ -16,6 +16,7 @@
     <ClCompile Include="application\scene\SceneFactory.cpp" />
     <ClCompile Include="application\scene\SceneManager.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
+    <ClCompile Include="BaseCamera.cpp" />
     <ClCompile Include="engine\3d\AnimationManager.cpp" />
     <ClCompile Include="engine\3d\WorldTransform.cpp" />
     <ClCompile Include="engine\audio\Audio.cpp" />
@@ -60,6 +61,7 @@
     <ClInclude Include="application\scene\SceneFactory.h" />
     <ClInclude Include="application\scene\SceneManager.h" />
     <ClInclude Include="application\scene\TitleScene.h" />
+    <ClInclude Include="BaseCamera.h" />
     <ClInclude Include="engine\3d\AnimationManager.h" />
     <ClInclude Include="engine\3d\ModelDatas.h" />
     <ClInclude Include="engine\3d\WorldTransform.h" />
