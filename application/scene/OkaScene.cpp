@@ -45,15 +45,21 @@ void OkaScene::Update()
 
 void OkaScene::Draw()
 {
-	SpriteCommon::GetInstance()->SetView();
+	DrawBackgroundSprite();
+	/// 背景スプライト描画
 
-	//sprite->Draw();
 
-	Object3dCommon::GetInstance()->SetView();
+	DrawObject();
+	/// オブジェクト描画	
 
 	// プレイヤーの描画
 	player_->Draw(Camera::GetInstance()->GetViewProjection(),
 		*directionalLight.get(),
 		*pointLight.get(),
 		*spotLight.get());
+
+	DrawForegroundSprite();
+	/// 前景スプライト描画	
+
+	
 }

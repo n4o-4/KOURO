@@ -51,7 +51,12 @@ void PakuScene::Update()
 
 void PakuScene::Draw()
 {
-	Object3dCommon::GetInstance()->SetView();
+	DrawBackgroundSprite();
+	/// 背景スプライト描画
+
+
+	DrawObject();
+	/// オブジェクト描画	
 
 	skyDome_->Draw(Camera::GetInstance()->GetViewProjection(),
 		*directionalLight.get(),
@@ -67,5 +72,10 @@ void PakuScene::Draw()
 		*directionalLight.get(),
 		*pointLight.get(),
 		*spotLight.get());
+
+	DrawForegroundSprite();
+	/// 前景スプライト描画	
+
+	
 
 }

@@ -1,4 +1,4 @@
-#include "SkyDome.h"
+ï»¿#include "SkyDome.h"
 
 void SkyDome::Initialize() {
 
@@ -19,7 +19,7 @@ void SkyDome::Update() {
 	if (ImGui::TreeNode("skyDome")) {
 		ImGui::DragFloat3("worldTransform_", &worldTransform_->transform.scale.x, 0.01f);
 
-		ImGui::TreePop(); // TreeNode‚ğ•Â‚¶‚é
+		ImGui::TreePop(); // TreeNodeã‚’é–‰ã˜ã‚‹
 	}
 
 #endif

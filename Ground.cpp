@@ -1,4 +1,4 @@
-#include "Ground.h"
+ï»¿#include "Ground.h"
 
 void Ground::Initialize() {
 	model_ = std::make_unique<Object3d>();
@@ -19,7 +19,7 @@ void Ground::Update() {
 	if (ImGui::TreeNode("ground")) {
 		ImGui::DragFloat3("worldTransform_", &worldTransform_->transform.rotate.x, 0.01f);
 
-		ImGui::TreePop(); // TreeNode‚ğ•Â‚¶‚é
+		ImGui::TreePop(); // TreeNodeã‚’é–‰ã˜ã‚‹
 	}
 
 #endif
