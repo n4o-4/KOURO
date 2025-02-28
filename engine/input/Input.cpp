@@ -32,11 +32,24 @@ void Input::Initialize(WinApp* winApp)
 	// 排他制御レベルのセット
 	result = keyboard->SetCooperativeLevel(winApp->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(result));
+
+	// マウスデバイスの作成
+	result = directInput->CreateDevice(GUID_SysMouse, &mouse, nullptr);
+	assert(SUCCEEDED(result));
+
+	result = mouse->SetDataFormat(&c_dfDIMouse2);
+	assert(SUCCEEDED(result));
+
+	result = mouse->SetCooperativeLevel(winApp->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	assert(SUCCEEDED(result));
+
+	result = mouse->Acquire();
+	assert(SUCCEEDED(result));
 }
 
 void Input::Finalize()
 {
-	
+
 }
 
 void Input::Update()
@@ -51,6 +64,17 @@ void Input::Update()
 
 	// 全キーの入力情報を取得する
 	result = keyboard->GetDeviceState(sizeof(key), key);
+
+
+
+	// マウスの入力状態を取得
+	result = mouse->Acquire();
+	if (SUCCEEDED(result)) {
+		mouse->GetDeviceState(sizeof(DIMOUSESTATE2), &mouseState);
+	}
+
+	GetCursorPos(&mousePos);
+	ScreenToClient(winApp->GetHWND(), &mousePos);
 }
 
 bool Input::PushKey(BYTE keyNumber)
@@ -65,7 +89,7 @@ bool Input::Triggerkey(BYTE keyNumber)
 {
 	if (!keyPre[keyNumber] && key[keyNumber]) {
 		return true;
-	
+
 	}
 	return false;
 }
