@@ -29,6 +29,8 @@ private:
 	float fallSpeed_ = 0.0f;  // 下降速度
 	float gravity_ = 0.005f;  // 下降加速度
 	float initialY_ = -2.0f;  // 初期Y座標
-	float floatBoost_ = 0.1f; // 離した瞬間の追加上昇量
+	float floatBoost_ = 0.2f; // 離した瞬間の追加上昇量
+	float boostVelocity_ = 0.0f; // 追加上昇速度
+	float boostDecay_ = 0.02f;   // 追加上昇の減衰量
 	float maxFallSpeed_ = 0.15f; // 下降速度の最大値
 };

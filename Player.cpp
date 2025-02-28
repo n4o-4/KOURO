@@ -32,26 +32,37 @@ void Player::Update()
 		objectTransform_->transform.translate.y += speed_;  // 上昇
 	} else if (isJumping_) {
 		if (!isFloating_) {
-			// SPACEを離した瞬間、少しだけ上昇
-			objectTransform_->transform.translate.y += floatBoost_;
-			isFloating_ = true;  // 浮遊状態へ移行
-		} else {
-			// 下降処理（徐々に加速）
-			fallSpeed_ += gravity_;
-			if (fallSpeed_ > maxFallSpeed_) {
-				fallSpeed_ = maxFallSpeed_; // 降下速度の上限を設定
-			}
-			objectTransform_->transform.translate.y -= fallSpeed_;
+			// SPACEを離した瞬間、追加上昇を開始（ただし徐々に減衰する）
+			boostVelocity_ = floatBoost_;
+			isFloating_ = true;
+		}
 
-			// 着地判定
-			if (objectTransform_->transform.translate.y <= initialY_) {
-				objectTransform_->transform.translate.y = initialY_;
-				isJumping_ = false;
-				isFloating_ = false;
-				fallSpeed_ = 0.0f;
+		// 追加上昇を適用
+		if (boostVelocity_ > 0.0f) {
+			objectTransform_->transform.translate.y += boostVelocity_;
+			boostVelocity_ -= boostDecay_; // 徐々に減衰
+			if (boostVelocity_ < 0.0f) {
+				boostVelocity_ = 0.0f;
 			}
 		}
+
+		// 下降処理（徐々に加速）
+		fallSpeed_ += gravity_;
+		if (fallSpeed_ > maxFallSpeed_) {
+			fallSpeed_ = maxFallSpeed_; // 降下速度の上限を設定
+		}
+		objectTransform_->transform.translate.y -= fallSpeed_;
+
+		// 着地判定
+		if (objectTransform_->transform.translate.y <= initialY_) {
+			objectTransform_->transform.translate.y = initialY_;
+			isJumping_ = false;
+			isFloating_ = false;
+			fallSpeed_ = 0.0f;
+			boostVelocity_ = 0.0f; // 追加上昇もリセット
+		}
 	}
+
 
 	objectTransform_->UpdateMatrix();
 	object3d_->SetLocalMatrix(MakeIdentity4x4());
