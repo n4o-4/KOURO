@@ -1,8 +1,8 @@
-#include "BaseCamera.h"
+ï»¿#include "BaseCamera.h"
 
 void BaseCamera::Initialize()
 {
-	// viewProjection‚Ì‰Šú‰»
+	// viewProjectionã®åˆæœŸåŒ–
 	viewProjection_ = std::make_unique<ViewProjection>();
 	viewProjection_->Initialize();
 

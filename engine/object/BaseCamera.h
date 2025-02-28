@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Vectors.h"
 #include "Matrixs.h"
@@ -8,10 +8,10 @@
 class BaseCamera
 {
 public:
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	virtual void Initialize();
 
-	// XVˆ—
+	// æ›´æ–°å‡¦ç†
 	virtual void Update();
 
 protected:
