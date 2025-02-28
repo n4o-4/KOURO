@@ -3,7 +3,7 @@
 #include "BaseScene.h"
 
 #include "Kouro.h"
-
+#include "SkyDome.h"
 class GameScene : public BaseScene
 {
 public:
@@ -25,6 +25,10 @@ public:
 	std::unique_ptr<AnimationManager> animationManager = nullptr;
 
 private:
+
+	//std::unique_ptr<SkyDome> skyDome_ = nullptr;
+	//std::unique_ptr<Object3d> skyDomeObj_ = nullptr;
+
 
 public: // メンバ関数
 
