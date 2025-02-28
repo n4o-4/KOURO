@@ -15,11 +15,14 @@ public: // メンバ関数
 
 	void SetView();
 
-	void Foreground();
+	void DrawForeground();
 
-	void Background();
+	void DrawBackground();
 
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
+
+	bool GetIsDrawBackground() const { return isDrawBackground; }	
+	bool GetIsDrawForeground() const { return isDrawForeground; }	
 
 private:
 
@@ -50,4 +53,8 @@ private:
 	Microsoft::WRL::ComPtr< ID3DBlob> signatureBlob = nullptr;
 	//ID3DBlob* errorBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+
+	bool isDrawBackground = false;	
+
+	bool isDrawForeground = false;	
 };
