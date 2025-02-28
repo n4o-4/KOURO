@@ -1,4 +1,4 @@
-#include "TitleScene.h"
+﻿#include "TitleScene.h"
 
 void TitleScene::Initialize()
 {
@@ -81,13 +81,17 @@ void TitleScene::Update()
 void TitleScene::Draw()
 {
 
-	Object3dCommon::GetInstance()->SetView();
+	DrawBackgroundSprite();
+	/// 背景スプライト描画
 
-	//object3d->Draw();
 
-	SpriteCommon::GetInstance()->SetView();
+	DrawObject();
+	/// オブジェクト描画	
 
-	//sprite->Draw();
+
+	DrawForegroundSprite();	
+	/// 前景スプライト描画	
+
 
 	ParticleManager::GetInstance()->Draw("Resources/circle.png");
 }

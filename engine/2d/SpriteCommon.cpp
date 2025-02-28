@@ -36,6 +36,22 @@ void SpriteCommon::SetView()
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
+void SpriteCommon::DrawForeground()
+{
+
+	isDrawForeground = true;
+	isDrawBackground = false;	
+
+}
+
+void SpriteCommon::DrawBackground()
+{
+
+	isDrawBackground = true;
+	isDrawForeground = false;
+	
+}
+
 void SpriteCommon::CreateRootSignature()
 {
 	HRESULT hr;

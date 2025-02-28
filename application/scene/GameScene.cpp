@@ -145,17 +145,17 @@ void GameScene::Update()
 void GameScene::Draw()
 {
 
-	SpriteCommon::GetInstance()->SetView();
+	DrawBackgroundSprite();
+	/// 背景スプライト描画
 
-	//sprite->Draw();
 
-	Object3dCommon::GetInstance()->SetView();
+	DrawObject();
+	/// オブジェクト描画	
 
+
+	object3d->Draw(*objectTransform.get(), Camera::GetInstance()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+
+	DrawForegroundSprite();
+	/// 前景スプライト描画	
 	
-
-	object3d->Draw(*objectTransform.get(),Camera::GetInstance()->GetViewProjection(),*directionalLight.get(), *pointLight.get(), *spotLight.get());
-
-
-	///skyDome_->Draw();
-
 }
