@@ -20,6 +20,7 @@
     <ClCompile Include="application\scene\SceneManager.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
     <ClCompile Include="application\object\Enemy.cpp" />
+    <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="engine\object\BaseCamera.cpp" />
     <ClCompile Include="engine\3d\AnimationManager.cpp" />
     <ClCompile Include="engine\3d\WorldTransform.cpp" />
@@ -72,6 +73,7 @@
     <ClInclude Include="application\scene\SceneManager.h" />
     <ClInclude Include="application\scene\TitleScene.h" />
     <ClInclude Include="application\object\Enemy.h" />
+    <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="engine\object\BaseCamera.h" />
     <ClInclude Include="engine\3d\AnimationManager.h" />
     <ClInclude Include="engine\3d\ModelDatas.h" />
