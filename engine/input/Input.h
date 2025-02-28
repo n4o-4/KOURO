@@ -14,6 +14,8 @@
 #include <memory>
 #include "WinApp.h"
 
+#include "Vectors.h"
+
 using namespace Microsoft::WRL;
 
 // 入力
@@ -38,6 +40,9 @@ public: // メンバ変数
 	bool PushKey(BYTE keyNumber);
 
 	bool Triggerkey(BYTE keyNumber);
+
+	Vector2 GetMousePos() { return Vector2(mousePos.x, mousePos.y); }
+
 private:
 
 	static std::unique_ptr<Input> instance;
@@ -59,7 +64,13 @@ private:
 
 	BYTE keyPre[256] = {};
 
+	// マウスデバイス
+	ComPtr<IDirectInputDevice8> mouse;
+	DIMOUSESTATE2 mouseState = {};
+	DIMOUSESTATE2 mouseStatePre = {};
+
+	POINT mousePos = {};
+
 	// WindowAPI
 	WinApp* winApp = nullptr;
 };
-
