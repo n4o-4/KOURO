@@ -28,7 +28,7 @@ void CollisionManager::Update() {
 		for(auto *obj : pair.second.objects) {
 			Vector3 position = obj->GetCollider()->GetPosition();
 			float radius = obj->GetCollider()->GetRadius();
-			LineManager::GetInstance()->DrawSphere(position, radius, Vector4{ 1.0f,0.0f,0.0f,1.0f });
+		
 		}
 	}
 }
