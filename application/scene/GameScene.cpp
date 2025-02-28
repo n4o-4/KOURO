@@ -86,7 +86,7 @@ void GameScene::Update()
 #ifdef _DEBUG
 
 	if (ImGui::TreeNode("directionalLight")) {
-		ImGui::ColorEdit4("directionalLight.color", &directionalLight->color_.x, 0.01f);
+		ImGui::ColorEdit4("directionalLight.color", &directionalLight->color_.x, ImGuiColorEditFlags_None);
 		if (ImGui::DragFloat3("directionalLight.direction", &directionalLight->direction_.x, 0.01f))
 		{
 			directionalLight->direction_ = Normalize(directionalLight->direction_);
@@ -96,7 +96,7 @@ void GameScene::Update()
 	}
 
 	if (ImGui::TreeNode("pointLight")) {
-		ImGui::ColorEdit4("pointLight.color", &pointLight->color_.x, 0.01f);
+		ImGui::ColorEdit4("pointLight.color", &pointLight->color_.x, ImGuiColorEditFlags_None);
 		ImGui::DragFloat3("pointLight.position", &pointLight->position_.x, 0.01f);
 		ImGui::DragFloat("pointLight.decay", &pointLight->decay_, 0.01f);
 		ImGui::DragFloat("pointLight.radius", &pointLight->radius_, 0.01f);
@@ -105,7 +105,7 @@ void GameScene::Update()
 	}
 
 	if (ImGui::TreeNode("spotLight")) {
-		ImGui::ColorEdit4("spotlLight.color", &spotLight->color_.x, 0.01f);
+		ImGui::ColorEdit4("spotlLight.color", &spotLight->color_.x, ImGuiColorEditFlags_None);
 		if (ImGui::DragFloat3("spotLight.direction", &spotLight->direction_.x, 0.01f))
 		{
 			spotLight->direction_ = Normalize(spotLight->direction_);
