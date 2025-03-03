@@ -11,8 +11,11 @@
 
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
+#pragma comment(lib, "Xinput9_1_0.lib")
 #include <memory>
 #include "WinApp.h"
+#include "MyMath.h"	
+
 
 using namespace Microsoft::WRL;
 
@@ -22,6 +25,26 @@ class Input
 
 public:
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
+public:
+
+	enum class GamePadButton
+	{
+		A = XINPUT_GAMEPAD_A,
+		B = XINPUT_GAMEPAD_B,
+		X = XINPUT_GAMEPAD_X,
+		Y = XINPUT_GAMEPAD_Y,
+		START = XINPUT_GAMEPAD_START,
+		BACK = XINPUT_GAMEPAD_BACK,
+		LEFT_THUMB = XINPUT_GAMEPAD_LEFT_THUMB,
+		RIGHT_THUMB = XINPUT_GAMEPAD_RIGHT_THUMB,
+		LEFT_SHOULDER = XINPUT_GAMEPAD_LEFT_SHOULDER,
+		RIGHT_SHOULDER = XINPUT_GAMEPAD_RIGHT_SHOULDER,
+		DPAD_UP = XINPUT_GAMEPAD_DPAD_UP,
+		DPAD_DOWN = XINPUT_GAMEPAD_DPAD_DOWN,
+		DPAD_LEFT = XINPUT_GAMEPAD_DPAD_LEFT,
+		DPAD_RIGHT = XINPUT_GAMEPAD_DPAD_RIGHT,
+	};
 
 public: // メンバ変数
 	// シングルトンインスタンスの取得
@@ -38,6 +61,21 @@ public: // メンバ変数
 	bool PushKey(BYTE keyNumber);
 
 	bool Triggerkey(BYTE keyNumber);
+
+	Vector2 GetMousePos() { return Vector2(mousePos.x, mousePos.y); }
+
+	bool PushGamePadButton(GamePadButton button);
+
+	Vector3 GetLeftStick() { return leftStick; }	
+
+private:
+
+	void MouseUpdate();
+
+	void KeyBoardUpdate();
+
+	void GamePadUpdate();	
+
 private:
 
 	static std::unique_ptr<Input> instance;
@@ -59,7 +97,20 @@ private:
 
 	BYTE keyPre[256] = {};
 
+	// マウスデバイス
+	ComPtr<IDirectInputDevice8> mouse;
+	DIMOUSESTATE2 mouseState = {};
+	DIMOUSESTATE2 mouseStatePre = {};
+
+	POINT mousePos = {};
+
+	// ゲームパッド
+	XINPUT_STATE gamePadState = {};
+
+	XINPUT_STATE gamePadStatePre = {};
+
+	Vector3 leftStick = {};
+
 	// WindowAPI
 	WinApp* winApp = nullptr;
 };
-

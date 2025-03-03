@@ -39,6 +39,8 @@ void Player::Update()
 		[](const std::unique_ptr<PlayerBullet>& bullet) { return !bullet->IsActive(); }),
 		bullets_.end());
 
+	Move(Input::GetInstance()->GetLeftStick());
+
 	// ジャンプ処理
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		isJumping_ = true;
