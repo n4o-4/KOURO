@@ -73,7 +73,6 @@ void GameScene::Initialize()
 	//skyDomeObj_->SetModel("skyDome/skyDome.obj");
 	//skyDomeObj_->SetCamera(camera.get());
 	//skyDome_->Initialize(std::move(skyDomeObj_));
-
 }
 
 void GameScene::Finalize()

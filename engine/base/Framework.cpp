@@ -100,7 +100,7 @@ void Framework::Initialize()
 	particleEmitter->Initialize("particle");
 	particleEmitter->Emit();*/
 
-	SceneManager::GetInstance()->Initialize(srvManager.get(),Camera::GetInstance());
+	SceneManager::GetInstance()->Initialize(dxCommon_,srvManager.get(),Camera::GetInstance());
 
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
 	lineDrawer_->Initialize(dxCommon_,srvManager.get());

@@ -6,6 +6,7 @@
 
 #include "SpriteCommon.h"
 #include "Object3dCommon.h"	
+#include "LineDrawerBase.h"
 
 class SceneManager;
 
@@ -53,4 +54,10 @@ protected:
 	SrvManager* srvManager_ = nullptr;
 
 	Camera* camera_ = nullptr;
+
+	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
+
+private:
+
+
 };
