@@ -1,34 +1,46 @@
 #pragma once
 
 #include "BaseScene.h"
-
 #include "Kouro.h"
-#include "SkyDome.h"
+//========================================
+// アプリケーション
+#include "Player.h"
+#include "FollowCamera.h"
+#include "SkyDome.h"  
+#include "Ground.h"  
+#include "Enemy.h" 
+
 class GameScene : public BaseScene
 {
-public:
-
-	std::unique_ptr<Sprite> sprite = nullptr;
-
-	std::unique_ptr<Object3d> object3d = nullptr;
-
-	std::unique_ptr<WorldTransform> objectTransform = nullptr;
-
-	std::unique_ptr<Camera> camera = nullptr;
-
-	std::unique_ptr<DirectionalLight> directionalLight = nullptr;
-
-	std::unique_ptr<PointLight> pointLight = nullptr;
-
-	std::unique_ptr<SpotLight> spotLight = nullptr;
-
-	std::unique_ptr<AnimationManager> animationManager = nullptr;
-
 private:
-
-	//std::unique_ptr<SkyDome> skyDome_ = nullptr;
-	//std::unique_ptr<Object3d> skyDomeObj_ = nullptr;
-
+	//========================================
+	// ライトクラス
+	std::unique_ptr<DirectionalLight> directionalLight = nullptr;
+	std::unique_ptr<PointLight> pointLight = nullptr;
+	std::unique_ptr<SpotLight> spotLight = nullptr;
+	//========================================
+	// 天球
+	std::unique_ptr<SkyDome> skyDome_ = nullptr;
+	//========================================
+	// 地面
+	std::unique_ptr<Ground> ground_ = nullptr;
+	//========================================
+	// プレイヤー
+	std::unique_ptr<Player> player_ = nullptr;
+	// 追従カメラ
+	std::unique_ptr<FollowCamera> followCamera_ = nullptr;
+	//========================================
+	// 敵
+	std::unique_ptr<Enemy> enemy_ = nullptr;  
+	//========================================
+	// 敵出現
+    std::stringstream enemyPopCommands;
+    // 敵のリスト
+    std::vector<std::unique_ptr<Enemy>> enemies_;
+	// 待機フラグ
+    bool isWaiting_ = false;
+	// 待機時間
+    int32_t waitTimer_ = 0;
 
 public: // メンバ関数
 
@@ -44,5 +56,15 @@ public: // メンバ関数
 	// 描画
 	void Draw() override;
 
-	
+private: //静的メンバ関数
+
+	// 敵の出現データの読み込み
+	void LoadEnemyPopData();
+
+	// 敵の出現データの更新
+	void UpdateEnemyPopCommands();
+
+	// 敵の出現  
+	void SpawnEnemy(const Vector3& position);
+
 };

@@ -1,7 +1,8 @@
 ﻿#include "GameScene.h"
-
 #include "imgui.h"
 
+///=============================================================================
+///						マトリックス表示
 void ShowMatrix4x4(const Matrix4x4& matrix, const char* label) {
 	ImGui::Text("%s", label);
 	if (ImGui::BeginTable(label, 4, ImGuiTableFlags_Borders)) {
@@ -16,72 +17,80 @@ void ShowMatrix4x4(const Matrix4x4& matrix, const char* label) {
 		ImGui::EndTable();
 	}
 }
-
-
+///=============================================================================
+///						初期化
 void GameScene::Initialize()
 {
-
+	//========================================
+	// 基底シーン
 	BaseScene::Initialize();
-
-	/*TextureManager::GetInstance()->LoadTexture("Resources/monsterBall.png");
-	TextureManager::GetInstance()->LoadTexture("Resources/uvChecker.png");
-	TextureManager::GetInstance()->LoadTexture("Resources/fruit_suika_red.png");
-
-	Audio::GetInstance()->SoundLoadWave("Resources/Alarm01.wav");*/
-
-	//Audio::GetInstance()->SoundPlayWave("Resources/Alarm01.wav");
-
-	//sprite = std::make_unique<Sprite>();
-
-	//sprite->Initialize(SpriteCommon::GetInstance(), "Resources/uvChecker.png");
-
-	//sprite->SetTexSize({ 512.0f,512.0f });
-
-	ModelManager::GetInstance()->LoadModel("AnimatedCube/AnimatedCube.gltf");
-
-	object3d = std::make_unique<Object3d>();
-
-	object3d->Initialize(Object3dCommon::GetInstance());
-
-	object3d->SetModel("AnimatedCube/AnimatedCube.gltf");
-
-	object3d->SetCamera(camera.get());
-
-	objectTransform = std::make_unique<WorldTransform>();
-	objectTransform->Initialize();
-
+	//========================================
+	// ライト
+	// 指向性
 	directionalLight = std::make_unique<DirectionalLight>();
 	directionalLight->Initilaize();
-
+	// 点光源
 	pointLight = std::make_unique<PointLight>();
 	pointLight->Initilize();
-
+	// スポットライト
 	spotLight = std::make_unique<SpotLight>();
 	spotLight->Initialize();
-
-	animationManager = std::make_unique<AnimationManager>();
-
-	animationManager->LoadAnimationFile("./Resources/AnimatedCube", "AnimatedCube.gltf");
-
-	animationManager->StartAnimation("AnimatedCube.gltf", 0);
-
-
-	//skyDome
-	//ModelManager::GetInstance()->LoadModel("skyDome/skyDome.obj");
-	//skyDomeObj_ = std::make_unique<Object3d>();
-	//skyDomeObj_->Initialize(Object3dCommon::GetInstance());
-	//skyDomeObj_->SetModel("skyDome/skyDome.obj");
-	//skyDomeObj_->SetCamera(camera.get());
-	//skyDome_->Initialize(std::move(skyDomeObj_));
+	//========================================
+	// 天球
+	skyDome_ = std::make_unique<SkyDome>();
+	skyDome_->Initialize();
+	//========================================
+	// 地面
+	ground_ = std::make_unique<Ground>();
+	ground_->Initialize();
+	//========================================
+	// プレイヤーを生成
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
+	//========================================
+	// 追従カメラを作成
+	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_->Initialize();
+	// プレイヤーにカメラをセット
+	player_->SetFollowCamera(followCamera_.get());
+	//========================================
+	// 敵出現
+	LoadEnemyPopData();
 }
-
+///=============================================================================
+///						終了処理
 void GameScene::Finalize()
 {
+	skyDome_.reset();
+	ground_.reset();
+	enemy_.reset();
 }
-
+///=============================================================================
+///						更新
 void GameScene::Update()
 {
-
+	//========================================
+	// プレイヤーの更新
+	player_->Update();
+	// カメラの更新
+	if (followCamera_) {
+		followCamera_->Update(player_.get());
+	}
+	//========================================
+	// 天球
+	skyDome_->Update();
+	//========================================
+	// 地面
+	ground_->Update();
+	//========================================
+	// 敵出現
+	UpdateEnemyPopCommands();
+	// 敵リスト
+	for (const auto& enemy : enemies_) {
+		enemy->Update();
+	}
+	//========================================
+	// ライト
 #ifdef _DEBUG
 
 	if (ImGui::TreeNode("directionalLight")) {
@@ -114,33 +123,15 @@ void GameScene::Update()
 		ImGui::DragFloat("spotLight.intensity", &spotLight->intensity_, 0.01f);
 		ImGui::TreePop(); // TreeNodeを閉じる
 	}
-
-	Matrix4x4 localMatrix = animationManager->GetLocalMatrix();
-
-	ShowMatrix4x4(localMatrix, "localMatrix");
-
-	
-	ShowMatrix4x4(objectTransform->matWorld_, "worldMatrix");
 #endif
-
-	animationManager->Update();
-    objectTransform->UpdateMatrix();
-	object3d->Update();
-	object3d->SetLocalMatrix(animationManager->GetLocalMatrix());
-
-	if (Input::GetInstance()->Triggerkey(DIK_RETURN))
-	{
-		SceneManager::GetInstance()->ChangeScene("TITLE");
-	}
-
+	//========================================
+	// ポイントライト
 	pointLight->Update();
-
+	// スポットライト
 	spotLight->Update();
-
-
-	//skyDome_->Update();
 }
-
+///=============================================================================
+///						描画
 void GameScene::Draw()
 {
 
@@ -149,12 +140,112 @@ void GameScene::Draw()
 
 
 	DrawObject();
-	/// オブジェクト描画	
-
-
-	object3d->Draw(*objectTransform.get(), Camera::GetInstance()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+	/// オブジェクト描画
+	//========================================
+	// プレイヤーの描画
+	player_->Draw(Camera::GetInstance()->GetViewProjection(),
+		*directionalLight.get(),
+		*pointLight.get(),
+		*spotLight.get());
+	//========================================
+	// 天球
+	skyDome_->Draw(Camera::GetInstance()->GetViewProjection(),
+		*directionalLight.get(),
+		*pointLight.get(),
+		*spotLight.get());
+	//========================================
+	// 地面
+	ground_->Draw(Camera::GetInstance()->GetViewProjection(),
+		*directionalLight.get(),
+		*pointLight.get(),
+		*spotLight.get());
+	//========================================
+	// 敵
+	for (const auto& enemy : enemies_) {
+		enemy->Draw(Camera::GetInstance()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
+	}
+	
 
 	DrawForegroundSprite();
 	/// 前景スプライト描画	
 	
+}
+
+///=============================================================================
+///                        静的メンバ関数
+///--------------------------------------------------------------
+///                        敵の出現データの読み込み
+void GameScene::LoadEnemyPopData() {
+	std::ifstream file;
+	file.open("./Resources/enemyPop.csv");
+	assert(file.is_open());
+
+	enemyPopCommands << file.rdbuf();
+
+	file.close();
+}
+///--------------------------------------------------------------
+///                        敵の出現データの更新
+void GameScene::UpdateEnemyPopCommands() {
+	if (isWaiting_) {
+		--waitTimer_;
+		if (--waitTimer_ <= 0) {
+			isWaiting_ = false;
+		}
+		return;
+	}
+	std::string line;
+
+	while (getline(enemyPopCommands, line)) {
+
+		std::istringstream line_stream(line);
+
+		std::string word;
+
+		getline(line_stream, word, ',');
+
+		if (word.find("//") == 0) {
+			continue;
+		}
+		if (word.find("POP") == 0) {
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+
+			SpawnEnemy(Vector3(x, y, z));
+		} else if (word.find("WAIT") == 0) {
+
+			getline(line_stream, word, ',');
+
+			int32_t waitTime = atoi(word.c_str());
+
+			isWaiting_ = true;
+			waitTimer_ = waitTime;
+
+			break;
+
+		}
+
+
+	}
+}
+///--------------------------------------------------------------
+///                        敵の出現
+void GameScene::SpawnEnemy(const Vector3& position) {
+
+	std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>();
+	newEnemy->Initialize();
+	newEnemy->SetPosition(position);
+	//newEnemy->SetGameScene(this);
+	//newEnemy->SetPlayer(player_);
+	enemies_.push_back(std::move(newEnemy));
+
 }

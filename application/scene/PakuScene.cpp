@@ -26,8 +26,6 @@ void PakuScene::Initialize()
 	enemy_->Initialize();
 
 	LoadEnemyPopData();
-
-
 }
 
 void PakuScene::Finalize()
