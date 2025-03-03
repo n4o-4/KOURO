@@ -1,5 +1,6 @@
 ﻿#include "Player.h"
 #include <cmath>
+#include "imgui.h"
 
 void Player::Initialize()
 {
@@ -23,6 +24,20 @@ void Player::Update()
 	if (Input::GetInstance()->PushKey(DIK_S)) { Move({ 0.0f, 0.0f, -1.0f }); }
 	if (Input::GetInstance()->PushKey(DIK_A)) { Move({ -1.0f, 0.0f, 0.0f }); }
 	if (Input::GetInstance()->PushKey(DIK_D)) { Move({ 1.0f, 0.0f, 0.0f }); }
+
+	if (Input::GetInstance()->Triggerkey(DIK_RETURN)) {
+		Shoot(); // スペースキーで弾を撃つ
+	}
+
+	// 弾の更新
+	for (auto& bullet : bullets_) {
+		bullet->Update();
+	}
+
+	// 画面外に出た弾を削除
+	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(),
+		[](const std::unique_ptr<PlayerBullet>& bullet) { return !bullet->IsActive(); }),
+		bullets_.end());
 
 	// ジャンプ処理
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
@@ -71,17 +86,39 @@ void Player::Update()
 	objectTransform_->UpdateMatrix();// 行列更新
 	object3d_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 	object3d_->Update();// 更新
+
+	DrawImGui();// ImGui描画
 }
 
 void Player::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 {
 	// オブジェクトの描画
 	object3d_->Draw(*objectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
+
+	// 弾の描画
+	for (auto& bullet : bullets_) {
+		bullet->Draw(viewProjection, directionalLight, pointLight, spotLight);
+	}
 }
 
 void Player::Finalize()
 {
+}
 
+void Player::DrawImGui()
+{
+	ImGui::Begin("Player Bullets");
+
+	int index = 0;
+	for (const auto& bullet : bullets_) {
+		if (bullet->IsActive()) {
+			Vector3 pos = bullet->GetPosition();
+			ImGui::Text("Bullet %d: (%.2f, %.2f, %.2f)", index, pos.x, pos.y, pos.z);
+		}
+		index++;
+	}
+
+	ImGui::End();
 }
 
 void Player::Move(Vector3 direction)
@@ -101,4 +138,18 @@ void Player::Jump()
 		isJumping_ = true;
 		jumpVelocity_ = 0.2f; // 初速度
 	}
+}
+
+void Player::Shoot()
+{
+	// 弾を撃つ処理
+	Vector3 bulletPos = objectTransform_->transform.translate;
+	Vector3 bulletVelocity = { 0.0f, 0.0f, 0.5f }; // Z方向に進む
+	Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };// 弾の大きさ
+	Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };// 弾の回転
+
+	// 弾を生成
+	bullets_.emplace_back(std::make_unique<PlayerBullet>(bulletPos, bulletVelocity, bulletScale, bulletRotate));
+
+
 }

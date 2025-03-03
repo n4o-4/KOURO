@@ -3,12 +3,16 @@
 PlayerBullet::PlayerBullet(Vector3 position, Vector3 velocity, Vector3 scale, Vector3 rotate)
 	: velocity_(velocity) {
 
+	Initialize(position, velocity, scale, rotate);
+}
+
+void PlayerBullet::Initialize(Vector3 position, Vector3 velocity, Vector3 scale, Vector3 rotate)
+{
 	object3d_ = std::make_unique<Object3d>();
 	object3d_->Initialize(Object3dCommon::GetInstance());
-	ModelManager::GetInstance()->LoadModel("bullet.obj");
-	object3d_->SetModel("bullet.obj");
+	ModelManager::GetInstance()->LoadModel("player.obj");
+	object3d_->SetModel("player.obj");
 
-	// `objectTransform_` を `unique_ptr` で管理
 	objectTransform_ = std::make_unique<WorldTransform>();
 	objectTransform_->Initialize();
 	objectTransform_->transform.translate = position;
@@ -26,12 +30,14 @@ void PlayerBullet::Update() {
 	}
 
 	// 画面奥に行き過ぎたら消す
-	if (objectTransform_->transform.translate.z > 50.0f) {
+	if (objectTransform_->transform.translate.z > 300.0f) {
 		isActive_ = false;
 	}
 
 	// 行列を更新
 	objectTransform_->UpdateMatrix();
+	object3d_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
+	object3d_->Update();// 更新
 }
 
 void PlayerBullet::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
