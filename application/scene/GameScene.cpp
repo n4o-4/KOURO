@@ -65,15 +65,25 @@ void GameScene::Initialize()
 
 	animationManager->StartAnimation("AnimatedCube.gltf", 0);
 
+	// プレイヤーを生成
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
 
-	//skyDome
-	//ModelManager::GetInstance()->LoadModel("skyDome/skyDome.obj");
-	//skyDomeObj_ = std::make_unique<Object3d>();
-	//skyDomeObj_->Initialize(Object3dCommon::GetInstance());
-	//skyDomeObj_->SetModel("skyDome/skyDome.obj");
-	//skyDomeObj_->SetCamera(camera.get());
-	//skyDome_->Initialize(std::move(skyDomeObj_));
+	// 追従カメラを作成
+	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_->Initialize();
 
+	// プレイヤーにカメラをセット
+	player_->SetFollowCamera(followCamera_.get());
+
+	skyDome_ = std::make_unique<SkyDome>();
+	skyDome_->Initialize();
+
+	ground_ = std::make_unique<Ground>();
+	ground_->Initialize();
+
+	enemy_ = std::make_unique<Enemy>();
+	enemy_->Initialize();
 }
 
 void GameScene::Finalize()
@@ -124,22 +134,33 @@ void GameScene::Update()
 	ShowMatrix4x4(objectTransform->matWorld_, "worldMatrix");
 #endif
 
-	animationManager->Update();
+	//animationManager->Update();
     objectTransform->UpdateMatrix();
 	object3d->Update();
-	object3d->SetLocalMatrix(animationManager->GetLocalMatrix());
+	object3d->SetLocalMatrix(MakeIdentity4x4());
 
 	if (Input::GetInstance()->Triggerkey(DIK_RETURN))
 	{
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
+	directionalLight->Update();	
+
 	pointLight->Update();
 
 	spotLight->Update();
 
+	// プレイヤーの更新
+	player_->Update();
 
-	//skyDome_->Update();
+	// カメラの更新
+	if (followCamera_) {
+		followCamera_->Update(player_.get());
+	}
+
+	skyDome_->Update();
+	ground_->Update();
+	enemy_->Update();
 }
 
 void GameScene::Draw()
@@ -152,8 +173,28 @@ void GameScene::Draw()
 	DrawObject();
 	/// オブジェクト描画	
 
-
 	object3d->Draw(*objectTransform.get(), Camera::GetInstance()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+
+	// プレイヤーの描画
+	player_->Draw(Camera::GetInstance()->GetViewProjection(),
+		*directionalLight.get(),
+		*pointLight.get(),
+		*spotLight.get());
+
+	skyDome_->Draw(Camera::GetInstance()->GetViewProjection(),
+		*directionalLight.get(),
+		*pointLight.get(),
+		*spotLight.get());
+
+	ground_->Draw(Camera::GetInstance()->GetViewProjection(),
+		*directionalLight.get(),
+		*pointLight.get(),
+		*spotLight.get());
+
+	enemy_->Draw(Camera::GetInstance()->GetViewProjection(),
+		*directionalLight.get(),
+		*pointLight.get(),
+		*spotLight.get());
 
 	DrawForegroundSprite();
 	/// 前景スプライト描画	

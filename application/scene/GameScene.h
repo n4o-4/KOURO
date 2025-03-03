@@ -3,7 +3,17 @@
 #include "BaseScene.h"
 
 #include "Kouro.h"
+
 #include "SkyDome.h"
+
+#include "Player.h"
+
+#include "SkyDome.h"
+
+#include "Ground.h"
+
+#include "Enemy.h"
+
 class GameScene : public BaseScene
 {
 public:
@@ -23,6 +33,16 @@ public:
 	std::unique_ptr<SpotLight> spotLight = nullptr;
 
 	std::unique_ptr<AnimationManager> animationManager = nullptr;
+
+	std::unique_ptr<Player> player_ = nullptr;
+
+	std::unique_ptr<FollowCamera> followCamera_ = nullptr;
+
+	std::unique_ptr<SkyDome> skyDome_ = nullptr;
+
+	std::unique_ptr<Ground> ground_ = nullptr;
+
+	std::unique_ptr<Enemy> enemy_ = nullptr;
 
 private:
 
