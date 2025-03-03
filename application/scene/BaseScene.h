@@ -4,6 +4,8 @@
 #include "SrvManager.h"
 #include "Camera.h"
 
+#include "DebugCamera.h"
+
 #include "SpriteCommon.h"
 #include "Object3dCommon.h"	
 
@@ -53,4 +55,8 @@ protected:
 	SrvManager* srvManager_ = nullptr;
 
 	Camera* camera_ = nullptr;
+
+	std::unique_ptr<DebugCamera> debugCamera_ = nullptr;	
+
+	bool isDebugCamera_ = false;
 };

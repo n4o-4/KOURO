@@ -12,6 +12,8 @@ public:
 	// çXêV
 	void Update() override;
 
+	ViewProjection& GetViewProjection() { return *viewProjection_; }
+
 private:
 };
 

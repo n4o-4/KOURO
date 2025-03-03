@@ -5,6 +5,9 @@ void BaseScene::Initialize()
 {
 	AudioManager::GetInstance()->Initialize();
 
+	debugCamera_ = std::make_unique<DebugCamera>();
+	debugCamera_->Initialize();
+
 	AudioManager::GetInstance()->SoundLoadFile("Resources/Alarm01.wav");
 
 	AudioManager::GetInstance()->SoundLoadFile("Resources/Spinning_World.mp3");
@@ -20,6 +23,12 @@ void BaseScene::Finalize()
 void BaseScene::Update()
 {
 	Camera::GetInstance()->Update();
+	if (isDebugCamera_)
+	{
+		debugCamera_->Update();
+	}
+
+	
 }
 
 void BaseScene::Draw()

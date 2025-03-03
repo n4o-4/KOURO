@@ -28,6 +28,13 @@ public:
 
 public:
 
+	enum class MouseButton
+	{
+		LEFT = 0,
+		RIGHT = 1,
+		MIDDLE = 2,
+	};
+
 	enum class GamePadButton
 	{
 		A = XINPUT_GAMEPAD_A,
@@ -58,12 +65,18 @@ public: // メンバ変数
 	// 更新
 	void Update();
 
+	/// キーボード
 	bool PushKey(BYTE keyNumber);
 
 	bool Triggerkey(BYTE keyNumber);
 
-	Vector2 GetMousePos() { return Vector2(mousePos.x, mousePos.y); }
 
+	/// マウス
+	Vector2 GetMousePos() { return Vector2(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)); }
+
+	bool PushMouseButton(MouseButton mouseButton);
+
+	/// ゲームパッド
 	bool PushGamePadButton(GamePadButton button);
 
 	Vector3 GetLeftStick() { return leftStick; }	
@@ -97,12 +110,16 @@ private:
 
 	BYTE keyPre[256] = {};
 
+public:
+
 	// マウスデバイス
 	ComPtr<IDirectInputDevice8> mouse;
 	DIMOUSESTATE2 mouseState = {};
 	DIMOUSESTATE2 mouseStatePre = {};
 
 	POINT mousePos = {};
+
+private:
 
 	// ゲームパッド
 	XINPUT_STATE gamePadState = {};

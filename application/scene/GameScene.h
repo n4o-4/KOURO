@@ -4,6 +4,7 @@
 
 #include "Kouro.h"
 #include "SkyDome.h"
+
 class GameScene : public BaseScene
 {
 public:
@@ -23,6 +24,8 @@ public:
 	std::unique_ptr<SpotLight> spotLight = nullptr;
 
 	std::unique_ptr<AnimationManager> animationManager = nullptr;
+
+	
 
 private:
 

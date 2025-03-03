@@ -82,6 +82,7 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
+	BaseScene::Update();
 
 #ifdef _DEBUG
 
@@ -115,6 +116,8 @@ void GameScene::Update()
 		ImGui::DragFloat("spotLight.intensity", &spotLight->intensity_, 0.01f);
 		ImGui::TreePop(); // TreeNodeを閉じる
 	}
+
+	ImGui::Checkbox("useDebugCamera", &isDebugCamera_);
 
 	Matrix4x4 localMatrix = animationManager->GetLocalMatrix();
 
@@ -152,8 +155,14 @@ void GameScene::Draw()
 	DrawObject();
 	/// オブジェクト描画	
 
-
-	object3d->Draw(*objectTransform.get(), Camera::GetInstance()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+	if (isDebugCamera_)
+	{
+		object3d->Draw(*objectTransform.get(), debugCamera_->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+	}
+	else
+	{
+		object3d->Draw(*objectTransform.get(), Camera::GetInstance()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+	}
 
 	DrawForegroundSprite();
 	/// 前景スプライト描画	
