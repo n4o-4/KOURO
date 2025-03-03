@@ -15,10 +15,7 @@ void LineDrawerBase::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 
 	//CreateLineObject(Type::AABB);
 
-	for (int i = 0; i < 100; i++)
-	{
-		CreateLineObject(Type::Sphere);
-	}
+	CreateLineObject(Type::Grid);
 
 }
 
@@ -173,11 +170,14 @@ void LineDrawerBase::CreatePipellineState()
 	//DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 	//Depthの機能を有効化する
-	depthStencilDesc.DepthEnable = false;
-	//書き込みします
-	//depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-	//比較関数はLessEqual。つまり、近ければ描画される
-	//depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+	depthStencilDesc.DepthEnable = true;
+
+	// 書き込みします
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+
+	// 比較関数はLessEqual。近ければ描画される
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+
 
 	/*----------------------------------------------------------
 	* BlendStateの設定
@@ -277,7 +277,10 @@ void LineDrawerBase::CreateLineObject(Type type)
 	{
 		WriteSphereVertexData(newObject.get());
 	}
-	
+	else if (type == Type::Grid)
+	{
+		WriteGridVertexData(newObject.get());
+	}
 	newObject->transform.Initialize();
 
 	newObject->transform.transform.scale = { 1.0f,1.0f,1.0f };
@@ -363,6 +366,15 @@ void LineDrawerBase::WriteAABBIndexData(LineObject* lineObject)
 	}
 }
 #pragma endregion AABB用でindexDataに書き込み
+
+void LineDrawerBase::WriteGridIndexData(LineObject* lineObject)
+{
+	for (int i = 0; i < lineObject->vertexIndex;)
+	{
+		lineObject->indexData[i] = i;
+		++i;
+	}
+}
 
 #pragma region sphereの形でvertexDataを書き込む
 void LineDrawerBase::WriteSphereVertexData(LineObject* lineObject)
@@ -469,3 +481,28 @@ void LineDrawerBase::WriteAABBVertexData(LineObject* lineObject, Vector3 radius)
 	WriteAABBIndexData(lineObject);
 }
 #pragma endregion AABBの形でvertexDataを書き込む
+
+void LineDrawerBase::WriteGridVertexData(LineObject* lineObject)
+{
+	float GridSize = 5.0f;
+	int GridNum = 100;
+	float GridSpacing = GridSize / GridNum;
+	float halfGridSize = GridSize * GridNum * 0.5f;
+
+	for (int i = 0; i <= GridNum; ++i) {
+		float x = -halfGridSize + GridSize * i;
+		float z = -halfGridSize + GridSize * i;
+
+		lineObject->vertexData[lineObject->vertexIndex].position = { x, 0.0f, -halfGridSize, 1.0f };
+		++lineObject->vertexIndex;
+		lineObject->vertexData[lineObject->vertexIndex].position = { x, 0.0f, halfGridSize, 1.0f };
+		++lineObject->vertexIndex;
+
+		lineObject->vertexData[lineObject->vertexIndex].position = { -halfGridSize, 0.0f, z, 1.0f };
+		++lineObject->vertexIndex;
+		lineObject->vertexData[lineObject->vertexIndex].position = { halfGridSize, 0.0f, z, 1.0f };
+		++lineObject->vertexIndex;
+	}
+
+	WriteGridIndexData(lineObject);
+}

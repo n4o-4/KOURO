@@ -7,7 +7,8 @@
 enum class Type
 {
 	AABB,
-	Sphere
+	Sphere,
+	Grid
 };
 
 
@@ -102,11 +103,15 @@ private: // メンバ関数
 
 	void WriteAABBIndexData(LineObject* lineObject);
 
+	void WriteGridIndexData(LineObject* lineObject);
+
 	/// vertexData書き込み
 
 	void WriteSphereVertexData(LineObject* lineObject);
 
 	void WriteAABBVertexData(LineObject* lineObject,Vector3 radius);
+
+	void WriteGridVertexData(LineObject* lineObject);
 
 private: // メンバ変数
 
