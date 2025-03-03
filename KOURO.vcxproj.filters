@@ -62,6 +62,7 @@
     <ClCompile Include="application\scene\MiyaScene.cpp" />
     <ClCompile Include="application\object\SkyDome.cpp" />
     <ClCompile Include="application\object\Player.cpp" />
+    <ClCompile Include="PlayerBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -120,6 +121,7 @@
     <ClInclude Include="application\object\SkyDome.h" />
     <ClInclude Include="application\object\Player.h" />
     <ClInclude Include="engine\object\FollowCamera.h" />
+    <ClInclude Include="PlayerBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

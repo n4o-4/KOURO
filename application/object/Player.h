@@ -2,6 +2,8 @@
 #include"Kouro.h"
 #include "MyMath.h"
 #include "FollowCamera.h"
+#include "PlayerBullet.h"
+#include <vector>
 
 class Player
 {
@@ -11,8 +13,12 @@ public:
 	void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 	void Finalize();
 
+	void DrawImGui();// ImGui描画
+
 	void Move(Vector3 direction);// 移動処理
 	void Jump();// ジャンプ処理
+	void Shoot();// 弾を撃つ処理
+
 	//追従カメラ
 	void SetCamera(Camera* camera) { object3d_->SetCamera(camera); }
 	void SetFollowCamera(FollowCamera* camera) { followCamera_ = camera; }
@@ -23,6 +29,8 @@ public:
 private:
 	std::unique_ptr<Object3d> object3d_;// 3Dオブジェクト
 	std::unique_ptr<WorldTransform> objectTransform_;// 3Dオブジェクトの変換情報
+
+	std::vector<std::unique_ptr<PlayerBullet>> bullets_;// 弾のリスト
 
 	Vector3 position_ = { 0.0f, 0.0f, 0.0f };
 	float speed_ = 0.1f;
