@@ -51,6 +51,8 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
+	BaseScene::Update();
+
 	if (Input::GetInstance()->Triggerkey(DIK_RETURN))
 	{
 		SceneManager::GetInstance()->ChangeScene("GAME");
@@ -80,6 +82,7 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
+	BaseScene::Draw();
 
 	DrawBackgroundSprite();
 	/// 背景スプライト描画

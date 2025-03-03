@@ -73,6 +73,8 @@ void GameScene::Initialize()
 	//skyDomeObj_->SetModel("skyDome/skyDome.obj");
 	//skyDomeObj_->SetCamera(camera.get());
 	//skyDome_->Initialize(std::move(skyDomeObj_));
+
+	lineDrawer_->CreateLineObject(LineDrawerBase::Type::AABB, objectTransform.get());
 }
 
 void GameScene::Finalize()
@@ -81,6 +83,8 @@ void GameScene::Finalize()
 
 void GameScene::Update()
 {
+	BaseScene::Update();
+
 
 #ifdef _DEBUG
 
@@ -143,6 +147,7 @@ void GameScene::Update()
 
 void GameScene::Draw()
 {
+	
 
 	DrawBackgroundSprite();
 	/// 背景スプライト描画
@@ -157,4 +162,7 @@ void GameScene::Draw()
 	DrawForegroundSprite();
 	/// 前景スプライト描画	
 	
+	LineDraw();
+
+	BaseScene::Draw();
 }

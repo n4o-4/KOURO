@@ -41,6 +41,8 @@ public:
 
 protected:
 
+	virtual void LineDraw();
+
 	virtual void DrawObject();
 
 	virtual void DrawBackgroundSprite();
