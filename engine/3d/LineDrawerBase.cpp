@@ -14,8 +14,10 @@ void LineDrawerBase::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	CreateLineResource();
 
 	//CreateLineObject(Type::AABB);
-
-	CreateLineObject(Type::Grid);
+	worldTransform_ = std::make_unique<WorldTransform>();
+	worldTransform_->Initialize();
+	
+	CreateLineObject(Type::Grid,worldTransform_.get());
 
 }
 
@@ -24,11 +26,11 @@ void LineDrawerBase::Update()
 	for (std::list<std::unique_ptr<LineObject>>::iterator iterator = lineObjects_.begin(); iterator != lineObjects_.end();)
 	{
 
-		ImGui::DragFloat3("object.scale", &iterator->get()->transform.transform.scale.x, 0.01f);
-		ImGui::DragFloat3("object.rotate", &iterator->get()->transform.transform.rotate.x, 0.01f);
-		ImGui::DragFloat3("object.translate", &iterator->get()->transform.transform.translate.x, 0.01f);
+		ImGui::DragFloat3("object.scale", &iterator->get()->transform->transform.scale.x, 0.01f);
+		ImGui::DragFloat3("object.rotate", &iterator->get()->transform->transform.rotate.x, 0.01f);
+		ImGui::DragFloat3("object.translate", &iterator->get()->transform->transform.translate.x, 0.01f);
 
-		Matrix4x4 worldMatrix = MakeAffineMatrix(iterator->get()->transform.transform.scale, iterator->get()->transform.transform.rotate, iterator->get()->transform.transform.translate);
+		Matrix4x4 worldMatrix = MakeAffineMatrix(iterator->get()->transform->transform.scale, iterator->get()->transform->transform.rotate, iterator->get()->transform->transform.translate);
 
 		iterator->get()->instancingData->matWorld = worldMatrix;
 
@@ -224,7 +226,7 @@ void LineDrawerBase::CreatePipellineState()
 #pragma endregion pipelineの生成
 
 # pragma region lineObjectの生成しlineObjects_にpush_back
-void LineDrawerBase::CreateLineObject(Type type)
+void LineDrawerBase::CreateLineObject(Type type, WorldTransform* transform)
 {
 	// 新しいラインオブジェクトの生成と初期化
 	std::unique_ptr<LineObject> newObject = std::make_unique<LineObject>();
@@ -281,9 +283,12 @@ void LineDrawerBase::CreateLineObject(Type type)
 	{
 		WriteGridVertexData(newObject.get());
 	}
-	newObject->transform.Initialize();
 
-	newObject->transform.transform.scale = { 1.0f,1.0f,1.0f };
+	if (transform == nullptr)
+	{
+		newObject->transform = worldTransform_.get();	
+	}
+	newObject->transform = transform;
 
 	lineObjects_.push_back(std::move(newObject));
 }

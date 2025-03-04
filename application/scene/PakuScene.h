@@ -19,7 +19,7 @@ public: // メンバ関数
    void Draw() override;  
    void LoadEnemyPopData();  
    void UpdateEnemyPopCommands();  
-   void SpawnEnemy(const Vector3& position);  
+   void SpawnEnemy(const Vector3& position);
 
 private:  
    std::unique_ptr<SkyDome> skyDome_ = nullptr;  

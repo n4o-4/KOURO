@@ -13,7 +13,7 @@ public:
 	static SceneManager* GetInstance();
 
 	// 初期化
-	void Initialize(SrvManager* srvManager,Camera* camera);
+	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,Camera* camera);
 
 	void Finalize();
 
@@ -26,6 +26,8 @@ public:
 	void ChangeScene(const std::string& sceneName);
 	
 	void SetSceneFactory(AbstaractSceneFactory& sceneFactory) { sceneFactory_ = &sceneFactory; }
+
+	DirectXCommon* GetDxCommon() { return dxCommon_; }	
 
 	SrvManager* GetSrvManager() { return srvManager_; }
 
@@ -53,6 +55,8 @@ private:
 	AbstaractSceneFactory* sceneFactory_ = nullptr;
 
 	SrvManager* srvManager_ = nullptr;
+
+	DirectXCommon* dxCommon_ = nullptr;
 
 	Camera* camera_ = nullptr;
 };

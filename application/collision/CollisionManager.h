@@ -35,7 +35,7 @@ struct GridCell {
 class CollisionManager {
 public:
     /// \brief 初期化
-    void Initialize(Object3d *object3d);
+    void Initialize(float cellSize = 32.0f);
 
     /// \brief 更新
     void Update();
@@ -114,7 +114,4 @@ private:
 	//========================================
 	// 判定描画
 	bool isHitDraw_ = false;
-	//========================================
-	// Object3D
-	Object3d *object3d_ = nullptr;
 };

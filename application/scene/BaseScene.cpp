@@ -1,13 +1,12 @@
 #include "BaseScene.h"
 #include "AudioManager.h"
 
+#include "SceneManager.h"
+
 void BaseScene::Initialize()
 {
-	AudioManager::GetInstance()->Initialize();
-
-	AudioManager::GetInstance()->SoundLoadFile("Resources/Alarm01.wav");
-
-	AudioManager::GetInstance()->SoundLoadFile("Resources/Spinning_World.mp3");
+	lineDrawer_ = std::make_unique<LineDrawerBase>();
+	lineDrawer_->Initialize(sceneManager_->GetDxCommon(),srvManager_);
 }
 
 void BaseScene::Finalize()
