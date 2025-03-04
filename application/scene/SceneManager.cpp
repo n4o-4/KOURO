@@ -28,7 +28,7 @@ void SceneManager::Finalize()
 void SceneManager::Update()
 {
 	// シーンを追加した場合はここに追加
-	const std::vector<std::string> sceneNames = { "TITLE", "GAME", "OKA","PAKU","MARU","MIYA" };
+	const std::vector<std::string> sceneNames = { "TITLE", "GAME", "OKA","PAKU","MARU","MIYA","CLEAR","OVER"};
 
 	static int currentSceneIndex = 0;
 

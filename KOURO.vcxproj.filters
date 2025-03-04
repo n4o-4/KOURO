@@ -64,6 +64,8 @@
     <ClCompile Include="application\object\Player.cpp" />
     <ClCompile Include="PlayerBullet.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
+    <ClCompile Include="GameClear.cpp" />
+    <ClCompile Include="GameOver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -124,6 +126,8 @@
     <ClInclude Include="engine\object\FollowCamera.h" />
     <ClInclude Include="PlayerBullet.h" />
     <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="GameClear.h" />
+    <ClInclude Include="GameOver.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
