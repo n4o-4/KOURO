@@ -22,6 +22,8 @@ void BaseScene::Finalize()
 
 void BaseScene::Update()
 {
+	lineDrawer_->Update();
+
 	Camera::GetInstance()->Update();
 	if (isDebugCamera_)
 	{
@@ -35,9 +37,16 @@ void BaseScene::Draw()
 {
 }
 
+void BaseScene::LineDraw()
+{
+	lineDrawer_->Draw(Camera::GetInstance()->GetViewProjection());
+}
+
 void BaseScene::DrawObject()
 {
+
 	Object3dCommon::GetInstance()->SetView();
+	
 }
 
 void BaseScene::DrawBackgroundSprite()
