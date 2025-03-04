@@ -111,6 +111,8 @@ void GameScene::Update()
 	collisionManager_->Update();
 	//========================================
 	// ライト
+	BaseScene::Update();
+
 #ifdef _DEBUG
 
 	if (ImGui::TreeNode("directionalLight")) {
@@ -146,7 +148,6 @@ void GameScene::Update()
 
 	ImGui::Checkbox("useDebugCamera", &isDebugCamera_);
 
-	Matrix4x4 localMatrix = animationManager->GetLocalMatrix();
 #endif
 	//========================================
 	// ポイントライト
@@ -195,7 +196,6 @@ void GameScene::Draw()
 	// 当たり判定マネージャ
 	collisionManager_->Draw();
 	
-
 	DrawForegroundSprite();
 	/// 前景スプライト描画	
 	
@@ -261,14 +261,6 @@ void GameScene::UpdateEnemyPopCommands() {
 
 		}
 
-	if (isDebugCamera_)
-	{
-		object3d->Draw(*objectTransform.get(), debugCamera_->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
-	}
-	else
-	{
-		object3d->Draw(*objectTransform.get(), Camera::GetInstance()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
-	}
 
 	}
 }
