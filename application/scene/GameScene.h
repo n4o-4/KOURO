@@ -43,6 +43,16 @@ private:
 	// 当たり判定マネージャ
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 
+	std::unique_ptr<AnimationManager> animationManager = nullptr;
+
+	
+
+private:
+
+	//std::unique_ptr<SkyDome> skyDome_ = nullptr;
+	//std::unique_ptr<Object3d> skyDomeObj_ = nullptr;
+
+
 public: // メンバ関数
 
 	// 初期化

@@ -143,6 +143,10 @@ void GameScene::Update()
 		ImGui::DragFloat("spotLight.intensity", &spotLight->intensity_, 0.01f);
 		ImGui::TreePop(); // TreeNodeを閉じる
 	}
+
+	ImGui::Checkbox("useDebugCamera", &isDebugCamera_);
+
+	Matrix4x4 localMatrix = animationManager->GetLocalMatrix();
 #endif
 	//========================================
 	// ポイントライト
@@ -257,6 +261,14 @@ void GameScene::UpdateEnemyPopCommands() {
 
 		}
 
+	if (isDebugCamera_)
+	{
+		object3d->Draw(*objectTransform.get(), debugCamera_->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+	}
+	else
+	{
+		object3d->Draw(*objectTransform.get(), Camera::GetInstance()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+	}
 
 	}
 }

@@ -85,6 +85,20 @@ bool Input::Triggerkey(BYTE keyNumber)
 	return false;
 }
 
+bool Input::PushMouseButton(MouseButton mouseButton)
+{
+	// mouseButton を配列のインデックスに変換
+	int buttonIndex = static_cast<int>(mouseButton);
+
+	// インデックスが範囲外でないか確認（念のため）
+	if (buttonIndex < 0 || buttonIndex >= 8) {
+		return false;
+	}
+
+	// 指定されたマウスボタンが押されているかチェック
+	return (mouseState.rgbButtons[buttonIndex] & 0x80) != 0;
+}
+
 bool Input::PushGamePadButton(GamePadButton button)
 {
 	if (gamePadState.Gamepad.wButtons & static_cast<WORD>(button))
