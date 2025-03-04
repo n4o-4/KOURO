@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Input.h"
 #include "BaseCamera.h"
 
@@ -6,10 +6,10 @@ class DebugCamera : public BaseCamera
 {
 public:
 
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	void Initialize() override;
 
-	// XV
+	// æ›´æ–°
 	void Update() override;
 
 	ViewProjection& GetViewProjection() { return *viewProjection_; }

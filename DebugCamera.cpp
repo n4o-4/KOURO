@@ -1,4 +1,4 @@
-#include "DebugCamera.h"
+ï»¿#include "DebugCamera.h"
 
 void DebugCamera::Initialize()
 {
@@ -7,7 +7,7 @@ void DebugCamera::Initialize()
 
 void DebugCamera::Update()
 {
-	// ƒfƒoƒbƒOƒJƒƒ‰“Á—L‚Ìˆ—
+	// ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ç‰¹æœ‰ã®å‡¦ç†
 
 	if (Input::GetInstance()->PushMouseButton(Input::MouseButton::LEFT))
 	{
@@ -18,6 +18,6 @@ void DebugCamera::Update()
 	}
 
 
-	// ”Ä—p•Ï”XV
+	// æ±ç”¨å¤‰æ•°æ›´æ–°
 	BaseCamera::Update();
 }
