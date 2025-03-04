@@ -8,7 +8,8 @@
 #include "FollowCamera.h"
 #include "SkyDome.h"  
 #include "Ground.h"  
-#include "Enemy.h" 
+#include "Enemy.h"
+#include "CollisionManager.h"
 
 class GameScene : public BaseScene
 {
@@ -28,10 +29,7 @@ private:
 	// プレイヤー
 	std::unique_ptr<Player> player_ = nullptr;
 	// 追従カメラ
-	std::unique_ptr<FollowCamera> followCamera_ = nullptr;
-	//========================================
-	// 敵
-	std::unique_ptr<Enemy> enemy_ = nullptr;  
+	std::unique_ptr<FollowCamera> followCamera_ = nullptr; 
 	//========================================
 	// 敵出現
     std::stringstream enemyPopCommands;
@@ -41,6 +39,9 @@ private:
     bool isWaiting_ = false;
 	// 待機時間
     int32_t waitTimer_ = 0;
+	//========================================
+	// 当たり判定マネージャ
+	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 
 public: // メンバ関数
 

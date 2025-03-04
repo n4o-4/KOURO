@@ -18,6 +18,10 @@ void PlayerBullet::Initialize(Vector3 position, Vector3 velocity, Vector3 scale,
 	objectTransform_->transform.translate = position;
 	objectTransform_->transform.scale = scale;
 	objectTransform_->transform.rotate = rotate;
+
+	//========================================
+	// 当たり判定との同期
+	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);
 }
 
 void PlayerBullet::Update() {
@@ -38,6 +42,10 @@ void PlayerBullet::Update() {
 	objectTransform_->UpdateMatrix();
 	object3d_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 	object3d_->Update();// 更新
+
+	//========================================
+	// 当たり判定との動機
+	BaseObject::Update(objectTransform_->transform.translate);
 }
 
 void PlayerBullet::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
@@ -45,3 +53,23 @@ void PlayerBullet::Draw(ViewProjection viewProjection, DirectionalLight directio
 
 	object3d_->Draw(*objectTransform_, viewProjection, directionalLight, pointLight, spotLight);
 }
+
+///=============================================================================
+///						当たり判定
+///--------------------------------------------------------------
+///						接触開始処理
+void PlayerBullet::OnCollisionEnter(BaseObject *other) {
+
+}
+
+///--------------------------------------------------------------
+///						接触継続処理
+void PlayerBullet::OnCollisionStay(BaseObject *other) {
+
+}
+
+///--------------------------------------------------------------
+///						接触終了処理
+void PlayerBullet::OnCollisionExit(BaseObject *other) {
+}
+

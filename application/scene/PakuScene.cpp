@@ -163,7 +163,6 @@ void PakuScene::SpawnEnemy(const Vector3& position) {
 	std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>();
 	newEnemy->Initialize();
 	newEnemy->SetPosition(position);
-	newEnemy->SetGameScene(this);
 	//newEnemy->SetPlayer(player_);
 	enemies_.push_back(std::move(newEnemy));
 

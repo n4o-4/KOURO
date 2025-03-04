@@ -1,6 +1,7 @@
 ﻿#include "Player.h"
 #include <cmath>
 #include "imgui.h"
+#include "Enemy.h"
 
 void Player::Initialize()
 {
@@ -15,6 +16,9 @@ void Player::Initialize()
 	objectTransform_ = std::make_unique<WorldTransform>();
 	objectTransform_->Initialize();
 	objectTransform_->transform.translate = { 0.0f, initialY_, 3.0f };
+	//========================================
+	// 当たり判定との同期
+	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);
 }
 
 void Player::Update()
@@ -89,7 +93,11 @@ void Player::Update()
 	object3d_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 	object3d_->Update();// 更新
 
-	DrawImGui();// ImGui描画
+	//========================================
+	// 当たり判定との同期
+	BaseObject::Update(objectTransform_->transform.translate);
+	// ImGui描画
+	DrawImGui();
 }
 
 void Player::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
@@ -153,5 +161,29 @@ void Player::Shoot()
 	// 弾を生成
 	bullets_.emplace_back(std::make_unique<PlayerBullet>(bulletPos, bulletVelocity, bulletScale, bulletRotate));
 
+
+}
+
+///=============================================================================
+///						当たり判定
+///--------------------------------------------------------------
+///						接触開始処理
+void Player::OnCollisionEnter(BaseObject *other) {
+	if(dynamic_cast<Enemy *>( other )) {
+		isJumping_ = true;
+	}
+}
+
+///--------------------------------------------------------------
+///						接触継続処理
+void Player::OnCollisionStay(BaseObject *other) {
+	if(dynamic_cast<Enemy *>( other )) {
+		isJumping_ = true;
+	}
+}
+
+///--------------------------------------------------------------
+///						接触終了処理
+void Player::OnCollisionExit(BaseObject *other) {
 
 }

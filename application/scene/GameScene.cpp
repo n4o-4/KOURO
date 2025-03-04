@@ -56,6 +56,11 @@ void GameScene::Initialize()
 	//========================================
 	// 敵出現
 	LoadEnemyPopData();
+
+	//========================================
+	// 当たり判定マネージャ
+	collisionManager_ = std::make_unique<CollisionManager>();
+	collisionManager_->Initialize(32.0f);
 }
 ///=============================================================================
 ///						終了処理
@@ -63,7 +68,6 @@ void GameScene::Finalize()
 {
 	skyDome_.reset();
 	ground_.reset();
-	enemy_.reset();
 }
 ///=============================================================================
 ///						更新
@@ -89,6 +93,22 @@ void GameScene::Update()
 	for (const auto& enemy : enemies_) {
 		enemy->Update();
 	}
+	//========================================
+	// 当たり判定
+	// リセット
+	collisionManager_->Reset();
+	// エネミー
+	for(auto &enemy : enemies_) {
+		collisionManager_->AddCollider(enemy.get());
+	}
+	//プレイヤー
+	collisionManager_->AddCollider(player_.get());
+	//プレイヤーの弾リスト
+	for(auto &bullet : player_->GetBullets()) {
+		collisionManager_->AddCollider(bullet.get());
+	}
+	//更新
+	collisionManager_->Update();
 	//========================================
 	// ライト
 #ifdef _DEBUG
@@ -167,6 +187,9 @@ void GameScene::Draw()
 			*pointLight.get(),
 			*spotLight.get());
 	}
+	//========================================
+	// 当たり判定マネージャ
+	collisionManager_->Draw();
 	
 
 	DrawForegroundSprite();

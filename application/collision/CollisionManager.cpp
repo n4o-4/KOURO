@@ -5,10 +5,10 @@
 
 ///=============================================================================
 ///						初期化
-void CollisionManager::Initialize(Object3d *object3d) {
-	object3d_ = object3d;
+void CollisionManager::Initialize(float cellSize) {
+	// グリッドのセルサイズを設定
+	cellSize_ = cellSize;
 }
-
 ///=============================================================================
 ///						更新処理
 void CollisionManager::Update() {
@@ -31,12 +31,10 @@ void CollisionManager::Update() {
 		}
 	}
 }
-
 ///=============================================================================
 ///						描画
 void CollisionManager::Draw() {
 }
-
 ///=============================================================================
 ///						Imguiの描画
 void CollisionManager::DrawImGui() {
@@ -56,7 +54,6 @@ void CollisionManager::Reset() {
 	// グリッドをクリアする
 	grid_.clear();
 }
-
 ///=============================================================================
 ///						コライダーの追加
 void CollisionManager::AddCollider(BaseObject *baseObj) {
@@ -67,7 +64,6 @@ void CollisionManager::AddCollider(BaseObject *baseObj) {
 	// グリッドにオブジェクトを追加
 	grid_[index].objects.push_back(baseObj);
 }
-
 ///=============================================================================
 ///						グリッドのインデックスを取得
 int CollisionManager::GetGridIndex(const Vector3 &position) const {
@@ -78,7 +74,6 @@ int CollisionManager::GetGridIndex(const Vector3 &position) const {
 	// インデックスを返す
 	return ( x * 73856093 ) ^ ( y * 19349663 ) ^ ( z * 83492791 ); // ハッシュ関数
 }
-
 ///=============================================================================
 ///						セル内の当たり判定をチェック
 void CollisionManager::CheckCollisionsInCell(const GridCell &cell) {
@@ -131,7 +126,6 @@ void CollisionManager::CheckCollisionsInCell(const GridCell &cell) {
 		}
 	}
 }
-
 ///=============================================================================
 ///						コリジョン同士をチェック
 void CollisionManager::CheckCollisionsBetweenCells(const GridCell &cellA, const GridCell &cellB) {
@@ -174,7 +168,6 @@ void CollisionManager::CheckCollisionsBetweenCells(const GridCell &cellA, const 
 		}
 	}
 }
-
 ///=============================================================================
 ///						すべての当たり判定をチェック
 void CollisionManager::CheckAllCollisions() {
