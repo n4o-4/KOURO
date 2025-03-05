@@ -6,8 +6,7 @@
 #include <vector>
 #include "BaseObject.h" // 当たり判定用
 
-class Player : public BaseObject
-{
+class Player : public BaseObject {
 public:
 	///--------------------------------------------------------------
 	///							メンバ関数
@@ -31,19 +30,27 @@ public:
 	///--------------------------------------------------------------
 	///							静的メンバ関数
 private:
-	/**----------------------------------------------------------------------------
-	 * \brief  Move 移動
-	 * \param  direction 移動方向
-	 */
-	void Move(Vector3 direction);
-	/**----------------------------------------------------------------------------
-	 * \brief  Jump ジャンプ
-	 */
-	void Jump();
-	/**----------------------------------------------------------------------------
-	 * \brief  Shoot 弾を撃つ
-	 */
+	//========================================
+	// 移動入力の取得
+    Vector3 GetMovementInput();
+	// 移動処理を更新
+	void UpdateMove(Vector3 direction);
+	//========================================
+	// ジャンプ入力の取得
+	void IsJump();
+	// ジャンプ処理を更新
+	void UpdateJump();
+	//========================================
+	// 弾の処理と更新
+	void UpdateBullets();
+	// 射撃
 	void Shoot();
+	//========================================
+	// カメラの更新
+	void UpdateCamera();
+	//========================================
+	// ブースト処理
+	bool HandleBoost();
 
 	///--------------------------------------------------------------
 	///						 当たり判定
@@ -63,22 +70,22 @@ public:
 	 * \brief  SetCamera カメラをセット
 	 * \param  camera カメラ
 	 */
-	void SetCamera(Camera* camera) { object3d_->SetCamera(camera); }
+	void SetCamera(Camera *camera) { object3d_->SetCamera(camera); }
 	/**----------------------------------------------------------------------------
 	 * \brief  SetFollowCamera 追従カメラをセット
 	 * \param  camera カメラのセット
 	 */
-	void SetFollowCamera(FollowCamera* camera) { followCamera_ = camera; }
+	void SetFollowCamera(FollowCamera *camera) { followCamera_ = camera; }
 
 	/**----------------------------------------------------------------------------
 	 * \brief  GetPosition 位置の取得
-	 * \return 
+	 * \return
 	 */
 	Vector3 GetPosition() { return objectTransform_->transform.translate; }
 
 	/**----------------------------------------------------------------------------
 	 * \brief  GetBullets 弾の取得
-	 * \return 
+	 * \return
 	 */
 	std::vector<std::unique_ptr<PlayerBullet>> &GetBullets() { return bullets_; }
 
@@ -94,16 +101,38 @@ private:
 	std::vector<std::unique_ptr<PlayerBullet>> bullets_;// 弾のリスト
 	//========================================
 	// 移動関連
-	Vector3 position_ = { 0.0f, 0.0f, 0.0f };
-	// 移動速度
-	float speed_ = 0.1f;
+	Vector3 position_ = { 0.0f, 0.0f, 0.0f };     // 位置
+	Vector3 velocity_ = { 0.0f, 0.0f, 0.0f };     // 現在の速度ベクトル
+	Vector3 acceleration_ = { 0.0f, 0.0f, 0.0f }; // 加速度ベクトル
+	float maxSpeed_ = 0.35f;                      // 最大速度
+	float accelerationRate_ = 0.03f;              // 加速度係数
+	float deceleration_ = 0.04f;                  // 減速度
+	float friction_ = 0.02f;                      // 摩擦
+	// ブースト関連
+	bool isBoosting_ = false;                     // ブースト中かどうか
+	float boostFactor_ = 2.2f + 8.0f;             // ブースト時の速度倍率
+	float boostCooldown_ = 0.0f;                  // ブーストのクールダウン
+	float maxBoostTime_ = 30.0f;                  // 最大ブースト時間
+	float currentBoostTime_ = 30.0f;              // 現在のブースト残量
+	float boostRecoveryRate_ = 0.15f + 8.0f;      // ブースト回復速度
+	// クイックブースト関連
+	bool isQuickBoosting_ = false;                // クイックブースト中かどうか
+	int quickBoostFrames_ = 0;                    // クイックブーストの残りフレーム
+	int maxQuickBoostFrames_ = 10;                // クイックブーストの最大フレーム数
+	float quickBoostCooldown_ = 0.0f;             // クイックブーストのクールダウン
+	float maxQuickBoostCooldown_ = 16.0f;         // クイックブーストの最大クールダウン
+	float quickBoostConsumption_ = 16.0f; 
+	// 操作感度
+	float airControlFactor_ = 0.8f;               // 空中操作係数
+	bool isQuickTurning_ = false;                 // クイックターン中か
+	float quickTurnFactor_ = 2.5f;
 	//========================================
 	// ジャンプ関連
 	bool isJumping_ = false;  	// ジャンプ中かどうか
 	bool isFloating_ = false;  	// 浮遊中かどうか
 	float jumpVelocity_ = 0.2f; // 上昇速度
 	float fallSpeed_ = 0.0f;  	// 下降速度
-	float gravity_ = 0.005f;  	// 下降加速度
+	float gravity_ = 0.16f;  	// 下降加速度
 	float initialY_ = 0.0f;  	// 初期Y座標
 	float floatBoost_ = 0.2f; 	// 離した瞬間の追加上昇量
 	float boostVelocity_ = 0.0f;// 追加上昇速度
@@ -111,5 +140,5 @@ private:
 	float maxFallSpeed_ = 0.15f;// 下降速度の最大値
 	//========================================
 	// カメラ
-	FollowCamera* followCamera_ = nullptr;
+	FollowCamera *followCamera_ = nullptr;
 };
