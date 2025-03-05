@@ -47,6 +47,8 @@ private:
 
 	std::unique_ptr<AnimationManager> animationManager = nullptr;
 
+	Enemy* enemy_ = nullptr;
+
 	
 
 private:

@@ -3,6 +3,7 @@
 #include "Object3d.h"
 #include "WorldTransform.h"
 #include "BaseObject.h"
+#include "Enemy.h"
 
 ///=============================================================================
 ///						プレイヤーの弾クラス

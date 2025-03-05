@@ -53,7 +53,6 @@ void LockOn::Update(const std::vector<std::unique_ptr<Enemy>>& enemies) {
 		lockOnMarkers_[i]->Show();
 		lockOnMarkers_[i]->Update();
 	}
-
 }
 
 void LockOn::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
@@ -91,6 +90,17 @@ void LockOn::DetectEnemies(const std::vector<std::unique_ptr<Enemy>>& enemies) {
 	}
 
 	std::cout << "Locked Enemies Count: " << lockedEnemies_.size() << std::endl;
+}
+
+void LockOn::RemoveLockedEnemy(Enemy* enemy)
+{
+	auto it = std::remove(lockedEnemies_.begin(), lockedEnemies_.end(), enemy);
+	lockedEnemies_.erase(it, lockedEnemies_.end());
+
+	// マーカーの数を同期
+	while (lockOnMarkers_.size() > lockedEnemies_.size()) {
+		lockOnMarkers_.pop_back();
+	}
 }
 
 

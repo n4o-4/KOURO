@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "BaseCamera.h"
 
 #include "WorldTransform.h"
@@ -7,10 +7,10 @@ class FollowCamera : public BaseCamera
 {
 public:
 
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	void Initialize();
 
-	// XVˆ—
+	// æ›´æ–°å‡¦ç†
 	void Update();
 
 	void SetTarget(WorldTransform* target) { target_ = target; }
