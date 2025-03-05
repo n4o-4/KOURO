@@ -44,6 +44,12 @@ public:
 	void SetPosition(const Vector3& position) { worldTransform_->transform.translate = position; }
 
 	/**----------------------------------------------------------------------------
+	 * \brief  SetHp HPを設定
+	 * \param  hp HP
+	 */
+	void SetHp(const int hp) { hp_ = hp; }
+
+	/**----------------------------------------------------------------------------
 	 * \brief  GetPosition 位置を取得
 	 * \return 位置
 	 */
@@ -54,6 +60,12 @@ public:
 		return worldTransform_->transform.translate;
 	}
 
+	/**----------------------------------------------------------------------------
+	 * \brief  GetHp HPを取得
+	 * \return HP
+	 */
+	const int GetHp() const { return hp_; }
+
 	///--------------------------------------------------------------
 	/// メンバ変数
 private:
@@ -62,6 +74,9 @@ private:
 	std::unique_ptr<Object3d> model_ = nullptr;
 	//ワールド変換
 	std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
+
+	//HP
+	int hp_ = 1;
 
 
 };

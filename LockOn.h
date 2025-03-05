@@ -24,6 +24,8 @@ public:
      */
 	const std::vector<Enemy*>& GetLockedEnemies() const { return lockedEnemies_; }
 
+	void RemoveLockedEnemy(Enemy* enemy);
+
 
 private:
 
@@ -37,6 +39,9 @@ private:
 
 	//検出されたEnemyの前に表示されるオブジェクト
 	std::vector<std::unique_ptr<LockOnMarker>> lockOnMarkers_;
+
+	//敵
+	Enemy* enemy_ = nullptr;
 
 };
 
