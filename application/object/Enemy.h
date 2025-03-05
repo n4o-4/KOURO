@@ -42,7 +42,12 @@ public:
 	 */
 	void SetPosition(const Vector3 &position) { worldTransform_->transform.translate = position; }
 
-	
+	/**----------------------------------------------------------------------------
+	 * \brief  GetPosition 位置を取得
+	 * \return 位置
+	 */
+	const Vector3& GetPosition() const { return worldTransform_->transform.translate; }
+
 	///--------------------------------------------------------------
 	/// メンバ変数
 private:

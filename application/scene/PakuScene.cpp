@@ -22,8 +22,23 @@ void PakuScene::Initialize()
 	ground_ = std::make_unique<Ground>();
 	ground_->Initialize();
 
-	enemy_ = std::make_unique<Enemy>();
-	enemy_->Initialize();
+	// プレイヤーを生成
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
+	//========================================
+	// 追従カメラを作成
+	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_->Initialize();
+	// プレイヤーにカメラをセット
+	player_->SetFollowCamera(followCamera_.get());
+
+	// LockOn
+	
+	lockOn_ = std::make_unique<LockOn>();
+	lockOn_->Initialize();
+	
+	
+
 
 	LoadEnemyPopData();
 }
@@ -36,29 +51,57 @@ void PakuScene::Finalize()
 	ground_.reset();
 
 	enemy_.reset();
+
+	lockOn_.reset();
 }
 
 void PakuScene::Update()
 {
 
 #ifdef _DEBUG
-	if (ImGui::TreeNode("Camera")) {
-		//ImGui::DragFloat3("camera", &, 0.01f);
 
-		ImGui::TreePop(); // TreeNodeを閉じる
-	}
+	
 
 #endif
 
 	BaseScene::Update();
+
+	// プレイヤーの更新
+	player_->Update();
+
+	//lockOn
+	Vector3 playerPos = player_->GetPosition();
+	Vector3 lockOnPos = { playerPos.x, playerPos.y, playerPos.z + 20.0f };
+	lockOn_->SetPosition(lockOnPos);
+	lockOn_->Update();
+
+	lockOn_->DetectEnemies(enemies_);
+
+	// カメラの更新
+	if (followCamera_) {
+		followCamera_->Update(player_.get());
+	}
+
+	
+	
+
+
 	skyDome_->Update();
 	ground_->Update();
-	enemy_->Update();
+	//enemy_->Update();
 	//
 	UpdateEnemyPopCommands();
 	for (const auto& enemy : enemies_) {
 		enemy->Update();
 	}
+	
+	lockOn_->DetectEnemies(enemies_);
+
+
+
+
+
+
 }
 
 void PakuScene::Draw()
@@ -66,24 +109,29 @@ void PakuScene::Draw()
 	DrawBackgroundSprite();
 	/// 背景スプライト描画
 
+	
+
 
 	DrawObject();
 	/// オブジェクト描画	
 
+	//========================================
+	// プレイヤーの描画
+	player_->Draw(Camera::GetInstance()->GetViewProjection(),
+		*directionalLight.get(),
+		*pointLight.get(),
+		*spotLight.get());
+
+	//skydome
 	skyDome_->Draw(Camera::GetInstance()->GetViewProjection(),
 		*directionalLight.get(),
 		*pointLight.get(),
 		*spotLight.get());
-
+	//ground
 	ground_->Draw(Camera::GetInstance()->GetViewProjection(),
 		*directionalLight.get(),
 		*pointLight.get(),
 		*spotLight.get());
-
-	//enemy_->Draw(Camera::GetInstance()->GetViewProjection(),
-	//	*directionalLight.get(),
-	//	*pointLight.get(),
-	//	*spotLight.get());
 
 	for (const auto& enemy : enemies_) {
 		enemy->Draw(Camera::GetInstance()->GetViewProjection(),
@@ -92,11 +140,18 @@ void PakuScene::Draw()
 			*spotLight.get());
 	}
 
+	//LockOn
+	lockOn_->Draw(Camera::GetInstance()->GetViewProjection(),
+		*directionalLight.get(),
+		*pointLight.get(),
+		*spotLight.get());
+
 	DrawForegroundSprite();
 	/// 前景スプライト描画	
 
 	
-
+	
+	
 }
 
 void PakuScene::LoadEnemyPopData() {

@@ -5,6 +5,9 @@
 #include "Ground.h"  
 #include "Enemy.h"  
 #include <sstream>  
+#include "Player.h"
+#include "FollowCamera.h"
+#include "LockOn.h"
 
 class PakuScene : public BaseScene  
 {  
@@ -40,5 +43,13 @@ private:
    bool isWaiting_ = false;
    int32_t waitTimer_ = 0;
 
+   // プレイヤー
+   std::unique_ptr<Player> player_ = nullptr;
+   // 追従カメラ
+   std::unique_ptr<FollowCamera> followCamera_ = nullptr;
+
+   //LockOn
+ 
+   std::unique_ptr<LockOn> lockOn_ = nullptr;
 
 };

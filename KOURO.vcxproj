@@ -42,6 +42,8 @@
     <ClCompile Include="engine\object\FollowCamera.cpp" />
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
+    <ClCompile Include="LockOn.cpp" />
+    <ClCompile Include="LockOnMarker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -125,6 +127,8 @@
     <ClInclude Include="engine\object\FollowCamera.h" />
     <ClInclude Include="GameClear.h" />
     <ClInclude Include="GameOver.h" />
+    <ClInclude Include="LockOn.h" />
+    <ClInclude Include="LockOnMarker.h" />
     <ClInclude Include="PlayerBullet.h" />
   </ItemGroup>
   <ItemGroup>
