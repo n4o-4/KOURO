@@ -98,11 +98,27 @@ void GameScene::Update()
 	//========================================
 	// 敵出現
 	UpdateEnemyPopCommands();
-
 	// 敵リスト
 	for (const auto& enemy : enemies_) {
 		enemy->Update();
 	}
+	// 敵の削除
+	enemies_.erase(
+		// 削除条件
+        std::remove_if(enemies_.begin(), enemies_.end(),
+            [this](const std::unique_ptr<Enemy>& enemy) {
+				// HPが0以下の場合
+                if (enemy->GetHp() <= 0) {
+                    // ロックオンシステムから敵を削除
+                    if (lockOnSystem_) {
+                        lockOnSystem_->RemoveLockedEnemy(enemy.get());
+                    }
+                    return true; // 削除する
+                }
+                return false; // 削除しない
+            }),
+			// 実際に削除する
+        enemies_.end());
 
 	//========================================
 	// 当たり判定

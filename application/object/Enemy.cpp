@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "PlayerBullet.h"
 
 ///=============================================================================
 ///						初期化
@@ -53,6 +54,9 @@ void Enemy::Draw(ViewProjection viewProjection, DirectionalLight directionalLigh
 ///--------------------------------------------------------------
 ///						接触開始処理
 void Enemy::OnCollisionEnter(BaseObject* other) {
+	if(dynamic_cast<PlayerBullet*>(other)) {
+		--hp_;
+	}
 }
 
 ///--------------------------------------------------------------
