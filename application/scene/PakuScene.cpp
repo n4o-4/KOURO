@@ -15,7 +15,7 @@ void PakuScene::Initialize()
 
 	spotLight = std::make_unique<SpotLight>();
 	spotLight->Initialize();
-	
+
 	skyDome_ = std::make_unique<SkyDome>();
 	skyDome_->Initialize();
 
@@ -33,11 +33,11 @@ void PakuScene::Initialize()
 	player_->SetFollowCamera(followCamera_.get());
 
 	// LockOn
-	
+
 	lockOn_ = std::make_unique<LockOn>();
 	lockOn_->Initialize();
-	
-	
+
+
 
 
 	LoadEnemyPopData();
@@ -60,7 +60,7 @@ void PakuScene::Update()
 
 #ifdef _DEBUG
 
-	
+
 
 #endif
 
@@ -73,7 +73,7 @@ void PakuScene::Update()
 	Vector3 playerPos = player_->GetPosition();
 	Vector3 lockOnPos = { playerPos.x, playerPos.y, playerPos.z + 20.0f };
 	lockOn_->SetPosition(lockOnPos);
-	lockOn_->Update();
+	lockOn_->Update(enemies_);
 
 	lockOn_->DetectEnemies(enemies_);
 
@@ -82,8 +82,8 @@ void PakuScene::Update()
 		followCamera_->Update(player_.get());
 	}
 
-	
-	
+
+
 
 
 	skyDome_->Update();
@@ -94,7 +94,7 @@ void PakuScene::Update()
 	for (const auto& enemy : enemies_) {
 		enemy->Update();
 	}
-	
+
 	lockOn_->DetectEnemies(enemies_);
 
 
@@ -109,7 +109,7 @@ void PakuScene::Draw()
 	DrawBackgroundSprite();
 	/// 背景スプライト描画
 
-	
+
 
 
 	DrawObject();
@@ -149,9 +149,9 @@ void PakuScene::Draw()
 	DrawForegroundSprite();
 	/// 前景スプライト描画	
 
-	
-	
-	
+
+
+
 }
 
 void PakuScene::LoadEnemyPopData() {

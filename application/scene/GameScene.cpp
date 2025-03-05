@@ -54,6 +54,12 @@ void GameScene::Initialize()
 	// プレイヤーにカメラをセット
 	player_->SetFollowCamera(followCamera_.get());
 	//========================================
+	// 🔽 LockOnを初期化
+	lockOnSystem_ = std::make_unique<LockOn>();
+	lockOnSystem_->Initialize();
+	// 🔹 SetLockOnSystem() に std::move を使用
+	player_->SetLockOnSystem(lockOnSystem_.get());  // 🔹 `std::move()` を使わず `get()` でポインタを渡す
+	//========================================
 	// 敵出現
 	LoadEnemyPopData();
 
@@ -68,6 +74,8 @@ void GameScene::Finalize()
 {
 	skyDome_.reset();
 	ground_.reset();
+
+	player_->Finalize();
 }
 ///=============================================================================
 ///						更新
@@ -76,39 +84,60 @@ void GameScene::Update()
 	//========================================
 	// プレイヤーの更新
 	player_->Update();
+
 	// カメラの更新
 	if (followCamera_) {
 		followCamera_->Update(player_.get());
 	}
+
 	//========================================
 	// 天球
 	skyDome_->Update();
+
 	//========================================
 	// 地面
 	ground_->Update();
+
 	//========================================
 	// 敵出現
 	UpdateEnemyPopCommands();
+
 	// 敵リスト
 	for (const auto& enemy : enemies_) {
 		enemy->Update();
 	}
+
 	//========================================
 	// 当たり判定
 	// リセット
 	collisionManager_->Reset();
+
+	// 🔽 ロックオンの処理追加
+	if (lockOnSystem_) {
+		// プレイヤーの位置をロックオンシステムにセット
+		lockOnSystem_->SetPosition(player_->GetPosition());
+		// ロックオン更新
+		lockOnSystem_->Update(enemies_);
+		// 敵の検出
+		lockOnSystem_->DetectEnemies(enemies_);
+	}
+
 	// エネミー
-	for(auto &enemy : enemies_) {
+	for (auto& enemy : enemies_) {
 		collisionManager_->AddCollider(enemy.get());
 	}
-	//プレイヤー
+
+	// プレイヤー
 	collisionManager_->AddCollider(player_.get());
-	//プレイヤーの弾リスト
-	for(auto &bullet : player_->GetBullets()) {
+
+	// プレイヤーの弾リスト
+	for (auto& bullet : player_->GetBullets()) {
 		collisionManager_->AddCollider(bullet.get());
 	}
-	//更新
+
+	// 更新
 	collisionManager_->Update();
+
 	//========================================
 	// ライト
 	BaseScene::Update();
@@ -122,7 +151,7 @@ void GameScene::Update()
 			directionalLight->direction_ = Normalize(directionalLight->direction_);
 		}
 		ImGui::DragFloat("directionalLight.intensity", &directionalLight->intensity_, 0.01f);
-		ImGui::TreePop(); // TreeNodeを閉じる
+		ImGui::TreePop();
 	}
 
 	if (ImGui::TreeNode("pointLight")) {
@@ -131,7 +160,7 @@ void GameScene::Update()
 		ImGui::DragFloat("pointLight.decay", &pointLight->decay_, 0.01f);
 		ImGui::DragFloat("pointLight.radius", &pointLight->radius_, 0.01f);
 		ImGui::DragFloat("pointLight.intensity", &pointLight->intensity_, 0.01f);
-		ImGui::TreePop(); // TreeNodeを閉じる
+		ImGui::TreePop();
 	}
 
 	if (ImGui::TreeNode("spotLight")) {
@@ -143,18 +172,20 @@ void GameScene::Update()
 		ImGui::DragFloat3("spotLight.position", &spotLight->position_.x, 0.01f);
 		ImGui::DragFloat("spotLight.decay", &spotLight->decay_, 0.01f);
 		ImGui::DragFloat("spotLight.intensity", &spotLight->intensity_, 0.01f);
-		ImGui::TreePop(); // TreeNodeを閉じる
+		ImGui::TreePop();
 	}
 
 	ImGui::Checkbox("useDebugCamera", &cameraManager_->useDebugCamera_);
 
 #endif
+
 	//========================================
 	// ポイントライト
 	pointLight->Update();
 	// スポットライト
 	spotLight->Update();
 }
+
 ///=============================================================================
 ///						描画
 void GameScene::Draw()
@@ -188,6 +219,15 @@ void GameScene::Draw()
 	// 敵
 	for (const auto& enemy : enemies_) {
 		enemy->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
+	}
+	//========================================
+	// LockOn
+	 // 🔽 LockOnの描画処理を追加
+	if (lockOnSystem_) {
+		lockOnSystem_->Draw(Camera::GetInstance()->GetViewProjection(),
 			*directionalLight.get(),
 			*pointLight.get(),
 			*spotLight.get());

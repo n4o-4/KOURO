@@ -10,6 +10,7 @@
 #include "Ground.h"  
 #include "Enemy.h"
 #include "CollisionManager.h"
+#include "LockOn.h"
 
 
 class GameScene : public BaseScene
@@ -31,6 +32,8 @@ private:
 	std::unique_ptr<Player> player_ = nullptr;
 	// 追従カメラ
 	std::unique_ptr<FollowCamera> followCamera_ = nullptr; 
+	// ロックオン
+	std::unique_ptr<LockOn> lockOnSystem_ = nullptr;
 	//========================================
 	// 敵出現
     std::stringstream enemyPopCommands;

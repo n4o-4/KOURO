@@ -9,7 +9,7 @@ class LockOn {
 public:
 
 	void Initialize(); 
-	void Update();
+	void Update(const std::vector<std::unique_ptr<Enemy>>& enemies);
 	void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
 	void SetPosition(const Vector3& position) { lockOnWorldTransform_->transform.translate = position; }
@@ -17,6 +17,13 @@ public:
 	void DetectEnemies(const std::vector<std::unique_ptr<Enemy>>& enemies);
 	//検出された敵のリストを取得する関数
 	size_t GetLockedEnemyCount() const { return lockedEnemies_.size(); }
+
+	/**----------------------------------------------------------------------------
+     * \brief  GetLockedEnemies ロックオンされている敵のリストを取得
+     * \return ロックオンされている敵のリスト
+     */
+	const std::vector<Enemy*>& GetLockedEnemies() const { return lockedEnemies_; }
+
 
 private:
 

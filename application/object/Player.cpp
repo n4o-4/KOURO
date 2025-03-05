@@ -16,6 +16,7 @@ void Player::Initialize()
 	objectTransform_ = std::make_unique<WorldTransform>();
 	objectTransform_->Initialize();
 	objectTransform_->transform.translate = { 0.0f, initialY_, 3.0f };
+
 	//========================================
 	// 当たり判定との同期
 	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);
@@ -113,6 +114,7 @@ void Player::Draw(ViewProjection viewProjection, DirectionalLight directionalLig
 
 void Player::Finalize()
 {
+	lockOnSystem_ = nullptr;
 }
 
 void Player::DrawImGui()
@@ -150,40 +152,46 @@ void Player::Jump()
 	}
 }
 
-void Player::Shoot()
-{
-	// 弾を撃つ処理
+void Player::Shoot() {
 	Vector3 bulletPos = objectTransform_->transform.translate;
-	Vector3 bulletVelocity = { 0.0f, 0.0f, 0.5f }; // Z方向に進む
-	Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };// 弾の大きさ
-	Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };// 弾の回転
+	Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };
+	Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };
 
-	// 弾を生成
-	bullets_.emplace_back(std::make_unique<PlayerBullet>(bulletPos, bulletVelocity, bulletScale, bulletRotate));
+	if (lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
+		for (Enemy* enemy : lockOnSystem_->GetLockedEnemies()) {
+			if (!enemy) continue;
 
+			Vector3 enemyPos = enemy->GetPosition();
+			Vector3 direction = Normalize(enemyPos - bulletPos);
 
+			bullets_.emplace_back(std::make_unique<PlayerBullet>(bulletPos, direction * 0.5f, bulletScale, bulletRotate));
+		}
+	} else {
+		Vector3 bulletVelocity = { 0.0f, 0.5f, 0.0f };
+		bullets_.emplace_back(std::make_unique<PlayerBullet>(bulletPos, bulletVelocity, bulletScale, bulletRotate));
+	}
 }
 
 ///=============================================================================
 ///						当たり判定
 ///--------------------------------------------------------------
 ///						接触開始処理
-void Player::OnCollisionEnter(BaseObject *other) {
-	if(dynamic_cast<Enemy *>( other )) {
+void Player::OnCollisionEnter(BaseObject* other) {
+	if (dynamic_cast<Enemy*>(other)) {
 		isJumping_ = true;
 	}
 }
 
 ///--------------------------------------------------------------
 ///						接触継続処理
-void Player::OnCollisionStay(BaseObject *other) {
-	if(dynamic_cast<Enemy *>( other )) {
+void Player::OnCollisionStay(BaseObject* other) {
+	if (dynamic_cast<Enemy*>(other)) {
 		isJumping_ = true;
 	}
 }
 
 ///--------------------------------------------------------------
 ///						接触終了処理
-void Player::OnCollisionExit(BaseObject *other) {
+void Player::OnCollisionExit(BaseObject* other) {
 
 }

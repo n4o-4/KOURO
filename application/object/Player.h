@@ -5,6 +5,8 @@
 #include "PlayerBullet.h"
 #include <vector>
 #include "BaseObject.h" // 当たり判定用
+#include "LockOn.h" 
+#include "memory"
 
 class Player : public BaseObject
 {
@@ -48,13 +50,13 @@ private:
 	///--------------------------------------------------------------
 	///						 当たり判定
 	/// \brief 衝突開始時の処理
-	void OnCollisionEnter(BaseObject *other) override;
+	void OnCollisionEnter(BaseObject* other) override;
 
 	/// \brief 衝突継続時の処理
-	void OnCollisionStay(BaseObject *other) override;
+	void OnCollisionStay(BaseObject* other) override;
 
 	/// \brief 衝突終了時の処理
-	void OnCollisionExit(BaseObject *other) override;
+	void OnCollisionExit(BaseObject* other) override;
 
 	///--------------------------------------------------------------
 	///							入出力関数
@@ -71,16 +73,26 @@ public:
 	void SetFollowCamera(FollowCamera* camera) { followCamera_ = camera; }
 
 	/**----------------------------------------------------------------------------
+	 * \brief  SetLockOnSystem ロックオンシステムをセット
+	 * \param  lockOn ロックオンシステム
+	 */
+	void SetLockOnSystem(LockOn* lockOnSystem) {
+		lockOnSystem_ = lockOnSystem;  // 🔹 `std::move()` を使わずポインタとして設定
+	}
+
+	/**----------------------------------------------------------------------------
 	 * \brief  GetPosition 位置の取得
-	 * \return 
+	 * \return
 	 */
 	Vector3 GetPosition() { return objectTransform_->transform.translate; }
 
+
+
 	/**----------------------------------------------------------------------------
 	 * \brief  GetBullets 弾の取得
-	 * \return 
+	 * \return
 	 */
-	std::vector<std::unique_ptr<PlayerBullet>> &GetBullets() { return bullets_; }
+	std::vector<std::unique_ptr<PlayerBullet>>& GetBullets() { return bullets_; }
 
 
 private:
@@ -92,6 +104,10 @@ private:
 	//========================================
 	// 弾
 	std::vector<std::unique_ptr<PlayerBullet>> bullets_;// 弾のリスト
+	//========================================
+	// ロックオン
+	//std::unique_ptr<LockOn> lockOnSystem_ = nullptr;// ロックオンシステムのポインタを追加
+	LockOn* lockOnSystem_ = nullptr;  // 🔹 `GameScene` に所有させるので `LockOn*` に戻す
 	//========================================
 	// 移動関連
 	Vector3 position_ = { 0.0f, 0.0f, 0.0f };
