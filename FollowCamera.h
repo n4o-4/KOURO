@@ -3,6 +3,8 @@
 
 #include "WorldTransform.h"
 
+#include "Input.h"
+
 class FollowCamera : public BaseCamera
 {
 public:
@@ -13,6 +15,12 @@ public:
 	void Update();
 
 	void SetTarget(WorldTransform* target) { target_ = target; }
+
+private:
+
+	void UpdateCameraTranslate();
+
+	void UpdateCameraRotate();
 
 private:
 	//========================================

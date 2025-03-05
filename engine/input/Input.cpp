@@ -177,7 +177,7 @@ void Input::GamePadUpdate()
 	// 接続されている場合
 	if (XInputGetState(0, &gamePadState) == ERROR_SUCCESS)
 	{
-		// スティックの入力情報を取得	
+		// 左スティックの入力情報を取得	
 		leftStick = { static_cast<float>(gamePadState.Gamepad.sThumbLX), 0.0f, static_cast<float>(gamePadState.Gamepad.sThumbLY) };
 
 		// スティックの位置がデッドゾーン内であれば、反応しない
@@ -190,6 +190,21 @@ void Input::GamePadUpdate()
 		{
 			// 入力がデッドゾーンを超えているので、正規化処理
 			leftStick = Normalize(leftStick);
+		}
+
+		// 右スティックの入力情報を取得
+		rightStick = { static_cast<float>(gamePadState.Gamepad.sThumbRX), static_cast<float>(gamePadState.Gamepad.sThumbRY),0.0f };
+
+		// スティックの位置がデッドゾーン内であれば、反応しない
+		if (abs(rightStick.x) < deadZone && abs(rightStick.y) < deadZone)
+		{
+			// デッドゾーン内なので、入力なしとして処理する
+			rightStick = { 0.0f, 0.0f, 0.0f };
+		}
+		else
+		{
+			// 入力がデッドゾーンを超えているので、正規化処理
+			rightStick = Normalize(rightStick);
 		}
 	}
 }

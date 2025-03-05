@@ -98,6 +98,7 @@ public: // メンバ変数
 
 	// ゲームパッドのスティックの成分を取得
 	Vector3 GetLeftStick() { return leftStick; }	
+	Vector3 GetRightStick() { return rightStick; }
 
 private:
 
@@ -145,6 +146,8 @@ private:
 	XINPUT_STATE gamePadStatePre = {};
 
 	Vector3 leftStick = {};
+
+	Vector3 rightStick = {};
 
 	// WindowAPI
 	WinApp* winApp = nullptr;
