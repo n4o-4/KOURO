@@ -18,20 +18,27 @@ public:
 
 private:
 
-	void UpdateCameraTranslate();
+	Vector3 CalculationOffset();
 
-	void UpdateCameraRotate();
+	void CalculationRotate();
+
+	void CalculationTranslate();
 
 private:
 	//========================================
 	// ターゲット
 	WorldTransform* target_ = nullptr;
 	//========================================
+	// 追従対象の残像座標
+	Vector3 interTarget_ = {};
+	//========================================
 	// オフセット
 	Vector3 offset_ = {};
 	//========================================
 	// 現在のカメラ位置
 	Vector3 currentPosition_ = {};
+
+	Vector3 destinationRotate = { 0.0f,0.0f,0.0f };
 	// イージング係数
 	float easingFactor_ = 0.85f;
 };

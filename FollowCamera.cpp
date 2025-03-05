@@ -23,42 +23,41 @@ void FollowCamera::Update()
     {
         assert(0);
     }
-    
-    UpdateCameraTranslate();
 
-	UpdateCameraRotate();
+    CalculationRotate();
+
+	CalculationTranslate();
 
     BaseCamera::Update();
 }
 
-void FollowCamera::UpdateCameraTranslate()
+Vector3 FollowCamera::CalculationOffset()
 {
-    // ターゲット位置を取得
-    Vector3 targetPosition = target_->transform.translate + offset_;
-    
-    // 現在位置と目標位置の間を補間
-    currentPosition_ = Lerp(currentPosition_, targetPosition, easingFactor_);
-    
-    // カメラ位置を更新
-    viewProjection_->transform.translate = currentPosition_;
+    Vector3 offset = offset_;
+
+	Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);
+
+	offset = TransformNormal(offset, rotateMatrix);
+
+    return offset;
 }
 
-void FollowCamera::UpdateCameraRotate()
+void FollowCamera::CalculationRotate()
 {
-    Vector3 offset = {};
-
     Vector3 rightStickVector = Input::GetInstance()->GetRightStick();
 
-    Vector3 rotate = { rightStickVector.y * 0.05f, rightStickVector.x * 0.05f,0.0f };
+    Vector3 rotate = { rightStickVector.y * 0.1f, rightStickVector.x * 0.1f,0.0f };
 
-    viewProjection_->transform.rotate = viewProjection_->transform.rotate + rotate;
+	destinationRotate += rotate;
 
-    // カメラの角度から回転行列を計算  
-    Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);
+	viewProjection_->transform.rotate = Lerp(viewProjection_->transform.rotate, destinationRotate, easingFactor_);
+}
 
-    // オフセットをカメラの回転に合わせて回転  
-    offset = TransformNormal(offset_, rotateMatrix);
+void FollowCamera::CalculationTranslate()
+{
+    interTarget_ = Lerp(interTarget_, target_->transform.translate, easingFactor_);
 
-    // カメラの位置をターゲットの位置からオフセット分ずらす  
-    viewProjection_->transform.translate = target_->transform.translate + offset;
+    Vector3 offset = CalculationOffset();
+
+    viewProjection_->transform.translate = interTarget_ + offset;
 }
