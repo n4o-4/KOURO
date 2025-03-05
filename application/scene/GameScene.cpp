@@ -54,6 +54,11 @@ void GameScene::Initialize()
 	// プレイヤーにカメラをセット
 	player_->SetFollowCamera(followCamera_.get());
 	//========================================
+	// LockOn
+	lockOnSystem_ = std::make_unique<LockOn>();
+	lockOnSystem_->Initialize();
+	player_->SetLockOnSystem(lockOnSystem_.get());
+	//========================================
 	// 敵出現
 	LoadEnemyPopData();
 
@@ -97,6 +102,10 @@ void GameScene::Update()
 	// 当たり判定
 	// リセット
 	collisionManager_->Reset();
+	// ロックオン
+	if (lockOnSystem_) {
+		lockOnSystem_->Update(enemies_);  // 🔽 追加
+	}
 	// エネミー
 	for(auto &enemy : enemies_) {
 		collisionManager_->AddCollider(enemy.get());

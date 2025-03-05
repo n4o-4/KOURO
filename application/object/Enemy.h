@@ -1,6 +1,7 @@
 #pragma once
 #include "Kouro.h"
 #include "BaseObject.h"
+#include <iostream>
 
 ///=============================================================================
 ///						エネミークラス
@@ -25,13 +26,13 @@ public:
 	///						 当たり判定
 private:
 	/// \brief 衝突開始時の処理
-	void OnCollisionEnter(BaseObject *other) override;
+	void OnCollisionEnter(BaseObject* other) override;
 
 	/// \brief 衝突継続時の処理
-	void OnCollisionStay(BaseObject *other) override;
+	void OnCollisionStay(BaseObject* other) override;
 
 	/// \brief 衝突終了時の処理
-	void OnCollisionExit(BaseObject *other) override;
+	void OnCollisionExit(BaseObject* other) override;
 
 	///--------------------------------------------------------------
 	///						 入出力関数
@@ -40,13 +41,18 @@ public:
 	 * \brief  SetPosition 位置を設定
 	 * \param  position 位置
 	 */
-	void SetPosition(const Vector3 &position) { worldTransform_->transform.translate = position; }
+	void SetPosition(const Vector3& position) { worldTransform_->transform.translate = position; }
 
 	/**----------------------------------------------------------------------------
 	 * \brief  GetPosition 位置を取得
 	 * \return 位置
 	 */
-	const Vector3& GetPosition() const { return worldTransform_->transform.translate; }
+	const Vector3& GetPosition() const {
+		std::cout << "Enemy Position Retrieved: x=" << worldTransform_->transform.translate.x
+			<< ", y=" << worldTransform_->transform.translate.y
+			<< ", z=" << worldTransform_->transform.translate.z << std::endl;
+		return worldTransform_->transform.translate;
+	}
 
 	///--------------------------------------------------------------
 	/// メンバ変数

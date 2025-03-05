@@ -2,6 +2,7 @@
 #include <cmath>
 #include "imgui.h"
 #include "Enemy.h"
+#include <iostream>
 
 void Player::Initialize()
 {
@@ -16,6 +17,13 @@ void Player::Initialize()
 	objectTransform_ = std::make_unique<WorldTransform>();
 	objectTransform_->Initialize();
 	objectTransform_->transform.translate = { 0.0f, initialY_, 3.0f };
+
+	// ロックオンシステムをユニークポインタで初期化（外部からセットされる場合は不要）
+	if (!lockOnSystem_) {
+		lockOnSystem_ = new LockOn();
+		lockOnSystem_->Initialize();
+	}
+
 	//========================================
 	// 当たり判定との同期
 	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);
@@ -150,19 +158,38 @@ void Player::Jump()
 	}
 }
 
-void Player::Shoot()
-{
-	// 弾を撃つ処理
+void Player::Shoot() {
 	Vector3 bulletPos = objectTransform_->transform.translate;
-	Vector3 bulletVelocity = { 0.0f, 0.0f, 0.5f }; // Z方向に進む
-	Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };// 弾の大きさ
-	Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };// 弾の回転
+	Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };
+	Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };
 
-	// 弾を生成
-	bullets_.emplace_back(std::make_unique<PlayerBullet>(bulletPos, bulletVelocity, bulletScale, bulletRotate));
+	std::cout << "Shooting from: x=" << bulletPos.x
+		<< ", y=" << bulletPos.y
+		<< ", z=" << bulletPos.z << std::endl;
 
+	if (lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
+		for (Enemy* enemy : lockOnSystem_->GetLockedEnemies()) {
+			if (!enemy) continue;
 
+			Vector3 enemyPos = enemy->GetPosition();
+			std::cout << "Locked Enemy Pos: x=" << enemyPos.x
+				<< ", y=" << enemyPos.y
+				<< ", z=" << enemyPos.z << std::endl;
+
+			Vector3 direction = Normalize(enemyPos - bulletPos);
+			std::cout << "Bullet Direction: x=" << direction.x
+				<< ", y=" << direction.y
+				<< ", z=" << direction.z << std::endl;
+
+			bullets_.emplace_back(std::make_unique<PlayerBullet>(bulletPos, direction * 0.5f, bulletScale, bulletRotate));
+		}
+	} else {
+		Vector3 bulletVelocity = { 0.0f, 1.0f, 0.0f };
+		std::cout << "No lock-on, shooting up." << std::endl;
+		bullets_.emplace_back(std::make_unique<PlayerBullet>(bulletPos, bulletVelocity * 0.5f, bulletScale, bulletRotate));
+	}
 }
+
 
 ///=============================================================================
 ///						当たり判定

@@ -1,5 +1,6 @@
-#include "LockOn.h"
+ï»¿#include "LockOn.h"
 #include "Player.h"
+#include <iostream>
 
 void LockOn::Initialize() {
 
@@ -18,7 +19,7 @@ void LockOn::Initialize() {
 
 }
 
-void LockOn::Update() {
+void LockOn::Update(const std::vector<std::unique_ptr<Enemy>>& enemies) {
 
 #ifdef _DEBUG
 	ImGui::Begin("LockOn Debug");
@@ -27,13 +28,15 @@ void LockOn::Update() {
 
 #endif
 
+	DetectEnemies(enemies);
+
 	lockOnWorldTransform_->UpdateMatrix();
 
 	lockOn_->SetLocalMatrix(MakeIdentity4x4());
 	lockOn_->Update();
 
 	
-	//ŒŸo‚³‚ê‚½“G‚Ì”‚ÆLockOnMarker‚Ì”‚ğ“¯Šú‚³‚¹‚é
+	//æ¤œå‡ºã•ã‚ŒãŸæ•µã®æ•°ã¨LockOnMarkerã®æ•°ã‚’åŒæœŸã•ã›ã‚‹
 	while (lockOnMarkers_.size() < lockedEnemies_.size()) {
 		auto marker = std::make_unique<LockOnMarker>();
 		marker->Initialize();
@@ -42,7 +45,7 @@ void LockOn::Update() {
 	while (lockOnMarkers_.size() > lockedEnemies_.size()) {
 		lockOnMarkers_.pop_back();
 	}
-	//‚·‚×‚Ä‚ÌŒŸo‚³‚ê‚½“G‚Ì‘O‚ÉLockOnMarker‚ğ”z’u‚·‚é
+	//ã™ã¹ã¦ã®æ¤œå‡ºã•ã‚ŒãŸæ•µã®å‰ã«LockOnMarkerã‚’é…ç½®ã™ã‚‹
 	for (size_t i = 0; i < lockedEnemies_.size(); ++i) {
 		Vector3 enemyPos = lockedEnemies_[i]->GetPosition();
 		Vector3 markerPos = { enemyPos.x, enemyPos.y + 1.0f, enemyPos.z - 1.0f }; 
@@ -61,21 +64,33 @@ void LockOn::Draw(ViewProjection viewProjection, DirectionalLight directionalLig
 }
 
 void LockOn::DetectEnemies(const std::vector<std::unique_ptr<Enemy>>& enemies) {
+	std::cout << "DetectEnemies() called!" << std::endl;
 	lockedEnemies_.clear();
 	Vector3 lockOnPos = lockOnWorldTransform_->transform.translate;
 
-	float detectionWidth = 1.0f;  
-	float detectionHeight = 1.0f; 
+	float detectionWidth = 5.0f;
+	float detectionHeight = 5.0f;
+
+	std::cout << "LockOn Position: x=" << lockOnPos.x
+		<< ", y=" << lockOnPos.y
+		<< ", z=" << lockOnPos.z << std::endl;
 
 	for (const auto& enemy : enemies) {
 		Vector3 enemyPos = enemy->GetPosition();
+		std::cout << "Checking Enemy Position: x=" << enemyPos.x
+			<< ", y=" << enemyPos.y
+			<< ", z=" << enemyPos.z << std::endl;
 
 		if (fabs(enemyPos.x - lockOnPos.x) < detectionWidth &&
 			fabs(enemyPos.y - lockOnPos.y) < detectionHeight) {
 			lockedEnemies_.push_back(enemy.get());
+			std::cout << "Enemy Locked: x=" << enemyPos.x
+				<< ", y=" << enemyPos.y
+				<< ", z=" << enemyPos.z << std::endl;
 		}
 	}
 
+	std::cout << "Locked Enemies Count: " << lockedEnemies_.size() << std::endl;
 }
 
 
