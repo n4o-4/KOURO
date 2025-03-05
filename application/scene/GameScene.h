@@ -30,8 +30,6 @@ private:
 	//========================================
 	// プレイヤー
 	std::unique_ptr<Player> player_ = nullptr;
-	// 追従カメラ
-	std::unique_ptr<FollowCamera> followCamera_ = nullptr; 
 	// ロックオン
 	std::unique_ptr<LockOn> lockOnSystem_ = nullptr;
 	//========================================

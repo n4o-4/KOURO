@@ -25,13 +25,7 @@ void PakuScene::Initialize()
 	// プレイヤーを生成
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
-	//========================================
-	// 追従カメラを作成
-	followCamera_ = std::make_unique<FollowCamera>();
-	followCamera_->Initialize();
-	// プレイヤーにカメラをセット
-	player_->SetFollowCamera(followCamera_.get());
-
+	
 	// LockOn
 
 	lockOn_ = std::make_unique<LockOn>();
@@ -76,15 +70,6 @@ void PakuScene::Update()
 	lockOn_->Update(enemies_);
 
 	lockOn_->DetectEnemies(enemies_);
-
-	// カメラの更新
-	if (followCamera_) {
-		followCamera_->Update(player_.get());
-	}
-
-
-
-
 
 	skyDome_->Update();
 	ground_->Update();

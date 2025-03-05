@@ -17,12 +17,6 @@ void OkaScene::Initialize()
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
 
-	// 追従カメラを作成
-	followCamera_ = std::make_unique<FollowCamera>();
-	followCamera_->Initialize();
-
-	// プレイヤーにカメラをセット
-	player_->SetFollowCamera(followCamera_.get());
 }
 
 void OkaScene::Finalize()
@@ -37,10 +31,6 @@ void OkaScene::Update()
 	// プレイヤーの更新
 	player_->Update();
 
-	// カメラの更新
-	if (followCamera_) {
-		followCamera_->Update(player_.get());
-	}
 }
 
 void OkaScene::Draw()

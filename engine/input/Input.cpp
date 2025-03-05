@@ -167,18 +167,16 @@ void Input::GamePadUpdate()
 
 	leftStick = { 0.0f,0.0f,0.0f };
 
+
+	// 前回の入力情報を保存
+	gamePadStatePre = gamePadState;
+
+	// 入力情報をクリア
+	ZeroMemory(&gamePadState, sizeof(XINPUT_STATE));
+
 	// 接続されている場合
 	if (XInputGetState(0, &gamePadState) == ERROR_SUCCESS)
 	{
-		// 前回の入力情報を保存
-		gamePadStatePre = gamePadState;
-
-		// 入力情報をクリア
-		ZeroMemory(&gamePadState, sizeof(XINPUT_STATE));
-
-		// 0番目のコントローラの状態を取得
-		DWORD dwResult = XInputGetState(0, &gamePadState);
-
 		// スティックの入力情報を取得	
 		leftStick = { static_cast<float>(gamePadState.Gamepad.sThumbLX), 0.0f, static_cast<float>(gamePadState.Gamepad.sThumbLY) };
 

@@ -48,12 +48,6 @@ void GameScene::Initialize()
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
 	//========================================
-	// 追従カメラを作成
-	followCamera_ = std::make_unique<FollowCamera>();
-	followCamera_->Initialize();
-	// プレイヤーにカメラをセット
-	player_->SetFollowCamera(followCamera_.get());
-	//========================================
 	// 🔽 LockOnを初期化
 	lockOnSystem_ = std::make_unique<LockOn>();
 	lockOnSystem_->Initialize();
@@ -67,6 +61,14 @@ void GameScene::Initialize()
 	// 当たり判定マネージャ
 	collisionManager_ = std::make_unique<CollisionManager>();
 	collisionManager_->Initialize(32.0f);
+
+	//========================================
+	// フォローカメラのターゲットを設定
+	cameraManager_->SetFollowCameraTarget(player_->GetWorldTransform());
+
+	//========================================
+	// アクティブカメラをフォローカメラに設定
+	cameraManager_->useFollowCamera_ = true;
 }
 ///=============================================================================
 ///						終了処理
@@ -84,11 +86,6 @@ void GameScene::Update()
 	//========================================
 	// プレイヤーの更新
 	player_->Update();
-
-	// カメラの更新
-	if (followCamera_) {
-		followCamera_->Update(player_.get());
-	}
 
 	//========================================
 	// 天球
@@ -227,7 +224,7 @@ void GameScene::Draw()
 	// LockOn
 	 // 🔽 LockOnの描画処理を追加
 	if (lockOnSystem_) {
-		lockOnSystem_->Draw(Camera::GetInstance()->GetViewProjection(),
+		lockOnSystem_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 			*directionalLight.get(),
 			*pointLight.get(),
 			*spotLight.get());

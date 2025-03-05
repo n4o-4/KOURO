@@ -22,7 +22,7 @@ void MyGame::Initialize()
 
 	SceneManager::GetInstance()->SetSceneFactory(*sceneFactory_);
 
-	SceneManager::GetInstance()->ChangeScene("PAKU");
+	SceneManager::GetInstance()->ChangeScene("GAME");
 
 #pragma endregion 基盤システムの初期化
 

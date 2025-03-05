@@ -48,9 +48,6 @@ private:
 	// 射撃
 	void Shoot();
 	//========================================
-	// カメラの更新
-	void UpdateCamera();
-	//========================================
 	// ブースト処理
 	bool HandleBoost();
 
@@ -72,12 +69,7 @@ public:
 	 * \brief  SetCamera カメラをセット
 	 * \param  camera カメラ
 	 */
-	void SetCamera(Camera *camera) { object3d_->SetCamera(camera); }
-	/**----------------------------------------------------------------------------
-	 * \brief  SetFollowCamera 追従カメラをセット
-	 * \param  camera カメラのセット
-	 */
-	void SetFollowCamera(FollowCamera *camera) { followCamera_ = camera; }
+	void SetCamera(Camera *camera) { object3d_->SetCamera(camera); }	
 
 	/**----------------------------------------------------------------------------
 	 * \brief  SetLockOnSystem ロックオンシステムをセット
@@ -93,7 +85,11 @@ public:
 	 */
 	Vector3 GetPosition() { return objectTransform_->transform.translate; }
 
-
+	/**----------------------------------------------------------------------------
+	 * \brief  GetWorldTransform ワールドトランスフォームの取得
+	 * \param  return
+	 */
+	WorldTransform* GetWorldTransform() { return objectTransform_.get(); }
 
 	/**----------------------------------------------------------------------------
 	 * \brief  GetBullets 弾の取得

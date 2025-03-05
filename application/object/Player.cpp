@@ -42,9 +42,6 @@ void Player::Update() {
 	// ジャンプ処理
 	UpdateJump();
 
-	// カメラの更新
-	UpdateCamera();
-
 	objectTransform_->UpdateMatrix();// 行列更新
 	object3d_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 	object3d_->Update();// 更新
@@ -271,13 +268,7 @@ void Player::Shoot() {
 		bullets_.emplace_back(std::make_unique<PlayerBullet>(bulletPos, bulletVelocity, bulletScale, bulletRotate));
 	}
 }
-///--------------------------------------------------------------
-///						カメラの更新
-void Player::UpdateCamera() {
-	if(followCamera_) {
-		followCamera_->Update(this);
-	}
-}
+
 ///--------------------------------------------------------------
 ///                        ブースト処理
 bool Player::HandleBoost() {
