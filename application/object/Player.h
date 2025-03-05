@@ -65,10 +65,10 @@ public:
 	 */
 	void SetCamera(Camera* camera) { object3d_->SetCamera(camera); }
 	/**----------------------------------------------------------------------------
-	 * \brief  SetFollowCamera 追従カメラをセット
-	 * \param  camera カメラのセット
+	 * \brief  GetWorldTransform ワールドトランスフォームの取得
+	 * \param  return
 	 */
-	void SetFollowCamera(FollowCamera* camera) { followCamera_ = camera; }
+	WorldTransform* GetWorldTransform() { return objectTransform_.get(); }
 
 	/**----------------------------------------------------------------------------
 	 * \brief  GetPosition 位置の取得
@@ -81,6 +81,7 @@ public:
 	 * \return 
 	 */
 	std::vector<std::unique_ptr<PlayerBullet>> &GetBullets() { return bullets_; }
+
 
 
 private:
@@ -110,6 +111,4 @@ private:
 	float boostDecay_ = 0.02f;  // 追加上昇の減衰量
 	float maxFallSpeed_ = 0.15f;// 下降速度の最大値
 	//========================================
-	// カメラ
-	FollowCamera* followCamera_ = nullptr;
 };

@@ -2,6 +2,7 @@
 #include "BaseCamera.h"
 #include "Camera.h"
 #include "DebugCamera.h"
+#include "FollowCamera.h"
 
 class CameraManager
 {
@@ -16,12 +17,18 @@ public: /// メンバ関数
 	// アクティブカメラの取得
 	BaseCamera* GetActiveCamera() { return activeCamera_; }
 
+	void SetFollowCameraTarget(WorldTransform* target) { followCamera_->SetTarget(target); }
+
+	void UseFollowCamera() { activeCamera_ = followCamera_.get(); }
+
 public:
 
 	bool useDebugCamera_ = false;
 
 private:
 	std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
+
+	std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 
 	std::list<BaseCamera*> cameras_;
 

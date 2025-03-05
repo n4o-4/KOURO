@@ -84,11 +84,6 @@ void Player::Update()
 		}
 	}
 
-	// カメラの更新
-	if (followCamera_) {
-		followCamera_->Update(this);
-	}
-
 	objectTransform_->UpdateMatrix();// 行列更新
 	object3d_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 	object3d_->Update();// 更新
