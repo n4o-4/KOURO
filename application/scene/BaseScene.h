@@ -10,6 +10,8 @@
 #include "Object3dCommon.h"	
 #include "LineDrawerBase.h"
 
+#include "Fade.h"
+
 class SceneManager;
 
 // シーン基底クラス
@@ -47,6 +49,8 @@ protected:
 
 	virtual void DrawForegroundSprite();
 
+	virtual void DrawFade();
+
 protected:
 
 	SceneManager* sceneManager_ = nullptr;
@@ -56,6 +60,8 @@ protected:
 	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
 
 	std::unique_ptr<CameraManager> cameraManager_ = nullptr;
+
+	std::unique_ptr<Fade> fade_ = nullptr;
 
 private:
 

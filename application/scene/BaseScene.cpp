@@ -10,6 +10,9 @@ void BaseScene::Initialize()
 
 	cameraManager_ = std::make_unique<CameraManager>();	
 	cameraManager_->Initialize();
+
+	fade_ = std::make_unique<Fade>();
+	fade_->Initialize();
 }
 
 void BaseScene::Finalize()
@@ -24,6 +27,8 @@ void BaseScene::Update()
 	lineDrawer_->Update();
 
 	cameraManager_->Update();
+
+	fade_->Update();
 }
 
 void BaseScene::Draw()
@@ -54,4 +59,9 @@ void BaseScene::DrawForegroundSprite()
 	SpriteCommon::GetInstance()->SetView();
 
 	SpriteCommon::GetInstance()->DrawForeground();
+}
+
+void BaseScene::DrawFade()
+{
+	fade_->Draw();
 }

@@ -40,6 +40,7 @@
     <ClCompile Include="engine\object\SpotLight.cpp" />
     <ClCompile Include="engine\3d\LineDrawerBase.cpp" />
     <ClCompile Include="application\object\Ground.cpp" />
+    <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
@@ -126,6 +127,7 @@
     <ClInclude Include="application\object\Ground.h" />
     <ClInclude Include="application\object\SkyDome.h" />
     <ClInclude Include="application\object\Player.h" />
+    <ClInclude Include="Fade.h" />
     <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="GameClear.h" />
     <ClInclude Include="GameOver.h" />
