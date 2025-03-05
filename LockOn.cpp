@@ -1,4 +1,4 @@
-#include "LockOn.h"
+ï»¿#include "LockOn.h"
 #include "Player.h"
 
 void LockOn::Initialize() {
@@ -33,7 +33,7 @@ void LockOn::Update() {
 	lockOn_->Update();
 
 	
-	//ŒŸo‚³‚ê‚½“G‚Ì”‚ÆLockOnMarker‚Ì”‚ğ“¯Šú‚³‚¹‚é
+	//æ¤œå‡ºã•ã‚ŒãŸæ•µã®æ•°ã¨LockOnMarkerã®æ•°ã‚’åŒæœŸã•ã›ã‚‹
 	while (lockOnMarkers_.size() < lockedEnemies_.size()) {
 		auto marker = std::make_unique<LockOnMarker>();
 		marker->Initialize();
@@ -42,7 +42,7 @@ void LockOn::Update() {
 	while (lockOnMarkers_.size() > lockedEnemies_.size()) {
 		lockOnMarkers_.pop_back();
 	}
-	//‚·‚×‚Ä‚ÌŒŸo‚³‚ê‚½“G‚Ì‘O‚ÉLockOnMarker‚ğ”z’u‚·‚é
+	//ã™ã¹ã¦ã®æ¤œå‡ºã•ã‚ŒãŸæ•µã®å‰ã«LockOnMarkerã‚’é…ç½®ã™ã‚‹
 	for (size_t i = 0; i < lockedEnemies_.size(); ++i) {
 		Vector3 enemyPos = lockedEnemies_[i]->GetPosition();
 		Vector3 markerPos = { enemyPos.x, enemyPos.y + 1.0f, enemyPos.z - 1.0f }; 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Kouro.h"
 #include "BaseObject.h"
 #include "Enemy.h"
@@ -13,22 +13,22 @@ public:
 	void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
 	void SetPosition(const Vector3& position) { lockOnWorldTransform_->transform.translate = position; }
-	// LockOn ”ÍˆÍ“à‚Ì“G‚ğŒŸ’m‚·‚éŠÖ”
+	// LockOn ç¯„å›²å†…ã®æ•µã‚’æ¤œçŸ¥ã™ã‚‹é–¢æ•°
 	void DetectEnemies(const std::vector<std::unique_ptr<Enemy>>& enemies);
-	//ŒŸo‚³‚ê‚½“G‚ÌƒŠƒXƒg‚ğæ“¾‚·‚éŠÖ”
+	//æ¤œå‡ºã•ã‚ŒãŸæ•µã®ãƒªã‚¹ãƒˆã‚’å–å¾—ã™ã‚‹é–¢æ•°
 	size_t GetLockedEnemyCount() const { return lockedEnemies_.size(); }
 
 private:
 
 	//lockOn model
 	std::unique_ptr<Object3d> lockOn_ = nullptr;
-	//ƒ[ƒ‹ƒh•ÏŠ·
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›
 	std::unique_ptr<WorldTransform> lockOnWorldTransform_ = nullptr;
 
-	// ŒŸo‚³‚ê‚½“G‚ÌƒŠƒXƒg
+	// æ¤œå‡ºã•ã‚ŒãŸæ•µã®ãƒªã‚¹ãƒˆ
 	std::vector<Enemy*> lockedEnemies_;
 
-	//ŒŸo‚³‚ê‚½Enemy‚Ì‘O‚É•\¦‚³‚ê‚éƒIƒuƒWƒFƒNƒg
+	//æ¤œå‡ºã•ã‚ŒãŸEnemyã®å‰ã«è¡¨ç¤ºã•ã‚Œã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 	std::vector<std::unique_ptr<LockOnMarker>> lockOnMarkers_;
 
 };
