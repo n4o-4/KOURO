@@ -15,7 +15,7 @@ void Player::Initialize()
 	// 初期位置を設定
 	objectTransform_ = std::make_unique<WorldTransform>();
 	objectTransform_->Initialize();
-	objectTransform_->transform.translate = { 0.0f, initialY_, 3.0f };
+	objectTransform_->transform.translate = { 0.0f, initialY_ + 1.0f, 3.0f };
 
 	//========================================
 	// 当たり判定との同期
