@@ -76,7 +76,9 @@ public:
 	 * \brief  SetLockOnSystem ロックオンシステムをセット
 	 * \param  lockOn ロックオンシステム
 	 */
-	void SetLockOnSystem(LockOn* lockOnSystem) { lockOnSystem_ = lockOnSystem; }
+	void SetLockOnSystem(LockOn* lockOnSystem) {
+		lockOnSystem_ = lockOnSystem;  // 🔹 `std::move()` を使わずポインタとして設定
+	}
 
 	/**----------------------------------------------------------------------------
 	 * \brief  GetPosition 位置の取得
@@ -104,7 +106,8 @@ private:
 	std::vector<std::unique_ptr<PlayerBullet>> bullets_;// 弾のリスト
 	//========================================
 	// ロックオン
-	LockOn* lockOnSystem_ = nullptr;// ロックオンシステムのポインタを追加
+	//std::unique_ptr<LockOn> lockOnSystem_ = nullptr;// ロックオンシステムのポインタを追加
+	LockOn* lockOnSystem_ = nullptr;  // 🔹 `GameScene` に所有させるので `LockOn*` に戻す
 	//========================================
 	// 移動関連
 	Vector3 position_ = { 0.0f, 0.0f, 0.0f };
