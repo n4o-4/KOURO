@@ -10,7 +10,7 @@ void Ground::Initialize() {
 	worldTransform_ = std::make_unique<WorldTransform>();
 	worldTransform_->Initialize();
 	worldTransform_->transform.scale = { 1.0f,1.0f,1.0f };
-	worldTransform_->transform.rotate = { -0.02f,0.0f,0.0f };
+	worldTransform_->transform.rotate = { 0.0f,0.0f,0.0f };
 }
 
 void Ground::Update() {
