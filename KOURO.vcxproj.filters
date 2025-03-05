@@ -68,6 +68,7 @@
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="LockOn.cpp" />
     <ClCompile Include="LockOnMarker.cpp" />
+    <ClCompile Include="CameraManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -132,6 +133,7 @@
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="LockOn.h" />
     <ClInclude Include="LockOnMarker.h" />
+    <ClInclude Include="CameraManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

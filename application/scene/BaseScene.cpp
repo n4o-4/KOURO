@@ -8,9 +8,8 @@ void BaseScene::Initialize()
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
 	lineDrawer_->Initialize(sceneManager_->GetDxCommon(),srvManager_);
 
-	debugCamera_ = std::make_unique<DebugCamera>();
-	debugCamera_->Initialize();
-
+	cameraManager_ = std::make_unique<CameraManager>();	
+	cameraManager_->Initialize();
 }
 
 void BaseScene::Finalize()
@@ -24,13 +23,7 @@ void BaseScene::Update()
 {
 	lineDrawer_->Update();
 
-	Camera::GetInstance()->Update();
-	if (isDebugCamera_)
-	{
-		debugCamera_->Update();
-	}
-
-	
+	cameraManager_->Update();
 }
 
 void BaseScene::Draw()

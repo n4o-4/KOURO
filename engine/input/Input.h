@@ -65,20 +65,38 @@ public: // メンバ変数
 	// 更新
 	void Update();
 
+	///===============================
 	/// キーボード
+	
+	// キーが押されているかを判定
 	bool PushKey(BYTE keyNumber);
 
+	// キーが押された瞬間を判定
 	bool Triggerkey(BYTE keyNumber);
 
 
+	///===============================
 	/// マウス
+	
+	// マウスカーソルのスクリーン位置を取得
 	Vector2 GetMousePos() { return Vector2(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)); }
 
+	// マウスのボタンが押されているかを判定
 	bool PushMouseButton(MouseButton mouseButton);
 
+	// マウスのボタンが押された瞬間を判定
+	bool TriggerMouseButton(MouseButton mouseButton);
+
+	///===============================
 	/// ゲームパッド
+	
+	// ゲームパッドのボタンが押されているかを判定
 	bool PushGamePadButton(GamePadButton button);
 
+	// ゲームパッドのボタンが押された瞬間を判定
+	bool TriggerGamePadButton(GamePadButton button);
+
+	// ゲームパッドのスティックの成分を取得
 	Vector3 GetLeftStick() { return leftStick; }	
 
 private:

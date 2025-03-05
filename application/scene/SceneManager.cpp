@@ -75,9 +75,6 @@ void SceneManager::Update()
 		scene_->SetSrvManager(srvManager_);
 
 		scene_->Initialize();
-		
-		
-		scene_->SetCamera(camera_);
 	}
 
 	// 実行中のシーンの更新

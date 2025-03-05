@@ -7,7 +7,7 @@
 #include "TextureManager.h"
 #include "ModelManager.h"
 #include "Object3d.h"
-#include "Camera.h"
+#include "CameraManager.h"
 #include "ParticleManager.h"
 #include "ParticleEmitter.h"
 #include "SceneManager.h"

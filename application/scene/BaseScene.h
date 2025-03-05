@@ -4,7 +4,7 @@
 #include "SrvManager.h"
 #include "Camera.h"
 
-#include "DebugCamera.h"
+#include "CameraManager.h"
 
 #include "SpriteCommon.h"
 #include "Object3dCommon.h"	
@@ -35,11 +35,7 @@ public:
 
 	virtual void SetSrvManager(SrvManager* srvManager) { srvManager_ = srvManager; }
 
-	virtual void SetCamera(Camera* camera) { camera_ = camera; }
-
 	virtual SrvManager* GetSrvManager() { return srvManager_; }
-
-	virtual Camera* GetCamera() { return camera_; }
 
 protected:
 
@@ -57,13 +53,9 @@ protected:
 
 	SrvManager* srvManager_ = nullptr;
 
-	Camera* camera_ = nullptr;
-
-	std::unique_ptr<DebugCamera> debugCamera_ = nullptr;	
-
-	bool isDebugCamera_ = false;
-
 	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
+
+	std::unique_ptr<CameraManager> cameraManager_ = nullptr;
 
 private:
 

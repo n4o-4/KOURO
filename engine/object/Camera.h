@@ -33,6 +33,8 @@ public:
 	void SetFovY(float fovY) { viewProjection_->fovY = fovY; }
 	void SetAspectRation(float aspectRation) { viewProjection_->aspectRation = aspectRation; }
 
+	void SetViewProjection(const ViewProjection& viewProjection) { *viewProjection_ = viewProjection; }
+
 	// getter
 	const Matrix4x4& GetWorldMatrix() const { return worldMatrix; }
 	const Vector3& GetRotate() const { return viewProjection_->transform.rotate; }
@@ -42,6 +44,7 @@ public:
 
 private:
 	
+
 	/*float fovY;
 	float aspectRation;
 	float nearClip;
