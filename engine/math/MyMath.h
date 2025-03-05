@@ -62,6 +62,14 @@ inline Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
 		t * v1.z + (1.0f - t) * v2.z };
 }
 
+static Vector3 TransformNormal(const Vector3& normal, const Matrix4x4& mat) {
+	Vector3 result;
+	result.x = normal.x * mat.m[0][0] + normal.y * mat.m[1][0] + normal.z * mat.m[2][0];
+	result.y = normal.x * mat.m[0][1] + normal.y * mat.m[1][1] + normal.z * mat.m[2][1];
+	result.z = normal.x * mat.m[0][2] + normal.y * mat.m[1][2] + normal.z * mat.m[2][2];
+	return result;
+}
+
 static Matrix4x4 MakeRotateXMatrix(float rotate)
 {
 	Matrix4x4 rM{};
@@ -120,6 +128,15 @@ static Matrix4x4 Multiply(Matrix4x4 m1, Matrix4x4 m2)
 	}
 
 	return resultMatrix;
+}
+
+static Matrix4x4 MakeRotateMatrix(const Vector3& rotate)
+{
+	Matrix4x4 rXM = MakeRotateXMatrix(rotate.x);
+	Matrix4x4 rYM = MakeRotateYMatrix(rotate.y);
+	Matrix4x4 rZM = MakeRotateZMatrix(rotate.z);
+
+	return Multiply(rXM, Multiply(rYM, rZM));
 }
 
 static Matrix4x4 MakeScaleMatrix(const Vector3& scale)

@@ -146,7 +146,7 @@ void GameScene::Update()
 		ImGui::TreePop(); // TreeNodeを閉じる
 	}
 
-	ImGui::Checkbox("useDebugCamera", &isDebugCamera_);
+	ImGui::Checkbox("useDebugCamera", &cameraManager_->useDebugCamera_);
 
 #endif
 	//========================================
@@ -168,26 +168,26 @@ void GameScene::Draw()
 	/// オブジェクト描画
 	//========================================
 	// プレイヤーの描画
-	player_->Draw(Camera::GetInstance()->GetViewProjection(),
+	player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 		*directionalLight.get(),
 		*pointLight.get(),
 		*spotLight.get());
 	//========================================
 	// 天球
-	skyDome_->Draw(Camera::GetInstance()->GetViewProjection(),
+	skyDome_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 		*directionalLight.get(),
 		*pointLight.get(),
 		*spotLight.get());
 	//========================================
 	// 地面
-	ground_->Draw(Camera::GetInstance()->GetViewProjection(),
+	ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 		*directionalLight.get(),
 		*pointLight.get(),
 		*spotLight.get());
 	//========================================
 	// 敵
 	for (const auto& enemy : enemies_) {
-		enemy->Draw(Camera::GetInstance()->GetViewProjection(),
+		enemy->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 			*directionalLight.get(),
 			*pointLight.get(),
 			*spotLight.get());

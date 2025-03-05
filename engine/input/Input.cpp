@@ -78,6 +78,7 @@ bool Input::PushKey(BYTE keyNumber)
 
 bool Input::Triggerkey(BYTE keyNumber)
 {
+	// キーが押された瞬間かどうかを判定
 	if (!keyPre[keyNumber] && key[keyNumber]) {
 		return true;
 
@@ -99,9 +100,32 @@ bool Input::PushMouseButton(MouseButton mouseButton)
 	return (mouseState.rgbButtons[buttonIndex] & 0x80) != 0;
 }
 
+bool Input::TriggerMouseButton(MouseButton mouseButton)
+{
+	// mouseButton を配列のインデックスに変換
+	int buttonIndex = static_cast<int>(mouseButton);
+	// インデックスが範囲外でないか確認（念のため）
+	if (buttonIndex < 0 || buttonIndex >= 8) {
+		return false;
+	}
+	// 指定されたマウスボタンが押された瞬間かチェック
+	return (mouseState.rgbButtons[buttonIndex] & 0x80) != 0 && !(mouseStatePre.rgbButtons[buttonIndex] & 0x80);
+}
+
 bool Input::PushGamePadButton(GamePadButton button)
 {
+	// 指定されたボタンが押されているかチェック
 	if (gamePadState.Gamepad.wButtons & static_cast<WORD>(button))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Input::TriggerGamePadButton(GamePadButton button)
+{
+	// 指定されたボタンが押された瞬間かチェック
+	if ((gamePadState.Gamepad.wButtons & static_cast<WORD>(button)) && !(gamePadStatePre.Gamepad.wButtons & static_cast<WORD>(button)))
 	{
 		return true;
 	}
@@ -143,11 +167,13 @@ void Input::GamePadUpdate()
 
 	leftStick = { 0.0f,0.0f,0.0f };
 
+	// 接続されている場合
 	if (XInputGetState(0, &gamePadState) == ERROR_SUCCESS)
 	{
-		// 接続されている
+		// 前回の入力情報を保存
 		gamePadStatePre = gamePadState;
 
+		// 入力情報をクリア
 		ZeroMemory(&gamePadState, sizeof(XINPUT_STATE));
 
 		// 0番目のコントローラの状態を取得
