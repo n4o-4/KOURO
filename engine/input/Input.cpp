@@ -57,6 +57,10 @@ void Input::Finalize()
 
 void Input::Update()
 {
+	if (!isReception_)
+	{
+		return;
+	}
 	// マウスの更新	
 	MouseUpdate();
 
@@ -196,7 +200,7 @@ void Input::GamePadUpdate()
 		rightStick = { static_cast<float>(gamePadState.Gamepad.sThumbRX), static_cast<float>(gamePadState.Gamepad.sThumbRY),0.0f };
 
 		// スティックの位置がデッドゾーン内であれば、反応しない
-		if (abs(rightStick.x) < deadZone && abs(rightStick.y) < deadZone)
+		if (abs(rightStick.x) < deadZone && abs(rightStick.y) < deadZone * 1.5f)
 		{
 			// デッドゾーン内なので、入力なしとして処理する
 			rightStick = { 0.0f, 0.0f, 0.0f };

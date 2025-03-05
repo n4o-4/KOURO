@@ -65,6 +65,8 @@ public: // メンバ変数
 	// 更新
 	void Update();
 
+	void SetIsReception(bool flag) { isReception_ = flag; }
+
 	///===============================
 	/// キーボード
 	
@@ -148,6 +150,9 @@ private:
 	Vector3 leftStick = {};
 
 	Vector3 rightStick = {};
+
+	//　入力受付フラグ
+	bool isReception_ = true;
 
 	// WindowAPI
 	WinApp* winApp = nullptr;

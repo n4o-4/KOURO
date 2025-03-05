@@ -16,15 +16,49 @@ void GameClear::Finalize() {
 }
 
 void GameClear::Update() {
+	switch (phase_)
+	{
+	case Phase::kFadeIn:
 
-	if (Input::GetInstance()->Triggerkey(DIK_RETURN)) {
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		if (fade_->IsFinished())
+		{
+			Input::GetInstance()->SetIsReception(true);
+			phase_ = Phase::kMain;
+		}
 
-		return;
+		break;
+	case Phase::kMain:
+
+		if (Input::GetInstance()->Triggerkey(DIK_RETURN) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
+		{
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+			phase_ = Phase::kFadeOut;
+		}
+
+		break;
+	case Phase::kFadeOut:
+
+		if (fade_->IsFinished())
+		{
+			SceneManager::GetInstance()->ChangeScene("TITLE");
+
+			return;
+		}
+
+		break;
+	
+	case Phase::kPlay:
+		break;
+	case Phase::kPose:
+		break;
 	}
+
+	
 
 	//title
 	clear_->Update();
+
+	BaseScene::Update();
 }
 
 void GameClear::Draw() {
@@ -33,4 +67,6 @@ void GameClear::Draw() {
 	clear_->Draw();
 
 	DrawForegroundSprite();
+
+	fade_->Draw();
 }

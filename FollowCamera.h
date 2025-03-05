@@ -41,4 +41,6 @@ private:
 	Vector3 destinationRotate = { 0.0f,0.0f,0.0f };
 	// イージング係数
 	float easingFactor_ = 0.85f;
+
+	float rotateSpeed_ = 0.04f;
 };

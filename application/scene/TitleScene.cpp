@@ -61,14 +61,44 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
-	BaseScene::Update();
-
-	if (Input::GetInstance()->Triggerkey(DIK_RETURN))
+	switch (phase_)
 	{
-		SceneManager::GetInstance()->ChangeScene("GAME");
+	case Phase::kFadeIn:
 
-		return;
+		if (fade_->IsFinished())
+		{
+			Input::GetInstance()->SetIsReception(true);
+			phase_ = Phase::kMain;
+		}
+
+		break;
+	case Phase::kMain:
+
+		if (Input::GetInstance()->Triggerkey(DIK_RETURN) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
+		{
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+			phase_ = Phase::kFadeOut;
+		}
+
+		break;
+	case Phase::kFadeOut:
+
+		if (fade_->IsFinished())
+		{
+			SceneManager::GetInstance()->ChangeScene("GAME");
+
+			return;
+		}
+
+		break;
+
+	case Phase::kPlay:
+		break;
+	case Phase::kPose:
+		break;
 	}
+
+	BaseScene::Update();
 
 	//sprite->Update();
 
@@ -111,7 +141,7 @@ void TitleScene::Draw()
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	
 
-
+	fade_->Draw();
 	ParticleManager::GetInstance()->Draw("Resources/circle.png");
 
 

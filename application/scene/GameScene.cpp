@@ -83,77 +83,152 @@ void GameScene::Finalize()
 ///						更新
 void GameScene::Update()
 {
-	//========================================
-	// プレイヤーの更新
-	player_->Update();
+	switch (phase_)
+	{
+	case Phase::kFadeIn:
 
-	//========================================
-	// 天球
-	skyDome_->Update();
+		if (fade_->IsFinished())
+		{
 
-	//========================================
-	// 地面
-	ground_->Update();
+			phase_ = Phase::kPlay;
 
-	//========================================
-	// 敵出現
-	UpdateEnemyPopCommands();
-	// 敵リスト
-	for (const auto& enemy : enemies_) {
-		enemy->Update();
-	}
-	// 敵の削除
-	enemies_.erase(
-		// 削除条件
-        std::remove_if(enemies_.begin(), enemies_.end(),
-            [this](const std::unique_ptr<Enemy>& enemy) {
-				// HPが0以下の場合
-                if (enemy->GetHp() <= 0) {
-                    // ロックオンシステムから敵を削除
-                    if (lockOnSystem_) {
-                        lockOnSystem_->RemoveLockedEnemy(enemy.get());
-                    }
-                    return true; // 削除する
-                }
-                return false; // 削除しない
-            }),
+			// 入力の受付をオンに
+			Input::GetInstance()->SetIsReception(true);
+		}
+
+		//========================================
+		// プレイヤーの更新
+		player_->Update();
+
+		//========================================
+		// 天球
+		skyDome_->Update();
+
+		//========================================
+		// 地面
+		ground_->Update();
+
+		break;
+
+	case Phase::kPlay:
+
+		if (!isContinue)
+		{
+			phase_ = Phase::kFadeOut;
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+		}
+
+		//========================================
+		// プレイヤーの更新
+		player_->Update();
+
+		//========================================
+		// 天球
+		skyDome_->Update();
+
+		//========================================
+		// 地面
+		ground_->Update();
+
+		//========================================
+		// 敵出現
+		UpdateEnemyPopCommands();
+		// 敵リスト
+		for (const auto& enemy : enemies_) {
+			enemy->Update();
+		}
+		// 敵の削除
+		enemies_.erase(
+			// 削除条件
+			std::remove_if(enemies_.begin(), enemies_.end(),
+				[this](const std::unique_ptr<Enemy>& enemy) {
+					// HPが0以下の場合
+					if (enemy->GetHp() <= 0) {
+						// ロックオンシステムから敵を削除
+						if (lockOnSystem_) {
+							lockOnSystem_->RemoveLockedEnemy(enemy.get());
+						}
+						return true; // 削除する
+					}
+					return false; // 削除しない
+				}),
 			// 実際に削除する
-        enemies_.end());
+			enemies_.end());
 
-	//========================================
-	// 当たり判定
-	// リセット
-	collisionManager_->Reset();
+		//========================================
+		// 当たり判定
+		// リセット
+		collisionManager_->Reset();
 
-	// 🔽 ロックオンの処理追加
-	if (lockOnSystem_) {
-		// プレイヤーの位置をロックオンシステムにセット
-		lockOnSystem_->SetPosition(player_->GetPosition());
-		// ロックオン更新
-		lockOnSystem_->Update(enemies_);
-		// 敵の検出
-		lockOnSystem_->DetectEnemies(enemies_);
+		// 🔽 ロックオンの処理追加
+		if (lockOnSystem_) {
+			// プレイヤーの位置をロックオンシステムにセット
+			lockOnSystem_->SetPosition(player_->GetPosition());
+			// ロックオン更新
+			lockOnSystem_->Update(enemies_);
+			// 敵の検出
+			lockOnSystem_->DetectEnemies(enemies_);
+		}
+
+		// エネミー
+		for (auto& enemy : enemies_) {
+			collisionManager_->AddCollider(enemy.get());
+		}
+
+		// プレイヤー
+		collisionManager_->AddCollider(player_.get());
+
+		// プレイヤーの弾リスト
+		for (auto& bullet : player_->GetBullets()) {
+			collisionManager_->AddCollider(bullet.get());
+		}
+
+		// 更新
+		collisionManager_->Update();
+
+		break;
+
+	case Phase::kFadeOut:
+
+		if (fade_->IsFinished())
+		{
+			sceneManager_->ChangeScene("CLEAR");
+		}
+
+		//========================================
+		// プレイヤーの更新
+		player_->Update();
+
+		//========================================
+		// 天球
+		skyDome_->Update();
+
+		//========================================
+		// 地面
+		ground_->Update();
+
+		break;
+
+	case Phase::kMain:
+		break;
+	case Phase::kPose:
+		break;
 	}
 
-	// エネミー
-	for (auto& enemy : enemies_) {
-		collisionManager_->AddCollider(enemy.get());
-	}
 
-	// プレイヤー
-	collisionManager_->AddCollider(player_.get());
-
-	// プレイヤーの弾リスト
-	for (auto& bullet : player_->GetBullets()) {
-		collisionManager_->AddCollider(bullet.get());
-	}
-
-	// 更新
-	collisionManager_->Update();
-
+	BaseScene::Update();
 	//========================================
 	// ライト
-	BaseScene::Update();
+	// 
+	//========================================
+	// ディレクショナルライト
+	directionalLight->Update();
+	//========================================
+	// ポイントライト
+	pointLight->Update();
+	//========================================
+	// スポットライト
+	spotLight->Update();
 
 #ifdef _DEBUG
 
@@ -189,14 +264,9 @@ void GameScene::Update()
 	}
 
 	ImGui::Checkbox("useDebugCamera", &cameraManager_->useDebugCamera_);
+	ImGui::Checkbox("sceneConticue", &isContinue);
 
 #endif
-
-	//========================================
-	// ポイントライト
-	pointLight->Update();
-	// スポットライト
-	spotLight->Update();
 }
 
 ///=============================================================================
@@ -204,54 +274,157 @@ void GameScene::Update()
 void GameScene::Draw()
 {
 
-	DrawBackgroundSprite();
-	/// 背景スプライト描画
+	switch (phase_)
+	{
+	case Phase::kFadeIn:
 
+		DrawBackgroundSprite();
+		/// 背景スプライト描画
 
-	DrawObject();
-	/// オブジェクト描画
-	//========================================
-	// プレイヤーの描画
-	player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
-		*directionalLight.get(),
-		*pointLight.get(),
-		*spotLight.get());
-	//========================================
-	// 天球
-	skyDome_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
-		*directionalLight.get(),
-		*pointLight.get(),
-		*spotLight.get());
-	//========================================
-	// 地面
-	ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
-		*directionalLight.get(),
-		*pointLight.get(),
-		*spotLight.get());
-	//========================================
-	// 敵
-	for (const auto& enemy : enemies_) {
-		enemy->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+		DrawObject();
+		/// オブジェクト描画
+		//========================================
+		// プレイヤーの描画
+		player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 			*directionalLight.get(),
 			*pointLight.get(),
 			*spotLight.get());
-	}
-	//========================================
-	// LockOn
-	 // 🔽 LockOnの描画処理を追加
-	if (lockOnSystem_) {
-		lockOnSystem_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+		//========================================
+		// 天球
+		skyDome_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 			*directionalLight.get(),
 			*pointLight.get(),
 			*spotLight.get());
+		//========================================
+		// 地面
+		ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
+
+		DrawForegroundSprite();
+		/// 前景スプライト描画	
+
+		// フェード描画
+		DrawFade();
+
+		break;
+
+	case Phase::kPlay:
+
+		DrawBackgroundSprite();
+		/// 背景スプライト描画
+
+		DrawObject();
+		/// オブジェクト描画
+		//========================================
+		// プレイヤーの描画
+		player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
+		//========================================
+		// 天球
+		skyDome_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
+		//========================================
+		// 地面
+		ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
+		//========================================
+		// 敵
+		for (const auto& enemy : enemies_) {
+			enemy->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+				*directionalLight.get(),
+				*pointLight.get(),
+				*spotLight.get());
+		}
+		//========================================
+		// LockOn
+		 // 🔽 LockOnの描画処理を追加
+		if (lockOnSystem_) {
+			lockOnSystem_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+				*directionalLight.get(),
+				*pointLight.get(),
+				*spotLight.get());
+		}
+		//========================================
+		// 当たり判定マネージャ
+		collisionManager_->Draw();
+
+		DrawForegroundSprite();
+		/// 前景スプライト描画	
+
+		// フェード描画
+		DrawFade();
+
+		break;
+
+	case Phase::kFadeOut:
+
+		DrawBackgroundSprite();
+		/// 背景スプライト描画
+
+		DrawObject();
+		/// オブジェクト描画
+		//========================================
+		// プレイヤーの描画
+		player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
+		//========================================
+		// 天球
+		skyDome_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
+		//========================================
+		// 地面
+		ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
+		//========================================
+		// 敵
+		for (const auto& enemy : enemies_) {
+			enemy->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+				*directionalLight.get(),
+				*pointLight.get(),
+				*spotLight.get());
+		}
+		//========================================
+		// LockOn
+		 // 🔽 LockOnの描画処理を追加
+		if (lockOnSystem_) {
+			lockOnSystem_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+				*directionalLight.get(),
+				*pointLight.get(),
+				*spotLight.get());
+		}
+		//========================================
+		// 当たり判定マネージャ
+		collisionManager_->Draw();
+
+		DrawForegroundSprite();
+		/// 前景スプライト描画	
+
+		// フェード描画
+		DrawFade();
+
+		break;
+
+	case Phase::kMain:
+
+		break;
+	case Phase::kPose:
+
+		break;
 	}
-	//========================================
-	// 当たり判定マネージャ
-	collisionManager_->Draw();
-	
-	DrawForegroundSprite();
-	/// 前景スプライト描画	
-	
 }
 
 ///=============================================================================
