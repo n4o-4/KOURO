@@ -69,7 +69,7 @@ public:
 	 * \brief  SetCamera カメラをセット
 	 * \param  camera カメラ
 	 */
-	void SetCamera(Camera *camera) { object3d_->SetCamera(camera); }	
+	void SetFollowCamera(FollowCamera* followCamera) { followCamera_ = followCamera; }
 
 	/**----------------------------------------------------------------------------
 	 * \brief  SetLockOnSystem ロックオンシステムをセット
@@ -153,4 +153,6 @@ private:
 	//========================================
 	// カメラ
 	FollowCamera *followCamera_ = nullptr;
+
+	float distinationRotateY_;
 };

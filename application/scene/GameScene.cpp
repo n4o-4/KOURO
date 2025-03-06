@@ -69,6 +69,8 @@ void GameScene::Initialize() {
 	// アクティブカメラをフォローカメラに設定
 	cameraManager_->useFollowCamera_ = true;
 
+	player_->SetFollowCamera(cameraManager_->GetFollowCamera());
+
 	// 
 	fade_->Start(Fade::Status::FadeIn, 4.0f);
 }
