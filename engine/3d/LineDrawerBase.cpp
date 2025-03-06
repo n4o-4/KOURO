@@ -14,11 +14,10 @@ void LineDrawerBase::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	CreateLineResource();
 
 	//CreateLineObject(Type::AABB);
-
-	for (int i = 0; i < 100; i++)
-	{
-		CreateLineObject(Type::Sphere);
-	}
+	worldTransform_ = std::make_unique<WorldTransform>();
+	worldTransform_->Initialize();
+	
+	CreateLineObject(Type::Grid,worldTransform_.get());
 
 }
 
@@ -27,15 +26,15 @@ void LineDrawerBase::Update()
 	for (std::list<std::unique_ptr<LineObject>>::iterator iterator = lineObjects_.begin(); iterator != lineObjects_.end();)
 	{
 
-		ImGui::DragFloat3("object.scale", &iterator->get()->transform.transform.scale.x, 0.01f);
-		ImGui::DragFloat3("object.rotate", &iterator->get()->transform.transform.rotate.x, 0.01f);
-		ImGui::DragFloat3("object.translate", &iterator->get()->transform.transform.translate.x, 0.01f);
+		ImGui::DragFloat3("object.scale", &iterator->get()->transform->transform.scale.x, 0.01f);
+		ImGui::DragFloat3("object.rotate", &iterator->get()->transform->transform.rotate.x, 0.01f);
+		ImGui::DragFloat3("object.translate", &iterator->get()->transform->transform.translate.x, 0.01f);
 
-		Matrix4x4 worldMatrix = MakeAffineMatrix(iterator->get()->transform.transform.scale, iterator->get()->transform.transform.rotate, iterator->get()->transform.transform.translate);
+		Matrix4x4 worldMatrix = MakeAffineMatrix(iterator->get()->transform->transform.scale, iterator->get()->transform->transform.rotate, iterator->get()->transform->transform.translate);
 
 		iterator->get()->instancingData->matWorld = worldMatrix;
 
-		iterator->get()->instancingData->color = { 0.0f,1.0f,0.0f,1.0f };
+		iterator->get()->instancingData->color = { 1.0f,1.0f,1.0f,1.0f };
 
 		++iterator;
 	}
@@ -174,10 +173,13 @@ void LineDrawerBase::CreatePipellineState()
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 	//Depthの機能を有効化する
 	depthStencilDesc.DepthEnable = false;
-	//書き込みします
-	//depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-	//比較関数はLessEqual。つまり、近ければ描画される
+
+	// 書き込みします
+	//depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+
+	// 比較関数はLessEqual。近ければ描画される
 	//depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+
 
 	/*----------------------------------------------------------
 	* BlendStateの設定
@@ -224,7 +226,7 @@ void LineDrawerBase::CreatePipellineState()
 #pragma endregion pipelineの生成
 
 # pragma region lineObjectの生成しlineObjects_にpush_back
-void LineDrawerBase::CreateLineObject(Type type)
+void LineDrawerBase::CreateLineObject(Type type, WorldTransform* transform)
 {
 	// 新しいラインオブジェクトの生成と初期化
 	std::unique_ptr<LineObject> newObject = std::make_unique<LineObject>();
@@ -277,10 +279,16 @@ void LineDrawerBase::CreateLineObject(Type type)
 	{
 		WriteSphereVertexData(newObject.get());
 	}
-	
-	newObject->transform.Initialize();
+	else if (type == Type::Grid)
+	{
+		WriteGridVertexData(newObject.get());
+	}
 
-	newObject->transform.transform.scale = { 1.0f,1.0f,1.0f };
+	if (transform == nullptr)
+	{
+		newObject->transform = worldTransform_.get();	
+	}
+	newObject->transform = transform;
 
 	lineObjects_.push_back(std::move(newObject));
 }
@@ -363,6 +371,15 @@ void LineDrawerBase::WriteAABBIndexData(LineObject* lineObject)
 	}
 }
 #pragma endregion AABB用でindexDataに書き込み
+
+void LineDrawerBase::WriteGridIndexData(LineObject* lineObject)
+{
+	for (int i = 0; i < lineObject->vertexIndex;)
+	{
+		lineObject->indexData[i] = i;
+		++i;
+	}
+}
 
 #pragma region sphereの形でvertexDataを書き込む
 void LineDrawerBase::WriteSphereVertexData(LineObject* lineObject)
@@ -469,3 +486,28 @@ void LineDrawerBase::WriteAABBVertexData(LineObject* lineObject, Vector3 radius)
 	WriteAABBIndexData(lineObject);
 }
 #pragma endregion AABBの形でvertexDataを書き込む
+
+void LineDrawerBase::WriteGridVertexData(LineObject* lineObject)
+{
+	float GridSize = 5.0f;
+	int GridNum = 100;
+	float GridSpacing = GridSize / GridNum;
+	float halfGridSize = GridSize * GridNum * 0.5f;
+
+	for (int i = 0; i <= GridNum; ++i) {
+		float x = -halfGridSize + GridSize * i;
+		float z = -halfGridSize + GridSize * i;
+
+		lineObject->vertexData[lineObject->vertexIndex].position = { x, 0.0f, -halfGridSize, 1.0f };
+		++lineObject->vertexIndex;
+		lineObject->vertexData[lineObject->vertexIndex].position = { x, 0.0f, halfGridSize, 1.0f };
+		++lineObject->vertexIndex;
+
+		lineObject->vertexData[lineObject->vertexIndex].position = { -halfGridSize, 0.0f, z, 1.0f };
+		++lineObject->vertexIndex;
+		lineObject->vertexData[lineObject->vertexIndex].position = { halfGridSize, 0.0f, z, 1.0f };
+		++lineObject->vertexIndex;
+	}
+
+	WriteGridIndexData(lineObject);
+}

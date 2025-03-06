@@ -22,7 +22,7 @@ void MyGame::Initialize()
 
 	SceneManager::GetInstance()->SetSceneFactory(*sceneFactory_);
 
-	SceneManager::GetInstance()->ChangeScene("PAKU");
+	SceneManager::GetInstance()->ChangeScene("GAME");
 
 #pragma endregion 基盤システムの初期化
 
@@ -50,8 +50,6 @@ void MyGame::Update()
 
 	Framework::Update();
 
-	lineDrawer_->Update();
-
 #ifdef _DEBUG
 
 	imGuiManager->End();
@@ -69,8 +67,6 @@ void MyGame::Draw()
 	
 
 	Framework::Draw();
-	
-	lineDrawer_->Draw(Camera::GetInstance()->GetViewProjection());
 
 	DirectXCommon::GetInstance()->RenderTexturePostDraw();
 

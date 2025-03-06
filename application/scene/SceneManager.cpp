@@ -13,8 +13,10 @@ SceneManager* SceneManager::GetInstance()
 	return instance.get();
 }
 
-void SceneManager::Initialize(SrvManager* srvManager, Camera* camera)
+void SceneManager::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager, Camera* camera)
 {
+	dxCommon_ = dxCommon;
+
 	srvManager_ = srvManager;
 
 	camera_ = camera;
@@ -28,7 +30,7 @@ void SceneManager::Finalize()
 void SceneManager::Update()
 {
 	// シーンを追加した場合はここに追加
-	const std::vector<std::string> sceneNames = { "TITLE", "GAME", "OKA","PAKU","MARU","MIYA" };
+	const std::vector<std::string> sceneNames = { "TITLE", "GAME", "OKA","PAKU","MARU","MIYA","CLEAR","OVER"};
 
 	static int currentSceneIndex = 0;
 
@@ -68,11 +70,11 @@ void SceneManager::Update()
 		scene_ = std::move(nextScene_);
 		nextScene_ = nullptr;
 		
-		scene_->Initialize();
 
 		scene_->SetSceneManager(this);
 		scene_->SetSrvManager(srvManager_);
-		scene_->SetCamera(camera_);
+
+		scene_->Initialize();
 	}
 
 	// 実行中のシーンの更新

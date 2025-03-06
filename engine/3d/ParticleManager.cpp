@@ -634,18 +634,12 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 
 void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count)
 {
-
 	if (particleGroups.find(name) != particleGroups.end()) {
-
-		for (int currentCount = 0; currentCount < count;) {
-
+		for (uint32_t currentCount = 0; currentCount < count;) {
 			particleGroups.find(name)->second.particles.push_back(MakeNewParticle(position));
-
 			++currentCount;
-
 		}
 	}
-
 }
 
 void ParticleManager::Finalize()

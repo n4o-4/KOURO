@@ -14,6 +14,8 @@ public:
 	// 更新処理
 	virtual void Update();
 
+	virtual ViewProjection& GetViewProjection() { return *viewProjection_; }
+
 protected:
 
 	std::unique_ptr<ViewProjection> viewProjection_ = nullptr;

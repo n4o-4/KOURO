@@ -151,5 +151,6 @@ private:
 
 	// テクスチャ切り出しサイズ
 	Vector2 textureSize = { 100.0f,100.0f };
+
 };
 

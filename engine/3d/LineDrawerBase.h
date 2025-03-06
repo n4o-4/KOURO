@@ -4,15 +4,20 @@
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 
-enum class Type
-{
-	AABB,
-	Sphere
-};
+
 
 
 class LineDrawerBase
 {
+public:
+
+	enum class Type
+	{
+		AABB,
+		Sphere,
+		Grid
+	};
+
 private:
 
 	struct Sphere {
@@ -61,7 +66,7 @@ private:
 
 		LineDrawerBase::Sphere sphere;
 
-		WorldTransform transform;
+		WorldTransform* transform;
 	};
 
 	
@@ -84,7 +89,11 @@ private: // メンバ関数
 
 	void CreatePipellineState();
 
-	void CreateLineObject(Type type);
+public:
+
+	void CreateLineObject(Type type, WorldTransform* transform);
+
+private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateVertexResource();
 
@@ -102,11 +111,15 @@ private: // メンバ関数
 
 	void WriteAABBIndexData(LineObject* lineObject);
 
+	void WriteGridIndexData(LineObject* lineObject);
+
 	/// vertexData書き込み
 
 	void WriteSphereVertexData(LineObject* lineObject);
 
 	void WriteAABBVertexData(LineObject* lineObject,Vector3 radius);
+
+	void WriteGridVertexData(LineObject* lineObject);
 
 private: // メンバ変数
 
@@ -119,5 +132,7 @@ private: // メンバ変数
 	std::list<std::unique_ptr<LineObject>> lineObjects_;
 
 	uint32_t instanceNum = 0;
+
+	std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
 };
 

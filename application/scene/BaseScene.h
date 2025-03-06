@@ -4,14 +4,34 @@
 #include "SrvManager.h"
 #include "Camera.h"
 
+#include "CameraManager.h"
+
 #include "SpriteCommon.h"
 #include "Object3dCommon.h"	
+#include "LineDrawerBase.h"
+
+#include "Fade.h"
 
 class SceneManager;
 
 // シーン基底クラス
 class BaseScene
 {
+public:
+
+	enum class Phase
+	{
+		kFadeIn,   // フェードイン
+
+		kMain,     // メイン部
+
+		kPlay,     // ゲームプレイ
+
+		kPose,     // ポーズ
+
+		kFadeOut,  // フェードアウト
+	};
+
 public:
 
 	virtual ~BaseScene() = default;
@@ -32,13 +52,11 @@ public:
 
 	virtual void SetSrvManager(SrvManager* srvManager) { srvManager_ = srvManager; }
 
-	virtual void SetCamera(Camera* camera) { camera_ = camera; }
-
 	virtual SrvManager* GetSrvManager() { return srvManager_; }
 
-	virtual Camera* GetCamera() { return camera_; }
-
 protected:
+
+	virtual void LineDraw();
 
 	virtual void DrawObject();
 
@@ -46,11 +64,28 @@ protected:
 
 	virtual void DrawForegroundSprite();
 
+	virtual void DrawFade();
+
 protected:
 
 	SceneManager* sceneManager_ = nullptr;
 
 	SrvManager* srvManager_ = nullptr;
 
-	Camera* camera_ = nullptr;
+	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
+
+	std::unique_ptr<CameraManager> cameraManager_ = nullptr;
+
+	std::unique_ptr<Fade> fade_ = nullptr;
+
+	float fadeTime_ = 2.0f;
+
+	Phase phase_ = Phase::kFadeIn;
+
+	bool isContinue = true;
+
+
+private:
+
+
 };

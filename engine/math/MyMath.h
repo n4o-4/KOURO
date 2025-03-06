@@ -14,11 +14,21 @@ struct AABB {
 
 inline Vector3 Normalize(Vector3 v)
 {
-	Vector3 RVector3;
-	float lenght = sqrtf(v.x * v.x + v.y * v.y);
-	lenght = sqrtf(lenght * lenght + v.z * v.z);
-	RVector3 = { (v.x / lenght),(v.y / lenght),(v.z / lenght) };
-	return RVector3;
+	Vector3 result;
+
+	// ベクトルの長さを計算
+	float length = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+
+	// 長さが 0 の場合、NaN を防ぐためにそのまま返す
+	if (length == 0.0f)
+	{
+		return v; // ゼロベクトルはそのまま返す
+	}
+
+	// 長さが 0 でない場合、正規化
+	result = { v.x / length, v.y / length, v.z / length };
+
+	return result;
 }
 
 inline Vector3 Cross(const Vector3& v1, const Vector3& v2) {
@@ -50,6 +60,14 @@ inline Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
 		t * v1.x + (1.0f - t) * v2.x,
 		t * v1.y + (1.0f - t) * v2.y,
 		t * v1.z + (1.0f - t) * v2.z };
+}
+
+static Vector3 TransformNormal(const Vector3& normal, const Matrix4x4& mat) {
+	Vector3 result;
+	result.x = normal.x * mat.m[0][0] + normal.y * mat.m[1][0] + normal.z * mat.m[2][0];
+	result.y = normal.x * mat.m[0][1] + normal.y * mat.m[1][1] + normal.z * mat.m[2][1];
+	result.z = normal.x * mat.m[0][2] + normal.y * mat.m[1][2] + normal.z * mat.m[2][2];
+	return result;
 }
 
 static Matrix4x4 MakeRotateXMatrix(float rotate)
@@ -110,6 +128,15 @@ static Matrix4x4 Multiply(Matrix4x4 m1, Matrix4x4 m2)
 	}
 
 	return resultMatrix;
+}
+
+static Matrix4x4 MakeRotateMatrix(const Vector3& rotate)
+{
+	Matrix4x4 rXM = MakeRotateXMatrix(rotate.x);
+	Matrix4x4 rYM = MakeRotateYMatrix(rotate.y);
+	Matrix4x4 rZM = MakeRotateZMatrix(rotate.z);
+
+	return Multiply(rXM, Multiply(rYM, rZM));
 }
 
 static Matrix4x4 MakeScaleMatrix(const Vector3& scale)

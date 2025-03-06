@@ -27,6 +27,9 @@ private:
 
 	std::unique_ptr<Audio> audio = nullptr;
 
+
+	std::unique_ptr<Sprite> title_ = nullptr;
+
 private:
 public: // メンバ関数
 
