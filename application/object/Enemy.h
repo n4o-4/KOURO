@@ -78,6 +78,9 @@ private:
 	//HP
 	int hp_ = 1;
 
-
+	float speed_ = 0.05f;   // 移動速度
+	float minX_ = -100.0f;    // 左の限界
+	float maxX_ = 100.0f;     // 右の限界
+	int direction_ = 1;     // 移動方向 (1:右, -1:左)
 };
 

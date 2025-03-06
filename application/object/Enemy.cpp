@@ -26,6 +26,19 @@ void Enemy::Update() {
 
 	if (hp_ > 0) {
 		//========================================
+		
+		// 移動処理
+		worldTransform_->transform.translate.x += speed_ * direction_;
+
+		// 端に到達したら方向を反転
+		if (worldTransform_->transform.translate.x >= maxX_) {
+			worldTransform_->transform.translate.x = maxX_;
+			direction_ = -1;
+		} else if (worldTransform_->transform.translate.x <= minX_) {
+			worldTransform_->transform.translate.x = minX_;
+			direction_ = 1;
+		}	
+
 		// ワールド変換の更新
 		worldTransform_->UpdateMatrix();
 		// モデルのワールド変換行列を更新
