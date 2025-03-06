@@ -19,40 +19,45 @@ void LockOn::Initialize() {
 
 }
 
+// LockOnのUpdateメソッド内のマーカー更新部分を修正
 void LockOn::Update(const std::vector<std::unique_ptr<Enemy>>& enemies) {
-
+    // 既存のデバッグ表示
 #ifdef _DEBUG
-	ImGui::Begin("LockOn Debug");
-	ImGui::Text("Locked Enemies: %d", static_cast<int>(lockedEnemies_.size()));
-	ImGui::End();
-
+    ImGui::Begin("LockOn Debug");
+    ImGui::Text("Locked Enemies: %d", static_cast<int>(lockedEnemies_.size()));
+    ImGui::End();
 #endif
 
-	DetectEnemies(enemies);
-
-	lockOnWorldTransform_->UpdateMatrix();
-
-	lockOn_->SetLocalMatrix(MakeIdentity4x4());
-	lockOn_->Update();
-
-	
-	//検出された敵の数とLockOnMarkerの数を同期させる
-	while (lockOnMarkers_.size() < lockedEnemies_.size()) {
-		auto marker = std::make_unique<LockOnMarker>();
-		marker->Initialize();
-		lockOnMarkers_.push_back(std::move(marker));
-	}
-	while (lockOnMarkers_.size() > lockedEnemies_.size()) {
-		lockOnMarkers_.pop_back();
-	}
-	//すべての検出された敵の前にLockOnMarkerを配置する
-	for (size_t i = 0; i < lockedEnemies_.size(); ++i) {
-		Vector3 enemyPos = lockedEnemies_[i]->GetPosition();
-		Vector3 markerPos = { enemyPos.x, enemyPos.y + 1.0f, enemyPos.z - 1.0f }; 
-		lockOnMarkers_[i]->SetTargetPosition(markerPos);
-		lockOnMarkers_[i]->Show();
-		lockOnMarkers_[i]->Update();
-	}
+    DetectEnemies(enemies);
+    
+    lockOnWorldTransform_->UpdateMatrix();
+    
+    lockOn_->SetLocalMatrix(MakeIdentity4x4());
+    lockOn_->Update();
+    
+    // マーカーの数をロックオン対象に合わせる
+    while (lockOnMarkers_.size() < lockedEnemies_.size()) {
+        auto marker = std::make_unique<LockOnMarker>();
+        marker->Initialize();
+        lockOnMarkers_.push_back(std::move(marker));
+    }
+    while (lockOnMarkers_.size() > lockedEnemies_.size()) {
+        lockOnMarkers_.pop_back();
+    }
+    
+    // プレイヤーの位置（ロックオンシステムの位置）を取得
+    Vector3 playerPos = lockOnWorldTransform_->transform.translate;
+    
+    // 各マーカーを更新
+    for (size_t i = 0; i < lockedEnemies_.size(); ++i) {
+        Vector3 enemyPos = lockedEnemies_[i]->GetPosition();
+        // マーカーを少し上に表示
+        Vector3 markerPos = { enemyPos.x, enemyPos.y + 1.0f, enemyPos.z };
+        
+        // プレイヤー位置も渡して更新
+        lockOnMarkers_[i]->Show();
+        lockOnMarkers_[i]->Update(playerPos, markerPos);
+    }
 }
 
 void LockOn::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {

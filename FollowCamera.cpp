@@ -53,7 +53,7 @@ void FollowCamera::CalculationRotate()
 {
     Vector3 rightStickVector = Input::GetInstance()->GetRightStick();
 
-    Vector3 rotate = { rightStickVector.y * rotateSpeed_, -rightStickVector.x * rotateSpeed_ ,0.0f };
+    Vector3 rotate = { -rightStickVector.y * rotateSpeed_, rightStickVector.x * rotateSpeed_ ,0.0f };
 
     destinationRotate += rotate;
 
