@@ -51,6 +51,36 @@ void Fade::Start(Status status, float duration)
 	counter_ = 0.0f;
 }
 
+bool Fade::IsFinished() const
+{
+	switch (status_)
+	{
+	case Status::FadeIn:
+
+		if (counter_ >= duration_)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	case Status::FadeOut:
+
+		if (counter_ >= duration_)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void Fade::UpdateFade()
 {
 	// ステータスでの個別の処理

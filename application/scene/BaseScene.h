@@ -19,6 +19,21 @@ class BaseScene
 {
 public:
 
+	enum class Phase
+	{
+		kFadeIn,   // フェードイン
+
+		kMain,     // メイン部
+
+		kPlay,     // ゲームプレイ
+
+		kPose,     // ポーズ
+
+		kFadeOut,  // フェードアウト
+	};
+
+public:
+
 	virtual ~BaseScene() = default;
 
 	// 初期化
@@ -62,6 +77,13 @@ protected:
 	std::unique_ptr<CameraManager> cameraManager_ = nullptr;
 
 	std::unique_ptr<Fade> fade_ = nullptr;
+
+	float fadeTime_ = 2.0f;
+
+	Phase phase_ = Phase::kFadeIn;
+
+	bool isContinue = true;
+
 
 private:
 

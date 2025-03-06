@@ -57,6 +57,10 @@ void Input::Finalize()
 
 void Input::Update()
 {
+	if (!isReception_)
+	{
+		return;
+	}
 	// マウスの更新	
 	MouseUpdate();
 

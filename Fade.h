@@ -33,6 +33,9 @@ public:
 	// フェード開始
 	void Start(Status status, float duration);
 
+	// フェード終了判定
+	bool IsFinished() const;
+
 private:
 
 	void UpdateFade();
