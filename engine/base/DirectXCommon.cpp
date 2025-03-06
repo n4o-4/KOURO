@@ -628,8 +628,8 @@ Microsoft::WRL::ComPtr<IDxcBlob> DirectXCommon::CompileShader(const std::wstring
 	//Log(ConvertString(std::format(L"Compile Succeeded, path:{},profile:{}\n", filePath, profile)));
 
 	// もう使わないリソースを解放
-	shaderSource->Release();
-	shaderResult->Release();
+	shaderSource->Release(); /// エラーの原因の可能性
+	shaderResult->Release(); /// エラーの原因の可能性
 
 	// 実行用のバイナリを返却
 	return shaderBlob;
