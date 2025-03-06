@@ -345,7 +345,7 @@ void GameScene::Draw() {
 		}
 		//========================================
 		// LockOn
-		 // 🔽 LockOnの描画処理を追加
+		// 🔽 LockOnの描画処理を追加
 		if(lockOnSystem_) {
 			lockOnSystem_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 				*directionalLight.get(),
