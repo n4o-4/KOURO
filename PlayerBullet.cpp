@@ -60,11 +60,15 @@ void PlayerBullet::Draw(ViewProjection viewProjection, DirectionalLight directio
 ///--------------------------------------------------------------
 ///						接触開始処理
 void PlayerBullet::OnCollisionEnter(BaseObject *other) {
+	//========================================
+	// 敵接触
 	if (Enemy* enemy = dynamic_cast<Enemy*>(other)) {
-		int hp = enemy->GetHp();
-		hp -= 1;
-		enemy->SetHp(hp);
+		//---------------------------------------
+		//弾を消す
+		isActive_ = false;
 	}
+
+
 }
 ///--------------------------------------------------------------
 ///						接触継続処理

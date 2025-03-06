@@ -31,6 +31,13 @@ void FollowCamera::Update()
     BaseCamera::Update();
 }
 
+Vector3 FollowCamera::GetForwardDirection() const {
+    // カメラの回転行列から前方向ベクトルを計算
+    Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);
+    Vector3 forward = { 0.0f, 0.0f, 1.0f }; // デフォルトの前方向
+    return TransformNormal(forward, rotateMatrix);
+}
+
 Vector3 FollowCamera::CalculationOffset()
 {
     Vector3 offset = offset_;
@@ -46,7 +53,7 @@ void FollowCamera::CalculationRotate()
 {
     Vector3 rightStickVector = Input::GetInstance()->GetRightStick();
 
-    Vector3 rotate = { rightStickVector.y * rotateSpeed_, rightStickVector.x * rotateSpeed_ ,0.0f };
+    Vector3 rotate = { -rightStickVector.y * rotateSpeed_, rightStickVector.x * rotateSpeed_ ,0.0f };
 
     destinationRotate += rotate;
 

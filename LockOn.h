@@ -18,6 +18,9 @@ public:
 	//検出された敵のリストを取得する関数
 	size_t GetLockedEnemyCount() const { return lockedEnemies_.size(); }
 
+	// 視点方向を設定
+	void SetViewDirection(const Vector3& viewDir) { viewDirection_ = viewDir; }
+
 	/**----------------------------------------------------------------------------
      * \brief  GetLockedEnemies ロックオンされている敵のリストを取得
      * \return ロックオンされている敵のリスト
@@ -42,6 +45,9 @@ private:
 
 	//敵
 	Enemy* enemy_ = nullptr;
+
+	// 視点方向ベクトル
+	Vector3 viewDirection_ = { 0.0f, 0.0f, 1.0f }; // デフォルトは前方向
 
 };
 
