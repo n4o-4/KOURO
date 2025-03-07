@@ -50,6 +50,7 @@ void Player::Update() {
 	// 当たり判定との同期
 	BaseObject::Update(objectTransform_->transform.translate);
 	// ImGui描画
+
 	DrawImGui();
 }
 ///=============================================================================
@@ -71,6 +72,9 @@ void Player::Finalize() {
 ///=============================================================================
 ///                        Imgui描画
 void Player::DrawImGui() {
+
+#ifdef _DEBUG
+
 	ImGui::Begin("Player Status");
 
 	Vector3 pos = objectTransform_->transform.translate;
@@ -95,6 +99,8 @@ void Player::DrawImGui() {
 		index++;
 	}
 	ImGui::End();
+
+#endif
 }
 ///=============================================================================
 ///                        静的メンバ関数

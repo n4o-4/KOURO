@@ -40,8 +40,11 @@ protected:
 
 	std::unique_ptr<ModelCommon> modelCommon = nullptr;
 
+#ifdef _DEBUG
+
 	std::unique_ptr<ImGuiManager> imGuiManager = nullptr;
 
+#endif
 	std::unique_ptr<AbstaractSceneFactory> sceneFactory_ = nullptr;
 
 	
