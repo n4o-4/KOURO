@@ -389,10 +389,11 @@ void Player::OnCollisionEnter(BaseObject *other) {
 	//========================================
 	// 敵の弾
 	if(dynamic_cast<EnemyBullet *>( other )) {
+		// ダメージ処理
+		hp_--;
+		// ヒットリアクション
 		isJumping_ = true;
 	}
-
-
 }
 ///--------------------------------------------------------------
 ///						接触継続処理

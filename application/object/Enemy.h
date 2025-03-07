@@ -80,6 +80,9 @@ public:
 
 	void SetTarget(WorldTransform* target) { target_ = target; }
 
+	//弾の取得
+	std::list<std::unique_ptr<EnemyBullet>> &GetBullets() { return bullets_; }
+
 private:
 
 	void BulletUpdate();

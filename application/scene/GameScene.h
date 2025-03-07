@@ -22,6 +22,17 @@ private:
 	std::unique_ptr<PointLight> pointLight = nullptr;
 	std::unique_ptr<SpotLight> spotLight = nullptr;
 	//========================================
+	// アニメーションマネージャ
+	std::unique_ptr<AnimationManager> animationManager = nullptr;
+	//========================================
+	// ゲームの状態
+	// ゲームクリア
+	bool isGameClear_ = false;
+	// ゲームオーバー
+	bool isGameOver_ = false;
+	// コンティニュー
+	bool isContinue_ = true;
+	//========================================
 	// 天球
 	std::unique_ptr<SkyDome> skyDome_ = nullptr;
 	//========================================
@@ -44,12 +55,6 @@ private:
 	//========================================
 	// 当たり判定マネージャ
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
-
-	std::unique_ptr<AnimationManager> animationManager = nullptr;
-
-	Enemy* enemy_ = nullptr;
-
-	
 
 private:
 

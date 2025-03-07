@@ -1,4 +1,5 @@
 ﻿#include "EnemyBullet.h"
+#include "Player.h"
 
 void EnemyBullet::Initialize(const WorldTransform worldTransform,Vector3 target)
 {
@@ -48,14 +49,25 @@ void EnemyBullet::Draw(ViewProjection viewProjection, DirectionalLight direction
 	object3d_->Draw(*objectTransform_, viewProjection, directionalLight, pointLight, spotLight);
 }
 
-void EnemyBullet::OnCollisionEnter(BaseObject* other)
-{
+///=============================================================================
+///						当たり判定
+///--------------------------------------------------------------
+///						接触開始処理
+void EnemyBullet::OnCollisionEnter(BaseObject *other) {
+	//========================================
+	// Player
+	if(dynamic_cast<EnemyBullet *>( other )) {
+		// 自分を消す
+		isActive_ = false;
+	}
 }
+///--------------------------------------------------------------
+///						接触継続処理
+void EnemyBullet::OnCollisionStay(BaseObject *other) {
 
-void EnemyBullet::OnCollisionStay(BaseObject* other)
-{
 }
+///--------------------------------------------------------------
+///						接触終了処理
+void EnemyBullet::OnCollisionExit(BaseObject *other) {
 
-void EnemyBullet::OnCollisionExit(BaseObject* other)
-{
 }
