@@ -189,8 +189,7 @@ void Player::UpdateMove(Vector3 direction) {
 	}
 
 	// 移動が入力されているときだけ
-	if (std::abs(Length(velocity_)) > 0)
-	{
+	if(std::abs(Length(velocity_)) > 0) {
 		distinationRotateY_ = std::atan2(velocity_.x, velocity_.z);
 	}
 

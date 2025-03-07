@@ -2,31 +2,36 @@
 #include <cmath> // 数学関数用
 
 void LockOnMarker::Initialize() {
-
-	//Multi lock on
-	multiLockOn_ = std::make_unique<Object3d>();
-	multiLockOn_->Initialize(Object3dCommon::GetInstance());
-	ModelManager::GetInstance()->LoadModel("lockOn/Lock_on1.obj");
-	multiLockOn_->SetModel("lockOn/Lock_on1.obj");
+    // Multi lock on
+    multiLockOn_ = std::make_unique<Object3d>();
+    multiLockOn_->Initialize(Object3dCommon::GetInstance());
+    ModelManager::GetInstance()->LoadModel("lockOn/Lock_on1.obj");
+    multiLockOn_->SetModel("lockOn/Lock_on1.obj");
 
     multiLockOn_->SetEnableLighting(false);
 
 	multilockOnWorldTransform_ = std::make_unique<WorldTransform>();
 	multilockOnWorldTransform_->Initialize();
     
-    // マーカーのサイズを1.5倍に設定
-    multilockOnWorldTransform_->transform.scale = { 1.5f, 1.5f, 1.5f };
+    // 最初は最大スケールから始める
+    multilockOnWorldTransform_->transform.scale = { maxScale_, maxScale_, maxScale_ };
 
-	isVisible_ = false;
-
+    isVisible_ = false;
+    isAnimating_ = false;
+    animationTimer_ = 0.0f;
 }
 
 void LockOnMarker::Show() {
-	isVisible_ = true;
+    isVisible_ = true;
+    isAnimating_ = true;
+    // アニメーションを開始時は最大スケールから始める
+    multilockOnWorldTransform_->transform.scale = { maxScale_, maxScale_, maxScale_ };
+    animationTimer_ = 0.0f;
 }
 
 void LockOnMarker::Hide() {
-	isVisible_ = false;
+    isVisible_ = false;
+    isAnimating_ = false;
 }
 
 // プレイヤー位置とマーカー位置から向きを計算するUpdateメソッド
@@ -65,6 +70,23 @@ void LockOnMarker::Update(const Vector3& playerPosition, const Vector3& markerPo
         
         // マーカーの回転を設定
         multilockOnWorldTransform_->transform.rotate = { pitch, yaw, 0.0f };
+    }
+    
+    // アニメーション処理
+    if (isAnimating_) {
+        // タイマーを進める
+        animationTimer_ += 1.0f / 60.0f; // 60FPSを想定
+        
+        // 線形に縮小するアニメーション
+        float t = std::min(animationTimer_ * animationSpeed_, 1.0f);
+        float currentScale = maxScale_ - (maxScale_ - minScale_) * t;
+        
+        // スケール値を設定
+        multilockOnWorldTransform_->transform.scale = { 
+            currentScale, 
+            currentScale, 
+            currentScale 
+        };
     }
     
     // 行列を更新

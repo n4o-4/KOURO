@@ -78,7 +78,7 @@ protected:
 
 	std::unique_ptr<Fade> fade_ = nullptr;
 
-	float fadeTime_ = 2.0f;
+	float fadeTime_ = 0.4f;
 
 	Phase phase_ = Phase::kFadeIn;
 
