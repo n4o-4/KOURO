@@ -72,7 +72,7 @@ void GameScene::Initialize() {
 	player_->SetFollowCamera(cameraManager_->GetFollowCamera());
 
 	// 
-	fade_->Start(Fade::Status::FadeIn, 4.0f);
+	fade_->Start(Fade::Status::FadeIn, 4.0f);	
 }
 ///=============================================================================
 ///						終了処理
@@ -506,6 +506,7 @@ void GameScene::SpawnEnemy(const Vector3 &position) {
 	newEnemy->SetPosition(position);
 	//newEnemy->SetGameScene(this);
 	//newEnemy->SetPlayer(player_);
+	newEnemy->SetTarget(player_->GetWorldTransform());
 	enemies_.push_back(std::move(newEnemy));
 
 }
