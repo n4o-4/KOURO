@@ -290,12 +290,6 @@ void GameScene::Draw() {
 		DrawObject();
 		/// オブジェクト描画
 		//========================================
-		// プレイヤーの描画
-		player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
-			*directionalLight.get(),
-			*pointLight.get(),
-			*spotLight.get());
-		//========================================
 		// 天球
 		skyDome_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 			*directionalLight.get(),
@@ -307,7 +301,12 @@ void GameScene::Draw() {
 			*directionalLight.get(),
 			*pointLight.get(),
 			*spotLight.get());
-
+		//========================================
+		// プレイヤーの描画
+		player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
 		DrawForegroundSprite();
 		/// 前景スプライト描画	
 
@@ -323,12 +322,6 @@ void GameScene::Draw() {
 
 		DrawObject();
 		/// オブジェクト描画
-		//========================================
-		// プレイヤーの描画
-		player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
-			*directionalLight.get(),
-			*pointLight.get(),
-			*spotLight.get());
 		//========================================
 		// 天球
 		skyDome_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
@@ -349,6 +342,12 @@ void GameScene::Draw() {
 				*pointLight.get(),
 				*spotLight.get());
 		}
+		//========================================
+		// プレイヤーの描画
+		player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
 		//========================================
 		// LockOn
 		// 🔽 LockOnの描画処理を追加
@@ -378,12 +377,6 @@ void GameScene::Draw() {
 		DrawObject();
 		/// オブジェクト描画
 		//========================================
-		// プレイヤーの描画
-		player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
-			*directionalLight.get(),
-			*pointLight.get(),
-			*spotLight.get());
-		//========================================
 		// 天球
 		skyDome_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 			*directionalLight.get(),
@@ -403,6 +396,12 @@ void GameScene::Draw() {
 				*pointLight.get(),
 				*spotLight.get());
 		}
+		//========================================
+		// プレイヤーの描画
+		player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
 		//========================================
 		// LockOn
 		 // 🔽 LockOnの描画処理を追加
