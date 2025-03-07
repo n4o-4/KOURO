@@ -81,6 +81,7 @@ void LockOn::Update(const std::vector<std::unique_ptr<Enemy>>& enemies) {
     while (lockOnMarkers_.size() < lockedEnemies_.size()) {
         auto marker = std::make_unique<LockOnMarker>();
         marker->Initialize();
+        marker->Show(); // 新しく作成したマーカーのみShow()を呼び出す
         lockOnMarkers_.push_back(std::move(marker));
     }
     while (lockOnMarkers_.size() > lockedEnemies_.size()) {
@@ -94,9 +95,9 @@ void LockOn::Update(const std::vector<std::unique_ptr<Enemy>>& enemies) {
         Vector3 markerPos = { enemyPos.x, enemyPos.y + 1.0f, enemyPos.z };
         
         // 視点方向を渡して更新
-        lockOnMarkers_[i]->Show();
         lockOnMarkers_[i]->Update(playerPos, markerPos);
     }
+    
 }
 ///=============================================================================
 ///                        描画処理
