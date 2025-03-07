@@ -57,7 +57,7 @@ private:
     float angularVelocity_ = 0.0f;
     
     // 追尾パラメータ
-    float navigationGain_ = 0.9f;  // 比例航法のゲイン
+    float navigationGain_ = 0.2f;  // 比例航法のゲイン
     
     // モデルとトランスフォーム
     std::unique_ptr<Object3d> model_;
