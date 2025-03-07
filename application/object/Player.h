@@ -112,6 +112,9 @@ private:
 	//std::unique_ptr<LockOn> lockOnSystem_ = nullptr;// ロックオンシステムのポインタを追加
 	LockOn* lockOnSystem_ = nullptr;  // 🔹 `GameScene` に所有させるので `LockOn*` に戻す
 	//========================================
+	// 
+
+	//========================================
 	// 移動関連
 	Vector3 position_ = { 0.0f, 0.0f, 0.0f };     // 位置
 	Vector3 velocity_ = { 0.0f, 0.0f, 0.0f };     // 現在の速度ベクトル

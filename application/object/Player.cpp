@@ -6,6 +6,7 @@
 #include "MyMath.h"
 #include "imgui.h"
 #include "Enemy.h"
+#include "EnemyBullet.h"
 
 void Player::Initialize() {
 	// Object3d を初期化
@@ -380,9 +381,18 @@ bool Player::HandleBoost() {
 ///--------------------------------------------------------------
 ///						接触開始処理
 void Player::OnCollisionEnter(BaseObject *other) {
+	//========================================
+	// 敵
 	if(dynamic_cast<Enemy *>( other )) {
 		isJumping_ = true;
 	}
+	//========================================
+	// 敵の弾
+	if(dynamic_cast<EnemyBullet *>( other )) {
+		isJumping_ = true;
+	}
+
+
 }
 ///--------------------------------------------------------------
 ///						接触継続処理

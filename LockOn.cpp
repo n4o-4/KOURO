@@ -10,12 +10,13 @@ void LockOn::Initialize() {
 	//lockOn model
 	lockOn_ = std::make_unique<Object3d>();
 	lockOn_->Initialize(Object3dCommon::GetInstance());
-	ModelManager::GetInstance()->LoadModel("lockOn/Lock_on.obj");	
-	lockOn_->SetModel("lockOn/Lock_on.obj");
+	ModelManager::GetInstance()->LoadModel("lockOn/Lock_on1.obj");	
+	lockOn_->SetModel("lockOn/Lock_on1.obj");
 
 	lockOnWorldTransform_ = std::make_unique<WorldTransform>();
 	lockOnWorldTransform_->Initialize();
 	lockOnWorldTransform_->transform.translate = { 0.0f, 0.0f, 0.0f };
+	lockOnWorldTransform_->transform.scale = { 3.5f, 3.5f, 3.5f };
 
 	// LockOnMarker 
 	lockOnMarkers_.clear();
