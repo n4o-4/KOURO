@@ -166,6 +166,7 @@ void LockOn::DetectEnemies(const std::vector<std::unique_ptr<Enemy>>& enemies) {
             }
             return a.priority > b.priority;
         });
+    lockedEnemies_.clear(); // 既存のリストをクリア
 	//========================================
 	// ロックオン対象の数を制限
     for (size_t i = 0; i < std::min(prioritizedEnemies.size(), maxLockCount_); ++i) {

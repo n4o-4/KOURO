@@ -175,11 +175,10 @@ void GameScene::Update() {
 				// カメラからの視点方向をロックオンシステムに設定
 				lockOnSystem_->SetViewDirection(followCamera->GetForwardDirection());
 			}
-
-			// ロックオン更新
-			lockOnSystem_->Update(enemies_);
 			// 敵の検出
 			lockOnSystem_->DetectEnemies(enemies_);
+			// ロックオン更新
+			lockOnSystem_->Update(enemies_);
 		}
 
 		// エネミー
