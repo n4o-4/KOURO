@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "PlayerBullet.h"
 
+
 ///=============================================================================
 ///						初期化
 void Enemy::Initialize() {
@@ -47,6 +48,17 @@ void Enemy::Update() {
 		// モデルの更新
 		model_->Update();
 
+		BulletUpdate();
+
+		intervalCounter_ += 1.0f / 60.0f;
+
+		if (kIntervalTiem <= intervalCounter_)
+		{
+			Fire();
+
+			intervalCounter_ = fmod(intervalCounter_, kIntervalTiem);
+		}
+
 		//========================================
 		// 当たり判定との同期
 		BaseObject::Update(worldTransform_->transform.translate);
@@ -55,6 +67,9 @@ void Enemy::Update() {
 ///=============================================================================
 ///						描画
 void Enemy::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
+
+	BulletDraw(viewProjection, directionalLight, pointLight, spotLight);
+
 	//========================================
 	// モデルの描画
 	if (hp_ > 0) {
@@ -81,4 +96,39 @@ void Enemy::OnCollisionStay(BaseObject* other) {
 ///						接触終了処理
 void Enemy::OnCollisionExit(BaseObject* other) {
 
+}
+
+void Enemy::BulletUpdate()
+{
+	for (auto it = bullets_.begin(); it != bullets_.end(); ) 
+	{
+		if (!(*it)->GetIsActive()) {
+			it = bullets_.erase(it);  // 非アクティブなら削除
+		}
+		else {
+			it->get()->Update();
+
+			++it;  // アクティブなら次へ
+		}
+	}
+
+}
+
+void Enemy::BulletDraw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
+{
+	for (auto it = bullets_.begin(); it != bullets_.end(); ) 
+	{
+		it->get()->Draw(viewProjection, directionalLight, pointLight, spotLight);
+
+		++it;
+	}
+}
+
+void Enemy::Fire()
+{
+		std::unique_ptr<EnemyBullet> newBullet = std::make_unique<EnemyBullet>();
+
+		newBullet->Initialize(*worldTransform_.get(), target_->transform.translate);
+
+		bullets_.push_back(std::move(newBullet));
 }
