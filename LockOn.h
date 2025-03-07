@@ -52,6 +52,6 @@ private:
 	// ロックオン範囲
 	float detectionRange_ = 100.0f;   // より広いロックオン距離
     float viewAngleThreshold_ = 0.99f; // より厳しい視点方向判定（約20度）
-	const size_t maxLockCount_ = 8;	  // 最大3体までロックオン対象に追加
+	const size_t maxLockCount_ = 100;	  // 最大3体までロックオン対象に追加
 };
 

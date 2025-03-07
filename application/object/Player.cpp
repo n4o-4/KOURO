@@ -93,7 +93,7 @@ void Player::DrawImGui() {
 	int index = 0;
 	for(const auto &bullet : bullets_) {
 		if(bullet->IsActive()) {
-			Vector3 pos = bullet->GetPosition();
+			Vector3 pos = bullet->GetCollider()->GetPosition();
 			ImGui::Text("Bullet %d: (%.2f, %.2f, %.2f)", index, pos.x, pos.y, pos.z);
 		}
 		index++;
@@ -269,23 +269,31 @@ void Player::UpdateBullets() {
 }
 ///                        射撃
 void Player::Shoot() {
-	Vector3 bulletPos = objectTransform_->transform.translate;
-	Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };
-	Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };
+    Vector3 bulletPos = objectTransform_->transform.translate;
+    Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };
+    Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };
 
-	if(lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
-		for(Enemy *enemy : lockOnSystem_->GetLockedEnemies()) {
-			if(!enemy) continue;
+    if (lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
+        for (Enemy* enemy : lockOnSystem_->GetLockedEnemies()) {
+            if (!enemy) continue;
 
-			Vector3 enemyPos = enemy->GetPosition();
-			Vector3 direction = Normalize(enemyPos - bulletPos);
+            Vector3 enemyPos = enemy->GetPosition();
+            Vector3 direction = Normalize(enemyPos - bulletPos);
 
-			bullets_.emplace_back(std::make_unique<PlayerBullet>(bulletPos, direction * 0.5f, bulletScale, bulletRotate));
-		}
-	} else {
-		Vector3 bulletVelocity = { 0.0f, 0.5f, 0.0f };
-		bullets_.emplace_back(std::make_unique<PlayerBullet>(bulletPos, bulletVelocity, bulletScale, bulletRotate));
-	}
+            // 初速はほぼまっすぐ上向きに（後から曲がる演出のため）
+            Vector3 initialVelocity = Normalize((direction * 0.3f) + Vector3{0.0f, 0.7f, 0.0f});
+            initialVelocity = initialVelocity * 0.25f; // 初速は少し遅めに
+
+            // 新しい弾を作成してターゲットを設定
+            auto newBullet = std::make_unique<PlayerBullet>(bulletPos, initialVelocity, bulletScale, bulletRotate);
+            newBullet->SetTarget(enemy); // ターゲットを設定
+            bullets_.push_back(std::move(newBullet));
+        }
+    } else {
+        // ロックオンがない場合は上方向に発射
+        Vector3 bulletVelocity = { 0.0f, 0.5f, 0.0f };
+        bullets_.push_back(std::make_unique<PlayerBullet>(bulletPos, bulletVelocity, bulletScale, bulletRotate));
+    }
 }
 
 ///--------------------------------------------------------------
