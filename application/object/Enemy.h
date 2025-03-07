@@ -2,10 +2,22 @@
 #include "Kouro.h"
 #include "BaseObject.h"
 #include <iostream>
+#include <list>
+#include <memory>
+
+#include "EnemyBullet.h"
 
 ///=============================================================================
 ///						エネミークラス
 class Enemy : public BaseObject {
+
+	// 行動フェーズ
+	enum class ActionPhase
+	{
+		Attack,
+		Move,
+	};
+
 	///--------------------------------------------------------------
 	///						 メンバ関数 
 public:
@@ -66,6 +78,23 @@ public:
 	 */
 	const int GetHp() const { return hp_; }
 
+	void SetTarget(WorldTransform* target) { target_ = target; }
+
+	//弾の取得
+	std::list<std::unique_ptr<EnemyBullet>> &GetBullets() { return bullets_; }
+
+private:
+
+	void BulletUpdate();
+
+	void BulletDraw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
+
+	/*void AttackUpdate();
+
+	void MoveUpdate();*/
+
+	void Fire();
+
 	///--------------------------------------------------------------
 	/// メンバ変数
 private:
@@ -78,6 +107,17 @@ private:
 	//HP
 	int hp_ = 1;
 
+	float speed_ = 0.05f;   // 移動速度
+	float minX_ = -100.0f;    // 左の限界
+	float maxX_ = 100.0f;     // 右の限界
+	int direction_ = 1;     // 移動方向 (1:右, -1:左)
 
+	WorldTransform* target_;
+
+    std::list<std::unique_ptr<EnemyBullet>> bullets_;
+
+	const float kIntervalTiem = 5.0f;
+
+	float intervalCounter_ = 0.0f;
 };
 

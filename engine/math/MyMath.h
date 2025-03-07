@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <numbers>
 
+
 const float kDeltaTime = 1.0f / 60.0f;
 
 struct AABB {
@@ -60,6 +61,26 @@ inline Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
 		t * v1.x + (1.0f - t) * v2.x,
 		t * v1.y + (1.0f - t) * v2.y,
 		t * v1.z + (1.0f - t) * v2.z };
+}
+
+inline float fLerp(float startPos, float endPos, float t) {
+	return { startPos * (1.0f - t) + t * endPos };
+}
+
+inline float LerpShortAngle(float a, float b, float t) {
+	float diff = b - a;
+
+	diff = std::fmod(diff, static_cast<float>(std::numbers::pi) * 2.0f);
+
+	if (diff > static_cast<float>(std::numbers::pi)) {
+		diff += (static_cast<float>(std::numbers::pi) * -2.0f);
+	}
+
+	if (diff < static_cast<float>(-std::numbers::pi)) {
+		diff += (static_cast<float>(std::numbers::pi) * 2.0f);
+	}
+
+	return fLerp(a, a + diff, t);
 }
 
 static Vector3 TransformNormal(const Vector3& normal, const Matrix4x4& mat) {

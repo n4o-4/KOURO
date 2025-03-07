@@ -26,10 +26,13 @@ void LineDrawerBase::Update()
 	for (std::list<std::unique_ptr<LineObject>>::iterator iterator = lineObjects_.begin(); iterator != lineObjects_.end();)
 	{
 
+#ifdef _DEBUG
+
 		ImGui::DragFloat3("object.scale", &iterator->get()->transform->transform.scale.x, 0.01f);
 		ImGui::DragFloat3("object.rotate", &iterator->get()->transform->transform.rotate.x, 0.01f);
 		ImGui::DragFloat3("object.translate", &iterator->get()->transform->transform.translate.x, 0.01f);
 
+#endif
 		Matrix4x4 worldMatrix = MakeAffineMatrix(iterator->get()->transform->transform.scale, iterator->get()->transform->transform.rotate, iterator->get()->transform->transform.translate);
 
 		iterator->get()->instancingData->matWorld = worldMatrix;

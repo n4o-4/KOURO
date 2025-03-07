@@ -16,6 +16,9 @@ public:
 
 	void SetTarget(WorldTransform* target) { target_ = target; }
 
+	// 前方向ベクトルを取得
+	Vector3 GetForwardDirection() const;
+
 private:
 
 	Vector3 CalculationOffset();

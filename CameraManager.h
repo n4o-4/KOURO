@@ -19,6 +19,8 @@ public: /// メンバ関数
 
 	void SetFollowCameraTarget(WorldTransform* target) { followCamera_->SetTarget(target); }
 
+	FollowCamera* GetFollowCamera() { return followCamera_.get(); }
+
 private:
 
 	void ChangeActiveCamera();

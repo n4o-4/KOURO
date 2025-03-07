@@ -13,7 +13,7 @@ void ViewProjection::Initialize()
 
 	transform.translate = { 0.0f,0.0f,-15.0f };
 
-	fovY = 0.45f;
+	fovY = 0.85f;
 	aspectRation = static_cast<float>(WinApp::kClientWidth) / static_cast<float>(WinApp::kClientHeight);
 	nearClip = 0.1f;
 	farClip = 100.0f;

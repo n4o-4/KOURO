@@ -22,6 +22,7 @@
     <ClCompile Include="application\object\Enemy.cpp" />
     <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
+    <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="engine\object\BaseCamera.cpp" />
     <ClCompile Include="engine\3d\AnimationManager.cpp" />
     <ClCompile Include="engine\3d\WorldTransform.cpp" />
@@ -82,6 +83,7 @@
     <ClInclude Include="application\object\Enemy.h" />
     <ClInclude Include="CameraManager.h" />
     <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="engine\object\BaseCamera.h" />
     <ClInclude Include="engine\3d\AnimationManager.h" />
     <ClInclude Include="engine\3d\ModelDatas.h" />

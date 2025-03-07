@@ -39,12 +39,18 @@ void CollisionManager::Draw() {
 ///=============================================================================
 ///						Imguiの描画
 void CollisionManager::DrawImGui() {
+
+#ifdef _DEBUG
+
 	//あたってるオブジェクトの数
 	ImGui::Begin("CollisionManager");
 	ImGui::Text("Colliding Objects: %d", Objects_.size());
 	//HitBoxの表示
 	ImGui::Checkbox("HitBox", &isHitDraw_);
 	ImGui::End();
+
+#endif
+
 }
 
 ///=============================================================================

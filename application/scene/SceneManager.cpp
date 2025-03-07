@@ -34,6 +34,8 @@ void SceneManager::Update()
 
 	static int currentSceneIndex = 0;
 
+#ifdef _DEBUG
+
 	ImGui::Begin("Scene");
 
 	if (ImGui::BeginCombo("Scene", sceneNames[currentSceneIndex].c_str()))
@@ -57,6 +59,7 @@ void SceneManager::Update()
 
 	ImGui::End();
 
+#endif
 
 	if (nextScene_)
 	{

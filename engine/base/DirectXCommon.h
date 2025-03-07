@@ -101,6 +101,8 @@ public:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> GetOffRenderTextureResource() { return offScreenRendring->GetRenderTextureResource(); }
 
+	D3D12_CPU_DESCRIPTOR_HANDLE GetDsvHandle() { return dsvHandle; }
+
 private: 
 	//デバイス初期化
 	void InitializeDevice();
@@ -135,7 +137,9 @@ private:
 	// DXCコンパイラーの生成
 	void CreateDXCCompiler();
 
-	// ImGuiの初期化
+	// 
+	// 
+	// の初期化
 	void InitializeImGui();
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device,uint32_t width,uint32_t height, DXGI_FORMAT format,const Vector4& clearColor);
@@ -201,6 +205,8 @@ private:
 	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler = nullptr;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[4];
+
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 
 	D3D12_RESOURCE_BARRIER barrier{};
 

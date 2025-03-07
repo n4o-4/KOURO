@@ -36,8 +36,9 @@ void DebugCamera::Update()
        viewProjection_->transform.translate = targetTransform_->transform.translate + offSet;  
    }  
 
+#ifdef _DEBUG
    ImGui::Text("offset.z%f", static_cast<float>(Input::GetInstance()->mouseState.lZ));  
-
+#endif
    if (Input::GetInstance()->PushMouseButton(Input::MouseButton::LEFT))  
    {  
        Vector3 rotate = { static_cast<float>(Input::GetInstance()->mouseState.lY) * 0.0008f, static_cast<float>(Input::GetInstance()->mouseState.lX) * 0.0008f,0.0f };  

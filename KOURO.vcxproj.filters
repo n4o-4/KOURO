@@ -27,8 +27,6 @@
     <ClCompile Include="application\scene\SceneManager.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
     <ClCompile Include="application\object\Enemy.cpp" />
-    <ClCompile Include="CameraManager.cpp" />
-    <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="engine\object\BaseCamera.cpp" />
     <ClCompile Include="engine\3d\AnimationManager.cpp" />
     <ClCompile Include="engine\3d\WorldTransform.cpp" />
@@ -75,6 +73,15 @@
     <ClCompile Include="application\object\SkyDome.cpp" />
     <ClCompile Include="application\object\Player.cpp" />
     <ClCompile Include="PlayerBullet.cpp" />
+    <ClCompile Include="DebugCamera.cpp" />
+    <ClCompile Include="GameClear.cpp" />
+    <ClCompile Include="GameOver.cpp" />
+    <ClCompile Include="LockOn.cpp" />
+    <ClCompile Include="LockOnMarker.cpp" />
+    <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="FollowCamera.cpp" />
+    <ClCompile Include="Fade.cpp" />
+    <ClCompile Include="EnemyBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -87,8 +94,6 @@
     <ClInclude Include="application\scene\SceneManager.h" />
     <ClInclude Include="application\scene\TitleScene.h" />
     <ClInclude Include="application\object\Enemy.h" />
-    <ClInclude Include="CameraManager.h" />
-    <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="engine\object\BaseCamera.h" />
     <ClInclude Include="engine\3d\AnimationManager.h" />
     <ClInclude Include="engine\3d\ModelDatas.h" />
@@ -141,6 +146,10 @@
     <ClInclude Include="LockOn.h" />
     <ClInclude Include="LockOnMarker.h" />
     <ClInclude Include="PlayerBullet.h" />
+    <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="FollowCamera.h" />
+    <ClInclude Include="Fade.h" />
+    <ClInclude Include="EnemyBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

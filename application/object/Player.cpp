@@ -6,6 +6,7 @@
 #include "MyMath.h"
 #include "imgui.h"
 #include "Enemy.h"
+#include "EnemyBullet.h"
 
 void Player::Initialize() {
 	// Object3d を初期化
@@ -50,6 +51,7 @@ void Player::Update() {
 	// 当たり判定との同期
 	BaseObject::Update(objectTransform_->transform.translate);
 	// ImGui描画
+
 	DrawImGui();
 }
 ///=============================================================================
@@ -71,6 +73,9 @@ void Player::Finalize() {
 ///=============================================================================
 ///                        Imgui描画
 void Player::DrawImGui() {
+
+#ifdef _DEBUG
+
 	ImGui::Begin("Player Status");
 
 	Vector3 pos = objectTransform_->transform.translate;
@@ -89,12 +94,14 @@ void Player::DrawImGui() {
 	int index = 0;
 	for(const auto &bullet : bullets_) {
 		if(bullet->IsActive()) {
-			Vector3 pos = bullet->GetPosition();
+			Vector3 pos = bullet->GetCollider()->GetPosition();
 			ImGui::Text("Bullet %d: (%.2f, %.2f, %.2f)", index, pos.x, pos.y, pos.z);
 		}
 		index++;
 	}
 	ImGui::End();
+
+#endif
 }
 ///=============================================================================
 ///                        静的メンバ関数
@@ -111,6 +118,12 @@ Vector3 Player::GetMovementInput() {
 	Vector3 stickInput = Input::GetInstance()->GetLeftStick();
 	inputDirection.x += stickInput.x;
 	inputDirection.z += stickInput.z;
+
+	Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate);
+
+	inputDirection = TransformNormal(inputDirection, rotateMatrix);
+
+	inputDirection.y = 0.0f;
 
 	return inputDirection;
 }
@@ -182,6 +195,13 @@ void Player::UpdateMove(Vector3 direction) {
 		}
 	}
 
+	// 移動が入力されているときだけ
+	if(std::abs(Length(velocity_)) > 0) {
+		distinationRotateY_ = std::atan2(velocity_.x, velocity_.z);
+	}
+
+	// プレイヤーの向き
+	objectTransform_->transform.rotate.y = LerpShortAngle(objectTransform_->transform.rotate.y, distinationRotateY_, 0.1f);
 	// 位置の更新
 	objectTransform_->transform.translate = ( objectTransform_->transform.translate + velocity_ );
 }
@@ -250,23 +270,31 @@ void Player::UpdateBullets() {
 }
 ///                        射撃
 void Player::Shoot() {
-	Vector3 bulletPos = objectTransform_->transform.translate;
-	Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };
-	Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };
+    Vector3 bulletPos = objectTransform_->transform.translate;
+    Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };
+    Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };
 
-	if(lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
-		for(Enemy *enemy : lockOnSystem_->GetLockedEnemies()) {
-			if(!enemy) continue;
+    if (lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
+        for (Enemy* enemy : lockOnSystem_->GetLockedEnemies()) {
+            if (!enemy) continue;
 
-			Vector3 enemyPos = enemy->GetPosition();
-			Vector3 direction = Normalize(enemyPos - bulletPos);
+            Vector3 enemyPos = enemy->GetPosition();
+            Vector3 direction = Normalize(enemyPos - bulletPos);
 
-			bullets_.emplace_back(std::make_unique<PlayerBullet>(bulletPos, direction * 0.5f, bulletScale, bulletRotate));
-		}
-	} else {
-		Vector3 bulletVelocity = { 0.0f, 0.5f, 0.0f };
-		bullets_.emplace_back(std::make_unique<PlayerBullet>(bulletPos, bulletVelocity, bulletScale, bulletRotate));
-	}
+            // 初速はほぼまっすぐ上向きに（後から曲がる演出のため）
+            Vector3 initialVelocity = Normalize((direction * 0.3f) + Vector3{0.0f, 0.7f, 0.0f});
+            initialVelocity = initialVelocity * 0.25f; // 初速は少し遅めに
+
+            // 新しい弾を作成してターゲットを設定
+            auto newBullet = std::make_unique<PlayerBullet>(bulletPos, initialVelocity, bulletScale, bulletRotate);
+            newBullet->SetTarget(enemy); // ターゲットを設定
+            bullets_.push_back(std::move(newBullet));
+        }
+    } else {
+        // ロックオンがない場合は上方向に発射
+        Vector3 bulletVelocity = { 0.0f, 0.5f, 0.0f };
+        bullets_.push_back(std::make_unique<PlayerBullet>(bulletPos, bulletVelocity, bulletScale, bulletRotate));
+    }
 }
 
 ///--------------------------------------------------------------
@@ -353,7 +381,17 @@ bool Player::HandleBoost() {
 ///--------------------------------------------------------------
 ///						接触開始処理
 void Player::OnCollisionEnter(BaseObject *other) {
+	//========================================
+	// 敵
 	if(dynamic_cast<Enemy *>( other )) {
+		isJumping_ = true;
+	}
+	//========================================
+	// 敵の弾
+	if(dynamic_cast<EnemyBullet *>( other )) {
+		// ダメージ処理
+		hp_--;
+		// ヒットリアクション
 		isJumping_ = true;
 	}
 }

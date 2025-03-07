@@ -59,6 +59,7 @@ public: // メンバ関数
 
 	void SetLocalMatrix(Matrix4x4 localMatrix) { this->localMatrix = localMatrix; }
 
+	void SetEnableLighting(bool flag) { model->SetEnableLighting(flag); }
 
 private:
 

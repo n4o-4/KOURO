@@ -29,6 +29,8 @@ public:
 	// 描画
 	void Draw(WorldTransform worldTransform);
 
+	void SetEnableLighting(bool flag) { materialData->enableLighting = flag; }
+
 private:
 
 	
@@ -70,7 +72,7 @@ private:
 
 	static ModelData LoadModelFile(const std::string& directoryPath, const std::string& filename);
 
-
+	
 
 public:
 

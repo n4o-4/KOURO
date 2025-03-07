@@ -69,7 +69,7 @@ public:
 	 * \brief  SetCamera カメラをセット
 	 * \param  camera カメラ
 	 */
-	void SetCamera(Camera *camera) { object3d_->SetCamera(camera); }	
+	void SetFollowCamera(FollowCamera* followCamera) { followCamera_ = followCamera; }
 
 	/**----------------------------------------------------------------------------
 	 * \brief  SetLockOnSystem ロックオンシステムをセット
@@ -97,6 +97,17 @@ public:
 	 */
 	std::vector<std::unique_ptr<PlayerBullet>>& GetBullets() { return bullets_; }
 
+	/**----------------------------------------------------------------------------
+	 * \brief  GetHp HPの取得
+	 * \return
+	 */
+	int GetHp() { return hp_; }
+
+	/**----------------------------------------------------------------------------
+	 * \brief  SetHp HPの設定
+	 * \param  hp
+	 */
+	void SetHp(int hp) { hp_ = hp; }
 
 private:
 	//========================================
@@ -111,6 +122,9 @@ private:
 	// ロックオン
 	//std::unique_ptr<LockOn> lockOnSystem_ = nullptr;// ロックオンシステムのポインタを追加
 	LockOn* lockOnSystem_ = nullptr;  // 🔹 `GameScene` に所有させるので `LockOn*` に戻す
+	//========================================
+	// Hp
+	int hp_ = 10;
 	//========================================
 	// 移動関連
 	Vector3 position_ = { 0.0f, 0.0f, 0.0f };     // 位置
@@ -153,4 +167,6 @@ private:
 	//========================================
 	// カメラ
 	FollowCamera *followCamera_ = nullptr;
+
+	float distinationRotateY_;
 };
