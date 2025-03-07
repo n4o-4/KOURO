@@ -112,6 +112,12 @@ Vector3 Player::GetMovementInput() {
 	inputDirection.x += stickInput.x;
 	inputDirection.z += stickInput.z;
 
+	Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate);
+
+	inputDirection = TransformNormal(inputDirection, rotateMatrix);
+
+	inputDirection.y = 0.0f;
+
 	return inputDirection;
 }
 ///--------------------------------------------------------------
@@ -182,6 +188,14 @@ void Player::UpdateMove(Vector3 direction) {
 		}
 	}
 
+	// 移動が入力されているときだけ
+	if (std::abs(Length(velocity_)) > 0)
+	{
+		distinationRotateY_ = std::atan2(velocity_.x, velocity_.z);
+	}
+
+	// プレイヤーの向き
+	objectTransform_->transform.rotate.y = LerpShortAngle(objectTransform_->transform.rotate.y, distinationRotateY_, 0.1f);
 	// 位置の更新
 	objectTransform_->transform.translate = ( objectTransform_->transform.translate + velocity_ );
 }
