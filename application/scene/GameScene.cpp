@@ -112,6 +112,11 @@ void GameScene::Update() {
 
 	case Phase::kPlay:
 
+		if (Input::GetInstance()->Triggerkey(DIK_R))
+		{
+			isContinue = false;
+		}
+
 		if(!isContinue) {
 			phase_ = Phase::kFadeOut;
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
