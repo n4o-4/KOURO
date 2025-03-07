@@ -9,6 +9,8 @@ void LockOnMarker::Initialize() {
 	ModelManager::GetInstance()->LoadModel("lockOn/Lock_on1.obj");
 	multiLockOn_->SetModel("lockOn/Lock_on1.obj");
 
+    multiLockOn_->SetEnableLighting(false);
+
 	multilockOnWorldTransform_ = std::make_unique<WorldTransform>();
 	multilockOnWorldTransform_->Initialize();
     
