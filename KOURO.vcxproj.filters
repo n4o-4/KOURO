@@ -15,7 +15,7 @@
     <FxCompile Include="Resources\shaders\Vignette.PS.hlsl" />
     <FxCompile Include="Resources\shaders\BoxFilter.PS.hlsl" />
     <FxCompile Include="Resources\shaders\GaussianFilter.PS.hlsl" />
-    <FxCompile Include="Resources\shaders\LuminanceBaseOutline.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\LuminanceBasedOutline.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\collision\BaseObject.cpp" />
@@ -82,6 +82,7 @@
     <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="EnemyBullet.cpp" />
+    <ClCompile Include="PostEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -150,6 +151,8 @@
     <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="EnemyBullet.h" />
+    <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="PostEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

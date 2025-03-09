@@ -69,6 +69,7 @@
     <ClCompile Include="application\object\SkyDome.cpp" />
     <ClCompile Include="application\object\Player.cpp" />
     <ClCompile Include="PlayerBullet.cpp" />
+    <ClCompile Include="PostEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -136,6 +137,7 @@
     <ClInclude Include="LockOn.h" />
     <ClInclude Include="LockOnMarker.h" />
     <ClInclude Include="PlayerBullet.h" />
+    <ClInclude Include="PostEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
@@ -182,7 +184,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\LuminanceBaseOutline.PS.hlsl">
+    <FxCompile Include="Resources\shaders\LuminanceBasedOutline.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

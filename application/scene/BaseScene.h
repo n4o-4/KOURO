@@ -12,6 +12,8 @@
 
 #include "Fade.h"
 
+#include "PostEffect.h"
+
 class SceneManager;
 
 // シーン基底クラス

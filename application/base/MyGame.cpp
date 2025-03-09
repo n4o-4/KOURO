@@ -70,6 +70,8 @@ void MyGame::Draw()
 
 	DirectXCommon::GetInstance()->RenderTexturePostDraw();
 
+	Framework::DrawEffect();
+
 	DirectXCommon::GetInstance()->PreDraw();
 
 #ifdef _DEBUG

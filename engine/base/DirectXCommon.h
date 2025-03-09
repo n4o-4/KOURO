@@ -103,6 +103,10 @@ public:
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDsvHandle() { return dsvHandle; }
 
+	IDXGISwapChain4* GetSwapChain() { return swapChain.Get(); }
+
+	Microsoft::WRL::ComPtr<ID3D12Resource>* GetSwapChainResources() { return swapChainResources; }
+
 private: 
 	//デバイス初期化
 	void InitializeDevice();

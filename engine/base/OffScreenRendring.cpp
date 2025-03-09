@@ -40,8 +40,8 @@ void OffScreenRendring::PreDraw()
 	DirectXCommon::GetInstance()->GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	
-	DirectXCommon::GetInstance()->GetCommandList()->RSSetViewports(1, DirectXCommon::GetInstance()->GetViewPort()); // Viewportを設定
-	DirectXCommon::GetInstance()->GetCommandList()->RSSetScissorRects(1, DirectXCommon::GetInstance()->GetRect()); // Scissorを設定
+	DirectXCommon::GetInstance()->GetCommandList()->RSSetViewports(1, &*DirectXCommon::GetInstance()->GetViewPort()); // Viewportを設定
+	DirectXCommon::GetInstance()->GetCommandList()->RSSetScissorRects(1, &*DirectXCommon::GetInstance()->GetRect()); // Scissorを設定
 
 
 }

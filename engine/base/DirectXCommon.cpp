@@ -488,9 +488,9 @@ void DirectXCommon::PreDraw()
 	//// DSV設定
 	commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
 
-	// 指定した色で画面全体をクリアする
-	float clearColor[] = { 0.1f,0.25,0.5f,1.0f }; // 青っぽい色 RGBAの順
-	commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], clearColor, 0, nullptr);
+	//// 指定した色で画面全体をクリアする
+	//float clearColor[] = { 0.1f,0.25,0.5f,1.0f }; // 青っぽい色 RGBAの順
+	//commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], clearColor, 0, nullptr);
 
 	//// 画面全体の深度をクリア
 	//commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
@@ -513,7 +513,7 @@ void DirectXCommon::PreDraw()
 
 	commandList->SetGraphicsRootDescriptorTable(0, TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture"));
 
-	commandList->DrawInstanced(3, 1, 0, 0);
+	//->DrawInstanced(3, 1, 0, 0);
 }
 
 void DirectXCommon::PostDraw()
@@ -855,7 +855,7 @@ void DirectXCommon::CreateOffScreenPipeLine()
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = CompileShader(L"Resources/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"Resources/shaders/LuminanceBaseOutline.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = CompileShader(L"Resources/shaders/CopyImage.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 	// DepthStencilStateの設定

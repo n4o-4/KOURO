@@ -104,6 +104,11 @@ void Framework::Initialize()
 
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
 	lineDrawer_->Initialize(dxCommon_,srvManager.get());
+
+	postEffect_ = std::make_unique<PostEffect>();
+	postEffect_->Initialize(dxCommon_);
+
+	SceneManager::GetInstance()->SetPostEffect(postEffect_.get());
 }
 
 void Framework::Finalize()
@@ -152,6 +157,13 @@ void Framework::Draw()
 	SceneManager::GetInstance()->Draw();
 
 }
+
+void Framework::DrawEffect()
+{
+	postEffect_->Draw();
+}
+
+
 
 void Framework::Run()
 {
