@@ -37,6 +37,9 @@ public:
 
 	void CreateRenderTextureMetaData();
 
+	void SwapRenderTextures(const std::string& renderTexName, const std::string& intermediateTexName);
+	
+
 private:
 	static std::unique_ptr<TextureManager> instance;
 

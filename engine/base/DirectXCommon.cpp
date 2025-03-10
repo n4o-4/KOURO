@@ -507,11 +507,11 @@ void DirectXCommon::PreDraw()
 	commandList->SetGraphicsRootSignature(rootSignature.Get());
 	commandList->SetPipelineState(graphicsPipelineState.Get());
 
-	auto srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture");
+	auto srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
 	// srvHandle.ptr が 0 または異常な値でないか確認
 	assert(srvHandle.ptr != 0);
 
-	commandList->SetGraphicsRootDescriptorTable(0, TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture"));
+	commandList->SetGraphicsRootDescriptorTable(0, TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1"));
 
 	//->DrawInstanced(3, 1, 0, 0);
 }
@@ -629,8 +629,8 @@ Microsoft::WRL::ComPtr<IDxcBlob> DirectXCommon::CompileShader(const std::wstring
 	//Log(ConvertString(std::format(L"Compile Succeeded, path:{},profile:{}\n", filePath, profile)));
 
 	// もう使わないリソースを解放
-	shaderSource->Release(); /// エラーの原因の可能性
-	shaderResult->Release(); /// エラーの原因の可能性
+	//shaderSource->Release(); /// エラーの原因の可能性
+	//shaderResult->Release(); /// エラーの原因の可能性
 
 	// 実行用のバイナリを返却
 	return shaderBlob;

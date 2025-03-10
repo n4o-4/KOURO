@@ -129,13 +129,33 @@ const DirectX::TexMetadata& TextureManager::GetMetaData(std::string filePath)
 
 void TextureManager::CreateRenderTextureMetaData()
 {
+	TextureData& textureData1 = textureDatas["RenderTexture1"];
+
+	textureData1.srvIndex = srvManager_->Allocate();
+	textureData1.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData1.srvIndex);
+	textureData1.srvHandleGPU = srvManager_->GetGPUDescriptorHandle(textureData1.srvIndex);
+																			   
+	srvManager_->CreateOffScreenTexture(textureData1.srvIndex);
+	
 
 
-	TextureData& textureData = textureDatas["RenderTexture"];
+	TextureData& textureData2 = textureDatas["RenderTexture2"];
 
-	textureData.srvIndex = srvManager_->Allocate();
-	textureData.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData.srvIndex);
-	textureData.srvHandleGPU = srvManager_->GetGPUDescriptorHandle(textureData.srvIndex);
+	textureData2.srvIndex = srvManager_->Allocate();
+	textureData2.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData2.srvIndex);
+	textureData2.srvHandleGPU = srvManager_->GetGPUDescriptorHandle(textureData2.srvIndex);
 
-	srvManager_->CreateOffScreenTexture(textureData.srvIndex);
+	srvManager_->CreateOffScreenTexture(textureData2.srvIndex);
+}
+
+void TextureManager::SwapRenderTextures(const std::string& renderTexName, const std::string& intermediateTexName)
+{
+	// レンダーテクスチャと中間テクスチャのデータを入れ替える
+	auto& renderTex = textureDatas[renderTexName];
+	auto& intermediateTex = textureDatas[intermediateTexName];
+
+	std::swap(renderTex.srvIndex, intermediateTex.srvIndex);
+	std::swap(renderTex.srvHandleCPU, intermediateTex.srvHandleCPU);
+	std::swap(renderTex.srvHandleGPU, intermediateTex.srvHandleGPU);
+	std::swap(renderTex.resource, intermediateTex.resource);
 }
