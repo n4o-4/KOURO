@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 struct Vector2 {
 	float x;
@@ -16,12 +16,19 @@ struct Vector3 {
 
 	Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}
 
+	// 🔹 **ベクトルの加算代入演算子を追加**
 	Vector3& operator+=(const Vector3& v) { x += v.x; y += v.y; z += v.z; return *this; }
+	// 🔹 スカラー乗算代入演算子を追加
+	Vector3& operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
+	// 🔹 **単項マイナス演算子を追加**
+	Vector3 operator-() const { return Vector3(-x, -y, -z); }
 };
 
-inline Vector3 operator+(const Vector3& v1, const Vector3& v2) { return Vector3{ v1.x + v2.x,v1.y + v2.y,v1.z + v2.z }; }
-inline Vector3 operator-(const Vector3& v1, const Vector3& v2) { return Vector3{ v1.x - v2.x,v1.y - v2.y,v1.z - v2.z }; }
-inline Vector3 operator*(const Vector3& v1, float s) { return Vector3{ v1.x * s,v1.y * s,v1.z * s }; }
+// 既存の演算子オーバーロード
+inline Vector3 operator+(const Vector3& v1, const Vector3& v2) { return Vector3{ v1.x + v2.x, v1.y + v2.y, v1.z + v2.z }; }
+inline Vector3 operator-(const Vector3& v1, const Vector3& v2) { return Vector3{ v1.x - v2.x, v1.y - v2.y, v1.z - v2.z }; }
+inline Vector3 operator*(const Vector3& v1, float s) { return Vector3{ v1.x * s, v1.y * s, v1.z * s }; }
+
 
 struct Vector4 {
 	float x;

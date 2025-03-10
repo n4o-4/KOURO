@@ -7,6 +7,7 @@
 #include "imgui.h"
 #include "Enemy.h"
 #include "EnemyBullet.h"
+#include "Vectors.h"
 
 void Player::Initialize() {
 	// Object3d を初期化
@@ -36,6 +37,12 @@ void Player::Update() {
 
 	// 移動処理
 	UpdateMove(inputDirection);
+
+	// 反動の適用
+	ApplyRecoil();
+
+	// 揺れの適用
+	ApplyShake();
 
 	// 弾の処理
 	UpdateBullets();
@@ -419,6 +426,49 @@ void Player::ShootMachineGun() {
 	Vector3 bulletVelocity = TransformNormal(forward, rotationMatrix) * 1.5f;  // 速度を調整
 	// マシンガン弾を生成
 	machineGunBullets_.push_back(std::make_unique<PlayerMachineGun>(bulletPos, bulletVelocity));
+
+	// **反動を適用**
+	Vector3 recoilDirection = -TransformNormal(forward, rotationMatrix); // 進行方向の逆向き
+	recoilVelocity_ += recoilDirection * recoilStrength_;
+
+	// **揺れを適用**
+	shakeIntensity_ = 2.0f;  // マシンガン発射時の揺れ強さ
+}
+void Player::ApplyRecoil(){
+
+	if (Length(recoilVelocity_) > 0.001f) {
+		objectTransform_->transform.translate += recoilVelocity_; // 反動を適用
+		recoilVelocity_ *= recoilDecay_; // 減衰
+	} else {
+		recoilVelocity_ = { 0.0f, 0.0f, 0.0f }; // ゼロに戻す
+	}
+
+}
+void Player::ApplyShake() {
+	if (shakeIntensity_ > 0.01f) {  // ある程度の揺れが残っているとき
+		float shakeAmount = shakeIntensity_ * 0.1f;  // **揺れの強さを 2 倍に！**
+
+		// ランダムな揺れを適用（-1.0f ~ 1.0f の範囲）
+		float offsetX = (rand() % 100 - 50) * shakeAmount * 0.02f;  // **横揺れ強化**
+		float offsetY = (rand() % 100 - 50) * shakeAmount * 0.015f; // **縦揺れ強化**
+		float offsetRot = (rand() % 200 - 100) * shakeAmount * 0.002f; // **回転揺れ強化**
+
+		// **Y座標が initialY_ より下に行かないようにする**
+		float newY = objectTransform_->transform.translate.y + offsetY;
+		if (newY < initialY_) {
+			newY = initialY_;  // **下がりすぎたら initialY_ に固定**
+		}
+
+		// **揺れを適用**
+		objectTransform_->transform.translate.x += offsetX;
+		objectTransform_->transform.translate.y = newY;  // 修正後のY座標
+		objectTransform_->transform.rotate.y += offsetRot;  // **回転も強めに揺らす！**
+
+		// 徐々に揺れを減衰（減衰を遅くして揺れを長くする）
+		shakeIntensity_ *= 0.92f;  // **0.85f → 0.92f に変更して長めに揺れる！**
+	} else {
+		shakeIntensity_ = 0.0f;
+	}
 }
 ///=============================================================================
 ///						当たり判定
