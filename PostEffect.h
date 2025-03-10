@@ -7,6 +7,9 @@ class PostEffect
 public:
 	enum class EffectType
 	{
+		// None
+		None,
+
 		// モノクロ
 		Grayscale,
 
@@ -63,6 +66,10 @@ public:
 private:
 
 	void CreatePipeLine();
+
+	// None
+	void NormalRootSignature(Pipeline* pipeline);
+	void NormalPipeLine(Pipeline* pipeline);
 
 	// グレイスケール
 	void GrayscaleRootSignature(Pipeline* pipeline);
