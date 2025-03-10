@@ -39,7 +39,7 @@ private:
 
     ///--------------------------------------------------------------
     ///						 入出力関数
-public:
+protected:
     /**----------------------------------------------------------------------------
      * \brief  SetPosition 位置を設定
      * \param  position 位置
@@ -73,8 +73,7 @@ public:
 
     //弾の取得
     std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
-
-private:
+protected:
   
     // 方向を選択するメソッド
     Vector3 SelectDirection();
@@ -83,9 +82,13 @@ private:
     void BulletDraw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
     void Fire();
 
+    void MoveToTarget();
+
+    void RandomMove();
+
     ///--------------------------------------------------------------
     /// メンバ変数
-private:
+    protected:
     //========================================
     // モデル
     std::unique_ptr<Object3d> model_ = nullptr;
@@ -104,7 +107,6 @@ private:
     Vector3 spawnPosition_ = { 0.0f, 0.0f, 0.0f }; // スポーン位置
 
     // 行動状態
-    ActionState currentState_ = ActionState::Wander;
     float stateTimer_ = 0.0f;
     float directionChangeTimer_ = 0.0f;
 

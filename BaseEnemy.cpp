@@ -97,6 +97,63 @@ void BaseEnemy::Fire() {
         bullets_.push_back(std::move(newBullet));
     }
 }
+
+void BaseEnemy::MoveToTarget()
+{
+    if (target_) {
+        // ターゲットに向かうベクトルを計算
+        Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
+        float distance = Length(toTarget);
+
+        Vector3 direction = Normalize(toTarget);
+        velocity_ = direction * speed_;
+
+        // 位置を更新
+        worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
+
+        // 敵の向きを進行方向に合わせる
+        float targetRotationY = std::atan2(direction.x, direction.z);
+        worldTransform_->transform.rotate.y = targetRotationY;
+    }
+}
+
+void BaseEnemy::RandomMove()
+{
+    // 方向変更タイマーの更新
+    directionChangeTimer_ += 1.0f / 60.0f;
+
+    // 定期的に方向を変更
+    if (directionChangeTimer_ >= directionChangeInterval_) {
+        // スポーン地点に戻る方向と、ランダムな方向を混ぜる
+        Vector3 toSpawn = spawnPosition_ - worldTransform_->transform.translate;
+        float distanceToSpawn = Length(toSpawn);
+
+        // スポーン地点から遠すぎる場合はスポーン地点に戻る傾向を強める
+        float spawnWeight = std::min(distanceToSpawn / wanderRadius_, 0.8f);
+
+        if (distanceToSpawn > wanderRadius_) {
+            // スポーン地点に戻る方向を優先
+            velocity_ = Normalize(toSpawn) * speed_;
+        }
+        else {
+            // ランダムな方向を選択
+            float angle = angleDist_(rng_);
+            Vector3 randomDir = { cosf(angle), 0.0f, sinf(angle) };
+            velocity_ = Normalize(randomDir) * speed_;
+        }
+
+        directionChangeTimer_ = 0.0f;
+    }
+
+    // 位置を更新
+    worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
+
+    // 敵の向きを進行方向に合わせる
+    if (Length(velocity_) > 0.01f) {
+        float targetRotationY = std::atan2(velocity_.x, velocity_.z);
+        worldTransform_->transform.rotate.y = targetRotationY;
+    }
+}
 // コンテキストベースの方向選択
 Vector3 BaseEnemy::SelectDirection() {
     // 実装は省略（シンプルさを優先）
