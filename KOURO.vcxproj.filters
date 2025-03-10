@@ -45,12 +45,12 @@
     <ClCompile Include="engine\object\SpotLight.cpp" />
     <ClCompile Include="engine\3d\LineDrawerBase.cpp" />
     <ClCompile Include="application\object\Ground.cpp" />
-    <ClCompile Include="Fade.cpp" />
-    <ClCompile Include="FollowCamera.cpp" />
-    <ClCompile Include="GameClear.cpp" />
-    <ClCompile Include="GameOver.cpp" />
-    <ClCompile Include="LockOn.cpp" />
-    <ClCompile Include="LockOnMarker.cpp" />
+    <ClCompile Include="application\effect\Fade.cpp" />
+    <ClCompile Include="application\camera\FollowCamera.cpp" />
+    <ClCompile Include="application\scene\GameClear.cpp" />
+    <ClCompile Include="application\scene\GameOver.cpp" />
+    <ClCompile Include="application\object\LockOn.cpp" />
+    <ClCompile Include="application\object\LockOnMarker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -72,17 +72,17 @@
     <ClCompile Include="application\scene\MiyaScene.cpp" />
     <ClCompile Include="application\object\SkyDome.cpp" />
     <ClCompile Include="application\object\Player.cpp" />
-    <ClCompile Include="PlayerBullet.cpp" />
-    <ClCompile Include="DebugCamera.cpp" />
+    <ClCompile Include="application\object\PlayerBullet.cpp" />
+    <ClCompile Include="engine\camera\DebugCamera.cpp" />
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="LockOn.cpp" />
     <ClCompile Include="LockOnMarker.cpp" />
-    <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="engine\camera\CameraManager.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="Fade.cpp" />
-    <ClCompile Include="EnemyBullet.cpp" />
-    <ClCompile Include="PostEffect.cpp" />
+    <ClCompile Include="application\object\EnemyBullet.cpp" />
+    <ClCompile Include="engine\effect\PostEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -140,19 +140,19 @@
     <ClInclude Include="application\object\Ground.h" />
     <ClInclude Include="application\object\SkyDome.h" />
     <ClInclude Include="application\object\Player.h" />
-    <ClInclude Include="Fade.h" />
+    <ClInclude Include="application\effect\Fade.h" />
+    <ClInclude Include="application\camera\FollowCamera.h" />
+    <ClInclude Include="application\scene\GameClear.h" />
+    <ClInclude Include="application\scene\GameOver.h" />
+    <ClInclude Include="application\object\LockOn.h" />
+    <ClInclude Include="application\object\LockOnMarker.h" />
+    <ClInclude Include="application\object\PlayerBullet.h" />
+    <ClInclude Include="engine\camera\CameraManager.h" />
     <ClInclude Include="FollowCamera.h" />
-    <ClInclude Include="GameClear.h" />
-    <ClInclude Include="GameOver.h" />
-    <ClInclude Include="LockOn.h" />
-    <ClInclude Include="LockOnMarker.h" />
-    <ClInclude Include="PlayerBullet.h" />
-    <ClInclude Include="CameraManager.h" />
-    <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Fade.h" />
-    <ClInclude Include="EnemyBullet.h" />
-    <ClInclude Include="DebugCamera.h" />
-    <ClInclude Include="PostEffect.h" />
+    <ClInclude Include="application\object\EnemyBullet.h" />
+    <ClInclude Include="engine\camera\DebugCamera.h" />
+    <ClInclude Include="engine\effect\PostEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
