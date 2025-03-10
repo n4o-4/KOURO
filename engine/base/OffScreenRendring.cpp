@@ -4,7 +4,7 @@
 
 void OffScreenRendring::Initialzie()
 {
-	CreateRenderTextureRTV();
+	//CreateRenderTextureRTV();
 }
 
 void OffScreenRendring::PreDraw()
@@ -17,7 +17,7 @@ void OffScreenRendring::PreDraw()
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 
 	// バリアを張る対象のリソース。現在のバックバッファに対して行う
-	barrier.Transition.pResource = renderTextureResources.Get();
+	barrier.Transition.pResource = renderTextureResources_[0].Get();
 
 	// 還移前(現在)のResourceState
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
@@ -102,13 +102,24 @@ Microsoft::WRL::ComPtr<ID3D12Resource> OffScreenRendring::CreateRenderTextureRes
 void OffScreenRendring::CreateRenderTextureRTV()
 {
 	const Vector4 kRenderTargetClearValue = { 1.0f,0.0f,0.0f,1.0f };
-	renderTextureResources = CreateRenderTextureResource(
+	renderTextureResources[0] = CreateRenderTextureResource(
 		DirectXCommon::GetInstance()->GetDevice(),
 		WinApp::kClientWidth,
 		WinApp::kClientHeight,
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
 		kRenderTargetClearValue);
 
-	DirectXCommon::GetInstance()->SetRTVHandle(2);
-	DirectXCommon::GetInstance()->GetDevice()->CreateRenderTargetView(renderTextureResources.Get(), DirectXCommon::GetInstance()->GetRtvDesc(), *DirectXCommon::GetInstance()->GetRTVHandle(2));
+	//DirectXCommon::GetInstance()->SetRTVHandle(2);
+	DirectXCommon::GetInstance()->GetDevice()->CreateRenderTargetView(renderTextureResources[0].Get(), DirectXCommon::GetInstance()->GetRtvDesc(), *DirectXCommon::GetInstance()->GetRTVHandle(2));
+
+	const Vector4 kRenderTargetClearValue = { 1.0f,0.0f,0.0f,1.0f };
+	renderTextureResources[1] = CreateRenderTextureResource(
+		DirectXCommon::GetInstance()->GetDevice(),
+		WinApp::kClientWidth,
+		WinApp::kClientHeight,
+		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+		kRenderTargetClearValue);
+
+	//DirectXCommon::GetInstance()->SetRTVHandle(2);
+	DirectXCommon::GetInstance()->GetDevice()->CreateRenderTargetView(renderTextureResources[1].Get(), DirectXCommon::GetInstance()->GetRtvDesc(), *DirectXCommon::GetInstance()->GetRTVHandle(3));
 }

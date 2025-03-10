@@ -99,7 +99,7 @@ public:
 
 	D3D12_RECT* GetRect() { return &scissorRect; }
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> GetOffRenderTextureResource() { return offScreenRendring->GetRenderTextureResource(); }
+	Microsoft::WRL::ComPtr<ID3D12Resource>* GetRenderTextureResources() { return renderTextureResources; }
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDsvHandle() { return dsvHandle; }
 
@@ -194,7 +194,7 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> swapChainResources[2] = { nullptr };
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResources[2] = { nullptr };
 
 	Microsoft::WRL::ComPtr< ID3D12Fence> fence = nullptr;
 

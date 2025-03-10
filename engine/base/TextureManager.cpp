@@ -129,7 +129,7 @@ const DirectX::TexMetadata& TextureManager::GetMetaData(std::string filePath)
 
 void TextureManager::CreateRenderTextureMetaData()
 {
-	TextureData& textureData1 = textureDatas["RenderTexture1"];
+	TextureData& textureData1 = textureDatas["RenderTexture0"];
 
 	textureData1.srvIndex = srvManager_->Allocate();
 	textureData1.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData1.srvIndex);
@@ -139,7 +139,7 @@ void TextureManager::CreateRenderTextureMetaData()
 	
 
 
-	TextureData& textureData2 = textureDatas["RenderTexture2"];
+	TextureData& textureData2 = textureDatas["RenderTexture1"];
 
 	textureData2.srvIndex = srvManager_->Allocate();
 	textureData2.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData2.srvIndex);

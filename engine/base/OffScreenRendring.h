@@ -17,10 +17,12 @@ class OffScreenRendring
 ///---------------------------------
 public:
 	void Initialzie();
+
 	void PreDraw();
+
 	void PostDraw();
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> GetRenderTextureResource() { return renderTextureResources; }
+	void SetRenderTextureResource(Microsoft::WRL::ComPtr<ID3D12Resource>* renderTextureResources) { *renderTextureResources_ = renderTextureResources; }
 
 private:
 
@@ -36,7 +38,7 @@ public:
 
 private:
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResources = nullptr ;
+	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResources_[2] = { nullptr };
 
 	D3D12_RESOURCE_BARRIER barrier{};
 };

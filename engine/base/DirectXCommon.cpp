@@ -55,6 +55,8 @@ void DirectXCommon::Initialize(WinApp* winApp)
 
 	offScreenRendring = std::make_unique<OffScreenRendring>();
 	offScreenRendring->Initialzie();
+
+	offScreenRendring->SetRenderTextureResource(renderTextureResources);
 }
 
 void DirectXCommon::Finalize()
@@ -386,7 +388,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateRenderTextureResourc
 void DirectXCommon::CreateRenderTextureRTV()
 {
 	const Vector4 kRenderTargetClearValue{ 1.0f,0.0f,0.0f,1.0f };
-    renderTextureResource = CreateRenderTextureResource(
+    renderTextureResources[0] = CreateRenderTextureResource(
 		device,
 		WinApp::kClientWidth,
 		WinApp::kClientHeight,
@@ -394,7 +396,17 @@ void DirectXCommon::CreateRenderTextureRTV()
 		kRenderTargetClearValue);
 
 	rtvHandles[2].ptr = rtvHandles[1].ptr + device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	device->CreateRenderTargetView(renderTextureResource.Get(), &rtvDesc, rtvHandles[2]);
+	device->CreateRenderTargetView(renderTextureResources[0].Get(), &rtvDesc, rtvHandles[2]);
+
+	renderTextureResources[1] = CreateRenderTextureResource(
+		device,
+		WinApp::kClientWidth,
+		WinApp::kClientHeight,
+		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+		kRenderTargetClearValue);
+
+	rtvHandles[3].ptr = rtvHandles[2].ptr + device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	device->CreateRenderTargetView(renderTextureResources[1].Get(), &rtvDesc, rtvHandles[3]);
 }
 
 Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible)
@@ -507,11 +519,11 @@ void DirectXCommon::PreDraw()
 	commandList->SetGraphicsRootSignature(rootSignature.Get());
 	commandList->SetPipelineState(graphicsPipelineState.Get());
 
-	auto srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
+	auto srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0");
 	// srvHandle.ptr が 0 または異常な値でないか確認
 	assert(srvHandle.ptr != 0);
 
-	commandList->SetGraphicsRootDescriptorTable(0, TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1"));
+	commandList->SetGraphicsRootDescriptorTable(0, TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0"));
 
 	//->DrawInstanced(3, 1, 0, 0);
 }
