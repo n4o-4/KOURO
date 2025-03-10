@@ -146,7 +146,7 @@ private:
 	// の初期化
 	void InitializeImGui();
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device,uint32_t width,uint32_t height, DXGI_FORMAT format,const Vector4& clearColor);
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device,uint32_t width,uint32_t height, DXGI_FORMAT format,const Vector4& clearColor,D3D12_RESOURCE_STATES resourceStates);
 
 	void CreateRenderTextureRTV();
 

@@ -265,8 +265,11 @@ inline void DirectXCommon::InitializeRenderTergetView()
 	rtvHandles[0] = rtvStartHandle;
 	device->CreateRenderTargetView(swapChainResources[0].Get(), &rtvDesc, rtvHandles[0]);
 
+	swapChainResources[0]->SetName(L"swapChainresource0");
+
 	rtvHandles[1].ptr = rtvHandles[0].ptr + device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	device->CreateRenderTargetView(swapChainResources[1].Get(), &rtvDesc, rtvHandles[1]);
+	swapChainResources[1]->SetName(L"swapChainresource1");
 }
 
 void DirectXCommon::InitializeDepthStencilView()
@@ -344,7 +347,7 @@ void DirectXCommon::InitializeImGui()
 	//	srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateRenderTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor)
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateRenderTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor, D3D12_RESOURCE_STATES resourceStates)
 {
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource;
 
@@ -373,7 +376,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateRenderTextureResourc
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,
-		D3D12_RESOURCE_STATE_RENDER_TARGET,
+		resourceStates,
 		&clearValue,
 		IID_PPV_ARGS(&resource));
 
@@ -388,42 +391,26 @@ void DirectXCommon::CreateRenderTextureRTV()
 		WinApp::kClientWidth,
 		WinApp::kClientHeight,
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-		kRenderTargetClearValue);
+		kRenderTargetClearValue,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
 	rtvHandles[2].ptr = rtvHandles[1].ptr + device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	device->CreateRenderTargetView(renderTextureResources[0].Get(), &rtvDesc, rtvHandles[2]);
 	assert(renderTextureResources[0]);
-
-	// TransitionBarrierの設定
-	// 今回のバリアはTransition
-	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-
-	// NONEにしておく
-	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-
-	// バリアを張る対象のリソース。現在のバックバッファに対して行う
-	barrier.Transition.pResource = renderTextureResources[0].Get();
-
-	// 還移前(現在)のResourceState
-	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-
-	// 還移後のResourceState
-	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-
-	// TransitionBarrierを張る
-	DirectXCommon::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
-
+	renderTextureResources[0]->SetName(L"renderTexture0");
 
 	renderTextureResources[1] = CreateRenderTextureResource(
 		device,
 		WinApp::kClientWidth,
 		WinApp::kClientHeight,
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-		kRenderTargetClearValue);
+		kRenderTargetClearValue,
+		D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	rtvHandles[3].ptr = rtvHandles[2].ptr + device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	device->CreateRenderTargetView(renderTextureResources[1].Get(), &rtvDesc, rtvHandles[3]);
 	assert(renderTextureResources[1]);
+	renderTextureResources[1]->SetName(L"renderTexture1");
 }
 
 Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible)
@@ -593,7 +580,7 @@ void DirectXCommon::PreDraw()
 
 	commandList->SetGraphicsRootDescriptorTable(0, TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0"));
 
-	//commandList->DrawInstanced(3, 1, 0, 0);
+	commandList->DrawInstanced(3, 1, 0, 0);
 }
 
 void DirectXCommon::PostDraw()
@@ -616,16 +603,10 @@ void DirectXCommon::PostDraw()
 	Microsoft::WRL::ComPtr<ID3D12CommandList> commandLists[] = { commandList.Get() };
 	commandQueue->ExecuteCommandLists(1, commandLists->GetAddressOf());
 
-	// GPUとOSに画面の交換を行うように通知する
-	swapChain->Present(1, 0);
-
 	// GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入するようにSignalを送る
 	commandQueue->Signal(fence.Get(), ++fenceValue);
 
-	HRESULT Present(UINT SyncInterval, UINT Flags);
-
-	// Fenceの値が指定したSignal値にたどり着いているか確認する
-	// GetCompletedValueの初期値はFence制作時に渡した初期値
+	// GPUの作業が完了するのを待つ
 	if (fence->GetCompletedValue() < fenceValue)
 	{
 		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
@@ -637,13 +618,16 @@ void DirectXCommon::PostDraw()
 		CloseHandle(event);
 	}
 
-	UpdateFixFPS();
+	// GPUとOSに画面の交換を行うように通知する
+	swapChain->Present(1, 0);
 
-	//次のフレーム用のコマンドリストを準備
+	// 次のフレーム用のコマンドリストを準備
 	hr = commandAllocator->Reset();
 	assert(SUCCEEDED(hr));
 	hr = commandList->Reset(commandAllocator.Get(), nullptr);
 	assert(SUCCEEDED(hr));
+
+	UpdateFixFPS();
 }
 
 Microsoft::WRL::ComPtr<IDxcBlob> DirectXCommon::CompileShader(const std::wstring& filePath, const wchar_t* profile)
