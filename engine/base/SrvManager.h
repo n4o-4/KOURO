@@ -36,7 +36,8 @@ public:
 	// SRV生成(テクスチャ用)
 	void CreateSRVforTexture2D(uint32_t srvIndex, ID3D12Resource* pResource, DXGI_FORMAT Format, UINT MipLevels);
 
-	void CreateOffScreenTexture(uint32_t srvIndex);
+	// offScreen、renderTexture用
+	void CreateOffScreenTexture(uint32_t srvIndex,uint32_t rtvIndex);
 
 	// SRV生成(Structure Buffer用)
 	void CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource* pResource, UINT numElements, UINT structureByteStride);

@@ -135,7 +135,7 @@ void TextureManager::CreateRenderTextureMetaData()
 	textureData1.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData1.srvIndex);
 	textureData1.srvHandleGPU = srvManager_->GetGPUDescriptorHandle(textureData1.srvIndex);
 																			   
-	srvManager_->CreateOffScreenTexture(textureData1.srvIndex);
+	srvManager_->CreateOffScreenTexture(textureData1.srvIndex,0);
 	
 
 
@@ -145,17 +145,5 @@ void TextureManager::CreateRenderTextureMetaData()
 	textureData2.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData2.srvIndex);
 	textureData2.srvHandleGPU = srvManager_->GetGPUDescriptorHandle(textureData2.srvIndex);
 
-	srvManager_->CreateOffScreenTexture(textureData2.srvIndex);
-}
-
-void TextureManager::SwapRenderTextures(const std::string& renderTexName, const std::string& intermediateTexName)
-{
-	// レンダーテクスチャと中間テクスチャのデータを入れ替える
-	auto& renderTex = textureDatas[renderTexName];
-	auto& intermediateTex = textureDatas[intermediateTexName];
-
-	std::swap(renderTex.srvIndex, intermediateTex.srvIndex);
-	std::swap(renderTex.srvHandleCPU, intermediateTex.srvHandleCPU);
-	std::swap(renderTex.srvHandleGPU, intermediateTex.srvHandleGPU);
-	std::swap(renderTex.resource, intermediateTex.resource);
+	srvManager_->CreateOffScreenTexture(textureData2.srvIndex,1);
 }

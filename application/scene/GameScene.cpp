@@ -74,7 +74,6 @@ void GameScene::Initialize() {
 	// 
 	fade_->Start(Fade::Status::FadeIn, 4.0f);	
 
-	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Grayscale);
 	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Vignette);
 	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::GaussianFilter);
 

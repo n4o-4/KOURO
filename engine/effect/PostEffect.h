@@ -51,7 +51,7 @@ private:
 public:
 
 	// 初期化
-	void Initialize(DirectXCommon* dxCommon);
+	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager);
 
 	// 更新
 	void Update();
@@ -94,6 +94,8 @@ private:
 private: // メンバ変数
 	
 	DirectXCommon* dxCommon_ = nullptr;
+
+	SrvManager* srvManager_ = nullptr;
 
 	Effect effect;
 };

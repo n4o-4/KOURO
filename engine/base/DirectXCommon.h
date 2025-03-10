@@ -150,6 +150,7 @@ private:
 
 	void CreateRenderTextureRTV();
 
+
 	// FPS固定初期化
 	void InitializeFixFPS();
 
@@ -159,7 +160,6 @@ private:
 	void CreateOffScreenRootSignature();
 
 	void CreateOffScreenPipeLine();
-
 	
 private:
 
@@ -193,8 +193,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> swapChainResources[2] = { nullptr };
-
-	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResources[2] = { nullptr };
 
 	Microsoft::WRL::ComPtr< ID3D12Fence> fence = nullptr;
 
@@ -245,14 +243,16 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Debug1> debugController = nullptr;
 
-	std::unique_ptr<OffScreenRendring> offScreenRendring = nullptr;
-
 	Microsoft::WRL::ComPtr< ID3D12RootSignature> rootSignature;
 
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState;
 
-	//ID3DBlob* signatureBlob = nullptr;
+
 	Microsoft::WRL::ComPtr< ID3DBlob> signatureBlob = nullptr;
-	//ID3DBlob* errorBlob = nullptr;
+	
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResources[2] = { nullptr };
+
+	uint32_t renderTextureSrvIndex[2] = {};
 };

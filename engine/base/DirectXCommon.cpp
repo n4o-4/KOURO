@@ -52,11 +52,6 @@ void DirectXCommon::Initialize(WinApp* winApp)
 	dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 
 	CreateOffScreenPipeLine();
-
-	offScreenRendring = std::make_unique<OffScreenRendring>();
-	offScreenRendring->Initialzie();
-
-	offScreenRendring->SetRenderTextureResource(renderTextureResources);
 }
 
 void DirectXCommon::Finalize()
@@ -388,7 +383,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateRenderTextureResourc
 void DirectXCommon::CreateRenderTextureRTV()
 {
 	const Vector4 kRenderTargetClearValue{ 1.0f,0.0f,0.0f,1.0f };
-    renderTextureResources[0] = CreateRenderTextureResource(
+	renderTextureResources[0] = CreateRenderTextureResource(
 		device,
 		WinApp::kClientWidth,
 		WinApp::kClientHeight,
@@ -397,6 +392,7 @@ void DirectXCommon::CreateRenderTextureRTV()
 
 	rtvHandles[2].ptr = rtvHandles[1].ptr + device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	device->CreateRenderTargetView(renderTextureResources[0].Get(), &rtvDesc, rtvHandles[2]);
+	assert(renderTextureResources[0]);
 
 	renderTextureResources[1] = CreateRenderTextureResource(
 		device,
@@ -407,6 +403,7 @@ void DirectXCommon::CreateRenderTextureRTV()
 
 	rtvHandles[3].ptr = rtvHandles[2].ptr + device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	device->CreateRenderTargetView(renderTextureResources[1].Get(), &rtvDesc, rtvHandles[3]);
+	assert(renderTextureResources[1]);
 }
 
 Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible)
@@ -460,12 +457,54 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateDepthStencilTextureR
 
 void DirectXCommon::RenderTexturePreDraw()
 {
-	offScreenRendring->PreDraw();
+	// TransitionBarrierの設定
+	// 今回のバリアはTransition
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+
+	// NONEにしておく
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+
+	// バリアを張る対象のリソース。現在のバックバッファに対して行う
+	barrier.Transition.pResource = renderTextureResources[0].Get();
+
+	// 還移前(現在)のResourceState
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+	// 還移後のResourceState
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+
+	// TransitionBarrierを張る
+	DirectXCommon::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
+
+	// DSV設定
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = DirectXCommon::GetInstance()->GetDSVHeap()->GetCPUDescriptorHandleForHeapStart();
+	DirectXCommon::GetInstance()->GetCommandList()->OMSetRenderTargets(1, DirectXCommon::GetInstance()->GetRTVHandle(2), false, &dsvHandle);
+
+	// 指定した色で画面全体をクリアする
+	float clearColor[] = { 1.0f,0.0f,0.0f,1.0f }; // 青っぽい色 RGBAの順
+	DirectXCommon::GetInstance()->GetCommandList()->ClearRenderTargetView(*DirectXCommon::GetInstance()->GetRTVHandle(2), clearColor, 0, nullptr);
+
+	// 画面全体の深度をクリア
+	DirectXCommon::GetInstance()->GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+
+	DirectXCommon::GetInstance()->GetCommandList()->RSSetViewports(1, &*DirectXCommon::GetInstance()->GetViewPort()); // Viewportを設定
+	DirectXCommon::GetInstance()->GetCommandList()->RSSetScissorRects(1, &*DirectXCommon::GetInstance()->GetRect()); // Scissorを設定
 }
 
 void DirectXCommon::RenderTexturePostDraw()
 {
-	offScreenRendring->PostDraw();
+	// 還移前(現在)のResourceState
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+	// 還移後のResourceState
+	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+	// TransitionBarrierを張る
+	DirectXCommon::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
 }
 
 void DirectXCommon::PreDraw()
@@ -498,7 +537,7 @@ void DirectXCommon::PreDraw()
 	commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, nullptr);
 
 	//// DSV設定
-	commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
+	//commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
 
 	//// 指定した色で画面全体をクリアする
 	//float clearColor[] = { 0.1f,0.25,0.5f,1.0f }; // 青っぽい色 RGBAの順
@@ -525,7 +564,7 @@ void DirectXCommon::PreDraw()
 
 	commandList->SetGraphicsRootDescriptorTable(0, TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0"));
 
-	//->DrawInstanced(3, 1, 0, 0);
+	//commandList->DrawInstanced(3, 1, 0, 0);
 }
 
 void DirectXCommon::PostDraw()

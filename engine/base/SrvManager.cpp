@@ -54,15 +54,17 @@ void SrvManager::CreateSRVforTexture2D(uint32_t srvIndex, ID3D12Resource* pResou
 	directXCommon->GetDevice()->CreateShaderResourceView(pResource, &srvDesc, GetCPUDescriptorHandle(srvIndex));
 }
 
-void SrvManager::CreateOffScreenTexture(uint32_t srvIndex)
+void SrvManager::CreateOffScreenTexture(uint32_t srvIndex, uint32_t rtvIndex)
 {
-	D3D12_SHADER_RESOURCE_VIEW_DESC rtvDesc{};
-	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-	rtvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	rtvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	rtvDesc.Texture2D.MipLevels = 1;
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
 
-	directXCommon->GetDevice()->CreateShaderResourceView(directXCommon->GetOffRenderTextureResource().Get(), &rtvDesc, GetCPUDescriptorHandle(srvIndex));
+	assert(directXCommon->GetRenderTextureResources()[rtvIndex].Get());
+
+	directXCommon->GetDevice()->CreateShaderResourceView(directXCommon->GetRenderTextureResources()[rtvIndex].Get(), &srvDesc, GetCPUDescriptorHandle(srvIndex));
 }
 
 void SrvManager::CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource* pResource, UINT numElements, UINT structureByteStride)
