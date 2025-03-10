@@ -74,15 +74,10 @@
     <ClCompile Include="application\object\Player.cpp" />
     <ClCompile Include="application\object\PlayerBullet.cpp" />
     <ClCompile Include="engine\camera\DebugCamera.cpp" />
-    <ClCompile Include="GameClear.cpp" />
-    <ClCompile Include="GameOver.cpp" />
-    <ClCompile Include="LockOn.cpp" />
-    <ClCompile Include="LockOnMarker.cpp" />
     <ClCompile Include="engine\camera\CameraManager.cpp" />
-    <ClCompile Include="FollowCamera.cpp" />
-    <ClCompile Include="Fade.cpp" />
     <ClCompile Include="application\object\EnemyBullet.cpp" />
     <ClCompile Include="engine\effect\PostEffect.cpp" />
+    <ClCompile Include="PlayerMachineGun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -148,11 +143,10 @@
     <ClInclude Include="application\object\LockOnMarker.h" />
     <ClInclude Include="application\object\PlayerBullet.h" />
     <ClInclude Include="engine\camera\CameraManager.h" />
-    <ClInclude Include="FollowCamera.h" />
-    <ClInclude Include="Fade.h" />
     <ClInclude Include="application\object\EnemyBullet.h" />
     <ClInclude Include="engine\camera\DebugCamera.h" />
     <ClInclude Include="engine\effect\PostEffect.h" />
+    <ClInclude Include="PlayerMachineGun.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

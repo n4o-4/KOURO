@@ -6,6 +6,7 @@
 #include <vector>
 #include "BaseObject.h" // 当たり判定用
 #include "LockOn.h" 
+#include "PlayerMachineGun.h"// プレイヤーのマシンガン
 #include "memory"
 
 class Player : public BaseObject {
@@ -50,6 +51,10 @@ private:
 	//========================================
 	// ブースト処理
 	bool HandleBoost();
+	//========================================
+	// マシンガンの射撃処理
+	void ShootMachineGun();
+	//========================================
 
 	///--------------------------------------------------------------
 	///						 当たり判定
@@ -165,6 +170,14 @@ private:
 	float boostDecay_ = 0.02f;  // 追加上昇の減衰量
 	float maxFallSpeed_ = 0.15f;// 下降速度の最大値
 	//========================================
+	
+	///========================================
+	// マシンガン
+	std::vector<std::unique_ptr<PlayerMachineGun>> machineGunBullets_;// マシンガンの弾のリスト
+	bool isShootingMachineGun_ = false;// マシンガンを撃っているか
+	int machineGunCooldown_ = 0;// マシンガンのクールダウン
+	///========================================
+
 	// カメラ
 	FollowCamera *followCamera_ = nullptr;
 

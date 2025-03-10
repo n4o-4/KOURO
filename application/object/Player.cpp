@@ -64,6 +64,11 @@ void Player::Draw(ViewProjection viewProjection, DirectionalLight directionalLig
 	for(auto &bullet : bullets_) {
 		bullet->Draw(viewProjection, directionalLight, pointLight, spotLight);
 	}
+
+	//マシンガンの描画
+	for (auto& bullet : machineGunBullets_) {
+		bullet->Draw(viewProjection, directionalLight, pointLight, spotLight);
+	}
 }
 ///=============================================================================
 ///                        終了処理
@@ -267,6 +272,34 @@ void Player::UpdateBullets() {
 	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(),
 		[](const std::unique_ptr<PlayerBullet> &bullet) { return !bullet->IsActive(); }),
 		bullets_.end());
+
+	//マシンガンの弾の更新
+	 // マシンガンの発射
+	if (Input::GetInstance()->PushKey(DIK_J) ||
+		Input::GetInstance()->PushGamePadButton(Input::GamePadButton::RIGHT_TRIGGER)) {
+		isShootingMachineGun_ = true;
+	} else {
+		isShootingMachineGun_ = false;
+	}
+
+	if (isShootingMachineGun_ && machineGunCooldown_ <= 0) {
+		ShootMachineGun();
+		machineGunCooldown_ = 5;  // 一定間隔で発射
+	}
+
+	if (machineGunCooldown_ > 0) {
+		machineGunCooldown_--;
+	}
+
+	// マシンガン弾の更新
+	for (auto& bullet : machineGunBullets_) {
+		bullet->Update();
+	}
+
+	// 不要な弾の削除
+	machineGunBullets_.erase(std::remove_if(machineGunBullets_.begin(), machineGunBullets_.end(),
+		[](const std::unique_ptr<PlayerMachineGun>& bullet) { return !bullet->IsActive(); }),
+		machineGunBullets_.end());
 }
 ///                        射撃
 void Player::Shoot() {
@@ -375,6 +408,12 @@ bool Player::HandleBoost() {
 	}
 
 	return stateChanged;
+}
+void Player::ShootMachineGun() {
+	Vector3 bulletPos = objectTransform_->transform.translate;
+	Vector3 bulletVelocity = { 0.0f, 0.0f, 1.0f };  // Z方向に進む
+
+	machineGunBullets_.push_back(std::make_unique<PlayerMachineGun>(bulletPos, bulletVelocity));
 }
 ///=============================================================================
 ///						当たり判定
