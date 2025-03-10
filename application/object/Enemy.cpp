@@ -246,7 +246,10 @@ void Enemy::UpdateCombatState() {
         
         if (distance < safeDistance_) {
             // 近すぎる場合、後退
-            moveDirection = -direction * 0.7f + strafeDir * strafeFactor * 0.3f;
+            //moveDirection = -direction * 0.7f + strafeDir * strafeFactor * 0.3f;
+			moveDirection.x = -direction.x * 0.7f + strafeDir.x * strafeFactor * 0.3f;
+			moveDirection.y = 0.0f;
+			moveDirection.z = -direction.z * 0.7f + strafeDir.z * strafeFactor * 0.3f;
         } else if (distance > combatDistance_) {
             // 遠すぎる場合、接近
             moveDirection = direction * 0.7f + strafeDir * strafeFactor * 0.3f;

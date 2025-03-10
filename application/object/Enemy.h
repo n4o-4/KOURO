@@ -114,7 +114,7 @@ private:
     int hp_ = 1;
 
     // 移動関連
-    float speed_ = 0.05f;   // 移動速度
+    float speed_ = 0.15f;   // 移動速度
     float minX_ = -100.0f;  // 左の限界
     float maxX_ = 100.0f;   // 右の限界
     int direction_ = 1;     // 移動方向 (1:右, -1:左)
@@ -127,11 +127,11 @@ private:
     float directionChangeTimer_ = 0.0f;
 
     // 行動パラメータ
-    float chaseDistance_ = 30.0f;    // この距離内ならプレイヤーを追いかける
-    float combatDistance_ = 15.0f;   // 戦闘を行う距離
+    float chaseDistance_ = 64.0f;    // この距離内ならプレイヤーを追いかける
+    float combatDistance_ = 32.0f;   // 戦闘を行う距離
     float safeDistance_ = 10.0f;     // 安全距離（この距離を保つ）
-    float wanderRadius_ = 20.0f;     // 徘徊半径
-    float directionChangeInterval_ = 2.0f; // 方向変更の間隔
+    float wanderRadius_ = 32.0f;     // 徘徊半径
+    float directionChangeInterval_ = 3.0f; // 方向変更の間隔
 
     // 乱数生成器
     std::mt19937 rng_;
