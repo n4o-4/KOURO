@@ -71,6 +71,7 @@
     <ClCompile Include="application\object\Player.cpp" />
     <ClCompile Include="application\object\PlayerBullet.cpp" />
     <ClCompile Include="engine\effect\PostEffect.cpp" />
+    <ClCompile Include="PlayerMachineGun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -140,6 +141,7 @@
     <ClInclude Include="application\object\LockOnMarker.h" />
     <ClInclude Include="application\object\PlayerBullet.h" />
     <ClInclude Include="engine\effect\PostEffect.h" />
+    <ClInclude Include="PlayerMachineGun.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

@@ -77,6 +77,7 @@
     <ClCompile Include="engine\camera\CameraManager.cpp" />
     <ClCompile Include="application\object\EnemyBullet.cpp" />
     <ClCompile Include="engine\effect\PostEffect.cpp" />
+    <ClCompile Include="PlayerMachineGun.cpp" />
     <ClCompile Include="BaseEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +147,7 @@
     <ClInclude Include="application\object\EnemyBullet.h" />
     <ClInclude Include="engine\camera\DebugCamera.h" />
     <ClInclude Include="engine\effect\PostEffect.h" />
+    <ClInclude Include="PlayerMachineGun.h" />
     <ClInclude Include="BaseEnemy.h" />
   </ItemGroup>
   <ItemGroup>
