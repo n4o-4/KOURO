@@ -394,6 +394,26 @@ void DirectXCommon::CreateRenderTextureRTV()
 	device->CreateRenderTargetView(renderTextureResources[0].Get(), &rtvDesc, rtvHandles[2]);
 	assert(renderTextureResources[0]);
 
+	// TransitionBarrierの設定
+	// 今回のバリアはTransition
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+
+	// NONEにしておく
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+
+	// バリアを張る対象のリソース。現在のバックバッファに対して行う
+	barrier.Transition.pResource = renderTextureResources[0].Get();
+
+	// 還移前(現在)のResourceState
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+
+	// 還移後のResourceState
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+	// TransitionBarrierを張る
+	DirectXCommon::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
+
+
 	renderTextureResources[1] = CreateRenderTextureResource(
 		device,
 		WinApp::kClientWidth,
@@ -494,13 +514,22 @@ void DirectXCommon::RenderTexturePreDraw()
 
 void DirectXCommon::RenderTexturePostDraw()
 {
-	// 還移前(現在)のResourceState
-	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	//// 還移前(現在)のResourceState
+	//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 
-	// 還移後のResourceState
+	//// 還移後のResourceState
 	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
+	//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+	//// TransitionBarrierを張る
+	//DirectXCommon::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
+
+	// 還移前(現在)のResourceState
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+
+	// 還移後のResourceState
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 
 	// TransitionBarrierを張る

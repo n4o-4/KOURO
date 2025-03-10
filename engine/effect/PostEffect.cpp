@@ -50,20 +50,6 @@ void PostEffect::Draw()
 	//// 描画先のRTVを設定する
 	//dxCommon_->GetCommandList()->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(backBufferIndex), false, nullptr);
 
-	////// DSV設定
-	////dxCommon_->GetCommandList()->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
-
-	//// 指定した色で画面全体をクリアする
-	////float clearColor[] = { 0.1f,0.25,0.5f,1.0f }; // 青っぽい色 RGBAの順
-	////dxCommon_->GetCommandList()->ClearRenderTargetView(*dxCommon_->GetRTVHandle(backBufferIndex), clearColor, 0, nullptr);
-
-	////// 画面全体の深度をクリア
-	////commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-	//// SRV用のデスクリプタヒープを指定
-	////Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>  descriptorHeaps[] = { srvDescriptorHeap.Get() };
-	////commandList->SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
-
 	//dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//dxCommon_->GetCommandList()->RSSetViewports(1, &*dxCommon_->GetViewPort()); // Viewportを設定
@@ -78,38 +64,17 @@ void PostEffect::Draw()
 	//	}
 
 	//	auto it = std::next(effect.pipelines_.begin(), i);
-	//	
+
 	//	dxCommon_->GetCommandList()->SetGraphicsRootSignature(it->get()->rootSignature.Get());
 	//	dxCommon_->GetCommandList()->SetPipelineState(it->get()->pipelineState.Get());
 
-
-	//	// 中間テクスチャの切り替え
-	//	auto srvHandle = (i == 0)
-	//		? TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0")
-	//		: TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
-
+	//	auto srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture");
+	//	// srvHandle.ptr が 0 または異常な値でないか確認
 	//	assert(srvHandle.ptr != 0);
 
-	//	dxCommon_->GetCommandList()->SetGraphicsRootSignature(it->get()->rootSignature.Get());
-	//	dxCommon_->GetCommandList()->SetPipelineState(it->get()->pipelineState.Get());
-	//	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
+	//	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture"));
+
 	//	dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
-
-	//	// 中間テクスチャの結果を次のエフェクトの入力として使用する
-	//	TextureManager::GetInstance()->SwapRenderTextures("RenderTexture0", "RenderTexture1");
-
-	//	//auto srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture");
-	//	//// srvHandle.ptr が 0 または異常な値でないか確認
-	//	//assert(srvHandle.ptr != 0);
-
-	//	//dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture"));
-
-	//	//dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
-
-
-
-
-
 	//}
 
 	//// 画面に描く処理は終わり、画面に映すので、状態を還移
@@ -120,13 +85,15 @@ void PostEffect::Draw()
 	//// TransitionBarrierを張る
 	//dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier);
 
-
+	///===================================================================================================================================
     
 	int index = 1;
 	int subindex = 0;
 
 	// これから書き込むレンダーテクスチャーのインデックスを取得
 	UINT rtvIndex = 1 + index;
+
+
 
 for (int i = 0; i < static_cast<int>(EffectType::EffectCount); ++i)
 	{
@@ -181,7 +148,7 @@ for (int i = 0; i < static_cast<int>(EffectType::EffectCount); ++i)
 		dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier);
 
 
-		// 今読み込んだ方を買い込みように
+		// 今読み込んだ方を書き込みように
 		D3D12_RESOURCE_BARRIER subBarrier{};
 
 		// TransitionBarrierの設定
