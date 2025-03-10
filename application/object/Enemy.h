@@ -8,9 +8,10 @@
 
 #include "EnemyBullet.h"
 
+#include "BaseEnemy.h"
 ///=============================================================================
 ///						エネミークラス
-class Enemy : public BaseObject {
+class Enemy : public BaseEnemy {
 
     // 行動状態
     enum class ActionState
@@ -93,54 +94,13 @@ private:
     
     // 状態を選択するメソッド
     void UpdateActionState();
-    
-    // 方向を選択するメソッド
-    Vector3 SelectDirection();
-    
-    void BulletUpdate();
-    void BulletDraw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
-    void Fire();
 
     ///--------------------------------------------------------------
     /// メンバ変数
 private:
-    //========================================
-    // モデル
-    std::unique_ptr<Object3d> model_ = nullptr;
-    //ワールド変換
-    std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
-
-    //HP
-    int hp_ = 1;
-
-    // 移動関連
-    float speed_ = 0.15f;   // 移動速度
-    float minX_ = -100.0f;  // 左の限界
-    float maxX_ = 100.0f;   // 右の限界
-    int direction_ = 1;     // 移動方向 (1:右, -1:左)
-    Vector3 velocity_ = {0.0f, 0.0f, 0.0f}; // 現在の速度ベクトル
-    Vector3 spawnPosition_ = {0.0f, 0.0f, 0.0f}; // スポーン位置
-
+    
     // 行動状態
     ActionState currentState_ = ActionState::Wander;
-    float stateTimer_ = 0.0f;
-    float directionChangeTimer_ = 0.0f;
-
-    // 行動パラメータ
-    float chaseDistance_ = 64.0f;    // この距離内ならプレイヤーを追いかける
-    float combatDistance_ = 32.0f;   // 戦闘を行う距離
-    float safeDistance_ = 10.0f;     // 安全距離（この距離を保つ）
-    float wanderRadius_ = 32.0f;     // 徘徊半径
-    float directionChangeInterval_ = 3.0f; // 方向変更の間隔
-
-    // 乱数生成器
-    std::mt19937 rng_;
-    std::uniform_real_distribution<float> angleDist_{0.0f, 2.0f * 3.14159f};
-    std::uniform_real_distribution<float> strengthDist_{0.5f, 1.0f};
-
-    WorldTransform* target_;
-    std::list<std::unique_ptr<EnemyBullet>> bullets_;
-    const float kIntervalTiem = 5.0f;
-    float intervalCounter_ = 0.0f;
+    
 };
 

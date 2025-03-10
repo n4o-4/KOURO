@@ -1,82 +1,82 @@
-#include "BaseEnemy.h"
+ï»¿#include "BaseEnemy.h"
 #include "PlayerBullet.h"
 #include <cmath>
 #include <algorithm>
 
 ///=============================================================================
-///						‰Šú‰»
+///						åˆæœŸåŒ–
 void BaseEnemy::Initialize() {
     //========================================
-    // ƒ‚ƒfƒ‹‚ğ‰Šú‰»
+    // ãƒ¢ãƒ‡ãƒ«ã‚’åˆæœŸåŒ–
     model_ = std::make_unique<Object3d>();
     model_->Initialize(Object3dCommon::GetInstance());
     //========================================
-    // ƒ‚ƒfƒ‹‚ğ“Ç‚İ‚Ş
+    // ãƒ¢ãƒ‡ãƒ«ã‚’èª­ã¿è¾¼ã‚€
     ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
     model_->SetModel("enemy/enemy.obj");
     //========================================
-    // ‰ŠúˆÊ’u‚ğİ’è
+    // åˆæœŸä½ç½®ã‚’è¨­å®š
     worldTransform_ = std::make_unique<WorldTransform>();
     worldTransform_->Initialize();
     //========================================
-    // “–‚½‚è”»’è‚Æ‚Ì“¯Šú
+    // å½“ãŸã‚Šåˆ¤å®šã¨ã®åŒæœŸ
     BaseObject::Initialize(worldTransform_->transform.translate, 1.0f);
 
-    // —”¶¬Ší‚Ì‰Šú‰»
+    // ä¹±æ•°ç”Ÿæˆå™¨ã®åˆæœŸåŒ–
     std::random_device rd;
     rng_ = std::mt19937(rd());
 
-    // ƒXƒ|[ƒ“ˆÊ’u‚Ì‰Šú‰»
+    // ã‚¹ãƒãƒ¼ãƒ³ä½ç½®ã®åˆæœŸåŒ–
     spawnPosition_ = worldTransform_->transform.translate;
 }
 
 ///=============================================================================
-///						•`‰æ
+///						æç”»
 void BaseEnemy::Update() {
     if (hp_ > 0) {
        
-        // ’e‚ÌXV
+        // å¼¾ã®æ›´æ–°
         BulletUpdate();
 
-        // ƒ[ƒ‹ƒh•ÏŠ·‚ÌXV
+        // ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›ã®æ›´æ–°
         worldTransform_->UpdateMatrix();
-        // ƒ‚ƒfƒ‹‚Ìƒ[ƒJƒ‹s—ñ‚ğXV
+        // ãƒ¢ãƒ‡ãƒ«ã®ãƒ­ãƒ¼ã‚«ãƒ«è¡Œåˆ—ã‚’æ›´æ–°
         model_->SetLocalMatrix(MakeIdentity4x4());
-        // ƒ‚ƒfƒ‹‚ÌXV
+        // ãƒ¢ãƒ‡ãƒ«ã®æ›´æ–°
         model_->Update();
 
         //========================================
-        // “–‚½‚è”»’è‚Æ‚Ì“¯Šú
+        // å½“ãŸã‚Šåˆ¤å®šã¨ã®åŒæœŸ
         BaseObject::Update(worldTransform_->transform.translate);
     }
 }
 
 ///=============================================================================
-///						•`‰æ
+///						æç”»
 void BaseEnemy::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
     BulletDraw(viewProjection, directionalLight, pointLight, spotLight);
 
     //========================================
-    // ƒ‚ƒfƒ‹‚Ì•`‰æ
+    // ãƒ¢ãƒ‡ãƒ«ã®æç”»
     if (hp_ > 0) {
         model_->Draw(*worldTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
     }
 }
 
 ///=============================================================================
-///						“–‚½‚è”»’è
+///						å½“ãŸã‚Šåˆ¤å®š
 ///--------------------------------------------------------------
-///						ÚGŠJnˆ—
+///						æ¥è§¦é–‹å§‹å‡¦ç†
 void BaseEnemy::OnCollisionEnter(BaseObject* other) {
 }
 
 ///--------------------------------------------------------------
-///						ÚGŒp‘±ˆ—
+///						æ¥è§¦ç¶™ç¶šå‡¦ç†
 void BaseEnemy::OnCollisionStay(BaseObject* other) {
 }
 
 ///--------------------------------------------------------------
-///						ÚGI—¹ˆ—
+///						æ¥è§¦çµ‚äº†å‡¦ç†
 void BaseEnemy::OnCollisionExit(BaseObject* other) {
 }
 
@@ -101,17 +101,17 @@ void BaseEnemy::Fire() {
 void BaseEnemy::MoveToTarget()
 {
     if (target_) {
-        // ƒ^[ƒQƒbƒg‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ğŒvZ
+        // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
         Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
         float distance = Length(toTarget);
 
         Vector3 direction = Normalize(toTarget);
         velocity_ = direction * speed_;
 
-        // ˆÊ’u‚ğXV
+        // ä½ç½®ã‚’æ›´æ–°
         worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
 
-        // “G‚ÌŒü‚«‚ğis•ûŒü‚É‡‚í‚¹‚é
+        // æ•µã®å‘ãã‚’é€²è¡Œæ–¹å‘ã«åˆã‚ã›ã‚‹
         float targetRotationY = std::atan2(direction.x, direction.z);
         worldTransform_->transform.rotate.y = targetRotationY;
     }
@@ -119,24 +119,24 @@ void BaseEnemy::MoveToTarget()
 
 void BaseEnemy::RandomMove()
 {
-    // •ûŒü•ÏXƒ^ƒCƒ}[‚ÌXV
+    // æ–¹å‘å¤‰æ›´ã‚¿ã‚¤ãƒãƒ¼ã®æ›´æ–°
     directionChangeTimer_ += 1.0f / 60.0f;
 
-    // ’èŠú“I‚É•ûŒü‚ğ•ÏX
+    // å®šæœŸçš„ã«æ–¹å‘ã‚’å¤‰æ›´
     if (directionChangeTimer_ >= directionChangeInterval_) {
-        // ƒXƒ|[ƒ“’n“_‚É–ß‚é•ûŒü‚ÆAƒ‰ƒ“ƒ_ƒ€‚È•ûŒü‚ğ¬‚º‚é
+        // ã‚¹ãƒãƒ¼ãƒ³åœ°ç‚¹ã«æˆ»ã‚‹æ–¹å‘ã¨ã€ãƒ©ãƒ³ãƒ€ãƒ ãªæ–¹å‘ã‚’æ··ãœã‚‹
         Vector3 toSpawn = spawnPosition_ - worldTransform_->transform.translate;
         float distanceToSpawn = Length(toSpawn);
 
-        // ƒXƒ|[ƒ“’n“_‚©‚ç‰“‚·‚¬‚éê‡‚ÍƒXƒ|[ƒ“’n“_‚É–ß‚éŒXŒü‚ğ‹­‚ß‚é
+        // ã‚¹ãƒãƒ¼ãƒ³åœ°ç‚¹ã‹ã‚‰é ã™ãã‚‹å ´åˆã¯ã‚¹ãƒãƒ¼ãƒ³åœ°ç‚¹ã«æˆ»ã‚‹å‚¾å‘ã‚’å¼·ã‚ã‚‹
         float spawnWeight = std::min(distanceToSpawn / wanderRadius_, 0.8f);
 
         if (distanceToSpawn > wanderRadius_) {
-            // ƒXƒ|[ƒ“’n“_‚É–ß‚é•ûŒü‚ğ—Dæ
+            // ã‚¹ãƒãƒ¼ãƒ³åœ°ç‚¹ã«æˆ»ã‚‹æ–¹å‘ã‚’å„ªå…ˆ
             velocity_ = Normalize(toSpawn) * speed_;
         }
         else {
-            // ƒ‰ƒ“ƒ_ƒ€‚È•ûŒü‚ğ‘I‘ğ
+            // ãƒ©ãƒ³ãƒ€ãƒ ãªæ–¹å‘ã‚’é¸æŠ
             float angle = angleDist_(rng_);
             Vector3 randomDir = { cosf(angle), 0.0f, sinf(angle) };
             velocity_ = Normalize(randomDir) * speed_;
@@ -145,17 +145,17 @@ void BaseEnemy::RandomMove()
         directionChangeTimer_ = 0.0f;
     }
 
-    // ˆÊ’u‚ğXV
+    // ä½ç½®ã‚’æ›´æ–°
     worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
 
-    // “G‚ÌŒü‚«‚ğis•ûŒü‚É‡‚í‚¹‚é
+    // æ•µã®å‘ãã‚’é€²è¡Œæ–¹å‘ã«åˆã‚ã›ã‚‹
     if (Length(velocity_) > 0.01f) {
         float targetRotationY = std::atan2(velocity_.x, velocity_.z);
         worldTransform_->transform.rotate.y = targetRotationY;
     }
 }
-// ƒRƒ“ƒeƒLƒXƒgƒx[ƒX‚Ì•ûŒü‘I‘ğ
+// ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆãƒ™ãƒ¼ã‚¹ã®æ–¹å‘é¸æŠ
 Vector3 BaseEnemy::SelectDirection() {
-    // À‘•‚ÍÈ—ªiƒVƒ“ƒvƒ‹‚³‚ğ—Dæj
+    // å®Ÿè£…ã¯çœç•¥ï¼ˆã‚·ãƒ³ãƒ—ãƒ«ã•ã‚’å„ªå…ˆï¼‰
     return velocity_;
 }

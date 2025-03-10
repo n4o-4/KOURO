@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Kouro.h"
 #include "BaseObject.h"
 #include <iostream>
@@ -10,72 +10,38 @@
 
 class BaseEnemy : public BaseObject {
     ///--------------------------------------------------------------
-    ///						 ƒƒ“ƒoŠÖ” 
+    ///						 ãƒ¡ãƒ³ãƒé–¢æ•° 
 public:
-    // @brief ‰Šú‰»
+    // @brief åˆæœŸåŒ–
     virtual void Initialize();
-    // @brief XV
+    // @brief æ›´æ–°
     virtual void Update();
     /**----------------------------------------------------------------------------
-     * \brief  Draw •`‰æ
-     * \param  viewProjection ƒrƒ…[Ë‰es—ñ
-     * \param  directionalLight ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒg
-     * \param  pointLight ƒ|ƒCƒ“ƒgƒ‰ƒCƒg
-     * \param  spotLight ƒXƒ|ƒbƒgƒ‰ƒCƒg
+     * \brief  Draw æç”»
+     * \param  viewProjection ãƒ“ãƒ¥ãƒ¼å°„å½±è¡Œåˆ—
+     * \param  directionalLight ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆ
+     * \param  pointLight ãƒã‚¤ãƒ³ãƒˆãƒ©ã‚¤ãƒˆ
+     * \param  spotLight ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆ
      */
     void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
     ///--------------------------------------------------------------
-    ///						 “–‚½‚è”»’è
+    ///						 å½“ãŸã‚Šåˆ¤å®š
 private:
-    /// \brief Õ“ËŠJn‚Ìˆ—
+    /// \brief è¡çªé–‹å§‹æ™‚ã®å‡¦ç†
     void OnCollisionEnter(BaseObject* other) override;
 
-    /// \brief Õ“ËŒp‘±‚Ìˆ—
+    /// \brief è¡çªç¶™ç¶šæ™‚ã®å‡¦ç†
     void OnCollisionStay(BaseObject* other) override;
 
-    /// \brief Õ“ËI—¹‚Ìˆ—
+    /// \brief è¡çªçµ‚äº†æ™‚ã®å‡¦ç†
     void OnCollisionExit(BaseObject* other) override;
 
     ///--------------------------------------------------------------
-    ///						 “üo—ÍŠÖ”
-protected:
-    /**----------------------------------------------------------------------------
-     * \brief  SetPosition ˆÊ’u‚ğİ’è
-     * \param  position ˆÊ’u
-     */
-    void SetPosition(const Vector3& position) {
-        worldTransform_->transform.translate = position;
-        spawnPosition_ = position; // ƒXƒ|[ƒ“ˆÊ’u‚à•Û‘¶
-    }
-
-    /**----------------------------------------------------------------------------
-     * \brief  SetHp HP‚ğİ’è
-     * \param  hp HP
-     */
-    void SetHp(const int hp) { hp_ = hp; }
-
-    /**----------------------------------------------------------------------------
-     * \brief  GetPosition ˆÊ’u‚ğæ“¾
-     * \return ˆÊ’u
-     */
-    const Vector3& GetPosition() const {
-        return worldTransform_->transform.translate;
-    }
-
-    /**----------------------------------------------------------------------------
-     * \brief  GetHp HP‚ğæ“¾
-     * \return HP
-     */
-    const int GetHp() const { return hp_; }
-
-    void SetTarget(WorldTransform* target) { target_ = target; }
-
-    //’e‚Ìæ“¾
-    std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
+    ///						 å…¥å‡ºåŠ›é–¢æ•°
 protected:
   
-    // •ûŒü‚ğ‘I‘ğ‚·‚éƒƒ\ƒbƒh
+    // æ–¹å‘ã‚’é¸æŠã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
     Vector3 SelectDirection();
 
     void BulletUpdate();
@@ -87,37 +53,37 @@ protected:
     void RandomMove();
 
     ///--------------------------------------------------------------
-    /// ƒƒ“ƒo•Ï”
+    /// ãƒ¡ãƒ³ãƒå¤‰æ•°
     protected:
     //========================================
-    // ƒ‚ƒfƒ‹
+    // ãƒ¢ãƒ‡ãƒ«
     std::unique_ptr<Object3d> model_ = nullptr;
-    //ƒ[ƒ‹ƒh•ÏŠ·
+    //ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›
     std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
 
     //HP
     int hp_ = 1;
 
-    // ˆÚ“®ŠÖ˜A
-    float speed_ = 0.15f;   // ˆÚ“®‘¬“x
-    float minX_ = -100.0f;  // ¶‚ÌŒÀŠE
-    float maxX_ = 100.0f;   // ‰E‚ÌŒÀŠE
-    int direction_ = 1;     // ˆÚ“®•ûŒü (1:‰E, -1:¶)
-    Vector3 velocity_ = { 0.0f, 0.0f, 0.0f }; // Œ»İ‚Ì‘¬“xƒxƒNƒgƒ‹
-    Vector3 spawnPosition_ = { 0.0f, 0.0f, 0.0f }; // ƒXƒ|[ƒ“ˆÊ’u
+    // ç§»å‹•é–¢é€£
+    float speed_ = 0.15f;   // ç§»å‹•é€Ÿåº¦
+    float minX_ = -100.0f;  // å·¦ã®é™ç•Œ
+    float maxX_ = 100.0f;   // å³ã®é™ç•Œ
+    int direction_ = 1;     // ç§»å‹•æ–¹å‘ (1:å³, -1:å·¦)
+    Vector3 velocity_ = { 0.0f, 0.0f, 0.0f }; // ç¾åœ¨ã®é€Ÿåº¦ãƒ™ã‚¯ãƒˆãƒ«
+    Vector3 spawnPosition_ = { 0.0f, 0.0f, 0.0f }; // ã‚¹ãƒãƒ¼ãƒ³ä½ç½®
 
-    // s“®ó‘Ô
+    // è¡Œå‹•çŠ¶æ…‹
     float stateTimer_ = 0.0f;
     float directionChangeTimer_ = 0.0f;
 
-    // s“®ƒpƒ‰ƒ[ƒ^
-    float chaseDistance_ = 64.0f;    // ‚±‚Ì‹——£“à‚È‚çƒvƒŒƒCƒ„[‚ğ’Ç‚¢‚©‚¯‚é
-    float combatDistance_ = 32.0f;   // í“¬‚ğs‚¤‹——£
-    float safeDistance_ = 10.0f;     // ˆÀ‘S‹——£i‚±‚Ì‹——£‚ğ•Û‚Âj
-    float wanderRadius_ = 32.0f;     // œpœj”¼Œa
-    float directionChangeInterval_ = 3.0f; // •ûŒü•ÏX‚ÌŠÔŠu
+    // è¡Œå‹•ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
+    float chaseDistance_ = 64.0f;    // ã“ã®è·é›¢å†…ãªã‚‰ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¿½ã„ã‹ã‘ã‚‹
+    float combatDistance_ = 32.0f;   // æˆ¦é—˜ã‚’è¡Œã†è·é›¢
+    float safeDistance_ = 10.0f;     // å®‰å…¨è·é›¢ï¼ˆã“ã®è·é›¢ã‚’ä¿ã¤ï¼‰
+    float wanderRadius_ = 32.0f;     // å¾˜å¾ŠåŠå¾„
+    float directionChangeInterval_ = 3.0f; // æ–¹å‘å¤‰æ›´ã®é–“éš”
 
-    // —”¶¬Ší
+    // ä¹±æ•°ç”Ÿæˆå™¨
     std::mt19937 rng_;
     std::uniform_real_distribution<float> angleDist_{ 0.0f, 2.0f * 3.14159f };
     std::uniform_real_distribution<float> strengthDist_{ 0.5f, 1.0f };
