@@ -28,27 +28,21 @@ void PostEffect::Draw()
 	// これから書き込むレンダーテクスチャーのインデックスを取得
 	UINT rtvIndex = 2 + index;
 
-
-
-for (int i = 0; i < static_cast<int>(EffectType::EffectCount); ++i)
+	for (int i = 0; i < static_cast<int>(EffectType::EffectCount); ++i)
 	{
 		if (!effect.isActive[i])
 		{
 			continue;
 		}
 
-
-
 		rtvIndex = 2 + index;
-		
 		auto it = std::next(effect.pipelines_.begin(), i);
-		
+
 		// 描画先のRTVを設定する
 		dxCommon_->GetCommandList()->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(rtvIndex), false, nullptr);
 
 		dxCommon_->GetCommandList()->SetGraphicsRootSignature(it->get()->rootSignature.Get());
 		dxCommon_->GetCommandList()->SetPipelineState(it->get()->pipelineState.Get());
-
 
 		// 中間テクスチャの切り替え
 		D3D12_GPU_DESCRIPTOR_HANDLE srvHandle;
@@ -63,13 +57,11 @@ for (int i = 0; i < static_cast<int>(EffectType::EffectCount); ++i)
 
 		assert(srvHandle.ptr != 0);
 
-		dxCommon_->GetCommandList()->SetGraphicsRootSignature(it->get()->rootSignature.Get());
-		dxCommon_->GetCommandList()->SetPipelineState(it->get()->pipelineState.Get());
 		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
 		dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 
+		// 次のエフェクトがアクティブか確認
 		int activeCount = 0;
-
 		for (int sub = i + 1; sub < static_cast<int>(EffectType::EffectCount); ++sub)
 		{
 			if (effect.isActive[sub])
@@ -77,58 +69,33 @@ for (int i = 0; i < static_cast<int>(EffectType::EffectCount); ++i)
 				++activeCount;
 			}
 		}
-	
+
 		if (activeCount == 0)
 		{
 			break;
 		}
 
-		// 今書き込んだ方を読み込みように変換
+		// 現在書き込んだ方を読み込み用に変換
 		D3D12_RESOURCE_BARRIER barrier{};
-
-		// TransitionBarrierの設定
-		// 今回のバリアはTransition
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-
-		// NONEにしておく
 		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-
-		// バリアを張る対象のリソース。現在のバックバッファに対して行う
 		barrier.Transition.pResource = dxCommon_->GetRenderTextureResources()[index].Get();
-
-		// 還移前(現在)のResourceState
 		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-
-		// 還移後のResourceState
 		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 
-		// TransitionBarrierを張る
 		dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier);
 
-
-		// 今読み込んだ方を書き込みように
+		// 今読み込んだ方を描画用に変換
 		D3D12_RESOURCE_BARRIER subBarrier{};
-
-		// TransitionBarrierの設定
-		// 今回のバリアはTransition
 		subBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-
-		// NONEにしておく
 		subBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-
-		// バリアを張る対象のリソース。現在のバックバッファに対して行う
 		subBarrier.Transition.pResource = dxCommon_->GetRenderTextureResources()[subindex].Get();
-
-		// 還移前(現在)のResourceState
 		subBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		subBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
-		// 還移後のResourceState
-		subBarrier.Transition.StateAfter =  D3D12_RESOURCE_STATE_RENDER_TARGET;
-
-		// TransitionBarrierを張る
 		dxCommon_->GetCommandList()->ResourceBarrier(1, &subBarrier);
 
-
+		// 次のエフェクトを切り替えるためのインデックス設定
 		if (index == 0)
 		{
 			index = 1;
