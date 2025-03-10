@@ -276,7 +276,7 @@ void Player::UpdateBullets() {
 	//マシンガンの弾の更新
 	 // マシンガンの発射
 	if (Input::GetInstance()->PushKey(DIK_J) ||
-		Input::GetInstance()->PushGamePadButton(Input::GamePadButton::RIGHT_TRIGGER)) {
+		Input::GetInstance()->PushGamePadButton(Input::GamePadButton::LEFT_SHOULDER)) {
 		isShootingMachineGun_ = true;
 	} else {
 		isShootingMachineGun_ = false;
@@ -410,9 +410,14 @@ bool Player::HandleBoost() {
 	return stateChanged;
 }
 void Player::ShootMachineGun() {
+	// 弾の初期位置をプレイヤーの位置に設定
 	Vector3 bulletPos = objectTransform_->transform.translate;
-	Vector3 bulletVelocity = { 0.0f, 0.0f, 1.0f };  // Z方向に進む
 
+	// プレイヤーの向いている方向を取得（Y軸の回転だけ考慮）
+	Vector3 forward = { 0.0f, 0.0f, 1.0f };  // Z方向が基準
+	Matrix4x4 rotationMatrix = MakeRotateYMatrix(objectTransform_->transform.rotate.y);// Y軸回転
+	Vector3 bulletVelocity = TransformNormal(forward, rotationMatrix) * 1.5f;  // 速度を調整
+	// マシンガン弾を生成
 	machineGunBullets_.push_back(std::make_unique<PlayerMachineGun>(bulletPos, bulletVelocity));
 }
 ///=============================================================================

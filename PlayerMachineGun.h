@@ -1,33 +1,39 @@
-#pragma once
+ï»¿#pragma once
 #include "BaseObject.h"
 #include <Object3d.h>
+#include "Kouro.h"
 
 class PlayerMachineGun : public BaseObject {
 public:
-	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	PlayerMachineGun(const Vector3& position, const Vector3& velocity);
 
-	// XVˆ—
+	// æ›´æ–°å‡¦ç†
 	void Update();
 
-	// •`‰æˆ—
+	// æç”»å‡¦ç†
 	void Draw(ViewProjection viewProjection, DirectionalLight directionalLight,
 		PointLight pointLight, SpotLight spotLight);
 
-	// ƒAƒNƒeƒBƒuó‘Ô‚Ìæ“¾
+	// ã‚¢ã‚¯ãƒ†ã‚£ãƒ–çŠ¶æ…‹ã®å–å¾—
 	bool IsActive() const { return isActive_; }
 
+	/// ã€è¿½åŠ ã€‘BaseObject ã®ä»®æƒ³é–¢æ•°ã‚’å®Ÿè£…
+	void OnCollisionEnter(BaseObject* other) override;
+	void OnCollisionStay(BaseObject* other) override;
+	void OnCollisionExit(BaseObject* other) override;
+
 private:
-	// ˆÚ“®‘¬“x
+	// ç§»å‹•é€Ÿåº¦
 	Vector3 velocity_;
 
-	// ƒ‚ƒfƒ‹
+	// ãƒ¢ãƒ‡ãƒ«
 	std::unique_ptr<Object3d> model_;
 	std::unique_ptr<WorldTransform> worldTransform_;
 
-	// ƒAƒNƒeƒBƒuó‘Ô
+	// ã‚¢ã‚¯ãƒ†ã‚£ãƒ–çŠ¶æ…‹
 	bool isActive_ = true;
 
-	// ’e‚Ìõ–½
+	// å¼¾ã®å¯¿å‘½
 	int lifeTime_ = 0;
 };
