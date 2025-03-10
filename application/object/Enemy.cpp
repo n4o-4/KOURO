@@ -31,19 +31,20 @@ void Enemy::Update() {
         }
     }
 
+    // 弾の発射処理
+    intervalCounter_ += 1.0f / 60.0f;
+    if (kIntervalTiem <= intervalCounter_ && currentState_ == ActionState::Combat) {
+        Fire();
+        intervalCounter_ = fmod(intervalCounter_, kIntervalTiem);
+    }
+
     BaseEnemy::Update();
 }
 
 ///=============================================================================
 ///						描画
 void Enemy::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
-    BulletDraw(viewProjection, directionalLight, pointLight, spotLight);
-
-    //========================================
-    // モデルの描画
-    if (hp_ > 0) {
-        model_->Draw(*worldTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
-    }
+    BaseEnemy::Draw(viewProjection, directionalLight, pointLight, spotLight);
 }
 
 ///=============================================================================
