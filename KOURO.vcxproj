@@ -20,6 +20,7 @@
     <ClCompile Include="application\scene\SceneManager.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
     <ClCompile Include="application\object\Enemy.cpp" />
+    <ClCompile Include="BaseEnemy.cpp" />
     <ClCompile Include="engine\camera\CameraManager.cpp" />
     <ClCompile Include="engine\camera\DebugCamera.cpp" />
     <ClCompile Include="application\object\EnemyBullet.cpp" />
@@ -82,6 +83,7 @@
     <ClInclude Include="application\scene\SceneManager.h" />
     <ClInclude Include="application\scene\TitleScene.h" />
     <ClInclude Include="application\object\Enemy.h" />
+    <ClInclude Include="BaseEnemy.h" />
     <ClInclude Include="engine\camera\CameraManager.h" />
     <ClInclude Include="engine\camera\DebugCamera.h" />
     <ClInclude Include="application\object\EnemyBullet.h" />
