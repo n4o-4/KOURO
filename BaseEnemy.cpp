@@ -81,6 +81,15 @@ void BaseEnemy::OnCollisionExit(BaseObject* other) {
 }
 
 void BaseEnemy::BulletUpdate() {
+    for (auto it = bullets_.begin(); it != bullets_.end(); ) {
+        if (!(*it)->GetIsActive()) {
+            it = bullets_.erase(it);  // 非アクティブなら削除
+        }
+        else {
+            it->get()->Update();
+            ++it;  // アクティブなら次へ
+        }
+    }
 }
 
 void BaseEnemy::BulletDraw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
