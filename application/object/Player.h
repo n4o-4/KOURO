@@ -6,6 +6,7 @@
 #include <vector>
 #include "BaseObject.h" // 当たり判定用
 #include "LockOn.h" 
+#include "PlayerMachineGun.h"// プレイヤーのマシンガン
 #include "memory"
 
 class Player : public BaseObject {
@@ -34,7 +35,7 @@ public:
 private:
 	//========================================
 	// 移動入力の取得
-    Vector3 GetMovementInput();
+	Vector3 GetMovementInput();
 	// 移動処理を更新
 	void UpdateMove(Vector3 direction);
 	//========================================
@@ -50,6 +51,14 @@ private:
 	//========================================
 	// ブースト処理
 	bool HandleBoost();
+	//========================================
+	// マシンガンの射撃処理
+	void ShootMachineGun();
+	//反動処理
+	void ApplyRecoil();
+	//playerの揺れ処理
+	void ApplyShake();
+	//========================================
 
 	///--------------------------------------------------------------
 	///						 当たり判定
@@ -147,7 +156,7 @@ private:
 	int maxQuickBoostFrames_ = 10;                // クイックブーストの最大フレーム数
 	float quickBoostCooldown_ = 0.0f;             // クイックブーストのクールダウン
 	float maxQuickBoostCooldown_ = 16.0f;         // クイックブーストの最大クールダウン
-	float quickBoostConsumption_ = 16.0f; 
+	float quickBoostConsumption_ = 16.0f;
 	// 操作感度
 	float airControlFactor_ = 0.8f;               // 空中操作係数
 	bool isQuickTurning_ = false;                 // クイックターン中か
@@ -165,8 +174,21 @@ private:
 	float boostDecay_ = 0.02f;  // 追加上昇の減衰量
 	float maxFallSpeed_ = 0.15f;// 下降速度の最大値
 	//========================================
+	// マシンガン関連
+	std::vector<std::unique_ptr<PlayerMachineGun>> machineGunBullets_;// マシンガンの弾のリスト
+	bool isShootingMachineGun_ = false;// マシンガンを撃っているか
+	int machineGunCooldown_ = 0;// マシンガンのクールダウン
+	//========================================
+	// 反動関連
+	Vector3 recoilVelocity_ = { 0.0f, 0.0f, 0.0f }; // 反動による速度
+	float recoilStrength_ = 0.05f; // 反動の強さ
+	float recoilDecay_ = 0.9f; // 反動の減衰率
+	float shakeIntensity_ = 0.0f; // 揺れの強さ
+	float shakeDecay_ = 0.9f; // 揺れの減衰率
+	//========================================	
+
 	// カメラ
-	FollowCamera *followCamera_ = nullptr;
+	FollowCamera* followCamera_ = nullptr;
 
 	float distinationRotateY_;
 };
