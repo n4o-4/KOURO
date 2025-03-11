@@ -73,15 +73,14 @@ void GameScene::Initialize() {
 
 	// 
 	fade_->Start(Fade::Status::FadeIn, 4.0f);	
-	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::None);
+
+	/// ResourceBarrierの関係で奇数じゃないとエラー
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::None);
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Grayscale);
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Vignette);
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::BoxFilter);
+	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Vignette);
+	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::BoxFilter);
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::GaussianFilter);
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LuminenceBasedOutline);
-
-
-
+	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LuminenceBasedOutline);
 }
 ///=============================================================================
 ///						終了処理

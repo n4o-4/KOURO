@@ -72,6 +72,26 @@ void PostEffect::Draw()
 
 		if (activeCount == 0)
 		{
+			// 現在書き込んだ方を読み込み用に変換
+			D3D12_RESOURCE_BARRIER barrier1{};
+			barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier1.Transition.pResource = dxCommon_->GetRenderTextureResources()[index].Get();
+			barrier1.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+			barrier1.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+			dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier1);
+
+			// 今読み込んだ方を描画用に変換
+			D3D12_RESOURCE_BARRIER barrier2{};
+			barrier2.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier2.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier2.Transition.pResource = dxCommon_->GetRenderTextureResources()[subindex].Get();
+			barrier2.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+			barrier2.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+
+			dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier2);
+
 			break;
 		}
 
@@ -95,17 +115,7 @@ void PostEffect::Draw()
 
 		dxCommon_->GetCommandList()->ResourceBarrier(1, &subBarrier);
 
-		// 次のエフェクトを切り替えるためのインデックス設定
-		if (index == 0)
-		{
-			index = 1;
-			subindex = 0;
-		}
-		else
-		{
-			index = 0;
-			subindex = 1;
-		}
+		std::swap(index, subindex);
 	}
 
  //   D3D12_RESOURCE_BARRIER barrier1{};

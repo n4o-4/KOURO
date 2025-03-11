@@ -574,11 +574,11 @@ void DirectXCommon::PreDraw()
 	commandList->SetGraphicsRootSignature(rootSignature.Get());
 	commandList->SetPipelineState(graphicsPipelineState.Get());
 
-	auto srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0");
+	auto srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
 	// srvHandle.ptr が 0 または異常な値でないか確認
 	assert(srvHandle.ptr != 0);
 
-	commandList->SetGraphicsRootDescriptorTable(0, TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0"));
+	commandList->SetGraphicsRootDescriptorTable(0, TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1"));
 
 	commandList->DrawInstanced(3, 1, 0, 0);
 }
@@ -594,6 +594,27 @@ void DirectXCommon::PostDraw()
 
 	// TransitionBarrierを張る
 	commandList->ResourceBarrier(1, &barrier);
+
+
+	// 現在書き込んだ方を読み込み用に変換
+	D3D12_RESOURCE_BARRIER barrier1{};
+	barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier1.Transition.pResource = renderTextureResources[0].Get();
+	barrier1.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrier1.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+	commandList->ResourceBarrier(1, &barrier1);
+
+	// 今読み込んだ方を描画用に変換
+	D3D12_RESOURCE_BARRIER barrier2{};
+	barrier2.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier2.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier2.Transition.pResource = renderTextureResources[1].Get();
+	barrier2.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	barrier2.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+
+	commandList->ResourceBarrier(1, &barrier2);
 
 	// コマンドリストの内容を確定させる。すべてのコマンドを積んでからCloseすること
 	hr = commandList->Close();
