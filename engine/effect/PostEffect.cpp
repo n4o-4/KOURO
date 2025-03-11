@@ -21,12 +21,13 @@ void PostEffect::Update()
 
 void PostEffect::Draw()
 {
-    
-	int index = 1;
-	int subindex = 0;
+    // 書き込む方のインデックス
+	uint32_t targetIndex = dxCommon_->GetRenderTargetIndex();
+	// 読み込む方のインデックス
+	uint32_t resourceIndex = dxCommon_->GetRenderResourceIndex();
 
 	// これから書き込むレンダーテクスチャーのインデックスを取得
-	UINT rtvIndex = 2 + index;
+	UINT renderTextureIndex = 2 + targetIndex;
 
 	for (int i = 0; i < static_cast<int>(EffectType::EffectCount); ++i)
 	{
@@ -35,24 +36,24 @@ void PostEffect::Draw()
 			continue;
 		}
 
-		rtvIndex = 2 + index;
+		renderTextureIndex = 2 + targetIndex;
 		auto it = std::next(effect.pipelines_.begin(), i);
 
 		// 描画先のRTVを設定する
-		dxCommon_->GetCommandList()->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(rtvIndex), false, nullptr);
+		dxCommon_->GetCommandList()->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(renderTextureIndex), false, nullptr);
 
 		dxCommon_->GetCommandList()->SetGraphicsRootSignature(it->get()->rootSignature.Get());
 		dxCommon_->GetCommandList()->SetPipelineState(it->get()->pipelineState.Get());
 
 		// 中間テクスチャの切り替え
 		D3D12_GPU_DESCRIPTOR_HANDLE srvHandle;
-		if (index == 0)
+		if (resourceIndex == 0)
 		{
-			srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
+			srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0");
 		}
 		else
 		{
-			srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0");
+			srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
 		}
 
 		assert(srvHandle.ptr != 0);
@@ -76,7 +77,7 @@ void PostEffect::Draw()
 			D3D12_RESOURCE_BARRIER barrier1{};
 			barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 			barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-			barrier1.Transition.pResource = dxCommon_->GetRenderTextureResources()[index].Get();
+			barrier1.Transition.pResource = dxCommon_->GetRenderTextureResources()[targetIndex].Get();
 			barrier1.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 			barrier1.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 
@@ -86,11 +87,16 @@ void PostEffect::Draw()
 			D3D12_RESOURCE_BARRIER barrier2{};
 			barrier2.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 			barrier2.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-			barrier2.Transition.pResource = dxCommon_->GetRenderTextureResources()[subindex].Get();
+			barrier2.Transition.pResource = dxCommon_->GetRenderTextureResources()[resourceIndex].Get();
 			barrier2.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 			barrier2.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 			dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier2);
+
+			std::swap(targetIndex, resourceIndex);
+
+			dxCommon_->SetRenderTargetIndex(targetIndex);
+			dxCommon_->SetRenderResourceIndex(resourceIndex);
 
 			break;
 		}
@@ -99,7 +105,7 @@ void PostEffect::Draw()
 		D3D12_RESOURCE_BARRIER barrier{};
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = dxCommon_->GetRenderTextureResources()[index].Get();
+		barrier.Transition.pResource = dxCommon_->GetRenderTextureResources()[targetIndex].Get();
 		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 
@@ -109,80 +115,14 @@ void PostEffect::Draw()
 		D3D12_RESOURCE_BARRIER subBarrier{};
 		subBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		subBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		subBarrier.Transition.pResource = dxCommon_->GetRenderTextureResources()[subindex].Get();
+		subBarrier.Transition.pResource = dxCommon_->GetRenderTextureResources()[resourceIndex].Get();
 		subBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 		subBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 		dxCommon_->GetCommandList()->ResourceBarrier(1, &subBarrier);
 
-		std::swap(index, subindex);
+		std::swap(targetIndex, resourceIndex);
 	}
-
- //   D3D12_RESOURCE_BARRIER barrier1{};
-
-	//UINT backBufferIndex = dxCommon_->GetBufferIndex();
-
- //   // TransitionBarrierの設定
-	//// 今回のバリアはTransition
-	//barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-
-	//// NONEにしておく
-	//barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-
-	//// バリアを張る対象のリソース。現在のバックバッファに対して行う
-	//barrier1.Transition.pResource = dxCommon_->GetSwapChainResources()[backBufferIndex].Get();
-
-	//// 還移前(現在)のResourceState
-	//barrier1.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-
-	//// 還移後のResourceState
-	//barrier1.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-
-	//// TransitionBarrierを張る
-	//dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier1);
-
-	//// 描画先のRTVを設定する
-	//dxCommon_->GetCommandList()->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(backBufferIndex), false, nullptr);
-
-	////// DSV設定
-	////dxCommon_->GetCommandList()->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
-
-	//// 指定した色で画面全体をクリアする
-	////float clearColor[] = { 0.1f,0.25,0.5f,1.0f }; // 青っぽい色 RGBAの順
-	////dxCommon_->GetCommandList()->ClearRenderTargetView(*dxCommon_->GetRTVHandle(backBufferIndex), clearColor, 0, nullptr);
-
-	////// 画面全体の深度をクリア
-	////commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-	//// SRV用のデスクリプタヒープを指定
-	////Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>  descriptorHeaps[] = { srvDescriptorHeap.Get() };
-	////commandList->SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
-
-	//dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	//dxCommon_->GetCommandList()->RSSetViewports(1, &*dxCommon_->GetViewPort()); // Viewportを設定
-	//dxCommon_->GetCommandList()->RSSetScissorRects(1, &*dxCommon_->GetRect()); // Scissorを設定
-
-	//auto it = std::next(effect.pipelines_.begin(), 0);
-	//dxCommon_->GetCommandList()->SetGraphicsRootSignature(it->get()->rootSignature.Get());
-
-	//dxCommon_->GetCommandList()->SetPipelineState(it->get()->pipelineState.Get());
-
-	//// 中間テクスチャの切り替え
-	//auto srvHandle = (index == 1)
-	//	? TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0")
-	//	: TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
-
-	//assert(srvHandle.ptr != 0);
-
-	//dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
-	//dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
-
-	//barrier1.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	//barrier1.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-
-	//// TransitionBarrierを張る
-	//dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier1);
 }
 
 void PostEffect::ApplyEffect(EffectType type)

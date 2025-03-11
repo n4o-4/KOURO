@@ -110,7 +110,7 @@ void DirectXCommon::InitializeDevice()
 		D3D_FEATURE_LEVEL_12_2,D3D_FEATURE_LEVEL_12_1,D3D_FEATURE_LEVEL_12_0
 	};
 
-	const char* featureLevelStrings[] = { "12.2","12..1","12.0" };
+	const char* featureLevelStrings[] = { "12.2","12.1","12.0" };
 
 	// デバイス生成
 	//高い順に生成できるか試していく
@@ -254,7 +254,6 @@ inline void DirectXCommon::InitializeRenderTergetView()
 	// RTVの設定
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;  //出力結果をSRGBに変換して書き込む
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D; // 2dテクスチャーとして書き込む
-
 	// ディスクリプタの先頭を取得する
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 
@@ -411,6 +410,9 @@ void DirectXCommon::CreateRenderTextureRTV()
 	device->CreateRenderTargetView(renderTextureResources[1].Get(), &rtvDesc, rtvHandles[3]);
 	assert(renderTextureResources[1]);
 	renderTextureResources[1]->SetName(L"renderTexture1");
+
+	renderResourceIndex_ = 0;
+	renderTargetIndex_ = 1;
 }
 
 Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible)
@@ -464,6 +466,8 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateDepthStencilTextureR
 
 void DirectXCommon::RenderTexturePreDraw()
 {
+	D3D12_RESOURCE_BARRIER barrier{};
+
 	// TransitionBarrierの設定
 	// 今回のバリアはTransition
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -471,8 +475,10 @@ void DirectXCommon::RenderTexturePreDraw()
 	// NONEにしておく
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 
+	uint32_t renderTargetIndex = 2 + renderResourceIndex_;
+
 	// バリアを張る対象のリソース。現在のバックバッファに対して行う
-	barrier.Transition.pResource = renderTextureResources[0].Get();
+	barrier.Transition.pResource = renderTextureResources[renderResourceIndex_].Get();
 
 	// 還移前(現在)のResourceState
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
@@ -485,11 +491,11 @@ void DirectXCommon::RenderTexturePreDraw()
 
 	// DSV設定
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = DirectXCommon::GetInstance()->GetDSVHeap()->GetCPUDescriptorHandleForHeapStart();
-	DirectXCommon::GetInstance()->GetCommandList()->OMSetRenderTargets(1, DirectXCommon::GetInstance()->GetRTVHandle(2), false, &dsvHandle);
+	DirectXCommon::GetInstance()->GetCommandList()->OMSetRenderTargets(1, DirectXCommon::GetInstance()->GetRTVHandle(renderTargetIndex), false, &dsvHandle);
 
 	// 指定した色で画面全体をクリアする
 	float clearColor[] = { 1.0f,0.0f,0.0f,1.0f }; // 青っぽい色 RGBAの順
-	DirectXCommon::GetInstance()->GetCommandList()->ClearRenderTargetView(*DirectXCommon::GetInstance()->GetRTVHandle(2), clearColor, 0, nullptr);
+	DirectXCommon::GetInstance()->GetCommandList()->ClearRenderTargetView(*DirectXCommon::GetInstance()->GetRTVHandle(renderTargetIndex), clearColor, 0, nullptr);
 
 	// 画面全体の深度をクリア
 	DirectXCommon::GetInstance()->GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
@@ -501,17 +507,17 @@ void DirectXCommon::RenderTexturePreDraw()
 
 void DirectXCommon::RenderTexturePostDraw()
 {
-	//// 還移前(現在)のResourceState
-	//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	D3D12_RESOURCE_BARRIER barrier{};
 
-	//// 還移後のResourceState
-	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	// TransitionBarrierの設定
+	// 今回のバリアはTransition
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 
-	//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	// NONEにしておく
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 
-	//// TransitionBarrierを張る
-	//DirectXCommon::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
+	// バリアを張る対象のリソース。現在のバックバッファに対して行う
+	barrier.Transition.pResource = renderTextureResources[renderResourceIndex_].Get();
 
 	// 還移前(現在)のResourceState
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -528,7 +534,7 @@ void DirectXCommon::PreDraw()
 	// これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
 
-	//backBufferCount_ = swapChain->GetCurrentBackBufferIndex();
+	D3D12_RESOURCE_BARRIER barrier{};
 
 	// TransitionBarrierの設定
 	// 今回のバリアはTransition
@@ -574,11 +580,21 @@ void DirectXCommon::PreDraw()
 	commandList->SetGraphicsRootSignature(rootSignature.Get());
 	commandList->SetPipelineState(graphicsPipelineState.Get());
 
-	auto srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
+	D3D12_GPU_DESCRIPTOR_HANDLE srvHandle;
+
+	if (renderResourceIndex_ == 0)
+	{
+		srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0");
+	}
+	else
+	{
+		srvHandle = TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
+	}
+	
 	// srvHandle.ptr が 0 または異常な値でないか確認
 	assert(srvHandle.ptr != 0);
 
-	commandList->SetGraphicsRootDescriptorTable(0, TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1"));
+	commandList->SetGraphicsRootDescriptorTable(0, srvHandle);
 
 	commandList->DrawInstanced(3, 1, 0, 0);
 }
@@ -586,6 +602,21 @@ void DirectXCommon::PreDraw()
 void DirectXCommon::PostDraw()
 {
 	HRESULT hr;
+
+	// これから書き込むバックバッファのインデックスを取得
+	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
+
+	D3D12_RESOURCE_BARRIER barrier{};
+
+	// TransitionBarrierの設定
+	// 今回のバリアはTransition
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+
+	// NONEにしておく
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+
+	// バリアを張る対象のリソース。現在のバックバッファに対して行う
+	barrier.Transition.pResource = swapChainResources[backBufferIndex].Get();
 
 	// 画面に描く処理は終わり、画面に映すので、状態を還移
 	// 今回はRenderTargetからPresentにする
@@ -596,25 +627,27 @@ void DirectXCommon::PostDraw()
 	commandList->ResourceBarrier(1, &barrier);
 
 
-	// 現在書き込んだ方を読み込み用に変換
-	D3D12_RESOURCE_BARRIER barrier1{};
-	barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier1.Transition.pResource = renderTextureResources[0].Get();
-	barrier1.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrier1.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	//// 現在書き込んだ方を読み込み用に変換
+	//D3D12_RESOURCE_BARRIER barrier1{};
+	//barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//barrier1.Transition.pResource = renderTextureResources[renderTargetIndex_].Get();
+	//barrier1.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	//barrier1.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 
-	commandList->ResourceBarrier(1, &barrier1);
+	//commandList->ResourceBarrier(1, &barrier1);
 
-	// 今読み込んだ方を描画用に変換
-	D3D12_RESOURCE_BARRIER barrier2{};
-	barrier2.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	barrier2.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier2.Transition.pResource = renderTextureResources[1].Get();
-	barrier2.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-	barrier2.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	//// 今読み込んだ方を描画用に変換
+	//D3D12_RESOURCE_BARRIER barrier2{};
+	//barrier2.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//barrier2.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//barrier2.Transition.pResource = renderTextureResources[renderResourceIndex_].Get();
+	//barrier2.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	//barrier2.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
-	commandList->ResourceBarrier(1, &barrier2);
+	//commandList->ResourceBarrier(1, &barrier2);
+
+	//std::swap(renderTargetIndex_, renderResourceIndex_);
 
 	// コマンドリストの内容を確定させる。すべてのコマンドを積んでからCloseすること
 	hr = commandList->Close();

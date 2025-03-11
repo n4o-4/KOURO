@@ -107,6 +107,11 @@ public:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource>* GetSwapChainResources() { return swapChainResources; }
 
+	uint32_t GetRenderResourceIndex() { return renderResourceIndex_; }
+	uint32_t GetRenderTargetIndex() { return renderTargetIndex_; }
+
+	void SetRenderResourceIndex(uint32_t renderResourceIndex) { renderResourceIndex_ = renderResourceIndex; }
+	void SetRenderTargetIndex(uint32_t renderTargetIndex) { renderTargetIndex_ = renderTargetIndex; }
 private: 
 	//デバイス初期化
 	void InitializeDevice();
@@ -210,7 +215,7 @@ private:
 
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 
-	D3D12_RESOURCE_BARRIER barrier{};
+	//D3D12_RESOURCE_BARRIER barrier{};
 
 	HANDLE fenceEvent = nullptr;
 
@@ -254,5 +259,6 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResources[2] = { nullptr };
 
-	uint32_t renderTextureSrvIndex[2] = {};
+	uint32_t renderResourceIndex_ = 0;
+	uint32_t renderTargetIndex_ = 1;
 };
