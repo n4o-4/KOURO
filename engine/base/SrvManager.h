@@ -10,7 +10,7 @@ public:
 
 private:
 
-    DirectXCommon* directXCommon = nullptr;
+    DirectXCommon* dxCommon_ = nullptr;
 
 	// SRV用のデスクリプタサイズ
 	uint32_t descriptorSize;
@@ -53,5 +53,9 @@ public:
 
 	uint32_t GetDescriptorSize() { return descriptorSize; }
 private:
+
+	void CreateSrvForDepth();
+
+
 };
 

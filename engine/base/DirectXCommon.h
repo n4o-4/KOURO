@@ -112,6 +112,12 @@ public:
 
 	void SetRenderResourceIndex(uint32_t renderResourceIndex) { renderResourceIndex_ = renderResourceIndex; }
 	void SetRenderTargetIndex(uint32_t renderTargetIndex) { renderTargetIndex_ = renderTargetIndex; }
+
+	//========================================================
+	// 深度リソースのsrvIndex
+	void SetDepthSrvIndex(uint32_t srvIndex) { depthSrvIndex_ = srvIndex; }
+	void SetDepthResource(Microsoft::WRL::ComPtr<ID3D12Resource> depthResource) { depthStencilResource = std::move(depthResource); }
+
 private: 
 	//デバイス初期化
 	void InitializeDevice();
@@ -162,9 +168,14 @@ private:
 	// FPS固定更新
 	void UpdateFixFPS();
 
+	//========================================================
+	// オフスクリーン用
+
 	void CreateOffScreenRootSignature();
 
 	void CreateOffScreenPipeLine();
+	
+	
 	
 private:
 
@@ -256,6 +267,16 @@ private:
 	Microsoft::WRL::ComPtr< ID3DBlob> signatureBlob = nullptr;
 	
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+
+	//========================================================
+	// 深度リソース用
+
+	//Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource = nullptr;
+
+	uint32_t depthSrvIndex_ = 0;
+
+	//========================================================
+	// ポストエフェクト用
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResources[2] = { nullptr };
 

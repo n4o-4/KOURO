@@ -1,10 +1,13 @@
 ﻿#pragma once
 #include "DirectXCommon.h"
 #include "TextureManager.h"
+#include "CameraManager.h"
 
 class PostEffect
 {
 public:
+	//==============================
+	// エフェクトの種類
 	enum class EffectType
 	{
 		// None
@@ -32,6 +35,13 @@ public:
 		// ↑↑↑追加↑↑↑
 
 		EffectCount,
+	};
+
+	//==============================
+	// 深度リソース用の構造体
+	struct Material
+	{
+		Matrix4x4 projectionInverse;
 	};
 
 private:
@@ -62,7 +72,8 @@ public:
 	// 指定のエフェクトを適応
 	void ApplyEffect(EffectType type);
 
-
+	// カメラマネージャを設定
+	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
 private:
 
 	void CreatePipeLine();
@@ -91,6 +102,9 @@ private:
 	void LuminanceBasedOutlineRootSignature(Pipeline* pipeline);
 	void LuminanceBasedOutlinePipeLine(Pipeline* pipeline);
 
+	void DepthBasedOutlineRootSignature(Pipeline* pipeline);
+	void DepthBasedOutlinePipeLine(Pipeline* pipeline);
+
 private: // メンバ変数
 	
 	DirectXCommon* dxCommon_ = nullptr;
@@ -98,5 +112,11 @@ private: // メンバ変数
 	SrvManager* srvManager_ = nullptr;
 
 	Effect effect;
+
+	CameraManager* cameraManager_ = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
+
+	Material* materialData_ = nullptr;
 };
 
