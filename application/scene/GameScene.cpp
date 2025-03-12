@@ -217,6 +217,11 @@ void GameScene::Update() {
 			collisionManager_->AddCollider(bullet.get());
 		}
 
+		// プレイヤーのマシンガン弾リスト
+		for (auto& machineGunBullet : player_->GetMachineGunBullets()) {
+			collisionManager_->AddCollider(machineGunBullet.get());
+		}
+
 		// 更新
 		collisionManager_->Update();
 		

@@ -1,4 +1,5 @@
 ﻿#include "PlayerMachineGun.h"
+#include "Enemy.h"
 
 PlayerMachineGun::PlayerMachineGun(const Vector3& position, const Vector3& velocity) {
 	model_ = std::make_unique<Object3d>();
@@ -43,8 +44,12 @@ void PlayerMachineGun::Draw(ViewProjection viewProjection, DirectionalLight dire
 ///                        当たり判定の実装
 ///=============================================================================
 void PlayerMachineGun::OnCollisionEnter(BaseObject* other) {
-	// 何かに当たったら消える
-	isActive_ = false;
+	// 敵接触
+	if (Enemy* enemy = dynamic_cast<Enemy*>(other)) {
+		//---------------------------------------
+		//弾を消す
+		isActive_ = false;
+	}
 }
 
 void PlayerMachineGun::OnCollisionStay(BaseObject* other) {

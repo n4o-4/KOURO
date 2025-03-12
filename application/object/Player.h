@@ -107,6 +107,12 @@ public:
 	std::vector<std::unique_ptr<PlayerMissile>>& GetBullets() { return bullets_; }
 
 	/**----------------------------------------------------------------------------
+	 * \brief  GetMachineGunBullets マシンガンの弾の取得
+	 * \return
+	 */
+	std::vector<std::unique_ptr<PlayerMachineGun>>& GetMachineGunBullets() { return machineGunBullets_; }
+
+	/**----------------------------------------------------------------------------
 	 * \brief  GetHp HPの取得
 	 * \return
 	 */
