@@ -49,11 +49,6 @@ PixelShaderOutput main(VertexShaderOutput input)
     float2 uvStepSize = float2(rcp(width), rcp(height));
     
     PixelShaderOutput output;
-    output.color = float4(0, 1, 0, 1);
-    
-    output.color = gTexture.Sample(gSampler, input.texcoord);
-    output.color.r = 0;
-    return output;
     
     output.color.rgb = float3(0.0f, 0.0f, 0.0f);
     output.color.a = 1.0f;
@@ -70,13 +65,13 @@ PixelShaderOutput main(VertexShaderOutput input)
             // gMaterial
             float4 viewSpace = mul(float4(0.0f, 0.0f, ndcDepth, 1.0f), gMaterial.projectionInvverse);
             float viewZ = viewSpace.z * rcp(viewSpace.w); // 同時座標系からデカルト座標系へ変換
-            difference.x += kPrewittHorizontalKernel[x][y];
-            difference.y += kPrewittVerticalKernel[x][y];
+            difference.x += viewZ * kPrewittHorizontalKernel[x][y];
+            difference.y += viewZ * kPrewittVerticalKernel[x][y];
         }
 
     }
     
-    float weight = length(difference);
+    float weight = length(difference * 0.45f);
     weight = saturate(weight);
     
     output.color.rgb = (1.0f - weight) * gTexture.Sample(gSampler, input.texcoord).rgb;

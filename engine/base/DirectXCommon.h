@@ -101,7 +101,7 @@ public:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource>* GetRenderTextureResources() { return renderTextureResources; }
 
-	D3D12_CPU_DESCRIPTOR_HANDLE GetDsvHandle(uint32_t index) { return dsvHandles[index]; }
+	D3D12_CPU_DESCRIPTOR_HANDLE GetDsvHandle() { return dsvHandle; }
 
 	IDXGISwapChain4* GetSwapChain() { return swapChain.Get(); }
 
@@ -116,25 +116,16 @@ public:
 	//========================================================
 	// 深度リソースのsrvIndex
 	void SetDepthSrvIndex(uint32_t srvIndex) { depthSrvIndex_ = srvIndex; }
-	void SetDepthResource(Microsoft::WRL::ComPtr<ID3D12Resource> depthResource){ depthResource_ = std::move(depthResource);}
-	void SetDepthHandle(D3D12_CPU_DESCRIPTOR_HANDLE depthHandle) 
-	{ 
-		depthHandle_ = depthHandle;
 
-		// DSVの設定
-		D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
-		dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // Format。基本的にはResourceに合わせる
-		dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; // 2dTexture
-		// DSVHeapの先頭にDSVを作る
-		device->CreateDepthStencilView(depthResource_.Get(), &dsvDesc, GetDsvHandle(1));
+	void SetDepthHandle(D3D12_CPU_DESCRIPTOR_HANDLE depthHandle) { depthHandle_ = depthHandle;}
 
-	}
-
-	D3D12_CPU_DESCRIPTOR_HANDLE* GetDsvHandles() { return dsvHandles; }
+	D3D12_CPU_DESCRIPTOR_HANDLE GetDsvHandles() { return dsvHandle; }
 
 	uint32_t GetDepthSrvIndex() { return depthSrvIndex_; }
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> GetDepthResource() { return depthResource_; }
+	Microsoft::WRL::ComPtr<ID3D12Resource> GetDepthStencilResource() { return depthStencilResource; }
+
+	D3D12_CPU_DESCRIPTOR_HANDLE GetDepthSrvHandle() { return depthHandle_; }
 
 private:  
 	//デバイス初期化
@@ -242,7 +233,7 @@ private:
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[4];
 
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandles[2];
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 
 	//D3D12_RESOURCE_BARRIER barrier{};
 
@@ -288,12 +279,9 @@ private:
 
 	//========================================================
 	// 深度リソース用
-
-	Microsoft::WRL::ComPtr<ID3D12Resource> depthResource_ = nullptr;
+	uint32_t depthSrvIndex_ = 0;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE depthHandle_;
-
-	uint32_t depthSrvIndex_ = 0;
 
 	//========================================================
 	// ポストエフェクト用

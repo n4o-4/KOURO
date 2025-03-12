@@ -77,7 +77,7 @@ void PostEffect::Draw()
 			D3D12_RESOURCE_BARRIER depthbarrier{};
 			depthbarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 			depthbarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-			depthbarrier.Transition.pResource = dxCommon_->GetDepthResource().Get();
+			depthbarrier.Transition.pResource = dxCommon_->GetDepthStencilResource().Get();
 
 			if (depthbarrier.Transition.pResource == nullptr)
 			{
@@ -89,8 +89,8 @@ void PostEffect::Draw()
 
 			dxCommon_->GetCommandList()->ResourceBarrier(1, &depthbarrier);
 			// 指定した色で画面全体をクリアする
-			float clearColor[] = { 1.0f,0.0f,0.0f,1.0f }; // 青っぽい色 RGBAの順
-			dxCommon_->GetCommandList()->ClearRenderTargetView(*DirectXCommon::GetInstance()->GetRTVHandle(renderTextureIndex), clearColor, 0, nullptr);
+			//float clearColor[] = { 1.0f,0.0f,0.0f,1.0f }; // 青っぽい色 RGBAの順
+			//dxCommon_->GetCommandList()->ClearRenderTargetView(*DirectXCommon::GetInstance()->GetRTVHandle(renderTextureIndex), clearColor, 0, nullptr);
 
 
 			// ディスクリプタテーブルを設定 (深度テクスチャ SRV)
@@ -1112,15 +1112,23 @@ void PostEffect::DepthBasedOutlineRootSignature(Pipeline* pipeline)
 	staticSamplers[0].ShaderRegister = 0; // s0: Shader Register
 	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
 
-	staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT; // ポイントフィルタ
+	//staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT; // ポイントフィルタ
+	//staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	//staticSamplers[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	//staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	//staticSamplers[1].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	//staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX; // 全MipMap使用
+	//staticSamplers[1].ShaderRegister = 1; // s1: Shader Register for gSamplerPoint
+	//staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
+	// サンプラーの基本設定
+	staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT; // バイリニアフィルタ
 	staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[1].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
 	staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX; // 全MipMap使用
-	staticSamplers[1].ShaderRegister = 1; // s1: Shader Register for gSamplerPoint
+	staticSamplers[1].ShaderRegister = 1; // s0: Shader Register
 	staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
-
 
 	// ルートシグネチャの構築
 	descriptionRootSignature.pParameters = rootParameters; // ルートパラメーター配列へのポインタ
