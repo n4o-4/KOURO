@@ -426,7 +426,7 @@ void Player::ShootMachineGun() {
 	forward = TransformNormal(forward, rotationMatrix);
 
 	// **ランダムなばらつきを加える**
-	float spread = 0.1f;  // ばらつきの強さ（大きくするともっと弾が広がる）
+	float spread = 0.2f;  // ばらつきの強さ（大きくするともっと弾が広がる）
 	float randomX = ((rand() % 100) / 100.0f - 0.5f) * spread; // -spread/2 ～ spread/2
 	float randomY = ((rand() % 100) / 100.0f - 0.5f) * spread; // -spread/2 ～ spread/2
 
