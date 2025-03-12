@@ -25,7 +25,7 @@ void LockOn::Initialize() {
 
 ///=============================================================================
 ///                        更新処理
-void LockOn::Update(const std::vector<std::unique_ptr<Enemy>>& enemies) {
+void LockOn::Update(const std::vector<std::unique_ptr<BaseEnemy>>& enemies) {
     // 既存のデバッグ表示
 #ifdef _DEBUG
     ImGui::Begin("LockOn Debug");
@@ -110,7 +110,7 @@ void LockOn::Draw(ViewProjection viewProjection, DirectionalLight directionalLig
 }
 ///=============================================================================
 ///                        ロックオン範囲内の敵を検知する関数
-void LockOn::DetectEnemies(const std::vector<std::unique_ptr<Enemy>>& enemies) {
+void LockOn::DetectEnemies(const std::vector<std::unique_ptr<BaseEnemy>>& enemies) {
 	//========================================
     // 既存のロックオンをクリア
     lockedEnemies_.clear();
@@ -123,7 +123,7 @@ void LockOn::DetectEnemies(const std::vector<std::unique_ptr<Enemy>>& enemies) {
 	//========================================
     // 視点優先度に基づく敵の並び替え用
     struct EnemyWithPriority {
-        Enemy* enemy;
+        BaseEnemy* enemy;
         float priority; // 視点との一致度
         float distance; // プレイヤーからの距離
     };
@@ -176,7 +176,7 @@ void LockOn::DetectEnemies(const std::vector<std::unique_ptr<Enemy>>& enemies) {
 }
 ///=============================================================================
 ///                        ロックオンされている敵のリストを取得
-void LockOn::RemoveLockedEnemy(Enemy* enemy)
+void LockOn::RemoveLockedEnemy(BaseEnemy* enemy)
 {
 	auto it = std::remove(lockedEnemies_.begin(), lockedEnemies_.end(), enemy);
 	lockedEnemies_.erase(it, lockedEnemies_.end());

@@ -9,101 +9,114 @@
 #include "EnemyBullet.h"
 
 #include "BaseEnemy.h"
-///=============================================================================
-///						ã‚¨ãƒãƒŸãƒ¼ã‚¯ãƒ©ã‚¹
-class Enemy : public BaseEnemy {
 
-    // è¡Œå‹•çŠ¶æ…‹
-    enum class ActionState
-    {
-        Wander,     // å¾˜å¾Šï¼ˆã‚¹ãƒãƒ¼ãƒ³ä»˜è¿‘ã§å‹•ãå›ã‚‹ï¼‰
-        Chase,      // è¿½è·¡ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«è¿‘ã¥ãï¼‰
-        Combat      // æˆ¦é—˜ï¼ˆã‚¹ãƒˆãƒ©ãƒƒãƒ•ã‚£ãƒ³ã‚°ã—ãªãŒã‚‰æ”»æ’ƒï¼‰
+class GroundTypeEnemy :public BaseEnemy {
+
+
+    // s“®ó‘Ô
+    enum class ActionState {
+        Wander,     // œpœjiƒXƒ|[ƒ“•t‹ß‚Å“®‚«‰ñ‚éj
+        Chase,      // ’ÇÕiƒvƒŒƒCƒ„[‚É‹ß‚Ã‚­j
+        Combat      // í“¬iƒXƒgƒ‰ƒbƒtƒBƒ“ƒO‚µ‚È‚ª‚çUŒ‚j
     };
 
     ///--------------------------------------------------------------
-    ///						 ãƒ¡ãƒ³ãƒé–¢æ•° 
+    ///						 ƒƒ“ƒoŠÖ” 
 public:
 
-    Enemy() : BaseEnemy() {}
 
-    // @brief åˆæœŸåŒ–
+    GroundTypeEnemy() : BaseEnemy() {}
+
+    // @brief ‰Šú‰»
     void Initialize();
-    // @brief æ›´æ–°
+    // @brief XV
     void Update();
     /**----------------------------------------------------------------------------
-     * \brief  Draw æç”»
-     * \param  viewProjection ãƒ“ãƒ¥ãƒ¼å°„å½±è¡Œåˆ—
-     * \param  directionalLight ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆ
-     * \param  pointLight ãƒã‚¤ãƒ³ãƒˆãƒ©ã‚¤ãƒˆ
-     * \param  spotLight ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆ
+     * \brief  Draw •`‰æ
+     * \param  viewProjection ƒrƒ…[Ë‰es—ñ
+     * \param  directionalLight ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒg
+     * \param  pointLight ƒ|ƒCƒ“ƒgƒ‰ƒCƒg
+     * \param  spotLight ƒXƒ|ƒbƒgƒ‰ƒCƒg
      */
     void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
+	void MoveToJump();
+
+	void Attack();
+
     ///--------------------------------------------------------------
-    ///						 å½“ãŸã‚Šåˆ¤å®š
+    ///						 “–‚½‚è”»’è
 private:
-    /// \brief è¡çªé–‹å§‹æ™‚ã®å‡¦ç†
+    /// \brief Õ“ËŠJn‚Ìˆ—
     void OnCollisionEnter(BaseObject* other) override;
 
-    /// \brief è¡çªç¶™ç¶šæ™‚ã®å‡¦ç†
+    /// \brief Õ“ËŒp‘±‚Ìˆ—
     void OnCollisionStay(BaseObject* other) override;
 
-    /// \brief è¡çªçµ‚äº†æ™‚ã®å‡¦ç†
+    /// \brief Õ“ËI—¹‚Ìˆ—
     void OnCollisionExit(BaseObject* other) override;
 
     ///--------------------------------------------------------------
-    ///						 å…¥å‡ºåŠ›é–¢æ•°
+    ///						 “üo—ÍŠÖ”
 public:
     /**----------------------------------------------------------------------------
-     * \brief  SetPosition ä½ç½®ã‚’è¨­å®š
-     * \param  position ä½ç½®
-     */
-    void SetPosition(const Vector3& position) { 
-        worldTransform_->transform.translate = position; 
-        spawnPosition_ = position; // ã‚¹ãƒãƒ¼ãƒ³ä½ç½®ã‚‚ä¿å­˜
+      * \brief  SetPosition ˆÊ’u‚ğİ’è
+      * \param  position ˆÊ’u
+      */
+    void SetPosition(const Vector3& position) {
+        worldTransform_->transform.translate = position;
+        spawnPosition_ = position; // ƒXƒ|[ƒ“ˆÊ’u‚à•Û‘¶
     }
 
     /**----------------------------------------------------------------------------
-     * \brief  SetHp HPã‚’è¨­å®š
+     * \brief  SetHp HP‚ğİ’è
      * \param  hp HP
      */
     void SetHp(const int hp) { hp_ = hp; }
 
     /**----------------------------------------------------------------------------
-     * \brief  GetPosition ä½ç½®ã‚’å–å¾—
-     * \return ä½ç½®
+     * \brief  GetPosition ˆÊ’u‚ğæ“¾
+     * \return ˆÊ’u
      */
     const Vector3& GetPosition() const {
         return worldTransform_->transform.translate;
     }
 
     /**----------------------------------------------------------------------------
-     * \brief  GetHp HPã‚’å–å¾—
+     * \brief  GetHp HP‚ğæ“¾
      * \return HP
      */
     const int GetHp() const { return hp_; }
 
     void SetTarget(WorldTransform* target) { target_ = target; }
 
-    //å¼¾ã®å–å¾—
-    std::list<std::unique_ptr<EnemyBullet>> &GetBullets() { return bullets_; }
+    //’e‚Ìæ“¾
+    std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
 
 private:
-    // è¡Œå‹•çŠ¶æ…‹åˆ¥ã®æ›´æ–°ãƒ¡ã‚½ãƒƒãƒ‰
+    // s“®ó‘Ô•Ê‚ÌXVƒƒ\ƒbƒh
     void UpdateWanderState();
     void UpdateChaseState();
     void UpdateCombatState();
-    
-    // çŠ¶æ…‹ã‚’é¸æŠã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
+
+    // ó‘Ô‚ğ‘I‘ğ‚·‚éƒƒ\ƒbƒh
     void UpdateActionState();
 
+
     ///--------------------------------------------------------------
-    /// ãƒ¡ãƒ³ãƒå¤‰æ•°
+    /// ƒƒ“ƒo•Ï”
 private:
-    
-    // è¡Œå‹•çŠ¶æ…‹
+
+
+    // s“®ó‘Ô
     ActionState currentState_ = ActionState::Wander;
-    
+
+    bool isJumping_ = false;      
+    float jumpVelocity_ = 0.0f;   
+    float jumpTime_ = 0.0f;       
+    float gravity_ = 9.8f;        
+    float groundHeight_ = 0.0f;
+
+   
 };
 

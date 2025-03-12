@@ -165,7 +165,7 @@ void GameScene::Update() {
 		enemies_.erase(
 			// 削除条件
 			std::remove_if(enemies_.begin(), enemies_.end(),
-				[this](const std::unique_ptr<Enemy> &enemy) {
+				[this](const std::unique_ptr<BaseEnemy> &enemy) {
 					// HPが0以下の場合
 					if(enemy->GetHp() <= 0) {
 						// ロックオンシステムから敵を削除
@@ -543,12 +543,16 @@ void GameScene::UpdateEnemyPopCommands() {
 ///                        敵の出現
 void GameScene::SpawnEnemy(const Vector3 &position) {
 
-	std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>();
-	newEnemy->Initialize();
-	newEnemy->SetPosition(position);
+	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<GroundTypeEnemy>();
+	if (auto* enemyNormal = dynamic_cast<GroundTypeEnemy*>(newEnemy.get())) {
+		enemyNormal->Initialize();
+		enemyNormal->SetPosition(position);
+		enemyNormal->SetTarget(player_->GetWorldTransform());
+	}
+	//newEnemy->SetPosition(position);
 	//newEnemy->SetGameScene(this);
 	//newEnemy->SetPlayer(player_);
-	newEnemy->SetTarget(player_->GetWorldTransform());
+	//newEnemy->SetTarget(player_->GetWorldTransform());
 	enemies_.push_back(std::move(newEnemy));
 
 }

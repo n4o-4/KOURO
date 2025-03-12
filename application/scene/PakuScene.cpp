@@ -66,10 +66,10 @@ void PakuScene::Update()
 	//lockOn
 	Vector3 playerPos = player_->GetPosition();
 	Vector3 lockOnPos = { playerPos.x, playerPos.y, playerPos.z + 20.0f };
-	lockOn_->SetPosition(lockOnPos);
-	lockOn_->Update(enemies_);
+	/*lockOn_->SetPosition(lockOnPos);
+	lockOn_->Update(enemies_);*/
 
-	lockOn_->DetectEnemies(enemies_);
+	/*lockOn_->DetectEnemies(enemies_);*/
 
 	skyDome_->Update();
 	ground_->Update();
@@ -80,7 +80,7 @@ void PakuScene::Update()
 		enemy->Update();
 	}
 
-	lockOn_->DetectEnemies(enemies_);
+	/*lockOn_->DetectEnemies(enemies_);*/
 
 
 

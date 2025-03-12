@@ -49,6 +49,7 @@
     <ClCompile Include="application\scene\GameOver.cpp" />
     <ClCompile Include="application\object\LockOn.cpp" />
     <ClCompile Include="application\object\LockOnMarker.cpp" />
+    <ClCompile Include="GroundTypeEnemy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="application\object\LockOn.h" />
     <ClInclude Include="application\object\LockOnMarker.h" />
     <ClInclude Include="engine\effect\PostEffect.h" />
+    <ClInclude Include="GroundTypeEnemy.h" />
     <ClInclude Include="PlayerMachineGun.h" />
   </ItemGroup>
   <ItemGroup>

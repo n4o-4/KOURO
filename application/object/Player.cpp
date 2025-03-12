@@ -5,7 +5,7 @@
 #include <cmath>
 #include "MyMath.h"
 #include "imgui.h"
-#include "Enemy.h"
+#include "BaseEnemy.h"
 #include "EnemyBullet.h"
 #include "Vectors.h"
 

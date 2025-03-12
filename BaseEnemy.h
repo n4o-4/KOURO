@@ -12,6 +12,9 @@ class BaseEnemy : public BaseObject {
     ///--------------------------------------------------------------
     ///						 メンバ関数 
 public:
+
+    virtual ~BaseEnemy() = default;
+
     // @brief 初期化
     virtual void Initialize(Model* model);
     // @brief 更新
@@ -25,6 +28,20 @@ public:
      */
     void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
+
+    const Vector3& GetPosition() const {
+        return worldTransform_->transform.translate;
+    }
+
+    std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
+
+    virtual WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
+
+    /**----------------------------------------------------------------------------
+   * \brief  GetHp HPを取得
+   * \return HP
+   */
+    const int GetHp() const { return hp_; }
     ///--------------------------------------------------------------
     ///						 当たり判定
 private:
@@ -52,6 +69,7 @@ protected:
 
     void RandomMove();
 
+    
     ///--------------------------------------------------------------
     /// メンバ変数
     protected:
