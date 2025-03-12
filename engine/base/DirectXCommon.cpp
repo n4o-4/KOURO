@@ -50,6 +50,7 @@ void DirectXCommon::Initialize(WinApp* winApp)
 	InitializeImGui();
 
 	dsvHandles[0] = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	dsvHandles[1].ptr = dsvHandles[0].ptr + descriptorSizeDSV;
 
 	CreateOffScreenPipeLine();
 }
@@ -216,7 +217,7 @@ void DirectXCommon::CreateDepthBuffer()
     depthStencilResource = CreateDepthStencilTextureResource(device.Get(), WinApp::kClientWidth, WinApp::kClientHeight);
 
 
-
+	depthResource_ = CreateDepthStencilTextureResource(device.Get(), WinApp::kClientWidth, WinApp::kClientHeight);
 }
 
 void DirectXCommon::CreateDescriptorHeaps()
@@ -499,7 +500,7 @@ void DirectXCommon::RenderTexturePreDraw()
 	DirectXCommon::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
 
 	// DSV設定
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = DirectXCommon::GetInstance()->GetDSVHeap()->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = GetDsvHandle(1);
 	DirectXCommon::GetInstance()->GetCommandList()->OMSetRenderTargets(1, DirectXCommon::GetInstance()->GetRTVHandle(renderTargetIndex), false, &dsvHandle);
 
 	// 指定した色で画面全体をクリアする

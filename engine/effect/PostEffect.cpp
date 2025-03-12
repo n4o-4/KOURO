@@ -13,6 +13,11 @@ void PostEffect::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 
 	CreatePipeLine();
 
+	// bufferResourceの生成
+	materialResource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(Material));
+
+	// データをマップ
+	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 }
 
 void PostEffect::Update()
@@ -64,6 +69,82 @@ void PostEffect::Draw()
 		assert(srvHandle.ptr != 0);
 
 		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
+
+		// 深度検出でのアウトライン
+		if (i == 6)
+		{
+			// 現在書き込んだ方を読み込み用に変換
+			D3D12_RESOURCE_BARRIER depthbarrier{};
+			depthbarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			depthbarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			depthbarrier.Transition.pResource = dxCommon_->GetDepthResource().Get();
+
+			if (depthbarrier.Transition.pResource == nullptr)
+			{
+				assert(0);
+			}
+
+			depthbarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+			depthbarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+			dxCommon_->GetCommandList()->ResourceBarrier(1, &depthbarrier);
+			// 指定した色で画面全体をクリアする
+			float clearColor[] = { 1.0f,0.0f,0.0f,1.0f }; // 青っぽい色 RGBAの順
+			dxCommon_->GetCommandList()->ClearRenderTargetView(*DirectXCommon::GetInstance()->GetRTVHandle(renderTextureIndex), clearColor, 0, nullptr);
+
+
+			// ディスクリプタテーブルを設定 (深度テクスチャ SRV)
+			dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(dxCommon_->GetDepthSrvIndex()));
+
+			// 定数バッファを設定
+			dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(2, materialResource_.Get()->GetGPUVirtualAddress());
+
+			dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
+
+			// 次のエフェクトがアクティブか確認
+			int activeCount = 0;
+			for (int sub = i + 1; sub < static_cast<int>(EffectType::EffectCount); ++sub)
+			{
+				if (effect.isActive[sub])
+				{
+					++activeCount;
+				}
+			}
+
+			// 現在書き込んだ方を読み込み用に変換
+			D3D12_RESOURCE_BARRIER barrier1{};
+			barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier1.Transition.pResource = dxCommon_->GetRenderTextureResources()[targetIndex].Get();
+			barrier1.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+			barrier1.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+			dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier1);
+
+			// 今読み込んだ方を描画用に変換
+			D3D12_RESOURCE_BARRIER barrier2{};
+			barrier2.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier2.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier2.Transition.pResource = dxCommon_->GetRenderTextureResources()[resourceIndex].Get();
+			barrier2.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+			barrier2.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+
+			dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier2);
+
+			std::swap(targetIndex, resourceIndex);
+
+			dxCommon_->SetRenderTargetIndex(targetIndex);
+			dxCommon_->SetRenderResourceIndex(resourceIndex);
+
+			depthbarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+			depthbarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+
+			dxCommon_->GetCommandList()->ResourceBarrier(1, &depthbarrier);
+
+			break;
+
+		}
+
 		dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 
 		// 次のエフェクトがアクティブか確認
@@ -167,6 +248,11 @@ void PostEffect::CreatePipeLine()
 	// 輝度検出でのアウトライン
 	newPipeline = std::make_unique<Pipeline>();
 	LuminanceBasedOutlinePipeLine(newPipeline.get());
+	effect.pipelines_.push_back(std::move(newPipeline));
+
+	// 深度検出でのアウトライン
+	newPipeline = std::make_unique<Pipeline>();
+	DepthBasedOutlinePipeLine(newPipeline.get());
 	effect.pipelines_.push_back(std::move(newPipeline));
 }
 
@@ -990,13 +1076,30 @@ void PostEffect::DepthBasedOutlineRootSignature(Pipeline* pipeline)
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRV
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // 自動計算
 
-	// Root Parameter: SRV (gTexture)
-	D3D12_ROOT_PARAMETER rootParameters[1] = {};
+	// SRV の Descriptor Range
+	D3D12_DESCRIPTOR_RANGE descriptorRange1[1] = {};
+	descriptorRange1[0].BaseShaderRegister = 1; // t0: Shader Register
+	descriptorRange1[0].NumDescriptors = 1; // 1つのSRV
+	descriptorRange1[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRV
+	descriptorRange1[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // 自動計算
+
+	// Root Parameter: SRV
+	D3D12_ROOT_PARAMETER rootParameters[3] = {};
+	//  gTexture
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
-
 	rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRange; // Tableの中身の配列を指定
 	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange); // Tableで利用する数
+
+	// gDepthTexture
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
+	rootParameters[1].DescriptorTable.pDescriptorRanges = descriptorRange1; // Tableの中身の配列を指定
+	rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange1); // Tableで利用する数
+
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[2].Descriptor.ShaderRegister = 0;
 
 	// Static Sampler
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[2] = {};
@@ -1015,7 +1118,7 @@ void PostEffect::DepthBasedOutlineRootSignature(Pipeline* pipeline)
 	staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[1].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
 	staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX; // 全MipMap使用
-	staticSamplers[1].ShaderRegister = 0; // s0: Shader Register
+	staticSamplers[1].ShaderRegister = 1; // s1: Shader Register for gSamplerPoint
 	staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
 
 

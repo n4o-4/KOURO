@@ -29,7 +29,7 @@ public:
 		LuminenceBasedOutline,
 
 		// 深度検出でのアウトライン
-		//DepthBasedOutline,
+		DepthBasedOutline,
 
 
 		// ↑↑↑追加↑↑↑

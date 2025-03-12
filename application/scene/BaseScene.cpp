@@ -19,6 +19,8 @@ void BaseScene::Initialize()
 	fade_->Start(Fade::Status::FadeIn, fadeTime_);
 
 	Input::GetInstance()->SetIsReception(false);
+
+	sceneManager_->GetPostEffect()->SetCameraManager(cameraManager_.get());
 }
 
 void BaseScene::Finalize()

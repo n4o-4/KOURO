@@ -112,16 +112,18 @@ void SrvManager::CreateSrvForDepth()
 {
 	uint32_t index = Allocate();
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource;
+
+
+    ID3D12Resource* depthStencilResource = dxCommon_->GetDepthResource().Get();
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
 	depthTextureSrvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 	depthTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	depthTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	depthTextureSrvDesc.Texture2D.MipLevels = 1;
-	dxCommon_->GetDevice()->CreateShaderResourceView(depthStencilResource.Get(), &depthTextureSrvDesc, GetCPUDescriptorHandle(index));
+	dxCommon_->GetDevice()->CreateShaderResourceView(depthStencilResource, &depthTextureSrvDesc, GetCPUDescriptorHandle(index));
 
 	dxCommon_->SetDepthSrvIndex(index);
-	dxCommon_->SetDepthResource(depthStencilResource);
+	//dxCommon_->SetDepthResource(depthStencilResource);
 	dxCommon_->SetDepthHandle(GetCPUDescriptorHandle(index));
 }

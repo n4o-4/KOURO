@@ -126,11 +126,17 @@ public:
 		dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // Format。基本的にはResourceに合わせる
 		dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; // 2dTexture
 		// DSVHeapの先頭にDSVを作る
-		device->CreateDepthStencilView(depthStencilResource.Get(), &dsvDesc, GetDsvHandle(1));
+		device->CreateDepthStencilView(depthResource_.Get(), &dsvDesc, GetDsvHandle(1));
 
 	}
 
-private: 
+	D3D12_CPU_DESCRIPTOR_HANDLE* GetDsvHandles() { return dsvHandles; }
+
+	uint32_t GetDepthSrvIndex() { return depthSrvIndex_; }
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> GetDepthResource() { return depthResource_; }
+
+private:  
 	//デバイス初期化
 	void InitializeDevice();
 

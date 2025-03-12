@@ -5,18 +5,28 @@ struct Material
     float4x4 projectionInvverse;
 };
 
-Texture2D<float4> gTexture : register(t0);
-SamplerState gSampler : register(s0);
-Texture2D<float> gDepthTexture : register(t1);
-SamplerState gSamplerPoint : register(s1);
-
 ConstantBuffer<Material> gMaterial : register(b0);
 
+Texture2D<float4> gTexture : register(t0);
+
+SamplerState gSampler : register(s0);
+
+Texture2D<float> gDepthTexture : register(t1);
+
+SamplerState gSamplerPoint : register(s1);
 
 struct PixelShaderOutput
 {
     float4 color : SV_TARGET0;
 };
+
+static const float2 kIndex3x3[3][3] =
+{
+    { { -1.0f, -1.0f }, { 0.0f, -1.0f }, { 1.0f, -1.0f } },
+    { { -1.0f, 0.0f }, { 0.0f, 0.0f }, { 1.0f, 1.0f } },
+    { { -1.0f, -1.0f }, { 0.0f, 1.0f }, { 1.0f, 1.0f } },
+};
+
 
 static const float kPrewittHorizontalKernel[3][3] =
 {
@@ -39,6 +49,11 @@ PixelShaderOutput main(VertexShaderOutput input)
     float2 uvStepSize = float2(rcp(width), rcp(height));
     
     PixelShaderOutput output;
+    output.color = float4(0, 1, 0, 1);
+    
+    output.color = gTexture.Sample(gSampler, input.texcoord);
+    output.color.r = 0;
+    return output;
     
     output.color.rgb = float3(0.0f, 0.0f, 0.0f);
     output.color.a = 1.0f;
