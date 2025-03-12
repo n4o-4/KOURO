@@ -158,5 +158,6 @@
     <None Include="Resources\shaders\PrimitiveDrawer.hlsli" />
     <None Include="Resources\shaders\Sprite.hlsli" />
     <None Include="Resources\shaders\Fullscreen.hlsli" />
+    <None Include="Resources\shaders\RadialBlur.PS.hlsl" />
   </ItemGroup>
 </Project>

@@ -80,7 +80,8 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::BoxFilter);
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::GaussianFilter);
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LuminenceBasedOutline);
-	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::DepthBasedOutline);
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::DepthBasedOutline);
+	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::RadialBlur);
 }
 ///=============================================================================
 ///						終了処理

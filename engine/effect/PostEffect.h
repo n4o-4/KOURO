@@ -31,6 +31,8 @@ public:
 		// 深度検出でのアウトライン
 		DepthBasedOutline,
 
+		// RadialBlur
+		RadialBlur,
 
 		// ↑↑↑追加↑↑↑
 
@@ -102,8 +104,13 @@ private:
 	void LuminanceBasedOutlineRootSignature(Pipeline* pipeline);
 	void LuminanceBasedOutlinePipeLine(Pipeline* pipeline);
 
+	// 深度検出でのアウトライン
 	void DepthBasedOutlineRootSignature(Pipeline* pipeline);
 	void DepthBasedOutlinePipeLine(Pipeline* pipeline);
+
+	// RadialBlur
+	void RadialBlurRootSignature(Pipeline* pipeline);
+	void RadialBlurPipeLine(Pipeline* pipeline);
 
 private: // メンバ変数
 	
