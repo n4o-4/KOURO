@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "PlayerBullet.h"
+#include "PlayerMachineGun.h"
 #include <cmath>
 #include <algorithm>
 
@@ -55,6 +56,9 @@ void Enemy::OnCollisionEnter(BaseObject* other) {
     if(dynamic_cast<PlayerBullet*>(other)) {
         --hp_;
     }
+	if (dynamic_cast<PlayerMachineGun*>(other)) {
+		--hp_;
+	}
 }
 
 ///--------------------------------------------------------------
