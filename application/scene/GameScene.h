@@ -12,6 +12,7 @@
 #include "CollisionManager.h"
 #include "LockOn.h"
 #include "BaseEnemy.h"
+#include "GroundTypeEnemy.h"
 
 class GameScene : public BaseScene
 {

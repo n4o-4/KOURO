@@ -74,20 +74,20 @@ void Enemy::OnCollisionExit(BaseObject* other) {
 void Enemy::UpdateActionState() {
     // タイマーの更新
     stateTimer_ += 1.0f / 60.0f;
-    
+
     // ターゲットが存在しない場合は徘徊
     if (!target_) {
         currentState_ = ActionState::Wander;
         return;
     }
-    
+
     // ターゲットとの距離を計算
     Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
     float distance = Length(toTarget);
-    
+
     // 距離に基づいて状態を変更
     ActionState newState = currentState_; // デフォルトは現在の状態を維持
-    
+
     if (distance > chaseDistance_) {
         // プレイヤーが遠い場合は徘徊
         newState = ActionState::Wander;
@@ -98,7 +98,7 @@ void Enemy::UpdateActionState() {
         // 戦闘範囲内なら戦闘
         newState = ActionState::Combat;
     }
-    
+
     // 状態が変化した場合、タイマーをリセット
     if (newState != currentState_) {
         currentState_ = newState;

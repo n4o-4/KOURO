@@ -13,7 +13,7 @@ class BaseEnemy : public BaseObject {
     ///						 メンバ関数 
 public:
 
-    BaseEnemy() = default;
+    virtual ~BaseEnemy() = default;
 
     // @brief 初期化
     virtual void Initialize(Model* model);
@@ -34,6 +34,8 @@ public:
     }
 
     std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
+
+    virtual WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
     /**----------------------------------------------------------------------------
    * \brief  GetHp HPを取得
