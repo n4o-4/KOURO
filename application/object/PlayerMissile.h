@@ -26,7 +26,7 @@ public:
 
     /// @brief ターゲットの設定
     /// @param target 追尾対象の敵
-    void SetTarget(Enemy *target) { target_ = target; }
+    void SetTarget(BaseEnemy*target) { target_ = target; }
 
     /// @brief アクティブ状態の取得
     /// @return ミサイルが活動中かどうか
@@ -181,7 +181,7 @@ private:
     
     // ターゲット
     /// @brief 追尾対象
-    Enemy *target_ = nullptr;
+    BaseEnemy*target_ = nullptr;
 
     //===================================================
     // 内部メソッド

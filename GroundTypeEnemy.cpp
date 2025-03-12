@@ -1,5 +1,5 @@
 #include "GroundTypeEnemy.h"
-#include "PlayerBullet.h"
+#include "PlayerMissile.h"
 #include <cmath>
 #include <algorithm>
 
@@ -91,7 +91,7 @@ void GroundTypeEnemy::Attack() {
 }
 
 void GroundTypeEnemy::OnCollisionEnter(BaseObject* other) {
-    if (dynamic_cast<PlayerBullet*>(other)) {
+    if (dynamic_cast<PlayerMissile*>(other)) {
         --hp_;
     }
 }
