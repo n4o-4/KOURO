@@ -25,7 +25,7 @@ void Object3dCommon::Finalize()
 
 void Object3dCommon::SetView()
 {
-	dxCommon_->GetCommandList()->ClearDepthStencilView(dxCommon_->GetDsvHandle(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	//dxCommon_->GetCommandList()->ClearDepthStencilView(dxCommon_->GetDsvHandle(1), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 

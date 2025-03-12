@@ -49,7 +49,7 @@ void DirectXCommon::Initialize(WinApp* winApp)
 	CreateDXCCompiler();
 	InitializeImGui();
 
-	dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	dsvHandles[0] = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 
 	CreateOffScreenPipeLine();
 }
@@ -215,6 +215,8 @@ void DirectXCommon::CreateDepthBuffer()
 	// DepthStencilTextureをウィンドウのサイズで作成
     depthStencilResource = CreateDepthStencilTextureResource(device.Get(), WinApp::kClientWidth, WinApp::kClientHeight);
 
+
+
 }
 
 void DirectXCommon::CreateDescriptorHeaps()
@@ -230,7 +232,7 @@ void DirectXCommon::CreateDescriptorHeaps()
 	//srvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
 
 	// DSV用のヒープでディスクリプタの数は1。DSVはShader内で触るものではないので、ShaderVisibleはfalse
-	dsvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
+	dsvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, false);
 
 }
 
@@ -282,12 +284,7 @@ void DirectXCommon::InitializeDepthStencilView()
 
 	//=====================
 	///追加
-	/*D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
-	depthTextureSrvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-	depthTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	depthTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	depthTextureSrvDesc.Texture2D.MipLevels = 1;
-	device->CreateShaderResourceView(depthStencilResource.Get(), &depthTextureSrvDesc, dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());*/
+	
 
 }
 
@@ -476,6 +473,8 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateDepthStencilTextureR
 
 void DirectXCommon::RenderTexturePreDraw()
 {
+	depthResource_;
+
 	D3D12_RESOURCE_BARRIER barrier{};
 
 	// TransitionBarrierの設定
