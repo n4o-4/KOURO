@@ -24,6 +24,9 @@ class Enemy : public BaseEnemy {
     ///--------------------------------------------------------------
     ///						 メンバ関数 
 public:
+
+    Enemy() : BaseEnemy() {}
+
     // @brief 初期化
     void Initialize();
     // @brief 更新

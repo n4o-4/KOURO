@@ -12,6 +12,9 @@ class BaseEnemy : public BaseObject {
     ///--------------------------------------------------------------
     ///						 メンバ関数 
 public:
+
+    BaseEnemy() = default;
+
     // @brief 初期化
     virtual void Initialize(Model* model);
     // @brief 更新
