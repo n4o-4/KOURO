@@ -25,6 +25,11 @@ public:
      */
     void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
+
+    const Vector3& GetPosition() const {
+        return worldTransform_->transform.translate;
+    }
+
     ///--------------------------------------------------------------
     ///						 当たり判定
 private:

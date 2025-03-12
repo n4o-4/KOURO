@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Kouro.h"
 #include "BaseObject.h"
-#include "Enemy.h"
+#include "BaseEnemy.h"
 #include "LockOnMarker.h"
 
 class LockOn {
@@ -9,12 +9,12 @@ class LockOn {
 public:
 
 	void Initialize(); 
-	void Update(const std::vector<std::unique_ptr<Enemy>>& enemies);
+	void Update(const std::vector<std::unique_ptr<BaseEnemy>>& enemies);
 	void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
 	void SetPosition(const Vector3& position) { lockOnWorldTransform_->transform.translate = position; }
 	// LockOn 範囲内の敵を検知する関数
-	void DetectEnemies(const std::vector<std::unique_ptr<Enemy>>& enemies);
+	void DetectEnemies(const std::vector<std::unique_ptr<BaseEnemy>>& enemies);
 	//検出された敵のリストを取得する関数
 	size_t GetLockedEnemyCount() const { return lockedEnemies_.size(); }
 
@@ -25,9 +25,9 @@ public:
      * \brief  GetLockedEnemies ロックオンされている敵のリストを取得
      * \return ロックオンされている敵のリスト
      */
-	const std::vector<Enemy*>& GetLockedEnemies() const { return lockedEnemies_; }
+	const std::vector<BaseEnemy*>& GetLockedEnemies() const { return lockedEnemies_; }
 
-	void RemoveLockedEnemy(Enemy* enemy);
+	void RemoveLockedEnemy(BaseEnemy* enemy);
 
 
 private:
@@ -38,13 +38,13 @@ private:
 	std::unique_ptr<WorldTransform> lockOnWorldTransform_ = nullptr;
 	//========================================
 	// 検出された敵のリスト
-	std::vector<Enemy*> lockedEnemies_;
+	std::vector<BaseEnemy*> lockedEnemies_;
 	//========================================
 	//検出されたEnemyの前に表示されるオブジェクト
 	std::vector<std::unique_ptr<LockOnMarker>> lockOnMarkers_;
 	//========================================
 	//敵
-	Enemy* enemy_ = nullptr;
+	BaseEnemy* enemy_ = nullptr;
 	//========================================
 	// 視点方向ベクトル
 	Vector3 viewDirection_ = { 0.0f, 0.0f, 1.0f }; // デフォルトは前方向
