@@ -111,10 +111,10 @@ private:
     std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
 
     //HP
-    int hp_ = 1;
+    int hp_ = 4;
 
     // 移動関連
-    float speed_ = 0.15f;   // 移動速度
+    float speed_ = 0.3f;   // 移動速度
     float minX_ = -100.0f;  // 左の限界
     float maxX_ = 100.0f;   // 右の限界
     int direction_ = 1;     // 移動方向 (1:右, -1:左)

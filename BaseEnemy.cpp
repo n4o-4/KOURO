@@ -1,82 +1,82 @@
 #include "BaseEnemy.h"
-#include "PlayerBullet.h"
+#include "PlayerMissile.h"
 #include <cmath>
 #include <algorithm>
 
 ///=============================================================================
-///						‰Šú‰»
+///						ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void BaseEnemy::Initialize() {
     //========================================
-    // ƒ‚ƒfƒ‹‚ğ‰Šú‰»
+    // ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     model_ = std::make_unique<Object3d>();
     model_->Initialize(Object3dCommon::GetInstance());
     //========================================
-    // ƒ‚ƒfƒ‹‚ğ“Ç‚İ‚Ş
+    // ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ï¿½Ç‚İï¿½ï¿½ï¿½
     ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
     model_->SetModel("enemy/enemy.obj");
     //========================================
-    // ‰ŠúˆÊ’u‚ğİ’è
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½ï¿½İ’ï¿½
     worldTransform_ = std::make_unique<WorldTransform>();
     worldTransform_->Initialize();
     //========================================
-    // “–‚½‚è”»’è‚Æ‚Ì“¯Šú
+    // ï¿½ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½Æ‚Ì“ï¿½ï¿½ï¿½
     BaseObject::Initialize(worldTransform_->transform.translate, 1.0f);
 
-    // —”¶¬Ší‚Ì‰Šú‰»
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
     std::random_device rd;
     rng_ = std::mt19937(rd());
 
-    // ƒXƒ|[ƒ“ˆÊ’u‚Ì‰Šú‰»
+    // ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½Ê’uï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
     spawnPosition_ = worldTransform_->transform.translate;
 }
 
 ///=============================================================================
-///						•`‰æ
+///						ï¿½`ï¿½ï¿½
 void BaseEnemy::Update() {
     if (hp_ > 0) {
        
-        // ’e‚ÌXV
+        // ï¿½eï¿½ÌXï¿½V
         BulletUpdate();
 
-        // ƒ[ƒ‹ƒh•ÏŠ·‚ÌXV
+        // ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½ÏŠï¿½ï¿½ÌXï¿½V
         worldTransform_->UpdateMatrix();
-        // ƒ‚ƒfƒ‹‚Ìƒ[ƒJƒ‹s—ñ‚ğXV
+        // ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ìƒï¿½ï¿½[ï¿½Jï¿½ï¿½ï¿½sï¿½ï¿½ï¿½Xï¿½V
         model_->SetLocalMatrix(MakeIdentity4x4());
-        // ƒ‚ƒfƒ‹‚ÌXV
+        // ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ÌXï¿½V
         model_->Update();
 
         //========================================
-        // “–‚½‚è”»’è‚Æ‚Ì“¯Šú
+        // ï¿½ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½Æ‚Ì“ï¿½ï¿½ï¿½
         BaseObject::Update(worldTransform_->transform.translate);
     }
 }
 
 ///=============================================================================
-///						•`‰æ
+///						ï¿½`ï¿½ï¿½
 void BaseEnemy::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
     BulletDraw(viewProjection, directionalLight, pointLight, spotLight);
 
     //========================================
-    // ƒ‚ƒfƒ‹‚Ì•`‰æ
+    // ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ì•`ï¿½ï¿½
     if (hp_ > 0) {
         model_->Draw(*worldTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
     }
 }
 
 ///=============================================================================
-///						“–‚½‚è”»’è
+///						ï¿½ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½
 ///--------------------------------------------------------------
-///						ÚGŠJnˆ—
+///						ï¿½ÚGï¿½Jï¿½nï¿½ï¿½ï¿½ï¿½
 void BaseEnemy::OnCollisionEnter(BaseObject* other) {
 }
 
 ///--------------------------------------------------------------
-///						ÚGŒp‘±ˆ—
+///						ï¿½ÚGï¿½pï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void BaseEnemy::OnCollisionStay(BaseObject* other) {
 }
 
 ///--------------------------------------------------------------
-///						ÚGI—¹ˆ—
+///						ï¿½ÚGï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void BaseEnemy::OnCollisionExit(BaseObject* other) {
 }
 
@@ -101,17 +101,17 @@ void BaseEnemy::Fire() {
 void BaseEnemy::MoveToTarget()
 {
     if (target_) {
-        // ƒ^[ƒQƒbƒg‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ğŒvZ
+        // ï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½ÉŒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½vï¿½Z
         Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
         float distance = Length(toTarget);
 
         Vector3 direction = Normalize(toTarget);
         velocity_ = direction * speed_;
 
-        // ˆÊ’u‚ğXV
+        // ï¿½Ê’uï¿½ï¿½Xï¿½V
         worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
 
-        // “G‚ÌŒü‚«‚ğis•ûŒü‚É‡‚í‚¹‚é
+        // ï¿½Gï¿½ÌŒï¿½ï¿½ï¿½ï¿½ï¿½iï¿½sï¿½ï¿½ï¿½ï¿½ï¿½Éï¿½ï¿½í‚¹ï¿½ï¿½
         float targetRotationY = std::atan2(direction.x, direction.z);
         worldTransform_->transform.rotate.y = targetRotationY;
     }
@@ -119,24 +119,24 @@ void BaseEnemy::MoveToTarget()
 
 void BaseEnemy::RandomMove()
 {
-    // •ûŒü•ÏXƒ^ƒCƒ}[‚ÌXV
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ÏXï¿½^ï¿½Cï¿½}ï¿½[ï¿½ÌXï¿½V
     directionChangeTimer_ += 1.0f / 60.0f;
 
-    // ’èŠú“I‚É•ûŒü‚ğ•ÏX
+    // ï¿½ï¿½ï¿½ï¿½Iï¿½É•ï¿½ï¿½ï¿½ï¿½ï¿½ÏX
     if (directionChangeTimer_ >= directionChangeInterval_) {
-        // ƒXƒ|[ƒ“’n“_‚É–ß‚é•ûŒü‚ÆAƒ‰ƒ“ƒ_ƒ€‚È•ûŒü‚ğ¬‚º‚é
+        // ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½nï¿½_ï¿½É–ß‚ï¿½ï¿½ï¿½ï¿½ï¿½ÆAï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½È•ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         Vector3 toSpawn = spawnPosition_ - worldTransform_->transform.translate;
         float distanceToSpawn = Length(toSpawn);
 
-        // ƒXƒ|[ƒ“’n“_‚©‚ç‰“‚·‚¬‚éê‡‚ÍƒXƒ|[ƒ“’n“_‚É–ß‚éŒXŒü‚ğ‹­‚ß‚é
+        // ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½nï¿½_ï¿½ï¿½ï¿½ç‰“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ÍƒXï¿½|ï¿½[ï¿½ï¿½ï¿½nï¿½_ï¿½É–ß‚ï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
         float spawnWeight = std::min(distanceToSpawn / wanderRadius_, 0.8f);
 
         if (distanceToSpawn > wanderRadius_) {
-            // ƒXƒ|[ƒ“’n“_‚É–ß‚é•ûŒü‚ğ—Dæ
+            // ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½nï¿½_ï¿½É–ß‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Dï¿½ï¿½
             velocity_ = Normalize(toSpawn) * speed_;
         }
         else {
-            // ƒ‰ƒ“ƒ_ƒ€‚È•ûŒü‚ğ‘I‘ğ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½È•ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½
             float angle = angleDist_(rng_);
             Vector3 randomDir = { cosf(angle), 0.0f, sinf(angle) };
             velocity_ = Normalize(randomDir) * speed_;
@@ -145,17 +145,17 @@ void BaseEnemy::RandomMove()
         directionChangeTimer_ = 0.0f;
     }
 
-    // ˆÊ’u‚ğXV
+    // ï¿½Ê’uï¿½ï¿½Xï¿½V
     worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
 
-    // “G‚ÌŒü‚«‚ğis•ûŒü‚É‡‚í‚¹‚é
+    // ï¿½Gï¿½ÌŒï¿½ï¿½ï¿½ï¿½ï¿½iï¿½sï¿½ï¿½ï¿½ï¿½ï¿½Éï¿½ï¿½í‚¹ï¿½ï¿½
     if (Length(velocity_) > 0.01f) {
         float targetRotationY = std::atan2(velocity_.x, velocity_.z);
         worldTransform_->transform.rotate.y = targetRotationY;
     }
 }
-// ƒRƒ“ƒeƒLƒXƒgƒx[ƒX‚Ì•ûŒü‘I‘ğ
+// ï¿½Rï¿½ï¿½ï¿½eï¿½Lï¿½Xï¿½gï¿½xï¿½[ï¿½Xï¿½Ì•ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½
 Vector3 BaseEnemy::SelectDirection() {
-    // À‘•‚ÍÈ—ªiƒVƒ“ƒvƒ‹‚³‚ğ—Dæj
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ÍÈ—ï¿½ï¿½iï¿½Vï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Dï¿½ï¿½j
     return velocity_;
 }
