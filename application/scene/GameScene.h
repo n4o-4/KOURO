@@ -11,7 +11,7 @@
 #include "Enemy.h"
 #include "CollisionManager.h"
 #include "LockOn.h"
-
+#include "BaseEnemy.h"
 
 class GameScene : public BaseScene
 {
@@ -47,7 +47,7 @@ private:
 	// 敵出現
     std::stringstream enemyPopCommands;
     // 敵のリスト
-    std::vector<std::unique_ptr<Enemy>> enemies_;
+    std::vector<std::unique_ptr<BaseEnemy>> enemies_;
 	// 待機フラグ
     bool isWaiting_ = false;
 	// 待機時間

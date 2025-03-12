@@ -1,7 +1,7 @@
 ﻿// 既存のヘッダファイルに追加
 #pragma once
 #include "BaseObject.h"
-#include "Enemy.h"
+#include "BaseEnemy.h"
 
 class PlayerBullet : public BaseObject {
 public:
@@ -14,7 +14,7 @@ public:
               PointLight pointLight, SpotLight spotLight);
     
     // ターゲットの設定
-    void SetTarget(Enemy* target) { target_ = target; }
+    void SetTarget(BaseEnemy* target) { target_ = target; }
     
     // アクティブ状態の取得
     bool IsActive() const { return isActive_; }
@@ -64,7 +64,7 @@ private:
     std::unique_ptr<WorldTransform> worldTransform_;
     
     // ターゲット
-    Enemy* target_ = nullptr;
+    BaseEnemy* target_ = nullptr;
     
     // アクティブ状態
     bool isActive_ = true;

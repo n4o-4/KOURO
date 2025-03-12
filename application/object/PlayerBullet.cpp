@@ -228,7 +228,7 @@ void PlayerBullet::Draw(ViewProjection viewProjection, DirectionalLight directio
 void PlayerBullet::OnCollisionEnter(BaseObject *other) {
     //========================================
     // 敵接触
-    if (Enemy* enemy = dynamic_cast<Enemy*>(other)) {
+    if (BaseEnemy* enemy = dynamic_cast<BaseEnemy*>(other)) {
         //---------------------------------------
         //弾を消す
         isActive_ = false;

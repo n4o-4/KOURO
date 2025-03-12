@@ -5,7 +5,7 @@
 #include <cmath>
 #include "MyMath.h"
 #include "imgui.h"
-#include "Enemy.h"
+#include "BaseEnemy.h"
 #include "EnemyBullet.h"
 #include "Vectors.h"
 
@@ -315,7 +315,7 @@ void Player::Shoot() {
     Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };
 
     if (lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
-        for (Enemy* enemy : lockOnSystem_->GetLockedEnemies()) {
+        for (BaseEnemy* enemy : lockOnSystem_->GetLockedEnemies()) {
             if (!enemy) continue;
 
             Vector3 enemyPos = enemy->GetPosition();
@@ -477,7 +477,7 @@ void Player::ApplyShake() {
 void Player::OnCollisionEnter(BaseObject *other) {
 	//========================================
 	// 敵
-	if(dynamic_cast<Enemy *>( other )) {
+	if(dynamic_cast<BaseEnemy*>( other )) {
 		isJumping_ = true;
 	}
 	//========================================
@@ -492,7 +492,7 @@ void Player::OnCollisionEnter(BaseObject *other) {
 ///--------------------------------------------------------------
 ///						接触継続処理
 void Player::OnCollisionStay(BaseObject *other) {
-	if(dynamic_cast<Enemy *>( other )) {
+	if(dynamic_cast<BaseEnemy*>( other )) {
 		isJumping_ = true;
 	}
 }

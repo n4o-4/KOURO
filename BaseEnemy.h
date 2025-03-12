@@ -30,6 +30,13 @@ public:
         return worldTransform_->transform.translate;
     }
 
+    std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
+
+    /**----------------------------------------------------------------------------
+   * \brief  GetHp HPを取得
+   * \return HP
+   */
+    const int GetHp() const { return hp_; }
     ///--------------------------------------------------------------
     ///						 当たり判定
 private:
@@ -57,6 +64,7 @@ protected:
 
     void RandomMove();
 
+    
     ///--------------------------------------------------------------
     /// メンバ変数
     protected:

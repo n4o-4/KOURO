@@ -130,7 +130,7 @@ void LockOn::DetectEnemies(const std::vector<std::unique_ptr<BaseEnemy>>& enemie
     std::vector<EnemyWithPriority> prioritizedEnemies;
 	//========================================
     // 各敵について視点方向に基づく優先度を計算
-    for (const auto& BaseEnemy : enemies) {
+    for (const auto& enemy : enemies) {
         Vector3 enemyPos = enemy->GetPosition();
         Vector3 toEnemy = enemyPos - lockOnPos;
         float distanceToEnemy = Length(toEnemy);
