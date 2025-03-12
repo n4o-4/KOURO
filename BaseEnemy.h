@@ -13,7 +13,7 @@ class BaseEnemy : public BaseObject {
     ///						 メンバ関数 
 public:
     // @brief 初期化
-    virtual void Initialize();
+    virtual void Initialize(Model* model);
     // @brief 更新
     virtual void Update();
     /**----------------------------------------------------------------------------
@@ -58,6 +58,7 @@ protected:
     //========================================
     // モデル
     std::unique_ptr<Object3d> model_ = nullptr;
+    
     //ワールド変換
     std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
 

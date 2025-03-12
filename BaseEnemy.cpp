@@ -5,7 +5,7 @@
 
 ///=============================================================================
 ///						初期化
-void BaseEnemy::Initialize() {
+void BaseEnemy::Initialize(Model* model) {
     //========================================
     // モデルを初期化
     model_ = std::make_unique<Object3d>();
@@ -13,7 +13,7 @@ void BaseEnemy::Initialize() {
     //========================================
     // モデルを読み込む
     ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
-    model_->SetModel("enemy/enemy.obj");
+    model_->SetModel(model);
     //========================================
     // 初期位置を設定
     worldTransform_ = std::make_unique<WorldTransform>();
