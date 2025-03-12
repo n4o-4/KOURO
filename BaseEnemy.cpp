@@ -1,5 +1,5 @@
-﻿#include "BaseEnemy.h"
-#include "PlayerBullet.h"
+#include "BaseEnemy.h"
+#include "PlayerMissile.h"
 #include <cmath>
 #include <algorithm>
 
@@ -34,7 +34,7 @@ void BaseEnemy::Initialize(Model* model) {
 ///						描画
 void BaseEnemy::Update() {
     if (hp_ > 0) {
-       
+
         // 弾の更新
         BulletUpdate();
 

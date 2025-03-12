@@ -14,6 +14,7 @@
     <ClCompile Include="application\collision\BaseObject.cpp" />
     <ClCompile Include="application\collision\Collider.cpp" />
     <ClCompile Include="application\collision\CollisionManager.cpp" />
+    <ClCompile Include="application\object\PlayerMissile.cpp" />
     <ClCompile Include="application\scene\BaseScene.cpp" />
     <ClCompile Include="application\scene\GameScene.cpp" />
     <ClCompile Include="application\scene\SceneFactory.cpp" />
@@ -69,7 +70,6 @@
     <ClCompile Include="application\scene\MiyaScene.cpp" />
     <ClCompile Include="application\object\SkyDome.cpp" />
     <ClCompile Include="application\object\Player.cpp" />
-    <ClCompile Include="application\object\PlayerBullet.cpp" />
     <ClCompile Include="engine\effect\PostEffect.cpp" />
     <ClCompile Include="PlayerMachineGun.cpp" />
   </ItemGroup>
@@ -77,6 +77,7 @@
     <ClInclude Include="application\collision\BaseObject.h" />
     <ClInclude Include="application\collision\Collider.h" />
     <ClInclude Include="application\collision\CollisionManager.h" />
+    <ClInclude Include="application\object\PlayerMissile.h" />
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
     <ClInclude Include="application\scene\BaseScene.h" />
     <ClInclude Include="application\scene\GameScene.h" />
@@ -139,7 +140,6 @@
     <ClInclude Include="application\scene\GameOver.h" />
     <ClInclude Include="application\object\LockOn.h" />
     <ClInclude Include="application\object\LockOnMarker.h" />
-    <ClInclude Include="application\object\PlayerBullet.h" />
     <ClInclude Include="engine\effect\PostEffect.h" />
     <ClInclude Include="PlayerMachineGun.h" />
   </ItemGroup>

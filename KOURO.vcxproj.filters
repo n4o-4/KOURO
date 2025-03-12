@@ -72,13 +72,13 @@
     <ClCompile Include="application\scene\MiyaScene.cpp" />
     <ClCompile Include="application\object\SkyDome.cpp" />
     <ClCompile Include="application\object\Player.cpp" />
-    <ClCompile Include="application\object\PlayerBullet.cpp" />
     <ClCompile Include="engine\camera\DebugCamera.cpp" />
     <ClCompile Include="engine\camera\CameraManager.cpp" />
     <ClCompile Include="application\object\EnemyBullet.cpp" />
     <ClCompile Include="engine\effect\PostEffect.cpp" />
     <ClCompile Include="PlayerMachineGun.cpp" />
     <ClCompile Include="BaseEnemy.cpp" />
+    <ClCompile Include="application\object\PlayerMissile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -142,13 +142,13 @@
     <ClInclude Include="application\scene\GameOver.h" />
     <ClInclude Include="application\object\LockOn.h" />
     <ClInclude Include="application\object\LockOnMarker.h" />
-    <ClInclude Include="application\object\PlayerBullet.h" />
     <ClInclude Include="engine\camera\CameraManager.h" />
     <ClInclude Include="application\object\EnemyBullet.h" />
     <ClInclude Include="engine\camera\DebugCamera.h" />
     <ClInclude Include="engine\effect\PostEffect.h" />
     <ClInclude Include="PlayerMachineGun.h" />
     <ClInclude Include="BaseEnemy.h" />
+    <ClInclude Include="application\object\PlayerMissile.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

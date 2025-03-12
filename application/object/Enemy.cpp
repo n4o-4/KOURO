@@ -1,5 +1,5 @@
 #include "Enemy.h"
-#include "PlayerBullet.h"
+#include "PlayerMissile.h"
 #include <cmath>
 #include <algorithm>
 
@@ -55,7 +55,7 @@ void Enemy::Draw(ViewProjection viewProjection, DirectionalLight directionalLigh
 ///--------------------------------------------------------------
 ///						接触開始処理
 void Enemy::OnCollisionEnter(BaseObject* other) {
-    if(dynamic_cast<PlayerBullet*>(other)) {
+    if(dynamic_cast<PlayerMissile*>(other)) {
         --hp_;
     }
 }

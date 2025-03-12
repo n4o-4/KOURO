@@ -2,7 +2,7 @@
 #include"Kouro.h"
 #include "MyMath.h"
 #include "FollowCamera.h"
-#include "PlayerBullet.h"
+#include "PlayerMissile.h"
 #include <vector>
 #include "BaseObject.h" // 当たり判定用
 #include "LockOn.h" 
@@ -104,7 +104,7 @@ public:
 	 * \brief  GetBullets 弾の取得
 	 * \return
 	 */
-	std::vector<std::unique_ptr<PlayerBullet>>& GetBullets() { return bullets_; }
+	std::vector<std::unique_ptr<PlayerMissile>>& GetBullets() { return bullets_; }
 
 	/**----------------------------------------------------------------------------
 	 * \brief  GetHp HPの取得
@@ -126,7 +126,7 @@ private:
 	std::unique_ptr<WorldTransform> objectTransform_;
 	//========================================
 	// 弾
-	std::vector<std::unique_ptr<PlayerBullet>> bullets_;// 弾のリスト
+	std::vector<std::unique_ptr<PlayerMissile>> bullets_;// 弾のリスト
 	//========================================
 	// ロックオン
 	//std::unique_ptr<LockOn> lockOnSystem_ = nullptr;// ロックオンシステムのポインタを追加

@@ -277,7 +277,7 @@ void Player::UpdateBullets() {
 	}
 	// 画面外に出た弾を削除
 	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(),
-		[](const std::unique_ptr<PlayerBullet> &bullet) { return !bullet->IsActive(); }),
+		[](const std::unique_ptr<PlayerMissile> &bullet) { return !bullet->IsActive(); }),
 		bullets_.end());
 
 	//マシンガンの弾の更新
@@ -326,14 +326,14 @@ void Player::Shoot() {
             initialVelocity = initialVelocity * 0.25f; // 初速は少し遅めに
 
             // 新しい弾を作成してターゲットを設定
-            auto newBullet = std::make_unique<PlayerBullet>(bulletPos, initialVelocity, bulletScale, bulletRotate);
+            auto newBullet = std::make_unique<PlayerMissile>(bulletPos, initialVelocity, bulletScale, bulletRotate);
             newBullet->SetTarget(enemy); // ターゲットを設定
             bullets_.push_back(std::move(newBullet));
         }
     } else {
         // ロックオンがない場合は上方向に発射
         Vector3 bulletVelocity = { 0.0f, 0.5f, 0.0f };
-        bullets_.push_back(std::make_unique<PlayerBullet>(bulletPos, bulletVelocity, bulletScale, bulletRotate));
+        bullets_.push_back(std::make_unique<PlayerMissile>(bulletPos, bulletVelocity, bulletScale, bulletRotate));
     }
 }
 
