@@ -17,6 +17,7 @@
     <FxCompile Include="Resources\shaders\GaussianFilter.PS.hlsl" />
     <FxCompile Include="Resources\shaders\LuminanceBasedOutline.PS.hlsl" />
     <FxCompile Include="Resources\shaders\DepthBasedOutline.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\Dissolve.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\collision\BaseObject.cpp" />

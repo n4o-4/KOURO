@@ -112,6 +112,10 @@ private:
 	void RadialBlurRootSignature(Pipeline* pipeline);
 	void RadialBlurPipeLine(Pipeline* pipeline);
 
+	// Dissolve
+	void DissolveRootSignature(Pipeline* pipeline);
+	void DissolvePipeLine(Pipeline* pipeline);
+
 private: // メンバ変数
 	
 	DirectXCommon* dxCommon_ = nullptr;

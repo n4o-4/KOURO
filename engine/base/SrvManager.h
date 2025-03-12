@@ -42,6 +42,8 @@ public:
 	// SRV生成(Structure Buffer用)
 	void CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource* pResource, UINT numElements, UINT structureByteStride);
 
+	void CreateMaskTexture(uint32_t srvIndex, ID3D12Resource* pResource, DXGI_FORMAT Format, UINT MipLevels);
+
 	void PreDraw();
 
 	// SRVセットコマンド
