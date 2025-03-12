@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "FollowCamera.h"
 #include "LockOn.h"
+#include "PostEffect.h"
 
 class PakuScene : public BaseScene  
 {  

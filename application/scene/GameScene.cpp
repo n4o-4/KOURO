@@ -160,7 +160,7 @@ void GameScene::Update() {
 		enemies_.erase(
 			// 削除条件
 			std::remove_if(enemies_.begin(), enemies_.end(),
-				[this](const std::unique_ptr<Enemy> &enemy) {
+				[this](const std::unique_ptr<GroundTypeEnemy> &enemy) {
 					// HPが0以下の場合
 					if(enemy->GetHp() <= 0) {
 						// ロックオンシステムから敵を削除

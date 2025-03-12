@@ -11,7 +11,7 @@
 #include "Enemy.h"
 #include "CollisionManager.h"
 #include "LockOn.h"
-
+#include "GroundTypeEnemy.h"
 
 class GameScene : public BaseScene
 {
@@ -35,7 +35,7 @@ private:
 	//========================================
 	// 天球
 	std::unique_ptr<SkyDome> skyDome_ = nullptr;
-	//========================================
+	//========================================GroundTypeEnemy
 	// 地面
 	std::unique_ptr<Ground> ground_ = nullptr;
 	//========================================
@@ -47,7 +47,7 @@ private:
 	// 敵出現
     std::stringstream enemyPopCommands;
     // 敵のリスト
-    std::vector<std::unique_ptr<Enemy>> enemies_;
+    std::vector<std::unique_ptr<GroundTypeEnemy>> enemies_;
 	// 待機フラグ
     bool isWaiting_ = false;
 	// 待機時間

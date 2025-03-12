@@ -78,6 +78,7 @@
     <ClCompile Include="application\object\EnemyBullet.cpp" />
     <ClCompile Include="engine\effect\PostEffect.cpp" />
     <ClCompile Include="BaseEnemy.cpp" />
+    <ClCompile Include="GroundTypeEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -147,6 +148,7 @@
     <ClInclude Include="engine\camera\DebugCamera.h" />
     <ClInclude Include="engine\effect\PostEffect.h" />
     <ClInclude Include="BaseEnemy.h" />
+    <ClInclude Include="GroundTypeEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

@@ -48,6 +48,7 @@
     <ClCompile Include="application\scene\GameOver.cpp" />
     <ClCompile Include="application\object\LockOn.cpp" />
     <ClCompile Include="application\object\LockOnMarker.cpp" />
+    <ClCompile Include="GroundTypeEnemy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="application\object\LockOnMarker.h" />
     <ClInclude Include="application\object\PlayerBullet.h" />
     <ClInclude Include="engine\effect\PostEffect.h" />
+    <ClInclude Include="GroundTypeEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
