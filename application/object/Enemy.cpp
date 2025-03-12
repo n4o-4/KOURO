@@ -6,7 +6,10 @@
 ///=============================================================================
 ///						初期化
 void Enemy::Initialize() {
-    BaseEnemy::Initialize();
+    // モデルを読み込む
+    ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
+    BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/enemy.obj")); // モデルを読み込む
+
 }
 
 ///=============================================================================
