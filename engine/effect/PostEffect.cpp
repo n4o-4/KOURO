@@ -24,7 +24,7 @@ void PostEffect::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	///==============================
 	/// Dissolve
 	// 
-	TextureManager::GetInstance()->LoadMaskTexture("Resources/noise0.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/noise0.png");
 
 }
 
@@ -153,6 +153,56 @@ void PostEffect::Draw()
 
 		}
 
+		// 深度検出でのアウトライン
+		if (i == 8)
+		{
+			// 指定した色で画面全体をクリアする
+			float clearColor[] = { 1.0f,0.0f,0.0f,1.0f }; // 青っぽい色 RGBAの順
+			DirectXCommon::GetInstance()->GetCommandList()->ClearRenderTargetView(*DirectXCommon::GetInstance()->GetRTVHandle(renderTextureIndex), clearColor, 0, nullptr);
+
+		    dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, TextureManager::GetInstance()->GetSrvHandleGPU("Resources/noise0.png"));
+
+			dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
+
+			// 次のエフェクトがアクティブか確認
+			int activeCount = 0;
+			for (int sub = i + 1; sub < static_cast<int>(EffectType::EffectCount); ++sub)
+			{
+				if (effect.isActive[sub])
+				{
+					++activeCount;
+				}
+			}
+
+			// 現在書き込んだ方を読み込み用に変換
+			D3D12_RESOURCE_BARRIER barrier1{};
+			barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier1.Transition.pResource = dxCommon_->GetRenderTextureResources()[targetIndex].Get();
+			barrier1.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+			barrier1.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+			dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier1);
+
+			// 今読み込んだ方を描画用に変換
+			D3D12_RESOURCE_BARRIER barrier2{};
+			barrier2.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier2.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier2.Transition.pResource = dxCommon_->GetRenderTextureResources()[resourceIndex].Get();
+			barrier2.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+			barrier2.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+
+			dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier2);
+
+			std::swap(targetIndex, resourceIndex);
+
+			dxCommon_->SetRenderTargetIndex(targetIndex);
+			dxCommon_->SetRenderResourceIndex(resourceIndex);
+
+			break;
+
+		}
+
 		dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 
 		// 次のエフェクトがアクティブか確認
@@ -263,9 +313,14 @@ void PostEffect::CreatePipeLine()
 	DepthBasedOutlinePipeLine(newPipeline.get());
 	effect.pipelines_.push_back(std::move(newPipeline));
 
-	// 深度検出でのアウトライン
+	// RadialBlur
 	newPipeline = std::make_unique<Pipeline>();
 	RadialBlurPipeLine(newPipeline.get());
+	effect.pipelines_.push_back(std::move(newPipeline));
+
+	// Dissolve
+	newPipeline = std::make_unique<Pipeline>();
+	DissolvePipeLine(newPipeline.get());
 	effect.pipelines_.push_back(std::move(newPipeline));
 }
 
@@ -1485,7 +1540,7 @@ void PostEffect::DissolvePipeLine(Pipeline* pipeline)
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/CopyImage.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Dissolve.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 	// DepthStencilStateの設定

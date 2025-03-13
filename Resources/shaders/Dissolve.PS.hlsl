@@ -14,7 +14,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     float mask = gMaskTexture.Sample(gSampler, input.texcoord);
     
     // mask‚Ì’l‚ªè‡’lˆÈ‰º‚Ìê‡‚Ídiscard
-    if (mask < 0.5f)
+    if (mask < 0.3f)
     {
         discard;
     }

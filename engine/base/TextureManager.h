@@ -27,8 +27,6 @@ public:
 	// Textureデータを読み込む関数
 	void LoadTexture(const std::string& filePath);
 
-	void LoadMaskTexture(const std::string& filePath);
-
 	// SRVインデックスの開始番号
 	uint32_t GetTextureIndexByFilePath(const std::string& filePath);
 

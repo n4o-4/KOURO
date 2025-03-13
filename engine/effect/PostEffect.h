@@ -34,6 +34,9 @@ public:
 		// RadialBlur
 		RadialBlur,
 
+		// Dissolve
+		Dissolve,
+
 		// ↑↑↑追加↑↑↑
 
 		EffectCount,
