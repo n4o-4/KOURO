@@ -37,6 +37,9 @@ public:
 		// Dissolve
 		Dissolve,
 
+		// Random
+		Random,
+
 		// ↑↑↑追加↑↑↑
 
 		EffectCount,
@@ -118,6 +121,10 @@ private:
 	// Dissolve
 	void DissolveRootSignature(Pipeline* pipeline);
 	void DissolvePipeLine(Pipeline* pipeline);
+
+	// Dissolve
+	void RandomRootSignature(Pipeline* pipeline);
+	void RandomPipeLine(Pipeline* pipeline);
 
 private: // メンバ変数
 	
