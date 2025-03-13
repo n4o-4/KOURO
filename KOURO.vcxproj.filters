@@ -19,6 +19,7 @@
     <FxCompile Include="Resources\shaders\DepthBasedOutline.PS.hlsl" />
     <FxCompile Include="Resources\shaders\Dissolve.PS.hlsl" />
     <FxCompile Include="Resources\shaders\Random.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\LinearFog.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\collision\BaseObject.cpp" />

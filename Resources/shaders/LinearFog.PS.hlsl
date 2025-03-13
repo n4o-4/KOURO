@@ -71,10 +71,23 @@ PixelShaderOutput main(VertexShaderOutput input)
 
     }
     
+    float4 fogColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    float fogStart = 10.0f;
+    float fogEnd = 200.0f;
+    
     float weight = length(difference * 0.45f);
     weight = saturate(weight);
     
-    output.color.rgb = (1.0f - weight) * gTexture.Sample(gSampler, input.texcoord).rgb;
+    float3 baseColor = gTexture.Sample(gSampler, input.texcoord).rgb;
+    float3 edgeColor = (1.0f - weight) * baseColor;
+    
+    // フォグ計算
+    float depth = gDepthTexture.Sample(gSamplerPoint, input.texcoord);
+    float4 viewPos = mul(float4(0.0f, 0.0f, depth, 1.0f), gMaterial.projectionInverse);
+    float viewDepth = viewPos.z / viewPos.w;
+    
+    float fogFactor = saturate(exp(-0.02f * (viewDepth - fogStart)));
+    output.color.rgb = lerp(fogColor.rgb, edgeColor, fogFactor);
     output.color.a = 1.0f;
     
     return output;

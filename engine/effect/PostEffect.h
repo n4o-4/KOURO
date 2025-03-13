@@ -63,6 +63,9 @@ public:
 		// Random
 		Random,
 
+		// LinearFog
+		LinearFog,
+
 		// ↑↑↑追加↑↑↑
 
 		EffectCount,
@@ -141,6 +144,10 @@ private:
 	// Dissolve
 	void RandomRootSignature(Pipeline* pipeline);
 	void RandomPipeLine(Pipeline* pipeline);
+
+	// LinearFog
+	void LinearFogRootSignature(Pipeline * pipeline);
+	void LinearFogPipeLine(Pipeline* pipeline);
 
 private: // メンバ変数
 	
