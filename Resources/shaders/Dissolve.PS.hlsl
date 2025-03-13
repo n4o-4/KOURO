@@ -11,6 +11,8 @@ struct PixelShaderOutput
 
 PixelShaderOutput main(VertexShaderOutput input)
 {
+    PixelShaderOutput output;
+    
     float mask = gMaskTexture.Sample(gSampler, input.texcoord);
     
     // maskの値が閾値以下の場合はdiscard
@@ -19,7 +21,11 @@ PixelShaderOutput main(VertexShaderOutput input)
         discard;
     }
     
-    PixelShaderOutput output;
+    float edge = 1.0f - smoothstep(0.3f, 0.33f, mask);
     output.color = gTexture.Sample(gSampler, input.texcoord);
+    
+    // Edgeっぽい指定した色を加算
+    output.color.rgb += edge * float3(1.0f, 0.4f, 0.3f);
+    
     return output;
 }
