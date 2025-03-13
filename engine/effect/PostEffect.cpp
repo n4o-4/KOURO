@@ -16,16 +16,26 @@ void PostEffect::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	///==============================
 	/// DepthBasedOutline
 	// bufferResourceの生成
-	materialResource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(Material));
+	depthOutlineResource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(DepthBasedOutline::Material));
 
 	// データをマップ
-	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
+	depthOutlineResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&depthOutlineData_));
 
 	///==============================
 	/// Dissolve
 	// 
 	TextureManager::GetInstance()->LoadTexture("Resources/noise0.png");
 
+	///==============================
+	/// Random
+	// リソースを生成
+	randomResource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(Random::Material));
+
+	// データをマップ
+	randomResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&randomData_));
+
+	std::random_device seedGenerator;
+	randomEngine.seed(seedGenerator());
 }
 
 void PostEffect::Update()
@@ -34,7 +44,10 @@ void PostEffect::Update()
 	{
 		return;
 	}
-	materialData_->projectionInverse = Inverse(cameraManager_->GetActiveCamera()->GetViewProjection().matProjection_);
+	depthOutlineData_->projectionInverse = Inverse(cameraManager_->GetActiveCamera()->GetViewProjection().matProjection_);
+	std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+	randomData_->time = distribution(randomEngine);
+
 }
 
 void PostEffect::Draw()
@@ -63,8 +76,11 @@ void PostEffect::Draw()
 		dxCommon_->GetCommandList()->SetGraphicsRootSignature(it->get()->rootSignature.Get());
 		dxCommon_->GetCommandList()->SetPipelineState(it->get()->pipelineState.Get());
 
+		// Random
 		if (i == 9)
 		{
+			dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, randomResource_.Get()->GetGPUVirtualAddress());
+
 			dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 
 			// 次のエフェクトがアクティブか確認
@@ -148,7 +164,7 @@ void PostEffect::Draw()
 			dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(dxCommon_->GetDepthSrvIndex()));
 
 			// 定数バッファを設定
-			dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(2, materialResource_.Get()->GetGPUVirtualAddress());
+			dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(2, depthOutlineResource_.Get()->GetGPUVirtualAddress());
 
 			dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 
@@ -1636,15 +1652,18 @@ void PostEffect::RandomRootSignature(Pipeline* pipeline)
 
 
 
-	// Root Parameter: SRV (gTexture)
-	//D3D12_ROOT_PARAMETER rootParameters[0] = {};
+	// Root Parameter: CBuffer (Materia)
+	D3D12_ROOT_PARAMETER rootParameters[1] = {};
 	
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;   //CBVを使う
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;  //PixelShaderで使う
+	rootParameters[0].Descriptor.ShaderRegister = 0;    // レジスタ番号0とバインド
 	// Static Sampler
 	//D3D12_STATIC_SAMPLER_DESC staticSamplers[0] = {};
 	
 	// ルートシグネチャの構築
-	descriptionRootSignature.pParameters = nullptr; // ルートパラメーター配列へのポインタ
-	descriptionRootSignature.NumParameters = 0; // 配列の長さ
+	descriptionRootSignature.pParameters = rootParameters; // ルートパラメーター配列へのポインタ
+	descriptionRootSignature.NumParameters = _countof(rootParameters); // 配列の長さ
 	descriptionRootSignature.pStaticSamplers = nullptr; // サンプラー配列へのポインタ
 	descriptionRootSignature.NumStaticSamplers = 0; // サンプラーの数
 

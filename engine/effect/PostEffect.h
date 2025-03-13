@@ -1,7 +1,30 @@
 ﻿#pragma once
+#include <random>
+
 #include "DirectXCommon.h"
 #include "TextureManager.h"
 #include "CameraManager.h"
+
+//==============================
+// 深度リソース用の構造体
+namespace DepthBasedOutline
+{
+	struct Material
+	{
+		Matrix4x4 projectionInverse;
+	};
+}
+
+//==============================
+// // Random
+namespace Random
+{
+	struct Material
+	{
+		float time;
+		float padding[3];
+	};
+}
 
 class PostEffect
 {
@@ -43,13 +66,6 @@ public:
 		// ↑↑↑追加↑↑↑
 
 		EffectCount,
-	};
-
-	//==============================
-	// 深度リソース用の構造体
-	struct Material
-	{
-		Matrix4x4 projectionInverse;
 	};
 
 private:
@@ -136,8 +152,16 @@ private: // メンバ変数
 
 	CameraManager* cameraManager_ = nullptr;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
+	//==============================
+    // DepthBasedOutline用の構造体
+	Microsoft::WRL::ComPtr<ID3D12Resource> depthOutlineResource_;
+	DepthBasedOutline::Material* depthOutlineData_ = nullptr;
 
-	Material* materialData_ = nullptr;
+	//==============================
+	// Random用の構造体
+	Microsoft::WRL::ComPtr<ID3D12Resource> randomResource_;
+	Random::Material* randomData_;
+
+	std::mt19937 randomEngine;
 };
 
