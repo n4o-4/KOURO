@@ -20,6 +20,7 @@
     <ClCompile Include="application\scene\SceneManager.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
     <ClCompile Include="application\object\Enemy.cpp" />
+    <ClCompile Include="BaseEffect.cpp" />
     <ClCompile Include="BaseEnemy.cpp" />
     <ClCompile Include="engine\camera\CameraManager.cpp" />
     <ClCompile Include="engine\camera\DebugCamera.cpp" />
@@ -48,6 +49,7 @@
     <ClCompile Include="application\scene\GameOver.cpp" />
     <ClCompile Include="application\object\LockOn.cpp" />
     <ClCompile Include="application\object\LockOnMarker.cpp" />
+    <ClCompile Include="Grayscale.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -84,6 +86,7 @@
     <ClInclude Include="application\scene\SceneManager.h" />
     <ClInclude Include="application\scene\TitleScene.h" />
     <ClInclude Include="application\object\Enemy.h" />
+    <ClInclude Include="BaseEffect.h" />
     <ClInclude Include="BaseEnemy.h" />
     <ClInclude Include="engine\camera\CameraManager.h" />
     <ClInclude Include="engine\camera\DebugCamera.h" />
@@ -141,6 +144,7 @@
     <ClInclude Include="application\object\LockOnMarker.h" />
     <ClInclude Include="application\object\PlayerBullet.h" />
     <ClInclude Include="engine\effect\PostEffect.h" />
+    <ClInclude Include="Grayscale.h" />
     <ClInclude Include="PlayerMachineGun.h" />
   </ItemGroup>
   <ItemGroup>

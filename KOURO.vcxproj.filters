@@ -83,6 +83,8 @@
     <ClCompile Include="engine\effect\PostEffect.cpp" />
     <ClCompile Include="PlayerMachineGun.cpp" />
     <ClCompile Include="BaseEnemy.cpp" />
+    <ClCompile Include="BaseEffect.cpp" />
+    <ClCompile Include="Grayscale.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -153,6 +155,8 @@
     <ClInclude Include="engine\effect\PostEffect.h" />
     <ClInclude Include="PlayerMachineGun.h" />
     <ClInclude Include="BaseEnemy.h" />
+    <ClInclude Include="BaseEffect.h" />
+    <ClInclude Include="Grayscale.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
