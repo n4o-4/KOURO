@@ -22,6 +22,9 @@
     <ClCompile Include="application\object\Enemy.cpp" />
     <ClCompile Include="BaseEffect.cpp" />
     <ClCompile Include="BaseEnemy.cpp" />
+    <ClCompile Include="BoxFilter.cpp" />
+    <ClCompile Include="DepthBasedOutline.cpp" />
+    <ClCompile Include="Dissolve.cpp" />
     <ClCompile Include="engine\camera\CameraManager.cpp" />
     <ClCompile Include="engine\camera\DebugCamera.cpp" />
     <ClCompile Include="application\object\EnemyBullet.cpp" />
@@ -49,7 +52,10 @@
     <ClCompile Include="application\scene\GameOver.cpp" />
     <ClCompile Include="application\object\LockOn.cpp" />
     <ClCompile Include="application\object\LockOnMarker.cpp" />
+    <ClCompile Include="GaussianFilter.cpp" />
     <ClCompile Include="Grayscale.cpp" />
+    <ClCompile Include="LinearFog.cpp" />
+    <ClCompile Include="LuminanceBasedOutline.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -74,6 +80,9 @@
     <ClCompile Include="application\object\PlayerBullet.cpp" />
     <ClCompile Include="engine\effect\PostEffect.cpp" />
     <ClCompile Include="PlayerMachineGun.cpp" />
+    <ClCompile Include="RadialBlur.cpp" />
+    <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Vignette.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -88,6 +97,9 @@
     <ClInclude Include="application\object\Enemy.h" />
     <ClInclude Include="BaseEffect.h" />
     <ClInclude Include="BaseEnemy.h" />
+    <ClInclude Include="BoxFilter.h" />
+    <ClInclude Include="DepthBasedOutline.h" />
+    <ClInclude Include="Dissolve.h" />
     <ClInclude Include="engine\camera\CameraManager.h" />
     <ClInclude Include="engine\camera\DebugCamera.h" />
     <ClInclude Include="application\object\EnemyBullet.h" />
@@ -144,8 +156,14 @@
     <ClInclude Include="application\object\LockOnMarker.h" />
     <ClInclude Include="application\object\PlayerBullet.h" />
     <ClInclude Include="engine\effect\PostEffect.h" />
+    <ClInclude Include="GaussianFilter.h" />
     <ClInclude Include="Grayscale.h" />
+    <ClInclude Include="LinearFog.h" />
+    <ClInclude Include="LuminanceBasedOutline.h" />
     <ClInclude Include="PlayerMachineGun.h" />
+    <ClInclude Include="RadialBlur.h" />
+    <ClInclude Include="Random.h" />
+    <ClInclude Include="Vignette.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

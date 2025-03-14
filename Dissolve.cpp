@@ -1,19 +1,29 @@
-﻿#include "Grayscale.h"
+﻿#include "Dissolve.h"
 
-void Grayscale::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+void Dissolve::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
 	// パイプラインの生成
-	BaseEffect::Initialize(dxCommon,srvManager);
+	BaseEffect::Initialize(dxCommon, srvManager);
+
+	// テクスチャの読み込み
+	TextureManager::GetInstance()->LoadTexture("Resources/noise0.png");
 
 	//パイプラインの初期化
 	CreatePipeline();
+
+	// マテリアルの生成
+	CreateMaterial();
+
+	data_->Threshold = 0.3f;
+	data_->ThresholdWidth = 0.03f;
+	data_->edgeColor = (1.0f, 0.3, 0.25f);
 }
 
-void Grayscale::Update()
+void Dissolve::Update()
 {
 }
 
-void Grayscale::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
+void Dissolve::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
 {
 	// 描画先のRTVのインデックス
 	uint32_t renderTextureIndex = 2 + renderTargetIndex;
@@ -21,23 +31,30 @@ void Grayscale::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
 	// 描画先のRTVを設定する
 	dxCommon_->GetCommandList()->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(renderTextureIndex), false, nullptr);
 
+	// 指定した色で画面全体をクリアする
+	float clearColor[] = { 1.0f,0.0f,0.0f,1.0f }; // 青っぽい色 RGBAの順
+	dxCommon_->GetInstance()->GetCommandList()->ClearRenderTargetView(*DirectXCommon::GetInstance()->GetRTVHandle(renderTextureIndex), clearColor, 0, nullptr);
+
 	// ルートシグネチャの設定	
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(pipeline_.get()->rootSignature.Get());
 
 	// パイプラインステートの設定
 	dxCommon_->GetCommandList()->SetPipelineState(pipeline_.get()->pipelineState.Get());
 
-	// renderTextureのSrvHandleを取得
-	D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = (renderResourceIndex == 0) ? TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0") : TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
-
 	// SRVを設定
-	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
+	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvManager_->GetGPUDescriptorHandle(renderResourceIndex));
 
+	// maskTextureのSrvHandleを取得
+	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, TextureManager::GetInstance()->GetSrvHandleGPU("Resources/noise0.png"));
+
+	// Cbufferの設定
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(2, resource_.Get()->GetGPUVirtualAddress());
+	
 	// 描画
 	dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 }
 
-void Grayscale::CreatePipeline()
+void Dissolve::CreatePipeline()
 {
 	// ルートシグネチャの生成
 	CreateRootSignature(pipeline_.get());
@@ -46,8 +63,8 @@ void Grayscale::CreatePipeline()
 	CreatePipeLineState(pipeline_.get());
 }
 
-void Grayscale::CreateRootSignature(Pipeline* pipeline)
-{	
+void Dissolve::CreateRootSignature(Pipeline* pipeline)
+{
 	HRESULT hr;
 
 	// ルートシグネチャの設定
@@ -61,13 +78,31 @@ void Grayscale::CreateRootSignature(Pipeline* pipeline)
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRV
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // 自動計算
 
+	// SRV の Descriptor Range
+	D3D12_DESCRIPTOR_RANGE descriptorRange1[1] = {};
+	descriptorRange1[0].BaseShaderRegister = 1; // t0: Shader Register
+	descriptorRange1[0].NumDescriptors = 1; // 1つのSRV
+	descriptorRange1[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRV
+	descriptorRange1[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // 自動計算
+
+
 	// Root Parameter: SRV (gTexture)
-	D3D12_ROOT_PARAMETER rootParameters[1] = {};
+	D3D12_ROOT_PARAMETER rootParameters[3] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
-
 	rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRange; // Tableの中身の配列を指定
 	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange); // Tableで利用する数
+
+	// Root Parameter: SRV (gMaskTexture)
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
+	rootParameters[1].DescriptorTable.pDescriptorRanges = descriptorRange1; // Tableの中身の配列を指定
+	rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange1); // Tableで利用する数
+
+	// Root Parameter: CBV
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[2].Descriptor.ShaderRegister = 0;
 
 	// Static Sampler
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
@@ -104,7 +139,7 @@ void Grayscale::CreateRootSignature(Pipeline* pipeline)
 	assert(SUCCEEDED(hr));
 }
 
-void Grayscale::CreatePipeLineState(Pipeline* pipeline)
+void Dissolve::CreatePipeLineState(Pipeline* pipeline)
 {
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
@@ -140,7 +175,7 @@ void Grayscale::CreatePipeLineState(Pipeline* pipeline)
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Grayscale.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Dissolve.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 	// DepthStencilStateの設定
@@ -176,4 +211,13 @@ void Grayscale::CreatePipeLineState(Pipeline* pipeline)
 	// 実際に生成
 	pipeline->pipelineState = nullptr;
 	dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&pipeline->pipelineState));
+}
+
+void Dissolve::CreateMaterial()
+{
+	// bufferResourceの生成
+	resource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(DissolveShader::Material));
+
+	// データをマップ
+	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));
 }

@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "BaseEffect.h"
-class Grayscale : public BaseEffect
+class BoxFilter : public BaseEffect
 {
 public:
 
@@ -19,10 +19,9 @@ private:
 
 
 	void CreateRootSignature(Pipeline* pipeline);
-	
+
 
 	void CreatePipeLineState(Pipeline* pipeline);
 
-	
 };
 

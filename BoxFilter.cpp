@@ -1,19 +1,19 @@
-﻿#include "Grayscale.h"
+﻿#include "BoxFilter.h"
 
-void Grayscale::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+void BoxFilter::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
 	// パイプラインの生成
-	BaseEffect::Initialize(dxCommon,srvManager);
+	BaseEffect::Initialize(dxCommon, srvManager);
 
 	//パイプラインの初期化
 	CreatePipeline();
 }
 
-void Grayscale::Update()
+void BoxFilter::Update()
 {
 }
 
-void Grayscale::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
+void BoxFilter::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
 {
 	// 描画先のRTVのインデックス
 	uint32_t renderTextureIndex = 2 + renderTargetIndex;
@@ -37,7 +37,7 @@ void Grayscale::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
 	dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 }
 
-void Grayscale::CreatePipeline()
+void BoxFilter::CreatePipeline()
 {
 	// ルートシグネチャの生成
 	CreateRootSignature(pipeline_.get());
@@ -46,8 +46,8 @@ void Grayscale::CreatePipeline()
 	CreatePipeLineState(pipeline_.get());
 }
 
-void Grayscale::CreateRootSignature(Pipeline* pipeline)
-{	
+void BoxFilter::CreateRootSignature(Pipeline* pipeline)
+{
 	HRESULT hr;
 
 	// ルートシグネチャの設定
@@ -104,7 +104,7 @@ void Grayscale::CreateRootSignature(Pipeline* pipeline)
 	assert(SUCCEEDED(hr));
 }
 
-void Grayscale::CreatePipeLineState(Pipeline* pipeline)
+void BoxFilter::CreatePipeLineState(Pipeline* pipeline)
 {
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
@@ -140,7 +140,7 @@ void Grayscale::CreatePipeLineState(Pipeline* pipeline)
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Grayscale.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/BoxFilter.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 	// DepthStencilStateの設定

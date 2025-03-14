@@ -1,7 +1,13 @@
-#include "BaseEffect.h"
+ï»¿#include "BaseEffect.h"
 
-void BaseEffect::Initialize()
+void BaseEffect::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
-	// ƒpƒCƒvƒ‰ƒCƒ“‚Ì¶¬
+	// 
+	dxCommon_ = dxCommon;
+	
+	//
+	srvManager_ = srvManager;
+
+	// ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®ç”Ÿæˆ
 	pipeline_ = std::make_unique<Pipeline>();
 }

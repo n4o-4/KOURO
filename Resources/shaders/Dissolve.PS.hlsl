@@ -1,8 +1,17 @@
 #include "Fullscreen.hlsli"
 
+struct Material
+{
+    float Threshold; // 0.3f
+    float ThresholdWidth; // 0.01f
+   
+    float3 edgeColor;
+};
+
 Texture2D<float4> gTexture : register(t0);
 Texture2D<float> gMaskTexture : register(t1);  
 SamplerState gSampler : register(s0);
+ConstantBuffer<Material> gMaterial : register(b0);
 
 struct PixelShaderOutput
 {
@@ -21,11 +30,11 @@ PixelShaderOutput main(VertexShaderOutput input)
         discard;
     }
     
-    float edge = 1.0f - smoothstep(0.3f, 0.33f, mask);
+    float edge = 1.0f - smoothstep(gMaterial.Threshold, gMaterial.Threshold + gMaterial.ThresholdWidth, mask);
     output.color = gTexture.Sample(gSampler, input.texcoord);
     
     // Edge‚Á‚Û‚¢w’è‚µ‚½F‚ğ‰ÁZ
-    output.color.rgb += edge * float3(1.0f, 0.4f, 0.3f);
+    output.color.rgb += edge * gMaterial.edgeColor;
     
     return output;
 }

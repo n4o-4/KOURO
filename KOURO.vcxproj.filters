@@ -85,6 +85,15 @@
     <ClCompile Include="BaseEnemy.cpp" />
     <ClCompile Include="BaseEffect.cpp" />
     <ClCompile Include="Grayscale.cpp" />
+    <ClCompile Include="Vignette.cpp" />
+    <ClCompile Include="BoxFilter.cpp" />
+    <ClCompile Include="GaussianFilter.cpp" />
+    <ClCompile Include="LuminanceBasedOutline.cpp" />
+    <ClCompile Include="DepthBasedOutline.cpp" />
+    <ClCompile Include="RadialBlur.cpp" />
+    <ClCompile Include="Dissolve.cpp" />
+    <ClCompile Include="Random.cpp" />
+    <ClCompile Include="LinearFog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -157,6 +166,15 @@
     <ClInclude Include="BaseEnemy.h" />
     <ClInclude Include="BaseEffect.h" />
     <ClInclude Include="Grayscale.h" />
+    <ClInclude Include="Vignette.h" />
+    <ClInclude Include="BoxFilter.h" />
+    <ClInclude Include="GaussianFilter.h" />
+    <ClInclude Include="LuminanceBasedOutline.h" />
+    <ClInclude Include="DepthBasedOutline.h" />
+    <ClInclude Include="RadialBlur.h" />
+    <ClInclude Include="Dissolve.h" />
+    <ClInclude Include="Random.h" />
+    <ClInclude Include="LinearFog.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

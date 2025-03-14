@@ -1,7 +1,9 @@
-#pragma once
+ï»¿#pragma once
 #include "DirectXCommon.h"
 #include "TextureManager.h"
 #include "CameraManager.h"
+
+#include "Vectors.h"
 
 struct Pipeline
 {
@@ -14,16 +16,16 @@ class BaseEffect
 {
 public:
 
-	// ‰Šú‰»
-	virtual void Initialize();
+	// åˆæœŸåŒ–
+	virtual void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
-	// XV
+	// æ›´æ–°
 	virtual void Update() = 0;
 
-	// •`‰æ
-	virtual void Draw() = 0;
+	// æç”»
+	virtual void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) = 0;
 
-private:
+protected:
 
 	DirectXCommon* dxCommon_ = nullptr;
 

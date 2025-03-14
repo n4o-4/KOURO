@@ -1,19 +1,30 @@
-﻿#include "Grayscale.h"
+﻿#include "Random.h"
 
-void Grayscale::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+void Random::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
 	// パイプラインの生成
-	BaseEffect::Initialize(dxCommon,srvManager);
+	BaseEffect::Initialize(dxCommon, srvManager);
 
 	//パイプラインの初期化
 	CreatePipeline();
+
+	// マテリアルの生成
+	CreateMaterial();
+
+	std::random_device seedGenerator;
+	randomEngine.seed(seedGenerator());
 }
 
-void Grayscale::Update()
+void Random::Update()
 {
+	// ランダムな値を生成
+	std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+
+	// データの設定
+	data_->time = distribution(randomEngine);
 }
 
-void Grayscale::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
+void Random::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
 {
 	// 描画先のRTVのインデックス
 	uint32_t renderTextureIndex = 2 + renderTargetIndex;
@@ -27,17 +38,14 @@ void Grayscale::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
 	// パイプラインステートの設定
 	dxCommon_->GetCommandList()->SetPipelineState(pipeline_.get()->pipelineState.Get());
 
-	// renderTextureのSrvHandleを取得
-	D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = (renderResourceIndex == 0) ? TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0") : TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
-
-	// SRVを設定
-	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
+	// 定数バッファの設定	
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, resource_.Get()->GetGPUVirtualAddress());
 
 	// 描画
 	dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 }
 
-void Grayscale::CreatePipeline()
+void Random::CreatePipeline()
 {
 	// ルートシグネチャの生成
 	CreateRootSignature(pipeline_.get());
@@ -46,45 +54,28 @@ void Grayscale::CreatePipeline()
 	CreatePipeLineState(pipeline_.get());
 }
 
-void Grayscale::CreateRootSignature(Pipeline* pipeline)
-{	
+void Random::CreateRootSignature(Pipeline* pipeline)
+{
 	HRESULT hr;
 
 	// ルートシグネチャの設定
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	// SRV の Descriptor Range
-	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
-	descriptorRange[0].BaseShaderRegister = 0; // t0: Shader Register
-	descriptorRange[0].NumDescriptors = 1; // 1つのSRV
-	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRV
-	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // 自動計算
-
-	// Root Parameter: SRV (gTexture)
+	// Root Parameter: CBuffer (Materia)
 	D3D12_ROOT_PARAMETER rootParameters[1] = {};
-	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
 
-	rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRange; // Tableの中身の配列を指定
-	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange); // Tableで利用する数
-
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;   //CBVを使う
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;  //PixelShaderで使う
+	rootParameters[0].Descriptor.ShaderRegister = 0;    // レジスタ番号0とバインド
 	// Static Sampler
-	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
-	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // バイリニアフィルタ
-	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX; // 全MipMap使用
-	staticSamplers[0].ShaderRegister = 0; // s0: Shader Register
-	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
+	//D3D12_STATIC_SAMPLER_DESC staticSamplers[0] = {};
 
 	// ルートシグネチャの構築
 	descriptionRootSignature.pParameters = rootParameters; // ルートパラメーター配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters); // 配列の長さ
-	descriptionRootSignature.pStaticSamplers = staticSamplers; // サンプラー配列へのポインタ
-	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers); // サンプラーの数
+	descriptionRootSignature.pStaticSamplers = nullptr; // サンプラー配列へのポインタ
+	descriptionRootSignature.NumStaticSamplers = 0; // サンプラーの数
 
 	//シリアライズしてバイナリにする
 
@@ -104,7 +95,7 @@ void Grayscale::CreateRootSignature(Pipeline* pipeline)
 	assert(SUCCEEDED(hr));
 }
 
-void Grayscale::CreatePipeLineState(Pipeline* pipeline)
+void Random::CreatePipeLineState(Pipeline* pipeline)
 {
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
@@ -140,7 +131,7 @@ void Grayscale::CreatePipeLineState(Pipeline* pipeline)
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Grayscale.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Random.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 	// DepthStencilStateの設定
@@ -176,4 +167,13 @@ void Grayscale::CreatePipeLineState(Pipeline* pipeline)
 	// 実際に生成
 	pipeline->pipelineState = nullptr;
 	dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&pipeline->pipelineState));
+}
+
+void Random::CreateMaterial()
+{
+	// bufferResourceの生成
+	resource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(RandomShader::Material));
+
+	// データをマップ
+	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));
 }

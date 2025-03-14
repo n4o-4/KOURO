@@ -1,43 +1,67 @@
-﻿#include "Grayscale.h"
+﻿#include "LinearFog.h"
 
-void Grayscale::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+void LinearFog::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
 	// パイプラインの生成
-	BaseEffect::Initialize(dxCommon,srvManager);
+	BaseEffect::Initialize(dxCommon, srvManager);
 
 	//パイプラインの初期化
 	CreatePipeline();
+
+	// マテリアルの生成
+	CreateMaterial();
+
+	data_->projectionInverse = MakeIdentity4x4();
 }
 
-void Grayscale::Update()
+void LinearFog::Update()
 {
+
 }
 
-void Grayscale::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
+void LinearFog::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
 {
-	// 描画先のRTVのインデックス
-	uint32_t renderTextureIndex = 2 + renderTargetIndex;
+	// バリアー
+	D3D12_RESOURCE_BARRIER depthbarrier{};
 
-	// 描画先のRTVを設定する
-	dxCommon_->GetCommandList()->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(renderTextureIndex), false, nullptr);
+	// 深度テクスチャの取得
+	depthbarrier.Transition.pResource = dxCommon_->GetDepthStencilResource().Get();
 
-	// ルートシグネチャの設定	
-	dxCommon_->GetCommandList()->SetGraphicsRootSignature(pipeline_.get()->rootSignature.Get());
+	if (depthbarrier.Transition.pResource == nullptr)
+	{
+		assert(0);
+	}
 
-	// パイプラインステートの設定
-	dxCommon_->GetCommandList()->SetPipelineState(pipeline_.get()->pipelineState.Get());
+	// 深度テクスチャの状態を変更
+	depthbarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	depthbarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 
-	// renderTextureのSrvHandleを取得
-	D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = (renderResourceIndex == 0) ? TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0") : TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
+	// 書き込み用から読み込み用に変更
+	depthbarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+	depthbarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 
-	// SRVを設定
-	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
+	// バリアーをはる
+	dxCommon_->GetCommandList()->ResourceBarrier(1, &depthbarrier);
+
+	// ディスクリプタテーブルを設定 (深度テクスチャ SRV)
+	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(dxCommon_->GetDepthSrvIndex()));
+
+	// 定数バッファを設定
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(2, resource_.Get()->GetGPUVirtualAddress());
 
 	// 描画
 	dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
+
+	// 深度テクスチャの状態を変更
+	// 読み込み用から書き込み用に変更
+	depthbarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	depthbarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+
+	// バリアーをはる
+	dxCommon_->GetCommandList()->ResourceBarrier(1, &depthbarrier);
 }
 
-void Grayscale::CreatePipeline()
+void LinearFog::CreatePipeline()
 {
 	// ルートシグネチャの生成
 	CreateRootSignature(pipeline_.get());
@@ -46,8 +70,8 @@ void Grayscale::CreatePipeline()
 	CreatePipeLineState(pipeline_.get());
 }
 
-void Grayscale::CreateRootSignature(Pipeline* pipeline)
-{	
+void LinearFog::CreateRootSignature(Pipeline* pipeline)
+{
 	HRESULT hr;
 
 	// ルートシグネチャの設定
@@ -61,16 +85,33 @@ void Grayscale::CreateRootSignature(Pipeline* pipeline)
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRV
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // 自動計算
 
-	// Root Parameter: SRV (gTexture)
-	D3D12_ROOT_PARAMETER rootParameters[1] = {};
+	// SRV の Descriptor Range
+	D3D12_DESCRIPTOR_RANGE descriptorRange1[1] = {};
+	descriptorRange1[0].BaseShaderRegister = 1; // t0: Shader Register
+	descriptorRange1[0].NumDescriptors = 1; // 1つのSRV
+	descriptorRange1[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRV
+	descriptorRange1[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // 自動計算
+
+	// Root Parameter: SRV
+	D3D12_ROOT_PARAMETER rootParameters[3] = {};
+	//  gTexture
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
-
 	rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRange; // Tableの中身の配列を指定
 	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange); // Tableで利用する数
 
+	// gDepthTexture
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
+	rootParameters[1].DescriptorTable.pDescriptorRanges = descriptorRange1; // Tableの中身の配列を指定
+	rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange1); // Tableで利用する数
+
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[2].Descriptor.ShaderRegister = 0;
+
 	// Static Sampler
-	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[2] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // バイリニアフィルタ
 	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -79,6 +120,16 @@ void Grayscale::CreateRootSignature(Pipeline* pipeline)
 	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX; // 全MipMap使用
 	staticSamplers[0].ShaderRegister = 0; // s0: Shader Register
 	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
+
+	// サンプラーの基本設定
+	staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT; // バイリニアフィルタ
+	staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[1].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX; // 全MipMap使用
+	staticSamplers[1].ShaderRegister = 1; // s0: Shader Register
+	staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
 
 	// ルートシグネチャの構築
 	descriptionRootSignature.pParameters = rootParameters; // ルートパラメーター配列へのポインタ
@@ -104,7 +155,7 @@ void Grayscale::CreateRootSignature(Pipeline* pipeline)
 	assert(SUCCEEDED(hr));
 }
 
-void Grayscale::CreatePipeLineState(Pipeline* pipeline)
+void LinearFog::CreatePipeLineState(Pipeline* pipeline)
 {
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
@@ -140,7 +191,7 @@ void Grayscale::CreatePipeLineState(Pipeline* pipeline)
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Grayscale.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/LinearFog.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 	// DepthStencilStateの設定
@@ -176,4 +227,13 @@ void Grayscale::CreatePipeLineState(Pipeline* pipeline)
 	// 実際に生成
 	pipeline->pipelineState = nullptr;
 	dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&pipeline->pipelineState));
+}
+
+void LinearFog::CreateMaterial()
+{
+	// bufferResourceの生成
+	resource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(LinearFogShader:: Material));
+
+	// データをマップ
+	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));
 }

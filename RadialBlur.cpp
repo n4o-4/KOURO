@@ -1,19 +1,26 @@
-﻿#include "Grayscale.h"
+﻿#include "RadialBlur.h"
 
-void Grayscale::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+void RadialBlur::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
 	// パイプラインの生成
-	BaseEffect::Initialize(dxCommon,srvManager);
+	BaseEffect::Initialize(dxCommon, srvManager);
 
 	//パイプラインの初期化
 	CreatePipeline();
+
+	// マテリアルの生成
+	CreateMaterial();
+
+	data_->center = (0.5f, 0.5f);
+	data_->numSamples = 10;
+	data_->blurWidth = 0.01f;	
 }
 
-void Grayscale::Update()
+void RadialBlur::Update()
 {
 }
 
-void Grayscale::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
+void RadialBlur::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
 {
 	// 描画先のRTVのインデックス
 	uint32_t renderTextureIndex = 2 + renderTargetIndex;
@@ -33,11 +40,14 @@ void Grayscale::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
 	// SRVを設定
 	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
 
+	// Cbufferの設定
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, resource_.Get()->GetGPUVirtualAddress());
+
 	// 描画
 	dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 }
 
-void Grayscale::CreatePipeline()
+void RadialBlur::CreatePipeline()
 {
 	// ルートシグネチャの生成
 	CreateRootSignature(pipeline_.get());
@@ -46,8 +56,8 @@ void Grayscale::CreatePipeline()
 	CreatePipeLineState(pipeline_.get());
 }
 
-void Grayscale::CreateRootSignature(Pipeline* pipeline)
-{	
+void RadialBlur::CreateRootSignature(Pipeline* pipeline)
+{
 	HRESULT hr;
 
 	// ルートシグネチャの設定
@@ -62,19 +72,22 @@ void Grayscale::CreateRootSignature(Pipeline* pipeline)
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // 自動計算
 
 	// Root Parameter: SRV (gTexture)
-	D3D12_ROOT_PARAMETER rootParameters[1] = {};
+	D3D12_ROOT_PARAMETER rootParameters[2] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // Pixel Shaderで使用
 
 	rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRange; // Tableの中身の配列を指定
 	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange); // Tableで利用する数
 
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;   //CBVを使う
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;  //PixelShaderで使う
+	rootParameters[1].Descriptor.ShaderRegister = 0;    // レジスタ番号0とバインド
 	// Static Sampler
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // バイリニアフィルタ
-	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
 	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX; // 全MipMap使用
 	staticSamplers[0].ShaderRegister = 0; // s0: Shader Register
@@ -104,7 +117,7 @@ void Grayscale::CreateRootSignature(Pipeline* pipeline)
 	assert(SUCCEEDED(hr));
 }
 
-void Grayscale::CreatePipeLineState(Pipeline* pipeline)
+void RadialBlur::CreatePipeLineState(Pipeline* pipeline)
 {
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
@@ -140,7 +153,7 @@ void Grayscale::CreatePipeLineState(Pipeline* pipeline)
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Fullscreen.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Grayscale.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/RadialBlur.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 	// DepthStencilStateの設定
@@ -176,4 +189,13 @@ void Grayscale::CreatePipeLineState(Pipeline* pipeline)
 	// 実際に生成
 	pipeline->pipelineState = nullptr;
 	dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&pipeline->pipelineState));
+}
+
+void RadialBlur::CreateMaterial()
+{
+	// bufferResourceの生成
+	resource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(Radial::Material));
+
+	// データをマップ
+	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));
 }
