@@ -89,6 +89,30 @@ void LockOnMarker::Update(const Vector3& playerPosition, const Vector3& markerPo
         };
     }
     
+    // アニメーション更新（レベルに応じた挙動）
+    if (isAnimating_) {
+        animationTimer_ += 1.0f / 60.0f;
+        
+        // レベルに応じてアニメーションパターンを変える
+        float t;
+        if (lockLevel_ == LOCK_LEVEL_PRECISE) {
+            // 精密ロックオンのアニメーション（より細かい脈動）
+            t = (sinf(animationTimer_ * animationSpeed_ * 3.14159f) + 1.0f) * 0.5f;
+        } else {
+            // 通常のアニメーション
+            t = (sinf(animationTimer_ * animationSpeed_ * 3.14159f) + 1.0f) * 0.5f;
+        }
+        
+        float currentScale = maxScale_ - (maxScale_ - minScale_) * t;
+        
+        // スケール値を設定
+        multilockOnWorldTransform_->transform.scale = { 
+            currentScale, 
+            currentScale, 
+            currentScale 
+        };
+    }
+
     // 行列を更新
     multilockOnWorldTransform_->UpdateMatrix();
     multiLockOn_->SetLocalMatrix(MakeIdentity4x4());
@@ -99,4 +123,36 @@ void LockOnMarker::Draw(ViewProjection viewProjection, DirectionalLight directio
 	if (isVisible_) {
 	multiLockOn_->Draw(*multilockOnWorldTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
 	}
+}
+
+// ロックオンレベルの設定
+void LockOnMarker::SetLockLevel(int level) {
+    lockLevel_ = level;
+    
+    // レベルに応じてマーカーの見た目を変更
+    if (lockLevel_ == LOCK_LEVEL_PRECISE) {
+        // 精密ロックオンのマーカー設定
+        minScale_ = preciseScale_;  // より小さく（精密さを表現）
+        maxScale_ = 1.5f;          // 最大スケールも少し小さく
+        animationSpeed_ = 3.0f;     // アニメーションを速く
+        
+        // 色を設定する場合はここでモデルの色を変更
+        // multiLockOn_->SetColor({1.0f, 0.2f, 0.2f, 1.0f});  // 赤色で強調
+    } else if (lockLevel_ == LOCK_LEVEL_SIMPLE) {
+        // 簡易ロックオンのマーカー設定
+        minScale_ = 1.5f;          // 通常サイズ
+        maxScale_ = 3.0f;          // 通常の最大サイズ
+        animationSpeed_ = 2.0f;     // 通常速度
+        
+        // 色を設定する場合
+        // multiLockOn_->SetColor({1.0f, 1.0f, 1.0f, 1.0f});  // 通常色
+    } else {
+        // ロックオンなしのマーカー設定
+        minScale_ = 1.8f;          // やや大きめ
+        maxScale_ = 3.2f;          // やや大きめ
+        animationSpeed_ = 1.5f;     // やや遅く
+        
+        // 色を設定する場合
+        // multiLockOn_->SetColor({0.7f, 0.7f, 0.7f, 0.7f});  // 薄く表示
+    }
 }

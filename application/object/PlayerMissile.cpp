@@ -7,38 +7,63 @@
 
 // コンストラクタ実装
 PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelocity,
-	const Vector3 &scale, const Vector3 &rotate) {
-	model_ = std::make_unique<Object3d>();
-	model_->Initialize(Object3dCommon::GetInstance());
+    const Vector3 &scale, const Vector3 &rotate, int lockLevel) {
+    model_ = std::make_unique<Object3d>();
+    model_->Initialize(Object3dCommon::GetInstance());
 
-	ModelManager::GetInstance()->LoadModel("missile.obj");
-	model_->SetModel("missile.obj");
+    ModelManager::GetInstance()->LoadModel("missile.obj");
+    model_->SetModel("missile.obj");
 
-	isActive_ = true;  // 明示的にアクティブに設定
+    isActive_ = true;  // 明示的にアクティブに設定
 
-	// トランスフォームの初期化
-	worldTransform_ = std::make_unique<WorldTransform>();
-	worldTransform_->Initialize();
-	worldTransform_->transform.translate = position;
-	// 少し小さくしておく
-	worldTransform_->transform.scale = { 0.3f, 0.3f, 0.6f };
-	worldTransform_->transform.rotate = rotate;
+    // トランスフォームの初期化
+    worldTransform_ = std::make_unique<WorldTransform>();
+    worldTransform_->Initialize();
+    worldTransform_->transform.translate = position;
+    // 少し小さくしておく
+    worldTransform_->transform.scale = { kMissileScaleXY, kMissileScaleXY, kMissileScaleZ };
+    worldTransform_->transform.rotate = rotate;
 
-	// 初期速度の設定
-	velocity_ = initialVelocity;
+    // 初期速度の設定
+    velocity_ = initialVelocity;
 
-	// ミサイル性能にランダムなばらつきを追加
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> dis(0.64f, 1.28f);
-	performanceVariation_ = dis(gen);
+    // ロックオンレベルの保存
+    lockLevel_ = lockLevel;
 
-	// 前回視線ベクトルの初期化（初回はゼロでよい）
-	prevLineOfSight_ = { 0, 0, 0 };
+    // ロックオンレベルに応じた性能設定
+    if (lockLevel_ == 2) {  // 精密ロックオン
+        // 高性能ミサイルの設定
+        precisionTurnFactor_ = kPrecisionTurnFactor;
+        precisionTrackingFactor_ = kPrecisionTrackingFactor;
+        maxTurnRate_ *= precisionTurnFactor_;
+        navigationGain_ *= precisionTrackingFactor_;
+        
+        // TODO:モデルの色を変更（高性能ミサイルの見た目を区別）
+        //model_->SetColor({1.0f, 0.5f, 0.2f, 1.0f});  // オレンジ色で強調
+    } else {
+        // 通常ミサイル（簡易ロックオン）の設定
+        // 基本設定のままでよい
+    }
 
-	//========================================
-	// 当たり判定との同期
-	BaseObject::Initialize(worldTransform_->transform.translate, 1.0f);
+    // ミサイル性能にランダムなばらつきを追加
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dis(kPerformanceVariationMin, kPerformanceVariationMax);
+    performanceVariation_ = dis(gen);
+
+    // 前回視線ベクトルの初期化（初回はゼロでよい）
+    prevLineOfSight_ = { 0, 0, 0 };
+
+    // 簡易ロックオンの場合、発射時のターゲット位置を記録
+    if (target_ && target_->GetHp() > 0) {
+        targetPosition_ = target_->GetPosition();
+        // impactPosition_にも同じ値を設定
+        impactPosition_ = targetPosition_;
+    }
+
+    //========================================
+    // 当たり判定との同期
+    BaseObject::Initialize(worldTransform_->transform.translate, 1.0f);
 }
 
 
@@ -57,7 +82,7 @@ void PlayerMissile::Update() {
 	case BulletState::kFinal:
 		UpdateFinalState();
 		break;
-	}
+	} 
 
 	// 位置の更新
 	worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
@@ -75,17 +100,23 @@ void PlayerMissile::Update() {
 		isActive_ = false;
 	}
 
-	// ターゲットが無効になった場合のチェック
-	if(target_ && target_->GetHp() <= 0) {
-		// ターゲットが無効になった場合、直進するために状態を維持
-		target_ = nullptr;
+    // ターゲットが無効になった場合のチェック
+    if(target_ && target_->GetHp() <= 0) {
+        // ターゲットが無効になった瞬間の位置を記録
+        if (lockLevel_ == 2) {
+            // 精密ロックオンの場合は最後の位置を記録
+            targetPosition_ = target_->GetPosition();
+        }
+        // ターゲットを無効化
+        target_ = nullptr;
 
-		// 状態が最終状態でない場合は直進状態に切り替える
-		if(state_ == BulletState::kTracking) {
-			// 現在速度のまま直進する
-			velocity_ = Normalize(velocity_) * kBaseTrackingSpeed;
-		}
-	}
+        // 状態が最終状態でない場合
+        if(state_ == BulletState::kTracking) {
+            // 簡易ロックオン（lockLevel_ = 1）の場合、記録位置へ飛ぶ
+            // 精密ロックオン（lockLevel_ = 2）の場合も最後の位置へ向かう
+            // 設定済みのtargetPosition_に向かうので特に処理は不要
+        }
+    }
 }
 
 // 発射初期状態の更新
@@ -102,7 +133,7 @@ void PlayerMissile::UpdateLaunchState() {
 		// 徐々に目標方向へ旋回を開始
 		if(target_ && target_->GetHp() > 0) {
 			// ターゲットへの方向ベクトル
-			Vector3 targetPos = target_->GetPosition();
+			Vector3 targetPos = impactPosition_;
 			Vector3 direction = targetPos - worldTransform_->transform.translate;
 			Vector3 normalizedDirection = Normalize(direction);
 
@@ -110,7 +141,7 @@ void PlayerMissile::UpdateLaunchState() {
 			Vector3 currentDir = Normalize(velocity_);
 
 			// 徐々にターゲット方向に旋回
-			float turnRate = ( stateTimer_ - kInertialFlightTime ) / 30.0f * 0.02f;
+			float turnRate = ( stateTimer_ - kInertialFlightTime ) / 30.0f * 0.22f;
 			turnRate = std::min(turnRate, 0.03f);
 
 			// 現在の方向と目標方向の間を補間
@@ -144,114 +175,160 @@ void PlayerMissile::UpdateLaunchState() {
 
 		// 前回の視線方向を初期化（追尾状態開始時）
 		if(target_ && target_->GetHp() > 0) {
-			prevLineOfSight_ = target_->GetPosition() - worldTransform_->transform.translate;
+			prevLineOfSight_ = impactPosition_ - worldTransform_->transform.translate;
 		}
 	}
 }
 
 // 追尾状態の更新
 void PlayerMissile::UpdateTrackingState() {
-	stateTimer_++;
+    stateTimer_++;
 
-	if(target_ && target_->GetHp() > 0) {
-		// ターゲットの位置を取得
-		Vector3 targetPos = target_->GetPosition();
-		Vector3 myPos = worldTransform_->transform.translate;
-		Vector3 direction = targetPos - myPos;
-		float distance = Length(direction);
+    if(target_ && target_->GetHp() > 0) {
+        // ターゲットの位置を取得
+        Vector3 targetPos = impactPosition_;
+        Vector3 myPos = worldTransform_->transform.translate;
+        Vector3 direction = targetPos - myPos;
+        float distance = Length(direction);
 
-		// 比例航法による誘導
-		Vector3 navVector = CalculateNavigationVector();
+        // 比例航法による誘導
+        Vector3 navVector = CalculateNavigationVector();
 
-		// 旋回性能の限界を考慮（より小さくして緩やかに）
-		float navMagnitude = Length(navVector);
-		if(navMagnitude > maxTurnRate_ * 0.7f) {  // 旋回速度を70%に制限
-			navVector = Normalize(navVector) * ( maxTurnRate_ * 0.7f );
-		}
+        // 精密ロックオンの場合、より正確な誘導
+        if (lockLevel_ == 2) {
+            // 旋回性能の限界を高く設定（より機敏に）
+            float navMagnitude = Length(navVector);
+            if(navMagnitude > maxTurnRate_) {
+                navVector = Normalize(navVector) * maxTurnRate_;
+            }
+            
+            // 精密ロックオンでは弧を描く動きをほぼ削除（直線的な軌道に）
+            // 0.1fという小さな値にして、わずかな自然な動きのみ残す
+            float arcFactor = sinf(stateTimer_ * kArcOscillationSpeed * 0.1f) * 
+                             (kArcStrength * 0.1f);
+            Vector3 perpVector = Cross(Normalize(velocity_), Vector3{ 0, 1, 0 });
+            perpVector = perpVector * arcFactor;
+            
+            // 追尾遅延を大幅に低減（ほぼ即時反応）
+            navVector = navVector * (kTrackingDelayFactor * 1.5f) * performanceVariation_;
+            
+            // スムージング係数を調整（より素早く方向転換）
+            float smoothingFactor = kSmoothingFactor * 1.5f;
+            Vector3 desiredChangeVector = navVector + perpVector;
+            Vector3 smoothedChangeVector = desiredChangeVector * smoothingFactor;
+            
+            velocity_ = velocity_ + smoothedChangeVector;
+        } else {
+            // 簡易ロックオンの場合は既存のコード（変更なし）
+            float navMagnitude = Length(navVector);
+            if(navMagnitude > maxTurnRate_ * kBasicTurnRateFactor) {
+                navVector = Normalize(navVector) * (maxTurnRate_ * kBasicTurnRateFactor);
+            }
+            
+            // 弧を描くような動きを追加
+            float arcFactor = sinf(stateTimer_ * kArcOscillationSpeed) * kArcStrength;
+            Vector3 perpVector = Cross(Normalize(velocity_), Vector3{ 0, 1, 0 });
+            perpVector = perpVector * arcFactor;
+            
+            // 追尾遅延のシミュレーション
+            navVector = navVector * kTrackingDelayFactor * performanceVariation_;
+            
+            // スムージング係数を導入
+            float smoothingFactor = kSmoothingFactor;
+            Vector3 desiredChangeVector = navVector + perpVector;
+            Vector3 smoothedChangeVector = desiredChangeVector * smoothingFactor;
+            
+            velocity_ = velocity_ + smoothedChangeVector;
+        }
 
-		// 弧を描くような動きを追加（より穏やかな弧を描く）
-		float arcFactor = sinf(stateTimer_ * ( kArcOscillationSpeed * 0.7f )) * ( kArcStrength * 0.8f );
-		Vector3 perpVector = Cross(Normalize(velocity_), Vector3{ 0, 1, 0 });
-		perpVector = perpVector * arcFactor;
+        // 速度の大きさを調整
+        float currentMaxSpeed = kBaseTrackingSpeed +
+            std::min(kMaxSpeedIncrease, stateTimer_ / kSpeedIncreaseDivider);
 
-		// 追尾遅延のシミュレーション（値を大きくしてより滑らかに）
-		navVector = navVector * ( kTrackingDelayFactor * 0.7f ) * performanceVariation_;
+        // 精密ロックオンの場合、より高速に
+        if (lockLevel_ == 2) {
+            currentMaxSpeed *= kPrecisionSpeedFactor;
+        }
+        
+        // 性能のバラつきを適用
+        currentMaxSpeed *= (1.0f + (performanceVariation_ - 1.0f) * 0.5f);
 
-		// 速度ベクトルを更新（より緩やかな補間で）
-		// スムージング係数を導入（1.0だと即座に変更、小さいほど緩やかに変更）
-		float smoothingFactor = 0.15f;
-		Vector3 desiredChangeVector = navVector + perpVector;
-		Vector3 smoothedChangeVector = desiredChangeVector * smoothingFactor;
+        velocity_ = Normalize(velocity_) * currentMaxSpeed;
 
-		velocity_ = velocity_ + smoothedChangeVector;
+    } else {
+        // ターゲットがいない場合は直進
+        velocity_ = Normalize(velocity_) * kBaseTrackingSpeed;
+    }
 
-			// 速度の大きさを調整（より高速に）
-		float currentMaxSpeed = kBaseTrackingSpeed +
-			std::min(kMaxSpeedIncrease, stateTimer_ / kSpeedIncreaseDivider);
-
-		// 性能のバラつきを適用（高性能なミサイルはより速く）
-		currentMaxSpeed *= ( 1.0f + ( performanceVariation_ - 1.0f ) * 0.5f );
-
-		velocity_ = Normalize(velocity_) * currentMaxSpeed;
-
-				// 近づいたら最終段階へ
-		if(distance < kFinalStateTransitionDistance) {
-			state_ = BulletState::kFinal;
-			stateTimer_ = 0;
-		}
-	} else {
-		// ターゲットがいない場合は直進
-		velocity_ = Normalize(velocity_) * kBaseTrackingSpeed;
-	}
-
-	// 長時間追尾してもターゲットに到達できない場合
-	if(stateTimer_ > kAutoFinalStateTransitionTime) {
-		state_ = BulletState::kFinal;
-		stateTimer_ = 0;
-	}
+    // 長時間追尾してもターゲットに到達できない場合
+    if(stateTimer_ > kAutoFinalStateTransitionTime) {
+        state_ = BulletState::kFinal;
+        stateTimer_ = 0;
+    }
 }
 
 // 最終接近状態の更新
 void PlayerMissile::UpdateFinalState() {
-	stateTimer_++;
+    stateTimer_++;
 
-	if(target_ && target_->GetHp() > 0) {
-		// ターゲットへの方向
-		Vector3 targetPos = target_->GetPosition();
-		Vector3 myPos = worldTransform_->transform.translate;
-		Vector3 direction = targetPos - myPos;
-		float distance = Length(direction);
+    if(target_ && target_->GetHp() > 0) {
+        // ターゲットへの方向
+        Vector3 targetPos = impactPosition_;
+        Vector3 myPos = worldTransform_->transform.translate;
+        Vector3 direction = targetPos - myPos;
+        float distance = Length(direction);
 
-		// 現在の速度方向
-		Vector3 currentDir = Normalize(velocity_);
-		// 目標方向
-		Vector3 targetDir = Normalize(direction);
-
-		// 最終接近段階での急旋回（性能限界を超えた急旋回）
-		float finalTurnRate = maxTurnRate_ * 1.5f; // 性能限界を超えた旋回
-
-		// 現在方向と目標方向の間を補間
-		Vector3 newDir = currentDir + ( targetDir - currentDir ) * finalTurnRate;
-		newDir = Normalize(newDir);
-
-		// 急加速して直進
-		float finalSpeed = kBaseFinalSpeed +
-			std::min(kMaxFinalSpeedIncrease, stateTimer_ / kFinalSpeedIncreaseDivider);
-		velocity_ = newDir * finalSpeed;
-
-		// ミサイル性能のランダムばらつきを適用
-		// 性能ばらつきにより、完全命中しない場合もある
-		if(stateTimer_ > 10) { // 最初の数フレームは正確に誘導
-			float randomDeviation = ( rand() % 100 - 50 ) / 2000.0f;
-			velocity_.x += randomDeviation;
-			velocity_.y += randomDeviation;
-		}
-	} else {
-		// ターゲットがない場合は現在の速度で直進
-		float finalSpeed = kBaseFinalSpeed +
-			std::min(kMaxFinalSpeedIncrease, stateTimer_ / kFinalSpeedIncreaseDivider);
-		velocity_ = Normalize(velocity_) * finalSpeed;
-	}
+        // 精密ロックオンの場合、最終フェーズでは軌道計算を大幅に簡略化
+        if (lockLevel_ == 2) {
+            // 目標方向を直接計算（正規化）
+            Vector3 targetDir = Normalize(direction);
+            
+            // 現在の速度は無視して、方向を敵に向ける（直接突進）
+            // 急加速して直進
+            float finalSpeed = kBaseFinalSpeed * 1.5f + 
+                std::min(kMaxFinalSpeedIncrease * 1.2f, stateTimer_ / (kFinalSpeedIncreaseDivider * 0.5f));
+            
+            // 直接目標に向かう速度ベクトルを設定
+            velocity_ = targetDir * finalSpeed;
+            
+            // ミサイル性能のランダムばらつきをほぼ無効化（精密誘導）
+            if(stateTimer_ > kPrecisionFinalPhaseThreshold) {
+                // ほぼ直線的な軌道を維持するため、偏差を最小限に
+                float randomDeviation = (rand() % 100 - 50) / (kPrecisionRandomDeviationFactor * 10.0f);
+                velocity_.x += randomDeviation;
+                velocity_.y += randomDeviation;
+            }
+        } else {
+            // 簡易ロックオンの場合は既存のコード
+            Vector3 currentDir = Normalize(velocity_);
+            Vector3 targetDir = Normalize(direction);
+            
+            // 既存の最終段階での旋回率
+            float finalTurnRate = maxTurnRate_ * kFinalStageTurnFactor;
+            
+            // 現在方向と目標方向の間を補間
+            Vector3 newDir = currentDir + (targetDir - currentDir) * finalTurnRate;
+            newDir = Normalize(newDir);
+            
+            // 急加速して直進
+            float finalSpeed = kBaseFinalSpeed +
+                std::min(kMaxFinalSpeedIncrease, stateTimer_ / kFinalSpeedIncreaseDivider);
+            
+            velocity_ = newDir * finalSpeed;
+            
+            // 簡易ロックオン時のランダム偏差（既存コード）
+            if(stateTimer_ > kBasicFinalPhaseThreshold) {
+                float randomDeviation = (rand() % 100 - 50) / kBasicRandomDeviationFactor;
+                velocity_.x += randomDeviation;
+                velocity_.y += randomDeviation;
+            }
+        }
+    } else {
+        // ターゲットがない場合は現在の速度で直進（既存コード）
+        float finalSpeed = kBaseFinalSpeed +
+            std::min(kMaxFinalSpeedIncrease, stateTimer_ / kFinalSpeedIncreaseDivider);
+        velocity_ = Normalize(velocity_) * finalSpeed;
+    }
 }
 
 // 視線ベクトル（LOS: Line of Sight）の計算
@@ -261,7 +338,7 @@ Vector3 PlayerMissile::CalculateLOS() {
 	}
 
 	// ミサイルからターゲットへのベクトル
-	Vector3 los = target_->GetPosition() - worldTransform_->transform.translate;
+	Vector3 los = impactPosition_ - worldTransform_->transform.translate;
 	return los;
 }
 
@@ -285,44 +362,61 @@ Vector3 PlayerMissile::CalculateLOSRate() {
 
 // 比例航法ベクトルの計算（PN: Proportional Navigation）
 Vector3 PlayerMissile::CalculateNavigationVector() {
-	if(!target_ || target_->GetHp() <= 0) {
-		return Vector3{ 0, 0, 0 };
-	}
+    if(!target_ || target_->GetHp() <= 0) {
+        return Vector3{ 0, 0, 0 };
+    }
 
-	// 視線角速度を取得
-	Vector3 losRate = CalculateLOSRate();
+    // 視線角速度を取得
+    Vector3 losRate = CalculateLOSRate();
 
-	// 速度ベクトルとの外積でPN方向を計算
-	// a_missile = N * (v_missile × ω_LOS)
-	// 比例航法のゲインを下げる（より緩やかな追尾に）
-	float reducedNavGain = kNavigationGain * 0.6f;  // 60%に低減
-	Vector3 pnAccel = Cross(velocity_, losRate) * reducedNavGain;
+    // 精密ロックオン時は異なるパラメータを使用
+    float reducedNavGain;
+    float steeringForceFactor;
+    float velocityPerpWeightFactor;
+    float curveStrengthFactor;
 
-	// 現在の速度方向
-	Vector3 currentDir = Normalize(velocity_);
+    if (lockLevel_ == 2) {
+        // 精密ロックオン：より正確な誘導
+        reducedNavGain = kNavigationGain * 0.9f;  // 90%のゲイン（高めに）
+        steeringForceFactor = 0.9f;              // 強めの操舵力
+        velocityPerpWeightFactor = 0.3f;         // 垂直成分の影響を抑制
+        curveStrengthFactor = 0.2f;              // 曲線運動をほぼ無効化
+    } else {
+        // 簡易ロックオン：既存の値
+        reducedNavGain = kNavigationGain * kNavGainReductionFactor;
+        steeringForceFactor = kSteeringForceFactor;
+        velocityPerpWeightFactor = kVelocityPerpWeightFactor;
+        curveStrengthFactor = kSteeringForceFactor;
+    }
 
-	// 視線方向の単位ベクトル
-	Vector3 losUnit = Normalize(CalculateLOS());
+    // 比例航法の加速度ベクトル計算
+    Vector3 pnAccel = Cross(velocity_, losRate) * reducedNavGain;
 
-	// 相対速度から視線方向成分を除去（横方向加速度成分の計算）
-	Vector3 velocityPerp;
-	velocityPerp.x = velocity_.x - Dot(velocity_, losUnit) * losUnit.x;
-	velocityPerp.y = velocity_.y - Dot(velocity_, losUnit) * losUnit.y;
-	velocityPerp.z = velocity_.z - Dot(velocity_, losUnit) * losUnit.z;
+    // 現在の速度方向
+    Vector3 currentDir = Normalize(velocity_);
 
-	// 曲線的な軌道を描くための補正（より緩やかに）
-	float curveFactor = sinf(stateTimer_ * ( kCurveOscillationSpeed * 0.75f )) * ( kCurveStrength * 0.75f );
-	Vector3 curveVector = Cross(losUnit, Vector3{ 0, 1, 0 }) * curveFactor;
+    // 視線方向の単位ベクトル
+    Vector3 losUnit = Normalize(CalculateLOS());
 
-	// 操舵方向を計算（垂直方向成分の影響度を下げる）
-	Vector3 steeringDir = Normalize(losUnit + velocityPerp * ( kVelocityPerpWeight * 0.7f ) + curveVector);
+    // 相対速度から視線方向成分を除去（横方向加速度成分の計算）
+    Vector3 velocityPerp;
+    velocityPerp.x = velocity_.x - Dot(velocity_, losUnit) * losUnit.x;
+    velocityPerp.y = velocity_.y - Dot(velocity_, losUnit) * losUnit.y;
+    velocityPerp.z = velocity_.z - Dot(velocity_, losUnit) * losUnit.z;
 
-	// 操舵力を計算（現在の方向から目標方向への変化）
-	// navigationGain_も下げることで、より滑らかな動きに
-	Vector3 steeringForce = ( steeringDir - currentDir ) * ( navigationGain_ * 0.75f );
+    // 曲線的な軌道補正（精密ロックオン時は最小化）
+    float curveFactor = sinf(stateTimer_ * (kCurveOscillationSpeed * curveStrengthFactor)) * 
+                       (kCurveStrength * curveStrengthFactor);
+    Vector3 curveVector = Cross(losUnit, Vector3{ 0, 1, 0 }) * curveFactor;
 
-	// 比例航法と操舵力を組み合わせた最終的な誘導力
-	return pnAccel + steeringForce;
+    // 操舵方向を計算
+    Vector3 steeringDir = Normalize(losUnit + velocityPerp * velocityPerpWeightFactor + curveVector);
+
+    // 操舵力を計算
+    Vector3 steeringForce = (steeringDir - currentDir) * (navigationGain_ * steeringForceFactor);
+
+    // 比例航法と操舵力を組み合わせた最終的な誘導力
+    return pnAccel + steeringForce;
 }
 
 // 近接信管の処理
@@ -332,7 +426,7 @@ void PlayerMissile::ApplyProximityFuse() {
 	}
 
 	// ターゲットとの距離を計算
-	Vector3 targetPos = target_->GetPosition();
+	Vector3 targetPos = impactPosition_;
 	Vector3 myPos = worldTransform_->transform.translate;
 	float distance = Length(targetPos - myPos);
 

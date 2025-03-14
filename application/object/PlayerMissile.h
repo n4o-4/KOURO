@@ -10,8 +10,9 @@ public:
     /// @param initialVelocity 初期速度
     /// @param scale モデルのスケール
     /// @param rotate モデルの回転
+    /// @param lockLevel ロックオンレベル（0:なし、1:簡易、2:精密）
     PlayerMissile(const Vector3 &position, const Vector3 &initialVelocity,
-        const Vector3 &scale, const Vector3 &rotate);
+        const Vector3 &scale, const Vector3 &rotate, int lockLevel = 1);
 
     /// @brief 毎フレームの更新処理
     void Update();
@@ -26,7 +27,16 @@ public:
 
     /// @brief ターゲットの設定
     /// @param target 追尾対象の敵
-    void SetTarget(Enemy *target) { target_ = target; }
+    void SetTarget(Enemy *target){ 
+        target_ = target; 
+        
+        // ターゲットが有効な場合は位置を記録
+        if (target_ && target_->GetHp() > 0) {
+            targetPosition_ = target_->GetPosition();
+            // 初期衝突予測位置にも設定
+            impactPosition_ = targetPosition_;
+        }
+    }
 
     /// @brief アクティブ状態の取得
     /// @return ミサイルが活動中かどうか
@@ -63,6 +73,26 @@ private:
     /// @brief 弾の最大寿命（フレーム数）
     static const int kLifeTimeLimit = 300;
 
+    // モデル関連の定数
+    /// @brief ミサイルのX・Yスケール
+    static constexpr float kMissileScaleXY = 0.3f;
+    /// @brief ミサイルのZスケール
+    static constexpr float kMissileScaleZ = 0.6f;
+    
+    // ロックオン関連の定数
+    /// @brief 精密ロックオン時の旋回性能向上係数
+    static constexpr float kPrecisionTurnFactor = 1.5f;
+    /// @brief 精密ロックオン時の追跡性能向上係数
+    static constexpr float kPrecisionTrackingFactor = 1.3f;
+    /// @brief 精密ロックオン時の速度増加係数
+    static constexpr float kPrecisionSpeedFactor = 1.2f;
+    
+    // ミサイル性能のランダム性関連
+    /// @brief 性能ばらつきの最小値
+    static constexpr float kPerformanceVariationMin = 0.64f;
+    /// @brief 性能ばらつきの最大値
+    static constexpr float kPerformanceVariationMax = 1.28f;
+    
     // 発射初期段階のパラメータ
     /// @brief 発射初期段階の持続時間
     static const int kLaunchStateTransitionTime = 60;
@@ -84,8 +114,20 @@ private:
     static constexpr float kArcOscillationSpeed = 0.02f;
     /// @brief 弧の大きさ
     static constexpr float kArcStrength = 0.01f;
+    /// @brief 精密ロックオン時の弧の速さ係数
+    static constexpr float kPrecisionArcSpeedFactor = 0.5f;
+    /// @brief 精密ロックオン時の弧の強さ係数
+    static constexpr float kPrecisionArcStrengthFactor = 0.4f;
+    /// @brief 簡易ロックオン時の最大旋回率係数
+    static constexpr float kBasicTurnRateFactor = 0.7f;
     /// @brief 追尾時の基本速度
-    static constexpr float kBaseTrackingSpeed = 1.8f;
+    static constexpr float kBaseTrackingSpeed = 2.8f;
+    /// @brief 簡易ロックオン時の旋回率
+    static constexpr float kBasicTurnRate = 0.05f;
+    /// @brief 簡易ロックオン時の最終フェーズへの移行フレーム数
+    static const int kBasicFinalPhaseThreshold = 8;
+    /// @brief 精密ロックオン時の最終フェーズへの移行フレーム数
+    static const int kPrecisionFinalPhaseThreshold = 10;
     /// @brief 時間経過による最大速度の増加量
     static constexpr float kMaxSpeedIncrease = 0.5f;
     /// @brief 時間経過による速度増加の調整用
@@ -111,11 +153,15 @@ private:
     /// @brief 時間経過による最終速度増加の調整用
     static constexpr float kFinalSpeedIncreaseDivider = 8.0f;
     /// @brief 最終段階での旋回率増加係数
-    static constexpr float kFinalTurnRateFactor = 1.5f;
+    static constexpr float kFinalTurnRateFactor = 1.0f;
     /// @brief ランダム挙動開始フレーム
     static const int kFinalRandomBehaviorStartFrame = 10;
     /// @brief ランダム偏差係数
     static constexpr float kRandomDeviationFactor = 2000.0f;
+    /// @brief 簡易ロックオン時のランダム偏差係数
+    static constexpr float kBasicRandomDeviationFactor = 1500.0f;
+    /// @brief 精密ロックオン時のランダム偏差係数
+    static constexpr float kPrecisionRandomDeviationFactor = 8000.0f;
 
     // 比例航法と誘導関連のパラメータ
     /// @brief 曲線運動の振動速度
@@ -126,8 +172,16 @@ private:
     static constexpr float kVelocityPerpWeight = 0.01f;
     /// @brief 比例航法のゲイン減少係数
     static constexpr float kNavGainReductionFactor = 0.6f;
+    /// @brief 垂直方向成分の影響度係数
+    static constexpr float kVelocityPerpWeightFactor = 0.7f;
     /// @brief 操舵力のゲイン減少係数
     static constexpr float kSteeringGainReductionFactor = 0.75f;
+    /// @brief 操舵力係数
+    static constexpr float kSteeringForceFactor = 0.75f;
+    /// @brief 最終段階での旋回係数
+    static constexpr float kFinalStageTurnFactor = 1.5f;
+    /// @brief 最終段階での基本旋回率
+    static constexpr float kFinalBaseTurnRate = 1.2f;
 
     // 近接信管関連
     /// @brief 近接信管の発動距離
@@ -179,9 +233,24 @@ private:
     /// @brief ワールド変換情報
     std::unique_ptr<WorldTransform> worldTransform_;
     
-    // ターゲット
-    /// @brief 追尾対象
+    /// @brief ターゲット
     Enemy *target_ = nullptr;
+
+    /// @brief ロックオンレベル（0:なし、1:簡易、2:精密）
+    int lockLevel_ = 1;
+    
+    /// @brief ターゲット固定位置（簡易ロックオン用）
+    Vector3 targetPosition_;
+    
+    // 精密ロックオン用のパラメータ
+    /// @brief 高性能ミサイル用の旋回性能係数
+    float precisionTurnFactor_ = 1.0f;
+    /// @brief 高性能ミサイル用の追跡性能係数
+    float precisionTrackingFactor_ = 1.0f;
+
+    // 着弾位置
+    /// @brief 着弾位置
+    Vector3 impactPosition_;
 
     //===================================================
     // 内部メソッド

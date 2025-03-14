@@ -310,31 +310,56 @@ void Player::UpdateBullets() {
 }
 ///                        射撃
 void Player::Shoot() {
-	Vector3 bulletPos = objectTransform_->transform.translate;
-	Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };
-	Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };
+    Vector3 bulletPos = objectTransform_->transform.translate;
+    Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };
+    Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };
 
-	if (lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
-		for (Enemy* enemy : lockOnSystem_->GetLockedEnemies()) {
-			if (!enemy) continue;
+    if (lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
+        for (Enemy* enemy : lockOnSystem_->GetLockedEnemies()) {
+            if (!enemy) continue;
 
-			Vector3 enemyPos = enemy->GetPosition();
-			Vector3 direction = Normalize(enemyPos - bulletPos);
+            // 敵ごとのロックオンレベルを取得
+            LockOn::LockLevel lockLevel = lockOnSystem_->GetLockLevel(enemy);
+            int lockLevelValue = static_cast<int>(lockLevel);  // 数値に変換
 
-			// 初速はほぼまっすぐ上向きに（後から曲がる演出のため）
-			Vector3 initialVelocity = Normalize((direction * 0.3f) + Vector3{ 0.0f, 0.7f, 0.0f });
-			initialVelocity = initialVelocity * 0.25f; // 初速は少し遅めに
+            Vector3 enemyPos = enemy->GetPosition();
+            Vector3 direction = Normalize(enemyPos - bulletPos);
+
+            // ロックオンレベルに応じて初速と挙動を変更
+            Vector3 initialVelocity;
+            if (lockLevel == LockOn::LockLevel::PreciseLock) {
+                // 精密ロックオン：より直線的な初速
+                initialVelocity = Normalize((direction * 0.7f) + Vector3{ 0.0f, 0.3f, 0.0f });
+                initialVelocity = initialVelocity * 0.35f;  // 初速は少し速く
+            } else {
+                // 簡易ロックオン：上向きに弧を描く初速
+                initialVelocity = Normalize((direction * 0.3f) + Vector3{ 0.0f, 0.7f, 0.0f });
+                initialVelocity = initialVelocity * 0.25f;  // 初速は少し遅め
+            }
 
             // 新しい弾を作成してターゲットを設定
-            auto newBullet = std::make_unique<PlayerMissile>(bulletPos, initialVelocity, bulletScale, bulletRotate);
+            auto newBullet = std::make_unique<PlayerMissile>(
+                bulletPos, initialVelocity, bulletScale, bulletRotate, lockLevelValue);
             newBullet->SetTarget(enemy); // ターゲットを設定
             bullets_.push_back(std::move(newBullet));
+
+            // 発射エフェクト（ロックオンレベルに応じて調整）
+            if (lockLevel == LockOn::LockLevel::PreciseLock) {
+                // TODO:精密ロックオンのエフェクト（より派手に）
+                //ParticleManager::GetInstance()->Emit("missileTrail", bulletPos, 10);
+            } else {
+                // TODO:簡易ロックオンのエフェクト（控えめに）
+                //ParticleManager::GetInstance()->Emit("missileTrail", bulletPos, 5);
+            }
         }
     } else {
-        // ロックオンがない場合は上方向に発射
+        // ロックオンがない場合は上方向に発射（通常ミサイル）
         Vector3 bulletVelocity = { 0.0f, 0.5f, 0.0f };
-        bullets_.push_back(std::make_unique<PlayerMissile>(bulletPos, bulletVelocity, bulletScale, bulletRotate));
+        bullets_.push_back(std::make_unique<PlayerMissile>(bulletPos, bulletVelocity, bulletScale, bulletRotate, 0));
     }
+    
+    // 発射時の反動や効果音はロックオンレベルに関わらず共通
+    // ...既存コード...
 }
 
 ///--------------------------------------------------------------
