@@ -166,9 +166,6 @@ void DirectXCommon::InitializeDevice()
 
 		// 指定したメッセージの表示を抑制する
 		infoQueue->PushStorageFilter(&filter);
-
-		// 解放
-		//infoQueue->Release();
 	}
 #endif
 }
@@ -214,7 +211,6 @@ void DirectXCommon::CreateDepthBuffer()
 {
 	// DepthStencilTextureをウィンドウのサイズで作成
     depthStencilResource = CreateDepthStencilTextureResource(device.Get(), WinApp::kClientWidth, WinApp::kClientHeight);
-
 }
 
 void DirectXCommon::CreateDescriptorHeaps()
@@ -230,7 +226,7 @@ void DirectXCommon::CreateDescriptorHeaps()
 	//srvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
 
 	// DSV用のヒープでディスクリプタの数は1。DSVはShader内で触るものではないので、ShaderVisibleはfalse
-	dsvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
+	dsvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, false);
 
 }
 
@@ -279,6 +275,11 @@ void DirectXCommon::InitializeDepthStencilView()
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; // 2dTexture
 	// DSVHeapの先頭にDSVを作る
 	device->CreateDepthStencilView(depthStencilResource.Get(), &dsvDesc, dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+
+	//=====================
+	///追加
+	
+
 }
 
 void DirectXCommon::InitializeFence()
@@ -435,10 +436,16 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateDepthStencilTextureR
 		resourceDesc.Height = height;      // textureの高さ
 		resourceDesc.MipLevels = 1;        // mipmapの数
 		resourceDesc.DepthOrArraySize = 1; // 奥行 or 配列Textureの配列数
-		resourceDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // DepthStencilとして利用可能なフォーマット
+		//resourceDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // DepthStencilとして利用可能なフォーマット
+		resourceDesc.Format = DXGI_FORMAT_R24G8_TYPELESS; // SRVとDSVで使えるフォーマット
 		resourceDesc.SampleDesc.Count = 1; // サンプリングカウント。1固定。
 		resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D; // 2次元
-		resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL; // DepthStrncilとして使う通知
+		//resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL; // DepthStrncilとして使う通知
+		// 修正前
+		// resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // SRVとしても使う
+
+		// 修正後
+		resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL | D3D12_RESOURCE_FLAG_NONE; // SRVとしても使う
 
 		// 利用するHeapの設定
 		D3D12_HEAP_PROPERTIES heapProperties{};
@@ -460,6 +467,8 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateDepthStencilTextureR
 			&depthClearValue, // Clear最適
 			IID_PPV_ARGS(&resource));
 		assert(SUCCEEDED(hr));
+
+        
 		return resource;
 	}
 }
@@ -490,7 +499,8 @@ void DirectXCommon::RenderTexturePreDraw()
 	DirectXCommon::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
 
 	// DSV設定
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = DirectXCommon::GetInstance()->GetDSVHeap()->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = GetDsvHandle();
+
 	DirectXCommon::GetInstance()->GetCommandList()->OMSetRenderTargets(1, DirectXCommon::GetInstance()->GetRTVHandle(renderTargetIndex), false, &dsvHandle);
 
 	// 指定した色で画面全体をクリアする

@@ -16,6 +16,10 @@
     <FxCompile Include="Resources\shaders\BoxFilter.PS.hlsl" />
     <FxCompile Include="Resources\shaders\GaussianFilter.PS.hlsl" />
     <FxCompile Include="Resources\shaders\LuminanceBasedOutline.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\DepthBasedOutline.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\Dissolve.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\Random.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\LinearFog.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\collision\BaseObject.cpp" />
@@ -159,5 +163,6 @@
     <None Include="Resources\shaders\PrimitiveDrawer.hlsli" />
     <None Include="Resources\shaders\Sprite.hlsli" />
     <None Include="Resources\shaders\Fullscreen.hlsli" />
+    <None Include="Resources\shaders\RadialBlur.PS.hlsl" />
   </ItemGroup>
 </Project>

@@ -61,26 +61,12 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
 	assert(SUCCEEDED(hr));
 
-	// テクスチャーデータを追加
-	//textureDatas.resize(textureDatas.size() + 1);
-
-	// テクスチャデータを追加して書き込む
 	TextureData& textureData = textureDatas[filePath];
-
-	// 追加したテクスチャデータの参照を取得する
-	//TextureData& textureData = textureDatas.back();
-
-	//textureData.filePath = filePath;
+	
 	textureData.metadata = mipImages.GetMetadata();
 	textureData.resource = dxCommon_->CreateTextureResource(textureData.metadata);
 
 	dxCommon_->UploadTextureData(textureData.resource, mipImages);
-
-	// テクスチャデータの要素番号をSRVのインデックスとする
-	/*uint32_t srvIndex = static_cast<uint32_t>(textureDatas.size() - 1) + kSRVIndexTop;
-
-	textureData.srvHandleCPU = dxCommon_->GetCPUDescriptorHandle(dxCommon_->srvDescriptorHeap, dxCommon_->descriptorSizeSRV,srvIndex);
-	textureData.srvHandleGPU = dxCommon_->GetGPUDescriptorHandle(dxCommon_->srvDescriptorHeap, dxCommon_->descriptorSizeSRV,srvIndex);*/
 
 	textureData.srvIndex = srvManager_->Allocate();
 	textureData.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData.srvIndex);

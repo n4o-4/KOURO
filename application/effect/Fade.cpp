@@ -41,6 +41,12 @@ void Fade::Draw()
 	{
 		return;
 	}
+
+	if (counter_ >= duration_)
+	{
+		return;
+	}
+
 	curtain_->Draw();
 }
 

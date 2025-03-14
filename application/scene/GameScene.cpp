@@ -79,7 +79,12 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Vignette);
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::BoxFilter);
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::GaussianFilter);
-	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LuminenceBasedOutline);
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LuminenceBasedOutline);
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::DepthBasedOutline);
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::RadialBlur);
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Dissolve);
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random);
+	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog);
 }
 ///=============================================================================
 ///						終了処理

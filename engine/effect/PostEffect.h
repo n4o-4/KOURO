@@ -1,10 +1,36 @@
 ﻿#pragma once
+#include <random>
+
 #include "DirectXCommon.h"
 #include "TextureManager.h"
+#include "CameraManager.h"
+
+//==============================
+// 深度リソース用の構造体
+namespace DepthBasedOutline
+{
+	struct Material
+	{
+		Matrix4x4 projectionInverse;
+	};
+}
+
+//==============================
+// // Random
+namespace Random
+{
+	struct Material
+	{
+		float time;
+		float padding[3];
+	};
+}
 
 class PostEffect
 {
 public:
+	//==============================
+	// エフェクトの種類
 	enum class EffectType
 	{
 		// None
@@ -26,8 +52,19 @@ public:
 		LuminenceBasedOutline,
 
 		// 深度検出でのアウトライン
-		//DepthBasedOutline,
+		DepthBasedOutline,
 
+		// RadialBlur
+		RadialBlur,
+
+		// Dissolve
+		Dissolve,
+
+		// Random
+		Random,
+
+		// LinearFog
+		LinearFog,
 
 		// ↑↑↑追加↑↑↑
 
@@ -62,7 +99,8 @@ public:
 	// 指定のエフェクトを適応
 	void ApplyEffect(EffectType type);
 
-
+	// カメラマネージャを設定
+	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
 private:
 
 	void CreatePipeLine();
@@ -91,6 +129,26 @@ private:
 	void LuminanceBasedOutlineRootSignature(Pipeline* pipeline);
 	void LuminanceBasedOutlinePipeLine(Pipeline* pipeline);
 
+	// 深度検出でのアウトライン
+	void DepthBasedOutlineRootSignature(Pipeline* pipeline);
+	void DepthBasedOutlinePipeLine(Pipeline* pipeline);
+
+	// RadialBlur
+	void RadialBlurRootSignature(Pipeline* pipeline);
+	void RadialBlurPipeLine(Pipeline* pipeline);
+
+	// Dissolve
+	void DissolveRootSignature(Pipeline* pipeline);
+	void DissolvePipeLine(Pipeline* pipeline);
+
+	// Dissolve
+	void RandomRootSignature(Pipeline* pipeline);
+	void RandomPipeLine(Pipeline* pipeline);
+
+	// LinearFog
+	void LinearFogRootSignature(Pipeline * pipeline);
+	void LinearFogPipeLine(Pipeline* pipeline);
+
 private: // メンバ変数
 	
 	DirectXCommon* dxCommon_ = nullptr;
@@ -98,5 +156,19 @@ private: // メンバ変数
 	SrvManager* srvManager_ = nullptr;
 
 	Effect effect;
+
+	CameraManager* cameraManager_ = nullptr;
+
+	//==============================
+    // DepthBasedOutline用の構造体
+	Microsoft::WRL::ComPtr<ID3D12Resource> depthOutlineResource_;
+	DepthBasedOutline::Material* depthOutlineData_ = nullptr;
+
+	//==============================
+	// Random用の構造体
+	Microsoft::WRL::ComPtr<ID3D12Resource> randomResource_;
+	Random::Material* randomData_;
+
+	std::mt19937 randomEngine;
 };
 

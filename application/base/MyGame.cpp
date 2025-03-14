@@ -50,6 +50,8 @@ void MyGame::Update()
 
 	Framework::Update();
 
+	postEffect_->Update();
+
 #ifdef _DEBUG
 
 	imGuiManager->End();
