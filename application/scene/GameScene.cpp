@@ -84,7 +84,7 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::RadialBlur);
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Dissolve);
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random);
-	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog);
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog);
 }
 ///=============================================================================
 ///						終了処理
