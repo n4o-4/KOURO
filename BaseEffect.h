@@ -25,6 +25,9 @@ public:
 	// 描画
 	virtual void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) = 0;
 
+	// カメラマネージャの設定
+	virtual void SetCameraManager(CameraManager* cameraManager);
+
 protected:
 
 	DirectXCommon* dxCommon_ = nullptr;

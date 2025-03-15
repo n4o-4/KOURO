@@ -359,6 +359,8 @@ void PostEffect::ApplyEffect(EffectType type)
 	{
 		newEffect->effect = std::make_unique<DepthBasedOutline>();
 		newEffect->effect->Initialize(dxCommon_, srvManager_);
+
+		newEffect->effect->SetCameraManager(cameraManager_);
 	}
 	else if (type == EffectType::RadialBlur)
 	{
@@ -379,6 +381,8 @@ void PostEffect::ApplyEffect(EffectType type)
 	{
 		newEffect->effect = std::make_unique<LinearFog>();
 		newEffect->effect->Initialize(dxCommon_, srvManager_);
+
+		newEffect->effect->SetCameraManager(cameraManager_);
 	}
 
 	newEffect->type = type;

@@ -2,10 +2,12 @@
 
 struct Material
 {
-    float2 center;
     int numSamples;
+    float2 center;
     float blurWidth;
 };
+   
+    
 
 Texture2D<float4> gTexture : register(t0);
 SamplerState gSamplerLinear : register(s0);

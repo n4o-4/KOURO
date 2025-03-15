@@ -114,6 +114,8 @@ void SrvManager::CreateSrvForDepth()
 
     ID3D12Resource* depthStencilResource = dxCommon_->GetDepthStencilResource().Get();
 
+	depthStencilResource->SetName(L"DepthTexture");
+
 	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
 	depthTextureSrvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 	depthTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;

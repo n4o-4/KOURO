@@ -5,14 +5,9 @@ namespace Radial
 {
 	struct Material
 	{
-		Vector2 center;
-		float padding[2];
-
 		int numSamples;
-		int padding2[3];
-
+		Vector2 center;
 		float blurWidth;
-		float padding3[3];
 	};
 }
 

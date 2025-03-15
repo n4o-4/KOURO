@@ -26,9 +26,6 @@ public:
 	// エフェクトの種類
 	enum class EffectType
 	{
-		// None
-		None,
-
 		// モノクロ
 		Grayscale,
 

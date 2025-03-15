@@ -11,9 +11,11 @@ void RadialBlur::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	// マテリアルの生成
 	CreateMaterial();
 
-	data_->center = (0.5f, 0.5f);
-	data_->numSamples = 10;
+	data_->center = Vector2(0.5f, 0.5f);
+	
 	data_->blurWidth = 0.01f;	
+
+	data_->numSamples = 10;
 }
 
 void RadialBlur::Update()

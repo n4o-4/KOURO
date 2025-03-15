@@ -23,6 +23,9 @@ public:
 	// 描画
 	void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
 
+	// カメラマネージャの設定
+	void SetCameraManager(CameraManager* cameraManager) override { cameraManager_ = cameraManager; }
+
 private:
 
 	// パイプラインの生成
@@ -44,5 +47,8 @@ private: // メンバ変数
 
 	// 
 	LinearFogShader::Material* data_ = nullptr;
+
+	//
+	CameraManager* cameraManager_ = nullptr;
 };
 

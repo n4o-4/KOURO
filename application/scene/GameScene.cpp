@@ -75,16 +75,16 @@ void GameScene::Initialize() {
 	fade_->Start(Fade::Status::FadeIn, 4.0f);	
 
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::None);
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Grayscale);
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Vignette);
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::BoxFilter);
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::GaussianFilter);
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LuminanceBasedOutline);
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::DepthBasedOutline);
-	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::RadialBlur);
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Dissolve);
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random);
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog);
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Grayscale); //完
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Vignette); //完
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::BoxFilter); //完
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::GaussianFilter); //完
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LuminanceBasedOutline); //完
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::DepthBasedOutline); //完
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::RadialBlur); //完
+	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Dissolve);
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random); //完
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog); //完
 }
 ///=============================================================================
 ///						終了処理

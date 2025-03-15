@@ -16,7 +16,8 @@ void LinearFog::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 
 void LinearFog::Update()
 {
-
+	// アクティブなカメラかプロジェクション行列を取得して反転させてデータに代入
+	data_->projectionInverse = Inverse(cameraManager_->GetActiveCamera()->GetViewProjection().matProjection_);
 }
 
 void LinearFog::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
@@ -42,6 +43,24 @@ void LinearFog::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
 
 	// バリアーをはる
 	dxCommon_->GetCommandList()->ResourceBarrier(1, &depthbarrier);
+
+	// 描画先のRTVのインデックス
+	uint32_t renderTextureIndex = 2 + renderTargetIndex;
+
+	// 描画先のRTVを設定する
+	dxCommon_->GetCommandList()->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(renderTextureIndex), false, nullptr);
+
+	// ルートシグネチャの設定	
+	dxCommon_->GetCommandList()->SetGraphicsRootSignature(pipeline_.get()->rootSignature.Get());
+
+	// パイプラインステートの設定
+	dxCommon_->GetCommandList()->SetPipelineState(pipeline_.get()->pipelineState.Get());
+
+	// renderTextureのSrvHandleを取得
+	D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = (renderResourceIndex == 0) ? TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0") : TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
+
+	// SRVを設定
+	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
 
 	// ディスクリプタテーブルを設定 (深度テクスチャ SRV)
 	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(dxCommon_->GetDepthSrvIndex()));
