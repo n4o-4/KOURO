@@ -7,6 +7,16 @@ void PostEffect::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	srvManager_ = srvManager;
 }
 
+void PostEffect::Finalize()
+{
+	for (auto it = activeEffects_.begin(); it != activeEffects_.end(); ++it) {
+
+		(*it).get()->effect->Reset();
+	}
+
+	activeEffects_.clear();
+}
+
 void PostEffect::Update()
 {
 	for (auto it = activeEffects_.begin(); it != activeEffects_.end(); ++it) {

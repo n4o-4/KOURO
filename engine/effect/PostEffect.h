@@ -80,17 +80,22 @@ public:
 	// 初期化
 	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager);
 
+	// 終了
+	void Finalize();
+
 	// 更新
 	void Update();
 
 	// 描画
 	void Draw();
 
-	// 指定のエフェクトを適応
+	// 指定のエフェクトをる
 	void ApplyEffect(EffectType type);
 
 	// カメラマネージャを設定
 	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
+
+
 private:
 
 private: // メンバ変数

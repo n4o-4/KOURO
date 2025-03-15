@@ -41,8 +41,11 @@ void Dissolve::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
 	// パイプラインステートの設定
 	dxCommon_->GetCommandList()->SetPipelineState(pipeline_.get()->pipelineState.Get());
 
+	// renderTextureのSrvHandleを取得
+	D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = (renderResourceIndex == 0) ? TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0") : TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
+
 	// SRVを設定
-	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvManager_->GetGPUDescriptorHandle(renderResourceIndex));
+	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
 
 	// maskTextureのSrvHandleを取得
 	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, TextureManager::GetInstance()->GetSrvHandleGPU("Resources/noise0.png"));
@@ -52,6 +55,9 @@ void Dissolve::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
 	
 	// 描画
 	dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
+
+
+	///
 }
 
 void Dissolve::CreatePipeline()
@@ -153,8 +159,8 @@ void Dissolve::CreatePipeLineState(Pipeline* pipeline)
 	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
-	inputLayoutDesc.pInputElementDescs = nullptr;
-	inputLayoutDesc.NumElements = 0;
+	inputLayoutDesc.pInputElementDescs = inputElementDescs;
+	inputLayoutDesc.NumElements = _countof(inputElementDescs);
 
 	// BlendStateの設定
 	D3D12_BLEND_DESC blendDesc{};
@@ -216,7 +222,7 @@ void Dissolve::CreatePipeLineState(Pipeline* pipeline)
 void Dissolve::CreateMaterial()
 {
 	// bufferResourceの生成
-	resource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(DissolveShader::Material));
+	resource_ = dxCommon_->CreateBufferResource(sizeof(DissolveShader::Material));
 
 	// データをマップ
 	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));

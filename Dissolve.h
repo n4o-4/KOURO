@@ -5,10 +5,11 @@ namespace DissolveShader
 {
 	struct Material
 	{
+		Vector3 edgeColor;
 		float Threshold;
 		float ThresholdWidth;
 
-		Vector3 edgeColor;
+		float padding[3];
 	};
 }
 
@@ -24,6 +25,9 @@ public:
 
 	// 描画
 	void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
+
+	// リソースの解放
+	void Reset() override { resource_.Reset(); }
 
 private:
 

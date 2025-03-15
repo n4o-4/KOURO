@@ -2,10 +2,9 @@
 
 struct Material
 {
-    float Threshold; // 0.3f
-    float ThresholdWidth; // 0.01f
-   
     float3 edgeColor;
+    float Threshold;
+    float ThresholdWidth;
 };
 
 Texture2D<float4> gTexture : register(t0);

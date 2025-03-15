@@ -15,3 +15,7 @@ void BaseEffect::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 void BaseEffect::SetCameraManager(CameraManager* cameraManager)
 {
 }
+
+void BaseEffect::Reset()
+{
+}

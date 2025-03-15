@@ -28,6 +28,8 @@ public:
 	// カメラマネージャの設定
 	virtual void SetCameraManager(CameraManager* cameraManager);
 
+	virtual void Reset();
+
 protected:
 
 	DirectXCommon* dxCommon_ = nullptr;

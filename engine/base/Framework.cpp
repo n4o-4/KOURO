@@ -113,8 +113,9 @@ void Framework::Initialize()
 
 void Framework::Finalize()
 {
-
 	SceneManager::GetInstance()->Finalize(); ///
+
+	postEffect_->Finalize();
 
 	ParticleManager::GetInstance()->Finalize(); ///
 

@@ -27,6 +27,9 @@ public:
 	// カメラマネージャの設定
 	void SetCameraManager(CameraManager* cameraManager) override { cameraManager_ = cameraManager; }
 
+	// リソースの解放
+	void Reset() override { resource_.Reset(); }
+
 private:
 
 	// パイプラインの生成

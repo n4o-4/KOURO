@@ -23,6 +23,9 @@ public:
 	// 描画
 	void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
 
+	// リソースの解放
+	void Reset() override { resource_.Reset(); }
+
 private:
 
 	// パイプラインの生成
