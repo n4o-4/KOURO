@@ -44,6 +44,8 @@ private:
 		// NodeAnimationの集合体
 		std::unordered_map<std::string, NodeAnimation> nodeAnimations;
 		ModelData modelData;
+
+		Skeleton skeleton;
 	};
 
 	struct AnimationState
@@ -73,6 +75,13 @@ public:
 	void PlayAnimation();
 
 	Matrix4x4 GetLocalMatrix() { return localMatrix; }
+
+	Skeleton CreateSkeleton(const Node& rootNode);
+
+	int32_t CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints);
+
+
+	void SkeletonUpdate(Skeleton& skeleton);
 
 private:
 
