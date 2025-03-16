@@ -83,6 +83,10 @@ public:
 
 	void SkeletonUpdate(Skeleton& skeleton);
 
+	Animation GetAnimation(const std::string& filename) { return animations[filename]; }
+
+	Animation GetActiveAnimation(const std::string& filename) { return activeAnimations[filename].animation; }
+
 private:
 
 	Vector3 CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time);

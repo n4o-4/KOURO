@@ -59,6 +59,8 @@ void AnimationManager::LoadAnimationFile(const std::string& directoryPath, const
    
     animation.modelData = LoadModelFile(directoryPath, filename);
 
+    animation.modelData.rootNode.transform.scale = { 0.5f,0.5f,0.5f };
+
 	animation.skeleton = CreateSkeleton(animation.modelData.rootNode);
 
     // 解析完了
@@ -187,10 +189,24 @@ void AnimationManager::PlayAnimation()
             }
         }
 
-        NodeAnimation& rootNodeAnimation = animationState.animation.nodeAnimations[animationState.animation.modelData.rootNode.name];
+        Vector3 scale ;
+        Vector3 translate;
+        Quaternion rotate;
+
+        if (auto it = animationState.animation.nodeAnimations.find(animationState.animation.modelData.rootNode.name); it != animationState.animation.nodeAnimations.end())
+        {
+            const NodeAnimation& nodeAnimation = it->second;
+            translate = CalculateValue(nodeAnimation.translate.keyframes, animationState.animationTime);
+            rotate = CalculateQuaternion(nodeAnimation.rotate.keyframes, animationState.animationTime);
+            scale = CalculateValue(nodeAnimation.scale.keyframes, animationState.animationTime);
+
+            localMatrix = MakeAffineMatrixforQuater(scale, rotate, translate);
+        }
+      
+        /*NodeAnimation& rootNodeAnimation = animationState.animation.nodeAnimations[animationState.animation.modelData.rootNode.name];
         Vector3 translate = CalculateValue(rootNodeAnimation.translate.keyframes, animationState.animationTime);
         Quaternion rotate = CalculateQuaternion(rootNodeAnimation.rotate.keyframes, animationState.animationTime);
-        Vector3 scale= CalculateValue(rootNodeAnimation.scale.keyframes, animationState.animationTime);
+        Vector3 scale= CalculateValue(rootNodeAnimation.scale.keyframes, animationState.animationTime);*/
 
         for (Joint& joint : animationState.animation.skeleton.joints)
         {
@@ -198,19 +214,18 @@ void AnimationManager::PlayAnimation()
 			if (auto it = animationState.animation.nodeAnimations.find(joint.name); it != animationState.animation.nodeAnimations.end())
 			{
 				const NodeAnimation& nodeAnimation = it->second;
-				translate = CalculateValue(nodeAnimation.translate.keyframes, animationState.animationTime);
-				rotate = CalculateQuaternion(nodeAnimation.rotate.keyframes, animationState.animationTime);
-				scale = CalculateValue(nodeAnimation.scale.keyframes, animationState.animationTime);
+				joint.transform.translate = CalculateValue(nodeAnimation.translate.keyframes, animationState.animationTime);
+                joint.transform.rotate = CalculateQuaternion(nodeAnimation.rotate.keyframes, animationState.animationTime);
+                joint.transform.scale = CalculateValue(nodeAnimation.scale.keyframes, animationState.animationTime);
 			}
         }
 
-        it->second = animationState;
+        SkeletonUpdate(animationState.animation.skeleton);
 
-        localMatrix = MakeAffineMatrixforQuater(scale, rotate, translate);
+        it->second = animationState;
 
         ++it;
     }
-
 }
 
 Skeleton AnimationManager::CreateSkeleton(const Node& rootNode)

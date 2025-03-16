@@ -11,7 +11,7 @@
 #include "Enemy.h"
 #include "CollisionManager.h"
 #include "LockOn.h"
-
+#include "LineDrawerBase.h"
 
 class GameScene : public BaseScene
 {
@@ -55,6 +55,8 @@ private:
 	//========================================
 	// 当たり判定マネージャ
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
+
+	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;	
 
 private:
 

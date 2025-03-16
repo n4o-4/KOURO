@@ -84,6 +84,15 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Dissolve); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog); //完
+
+	lineDrawer_ = std::make_unique<LineDrawerBase>();
+	lineDrawer_->Initialize(sceneManager_->GetDxCommon(),sceneManager_->GetSrvManager());
+
+	animationManager = std::make_unique<AnimationManager>();	
+	animationManager->LoadAnimationFile("./Resources/human", "sneakWalk.gltf");
+	animationManager->StartAnimation("sneakWalk.gltf", 0);
+	animationManager->Update();
+	lineDrawer_->CreateSkeletonObject(animationManager->GetActiveAnimation("sneakWalk.gltf").skeleton,nullptr);
 }
 ///=============================================================================
 ///						終了処理
@@ -96,6 +105,8 @@ void GameScene::Finalize() {
 ///=============================================================================
 ///						更新
 void GameScene::Update() {
+	animationManager->Update();
+
 	//========================================
 	// フェーズ切り替え
 	switch(phase_) {
@@ -268,6 +279,7 @@ void GameScene::Update() {
 		break;
 	}
 
+	lineDrawer_->Update();
 
 	BaseScene::Update();
 	//========================================
@@ -473,6 +485,9 @@ void GameScene::Draw() {
 
 		break;
 	}
+
+	lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
+
 }
 
 ///=============================================================================

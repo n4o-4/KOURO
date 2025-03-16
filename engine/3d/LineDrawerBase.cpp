@@ -11,33 +11,68 @@ void LineDrawerBase::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 
 	CreatePipellineState();
 
-	CreateLineResource();
-
 	//CreateLineObject(Type::AABB);
 	worldTransform_ = std::make_unique<WorldTransform>();
 	worldTransform_->Initialize();
 	
-	CreateLineObject(Type::Grid,worldTransform_.get());
+	worldTransform_->transform.scale = { 1.0f,1.0f,1.0f };
+	worldTransform_->transform.translate = { 0.0f,2.0f,0.0f };
 
+	worldTransform_->UpdateMatrix();
+
+	//CreateLineObject(Type::Sphere,worldTransform_.get());
 }
 
 void LineDrawerBase::Update()
 {
 	for (std::list<std::unique_ptr<LineObject>>::iterator iterator = lineObjects_.begin(); iterator != lineObjects_.end();)
 	{
+		//if (iterator->get()->type == Type::Skeleton)
+		//{
+		//	if (iterator->get()->skeleton)
+		//	{
+		//		int vertexIndex = 0;
 
-#ifdef _DEBUG
+		//		// skeleton は Skeleton 型の引数とする（もしくはグローバルなどから取得）
+		//		const Skeleton& skeleton_ = *iterator->get()->skeleton; // 例: object に skeleton メンバがある場合
 
-		ImGui::DragFloat3("object.scale", &iterator->get()->transform->transform.scale.x, 0.01f);
-		ImGui::DragFloat3("object.rotate", &iterator->get()->transform->transform.rotate.x, 0.01f);
-		ImGui::DragFloat3("object.translate", &iterator->get()->transform->transform.translate.x, 0.01f);
+		//		// 全 Joint を走査
+		//		for (const Joint& joint : skeleton_.joints)
+		//		{
+		//			// 親が存在する場合に親と子を線で結ぶ
+		//			if (joint.parent.has_value())
+		//			{
+		//				// 親 Joint を取得
+		//				int parentIndex = joint.parent.value();
+		//				const Joint& parentJoint = skeleton_.joints[parentIndex];
 
-#endif
+		//				// 親のワールド座標 (skeletonSpaceMatrix の4列目)
+		//				iterator->get()->vertexData[vertexIndex++].position = {
+		//					parentJoint.transform.rotate.x,
+		//					parentJoint.transform.rotate.y,
+		//					parentJoint.transform.rotate.z,
+		//					1.0f
+		//				};
+
+		//				// 子 (現在の joint) のワールド座標
+		//				iterator->get()->vertexData[vertexIndex++].position = {
+		//					joint.transform.rotate.x,
+		//					joint.transform.rotate.y,
+		//					joint.transform.rotate.z,
+		//					1.0f
+		//				};
+		//			}
+		//		}
+
+		//		iterator->get()->vertexIndex = vertexIndex;
+		//	}
+		//}
+		
 		Matrix4x4 worldMatrix = MakeAffineMatrix(iterator->get()->transform->transform.scale, iterator->get()->transform->transform.rotate, iterator->get()->transform->transform.translate);
 
-		iterator->get()->instancingData->matWorld = worldMatrix;
+		iterator->get()->lineData->matWorld = worldMatrix;
 
-		iterator->get()->instancingData->color = { 1.0f,1.0f,1.0f,1.0f };
+		iterator->get()->lineData->color = { 1.0f,1.0f,1.0f,1.0f };
 
 		++iterator;
 	}
@@ -59,24 +94,16 @@ void LineDrawerBase::Draw(ViewProjection viewProjection)
 		// VBVを設定
 		dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &iterator->get()->vertexBufferView);
 
-		dxCommon_->GetCommandList()->IASetIndexBuffer(&iterator->get()->indexBufferView);
-
-		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvManager_->GetGPUDescriptorHandle(iterator->get()->srvIndex));
+		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, iterator->get()->lineResource.Get()->GetGPUVirtualAddress());
 
 		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, viewProjection.GetViewProjectionResource()->GetGPUVirtualAddress());
 
-		dxCommon_->GetCommandList()->DrawIndexedInstanced(iterator->get()->vertexIndex, 1, 0, 0, 0);
+		dxCommon_->GetCommandList()->DrawInstanced(iterator->get()->vertexIndex, 1, 0, 0);
 
 		++iterator;
 	}
 }
 
-void LineDrawerBase::CreateLineResource()
-{
-	CreateVertexResource();
-}
-
-#pragma region rootSignatureの生成
 void LineDrawerBase::CreateRootSignature()
 {
 	HRESULT hr;
@@ -85,22 +112,17 @@ void LineDrawerBase::CreateRootSignature()
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	D3D12_DESCRIPTOR_RANGE descriptorRangeForInstancing[1] = {};
-	descriptorRangeForInstancing[0].BaseShaderRegister = 0;
-	descriptorRangeForInstancing[0].NumDescriptors = 1;
-	descriptorRangeForInstancing[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	
 	
 	D3D12_ROOT_PARAMETER rootParameters[2] = {};
 	
-	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//Tableを使う
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
-	rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRangeForInstancing;
-	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForInstancing);
+	rootParameters[0].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
 
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
-	rootParameters[1].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
+	rootParameters[1].Descriptor.ShaderRegister = 1;//レジスタ番号0とバインド
 
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
@@ -125,23 +147,17 @@ void LineDrawerBase::CreateRootSignature()
 	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&pipeline_->rootSignature));
 	assert(SUCCEEDED(hr));
 }
-#pragma endregion rootSignatureの生成
 
-#pragma region pipelineの生成
 void LineDrawerBase::CreatePipellineState()
 {
 	HRESULT hr;
 
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[1] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
 	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-	inputElementDescs[1].SemanticName = "VERTEXINDEX";
-	inputElementDescs[1].SemanticIndex = 0;
-	inputElementDescs[1].Format = DXGI_FORMAT_R32_SINT;
-	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
@@ -226,16 +242,15 @@ void LineDrawerBase::CreatePipellineState()
 
 	assert(SUCCEEDED(hr));
 }
-#pragma endregion pipelineの生成
 
-# pragma region lineObjectの生成しlineObjects_にpush_back
+
+
 void LineDrawerBase::CreateLineObject(Type type, WorldTransform* transform)
 {
 	// 新しいラインオブジェクトの生成と初期化
 	std::unique_ptr<LineObject> newObject = std::make_unique<LineObject>();
 
-	newObject->sphere.center = 0.0f;
-	newObject->sphere.radius = 1.0f;
+	newObject->type = type;
 
 	///----------Vertex----------////
 
@@ -244,69 +259,70 @@ void LineDrawerBase::CreateLineObject(Type type, WorldTransform* transform)
 
 	// マップ
 	newObject->vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&newObject->vertexData));
-	
+
 	// VertexBufferViewの生成
 	CreateVertexBufferView(newObject.get());
 
+	WriteLineData(newObject.get());
 
-	///----------Index----------////
-
-	// indexResourceの生成
-	newObject->indexResource = CreateIndexResource();
-
-	// マップ
-	newObject->indexResource->Map(0, nullptr, reinterpret_cast<void**>(&newObject->indexData));
-
-	// indexBufferViewの生成
-	CreateIndexBufferView(newObject.get());
-
-	///----------Instancing----------////
-
-	// instancingResourceの生成
-	newObject->instancingResource = CreateInstancingResource();
-
-	// マップ
-	newObject->instancingResource->Map(0, nullptr, reinterpret_cast<void**>(&newObject->instancingData));
-
-	newObject->srvIndex = srvManager_->Allocate();
-
-	srvManager_->CreateSRVforStructuredBuffer(newObject->srvIndex, newObject->instancingResource.Get(), kMaxLines, sizeof(LineForGPU));
-
-	// vertexDataの生成
-
-	if (type == Type::AABB)
-	{
-		WriteAABBVertexData(newObject.get(), { 0.5f,0.5f,0.5f });
-	}
-	else if (type == Type::Sphere)
-	{
-		WriteSphereVertexData(newObject.get());
-	}
-	else if (type == Type::Grid)
-	{
-		WriteGridVertexData(newObject.get());
-	}
+	CreateLineResource(newObject.get());
 
 	if (transform == nullptr)
 	{
 		newObject->transform = worldTransform_.get();	
 	}
-	newObject->transform = transform;
+	else
+	{
+		newObject->transform = transform;
+	}
 
 	lineObjects_.push_back(std::move(newObject));
 }
-#pragma endregion lineObjectの生成しlineObjects_にpush_back
 
-#pragma region vertexResourceの生成
+void LineDrawerBase::CreateSkeletonObject(Skeleton skeleton, WorldTransform* transform)
+{
+	// 新しいラインオブジェクトの生成と初期化
+	std::unique_ptr<LineObject> newObject = std::make_unique<LineObject>();
+
+	newObject->type = Type::Skeleton;
+
+	///----------Vertex----------////
+
+	// vertexResourceの生成
+	newObject->vertexResource = CreateVertexResource();
+
+	// マップ
+	newObject->vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&newObject->vertexData));
+
+	// VertexBufferViewの生成
+	CreateVertexBufferView(newObject.get());
+
+	WriteSkeletonLineData(newObject.get(),skeleton);
+
+	CreateLineResource(newObject.get());
+
+	if (transform == nullptr)
+	{
+		newObject->transform = worldTransform_.get();
+	}
+	else
+	{
+		newObject->transform = transform;
+	}
+	
+	lineObjects_.push_back(std::move(newObject));
+}
+
+
+
 Microsoft::WRL::ComPtr<ID3D12Resource> LineDrawerBase::CreateVertexResource()
 {
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = dxCommon_->CreateBufferResource(sizeof(VertexData) * kMaxLines);
 
 	return resource;
 }
-#pragma endregion vertexResourceの生成
 
-#pragma region vertexBufferViewの生成
+
 void LineDrawerBase::CreateVertexBufferView(LineObject* object)
 {
 	// VertexBufferViewの生成
@@ -316,201 +332,146 @@ void LineDrawerBase::CreateVertexBufferView(LineObject* object)
 
 	object->vertexBufferView.StrideInBytes = sizeof(VertexData);
 }
-#pragma endregion vertexBufferViewの生成
 
-#pragma region indexResourceの生成
-Microsoft::WRL::ComPtr<ID3D12Resource> LineDrawerBase::CreateIndexResource()
-{
-	Microsoft::WRL::ComPtr<ID3D12Resource> resource = dxCommon_->CreateBufferResource(sizeof(uint32_t) * kMaxLines * 2);
-
-	return resource;
-}
-#pragma endregion indexResourceの生成
-
-#pragma region indexBufferViewの生成
-void LineDrawerBase::CreateIndexBufferView(LineObject* object)
-{
-	object->indexBufferView.BufferLocation = object->indexResource->GetGPUVirtualAddress();
-
-	object->indexBufferView.SizeInBytes = UINT(sizeof(uint32_t) * kMaxLines * 2);
-
-	object->indexBufferView.Format = DXGI_FORMAT_R32_UINT;
-}
-#pragma endregion indexBufferViewの生成
-
-#pragma region instancingResourceの生成
-Microsoft::WRL::ComPtr<ID3D12Resource> LineDrawerBase::CreateInstancingResource()
-{
-	Microsoft::WRL::ComPtr<ID3D12Resource> resource = dxCommon_->CreateBufferResource(sizeof(LineForGPU) * kMaxLines);
-
-	return resource;
-}
-#pragma endregion instancingResourceの生成
-
-#pragma region sphere用のindexDataに書き込み
-void LineDrawerBase::WriteSphereIndexData(LineObject* lineObject)
+void LineDrawerBase::WriteLineData(LineObject* object)
 {
 	int vertexIndex = 0;
 
-	for (int i = 0; i < kMaxLines * 2;)
+	if (object->type == Type::AABB)
 	{
-		lineObject->indexData[i] = vertexIndex;
-		++i;
-		++vertexIndex;
+		Vector3 min = {-0.5f,-0.5f ,-0.5f }; // AABBの最小点
+		Vector3 max = { 0.5f,0.5f ,-.5f }; // AABBの最大点
 
-		lineObject->indexData[i] = vertexIndex;
-		++i;
+		// AABBの8頂点
+		Vector3 vertices[8] = {
+			{ min.x, min.y, min.z }, // v0
+			{ max.x, min.y, min.z }, // v1
+			{ max.x, min.y, max.z }, // v2
+			{ min.x, min.y, max.z }, // v3
+			{ min.x, max.y, min.z }, // v4
+			{ max.x, max.y, min.z }, // v5
+			{ max.x, max.y, max.z }, // v6
+			{ min.x, max.y, max.z }  // v7
+		};
+
+		// AABBのライン（12本）
+		int lineIndices[24] = {
+			0, 1,  1, 2,  2, 3,  3, 0,  // 底面
+			4, 5,  5, 6,  6, 7,  7, 4,  // 上面
+			0, 4,  1, 5,  2, 6,  3, 7   // 側面
+		};
+
+		// 頂点データに書き込み
+		for (int i = 0; i < 24; ++i)
+		{
+			object->vertexData[i].position = { vertices[lineIndices[i]].x,
+											   vertices[lineIndices[i]].y,
+											   vertices[lineIndices[i]].z, 1.0f };
+
+			object->vertexIndex = i;
+		}
+	}
+	else if (object->type == Type::Sphere)
+	{
+		float step = 2.0f * std::numbers::pi / 16;
+
+		// XZ 平面の円
+		for (int i = 0; i < 16; ++i)
+		{
+			float theta1 = i * step;
+			float theta2 = (i + 1) * step;
+
+			object->vertexData[vertexIndex++].position = { cosf(theta1), 0.0f, sinf(theta1), 1.0f };
+			object->vertexData[vertexIndex++].position = { cosf(theta2), 0.0f, sinf(theta2), 1.0f };
+		}
+
+		// XY 平面の円
+		for (int i = 0; i < 16; ++i)
+		{
+			float phi1 = i * step;
+			float phi2 = (i + 1) * step;
+
+			object->vertexData[vertexIndex++].position = { cosf(phi1), sinf(phi1), 0.0f, 1.0f };
+			object->vertexData[vertexIndex++].position = { cosf(phi2), sinf(phi2), 0.0f, 1.0f };
+		}
+
+		// YZ 平面の円
+		for (int i = 0; i < 16; ++i)
+		{
+			float psi1 = i * step;
+			float psi2 = (i + 1) * step;
+
+			object->vertexData[vertexIndex++].position = { 0.0f, cosf(psi1), sinf(psi1), 1.0f };
+			object->vertexData[vertexIndex++].position = { 0.0f, cosf(psi2), sinf(psi2), 1.0f };
+		}
+
+		// 全ループ後に最終の頂点インデックスを更新
+		object->vertexIndex = vertexIndex;
+	}
+	else if (object->type == Type::Grid)
+	{
+		int vertexIndex = 0;
+		for (int i = 0; i < 21; ++i)
+		{
+			object->vertexData[vertexIndex++].position = { -10.0f, 0.0f, -10.0f + i, 1.0f };
+			object->vertexData[vertexIndex++].position = { 10.0f, 0.0f, -10.0f + i, 1.0f };
+		}
+		for (int i = 0; i < 21; ++i)
+		{
+			object->vertexData[vertexIndex++].position = { -10.0f + i, 0.0f, -10.0f, 1.0f };
+			object->vertexData[vertexIndex++].position = { -10.0f + i, 0.0f, 10.0f, 1.0f };
+		}
+
+		// 書き込んだ頂点数を object->vertexIndex に反映
+		object->vertexIndex = vertexIndex;
 	}
 }
-#pragma endregion sphere用でindexDataに書き込み
 
-#pragma region AABB用でindexDataに書き込み
-void LineDrawerBase::WriteAABBIndexData(LineObject* lineObject)
+void LineDrawerBase::WriteSkeletonLineData(LineObject* object, Skeleton skeleton)
 {
-	for (int i = 0; i < lineObject->vertexIndex;)
+	int vertexIndex = 0;
+
+	// skeleton は Skeleton 型の引数とする（もしくはグローバルなどから取得）
+	const Skeleton& skeleton_ = skeleton; // 例: object に skeleton メンバがある場合
+
+	// 全 Joint を走査
+	for (const Joint& joint : skeleton_.joints)
 	{
-		lineObject->indexData[i] = i;
-		++i;
-	}
-}
-#pragma endregion AABB用でindexDataに書き込み
+		// 親が存在する場合に親と子を線で結ぶ
+		if (joint.parent.has_value())
+		{
+			// 親 Joint を取得
+			int parentIndex = joint.parent.value();
+			const Joint& parentJoint = skeleton_.joints[parentIndex];
 
-void LineDrawerBase::WriteGridIndexData(LineObject* lineObject)
-{
-	for (int i = 0; i < lineObject->vertexIndex;)
-	{
-		lineObject->indexData[i] = i;
-		++i;
-	}
-}
+			// 親のワールド座標 (skeletonSpaceMatrix の4列目)
+			object->vertexData[vertexIndex++].position = {
+				parentJoint.skeletonSpaceMatrix.m[3][0],
+				parentJoint.skeletonSpaceMatrix.m[3][1],
+				parentJoint.skeletonSpaceMatrix.m[3][2],
+				1.0f
+			};
 
-#pragma region sphereの形でvertexDataを書き込む
-void LineDrawerBase::WriteSphereVertexData(LineObject* lineObject)
-{
-	// 仮 VertexData書き込み
-
-	int kSubdivision = 8;
-
-	const float kLonEvery = 2.0f * float(std::numbers::pi) / kSubdivision;  // 経度分割1つ分の角度
-	const float kLatEvery = 2.0f * float(std::numbers::pi) / kSubdivision;  // 緯度分割1つ分の角度
-
-	for (uint32_t latIndex = 0; latIndex < kSubdivision; ++latIndex) {
-		float lat = -float(std::numbers::pi) / 2.0f + kLatEvery * latIndex;
-
-		// 経度の方向に分割 0 ~ 2π
-		for (uint32_t lonIndex = 0; lonIndex < kSubdivision; ++lonIndex) {
-			float lon = lonIndex * kLonEvery;
-
-			Vector3 a, b, c;
-
-			a = { lineObject->sphere.radius * cosf(lon) * cosf(lat) + lineObject->sphere.center.x,
-				  lineObject->sphere.radius * sinf(lon) + lineObject->sphere.center.y,
-				  lineObject->sphere.radius * cosf(lon) * sinf(lat) + lineObject->sphere.center.z };
-
-			b = { lineObject->sphere.radius * cosf(lon + kLonEvery) * cosf(lat) + lineObject->sphere.center.x,
-				  lineObject->sphere.radius * sinf(lon + kLonEvery) + lineObject->sphere.center.y,
-				  lineObject->sphere.radius * cosf(lon + kLonEvery) * sinf(lat) + lineObject->sphere.center.z };
-
-			c = { lineObject->sphere.radius * cosf(lon) * cosf(lat + kLatEvery) + lineObject->sphere.center.x,
-				  lineObject->sphere.radius * sinf(lon) + lineObject->sphere.center.y,
-				  lineObject->sphere.radius * cosf(lon) * sinf(lat + kLatEvery) +lineObject->sphere.center.z };
-
-			// 頂点データに線の始点と終点を追加
-			lineObject->vertexData[lineObject->vertexIndex].position = { a.x,a.y,a.z,1.0f };
-			++lineObject->vertexIndex;
-
-			lineObject->vertexData[lineObject->vertexIndex].position = { b.x,b.y,b.z,1.0f };
-			++lineObject->vertexIndex;
-
-			lineObject->vertexData[lineObject->vertexIndex].position = { b.x,b.y,b.z,1.0f };
-			++lineObject->vertexIndex;
-
-			lineObject->vertexData[lineObject->vertexIndex].position = { c.x,c.y,c.z,1.0f };
-			++lineObject->vertexIndex;
+			// 子 (現在の joint) のワールド座標
+			object->vertexData[vertexIndex++].position = {
+				joint.skeletonSpaceMatrix.m[3][0],
+				joint.skeletonSpaceMatrix.m[3][1],
+				joint.skeletonSpaceMatrix.m[3][2],
+				1.0f
+			};
 		}
 	}
 
-	WriteSphereIndexData(lineObject);
-}
-#pragma endregion sphereの形でvertexDataを書き込む
+	// 書き込んだ頂点数を反映
+	object->vertexIndex = vertexIndex;
 
-#pragma region AABBの形でvertexDataを書き込む
-void LineDrawerBase::WriteAABBVertexData(LineObject* lineObject, Vector3 radius)
+	object->skeleton = &skeleton;
+}
+
+void LineDrawerBase::CreateLineResource(LineObject* object)
 {
-	AABB aabb;
+	object->lineResource = dxCommon_->CreateBufferResource(sizeof(LineForGPU));
 
-	Vector3 center = { 0.0f,0.0f,0.0f };
-
-	aabb.max = center + radius;
-	aabb.min = center - radius;
-
-	lineObject->vertexData[0].position = { aabb.min.x,aabb.min.y,aabb.min.z,1.0f };
-	lineObject->vertexData[1].position = { aabb.min.x,aabb.min.y,aabb.max.z,1.0f };
-
-	lineObject->vertexData[2].position = { aabb.min.x,aabb.min.y,aabb.max.z,1.0f };
-	lineObject->vertexData[3].position = { aabb.max.x,aabb.min.y,aabb.max.z,1.0f };
-
-	lineObject->vertexData[4].position = { aabb.max.x,aabb.min.y,aabb.max.z,1.0f };
-	lineObject->vertexData[5].position = { aabb.max.x,aabb.min.y,aabb.min.z,1.0f };
-
-	lineObject->vertexData[6].position = { aabb.max.x,aabb.min.y,aabb.min.z,1.0f };
-	lineObject->vertexData[7].position = { aabb.min.x,aabb.min.y,aabb.min.z,1.0f };
-
-	lineObject->vertexData[8].position = { aabb.min.x,aabb.min.y,aabb.min.z,1.0f };
-	lineObject->vertexData[9].position = { aabb.min.x,aabb.max.y,aabb.min.z,1.0f };
-
-	lineObject->vertexData[10].position = { aabb.min.x,aabb.max.y,aabb.min.z,1.0f };
-	lineObject->vertexData[11].position = { aabb.min.x,aabb.max.y,aabb.max.z,1.0f };
-
-	lineObject->vertexData[12].position = { aabb.min.x,aabb.max.y,aabb.max.z,1.0f };
-	lineObject->vertexData[13].position = { aabb.min.x,aabb.min.y,aabb.max.z,1.0f };
-
-	lineObject->vertexData[14].position = { aabb.max.x,aabb.min.y,aabb.min.z,1.0f };
-	lineObject->vertexData[15].position = { aabb.max.x,aabb.max.y,aabb.min.z,1.0f };
-
-	lineObject->vertexData[16].position = { aabb.max.x,aabb.max.y,aabb.max.z,1.0f };
-	lineObject->vertexData[17].position = { aabb.min.x,aabb.max.y,aabb.max.z,1.0f };
-
-	lineObject->vertexData[18].position = { aabb.max.x,aabb.max.y,aabb.max.z,1.0f };
-	lineObject->vertexData[19].position = { aabb.max.x,aabb.min.y,aabb.max.z,1.0f };
-
-	lineObject->vertexData[20].position = { aabb.max.x,aabb.max.y,aabb.max.z,1.0f };
-	lineObject->vertexData[21].position = { aabb.max.x,aabb.max.y,aabb.min.z,1.0f };
-
-	lineObject->vertexData[22].position = { aabb.max.x,aabb.max.y,aabb.min.z,1.0f }; 
-	lineObject->vertexData[23].position = { aabb.min.x,aabb.max.y,aabb.min.z,1.0f };  
-
-	lineObject->vertexData[24].position = { aabb.max.x,aabb.min.y,aabb.min.z,1.0f };
-	lineObject->vertexData[25].position = { aabb.min.x,aabb.min.y,aabb.max.z,1.0f };
-
-
-	lineObject->vertexIndex = 24;
-
-	WriteAABBIndexData(lineObject);
+	object->lineResource->Map(0, nullptr, reinterpret_cast<void**>(&object->lineData));
 }
-#pragma endregion AABBの形でvertexDataを書き込む
 
-void LineDrawerBase::WriteGridVertexData(LineObject* lineObject)
-{
-	float GridSize = 5.0f;
-	int GridNum = 100;
-	float GridSpacing = GridSize / GridNum;
-	float halfGridSize = GridSize * GridNum * 0.5f;
-
-	for (int i = 0; i <= GridNum; ++i) {
-		float x = -halfGridSize + GridSize * i;
-		float z = -halfGridSize + GridSize * i;
-
-		lineObject->vertexData[lineObject->vertexIndex].position = { x, 0.0f, -halfGridSize, 1.0f };
-		++lineObject->vertexIndex;
-		lineObject->vertexData[lineObject->vertexIndex].position = { x, 0.0f, halfGridSize, 1.0f };
-		++lineObject->vertexIndex;
-
-		lineObject->vertexData[lineObject->vertexIndex].position = { -halfGridSize, 0.0f, z, 1.0f };
-		++lineObject->vertexIndex;
-		lineObject->vertexData[lineObject->vertexIndex].position = { halfGridSize, 0.0f, z, 1.0f };
-		++lineObject->vertexIndex;
-	}
-
-	WriteGridIndexData(lineObject);
-}

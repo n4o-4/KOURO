@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <string>
 #include <vector>
 #include "Structs.h"
@@ -44,18 +44,18 @@ struct ModelData {
 
 struct Joint
 {
-	QuaternionTransform transform; // transformî•ñ
+	QuaternionTransform transform; // transformæƒ…å ±
 	Matrix4x4 localMatrix; // localMatrix
-	Matrix4x4 skeletonSpaceMatrix; // skeletonSpace‚Å‚Ì•ÏŠ·s—ñ
-	std::string name; // –¼‘O
-	std::vector<int32_t> children; // qJoint‚ÌIndex‚ÌƒŠƒXƒgB‚¢‚È‚¯‚ê‚Î‹ó
-	int32_t index; // ©g‚ÌIndex
-	std::optional<int32_t> parent; // eJoint‚ÌIndexB‚¢‚È‚¯‚ê‚Înull
+	Matrix4x4 skeletonSpaceMatrix; // skeletonSpaceã§ã®å¤‰æ›è¡Œåˆ—
+	std::string name; // åå‰
+	std::vector<int32_t> children; // å­Jointã®Indexã®ãƒªã‚¹ãƒˆã€‚ã„ãªã‘ã‚Œã°ç©º
+	int32_t index; // è‡ªèº«ã®Index
+	std::optional<int32_t> parent; // è¦ªJointã®Indexã€‚ã„ãªã‘ã‚Œã°null
 };
 
 struct Skeleton
 {
-	int32_t root; //RootJoint‚ÌIndex
-	std::map<std::string, int32_t> jointMap; // Joint–¼‚ÆIndex‚Æ‚Ì«‘
-	std::vector<Joint> joints; // Š‘®‚µ‚Ä‚¢‚éJoint
+	int32_t root; //RootJointã®Index
+	std::map<std::string, int32_t> jointMap; // Jointåã¨Indexã¨ã®è¾æ›¸
+	std::vector<Joint> joints; // æ‰€å±ã—ã¦ã„ã‚‹Joint
 };

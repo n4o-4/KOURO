@@ -35,6 +35,8 @@ void PostEffect::Draw()
 	// 読み込む方のインデックス
 	uint32_t resourceIndex = dxCommon_->GetRenderResourceIndex();
 
+	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	for (auto it = activeEffects_.begin(); it != activeEffects_.end(); ++it) {
 
 		// 

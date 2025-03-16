@@ -191,28 +191,18 @@ static Matrix4x4 MakeScaleMatrix(const Vector3& scale)
 static Matrix4x4 MakeTranslateMatrix(const Vector3& translate)
 {
 	// 平行移動行列の作成
-	Matrix4x4 translateMatrix;
+	Matrix4x4 translateMatrix = {};
 
-	translateMatrix.m[0][0] = 1.0f;  // x軸方向のスケーリング（変化なし）
-	translateMatrix.m[0][1] = 0.0f;  // x軸とy軸のオフセット
-	translateMatrix.m[0][2] = 0.0f;  // x軸とz軸のオフセット
-	translateMatrix.m[0][3] = translate.x;  // x軸方向の移動量
+	// 対角成分を 1.0 にする（単位行列の作成）
+	translateMatrix.m[0][0] = 1.0f;
+	translateMatrix.m[1][1] = 1.0f;
+	translateMatrix.m[2][2] = 1.0f;
+	translateMatrix.m[3][3] = 1.0f;
 
-	translateMatrix.m[1][0] = 0.0f;  // y軸とx軸のオフセット
-	translateMatrix.m[1][1] = 1.0f;  // y軸方向のスケーリング（変化なし）
-	translateMatrix.m[1][2] = 0.0f;  // y軸とz軸のオフセット
-	translateMatrix.m[1][3] = translate.y;  // y軸方向の移動量
-
-	translateMatrix.m[2][0] = 0.0f;  // z軸とx軸のオフセット
-	translateMatrix.m[2][1] = 0.0f;  // z軸とy軸のオフセット
-	translateMatrix.m[2][2] = 1.0f;  // z軸方向のスケーリング（変化なし）
-	translateMatrix.m[2][3] = translate.z;  // z軸方向の移動量
-
-	translateMatrix.m[3][0] = 0.0f;  // 同次座標のため、位置情報に関係ない部分
-	translateMatrix.m[3][1] = 0.0f;  // 同上
-	translateMatrix.m[3][2] = 0.0f;  // 同上
-	translateMatrix.m[3][3] = 1.0f;  // 同次座標の一部（1）
-
+	// 平行移動成分をセット
+	translateMatrix.m[3][0] = translate.x;  // X方向の移動
+	translateMatrix.m[3][1] = translate.y;  // Y方向の移動
+	translateMatrix.m[3][2] = translate.z;  // Z方向の移動
 	return translateMatrix;
 }
 
