@@ -1,6 +1,7 @@
 #include "Model.h"
 #include "TextureManager.h"
 #include "MyMath.h"
+#include <iostream>
 
 
 void Model::Initialize(ModelCommon* modelCommon, const std::string& directoryPath, const std::string& filename)
@@ -89,6 +90,12 @@ ModelData Model::LoadModelFile(const std::string& directoryPath, const std::stri
 	std::string filePath = directoryPath + "/" + filename;
 
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+
+	if (!scene) {
+		std::cerr << "Failed to load model: " << filePath << std::endl;
+		std::cerr << "Assimp error: " << importer.GetErrorString() << std::endl;
+		throw std::runtime_error("Model loading failed.");
+	}
 
 	assert(scene->HasMeshes()); // メッシュがないのは対応しない
 

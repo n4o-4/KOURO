@@ -78,6 +78,52 @@ void LineDrawerBase::Update()
 	}
 }
 
+void LineDrawerBase::SkeletonUpdate(Skeleton skeleton)
+{
+	for (std::list<std::unique_ptr<LineObject>>::iterator iterator = lineObjects_.begin(); iterator != lineObjects_.end();)
+	{
+		if (iterator->get()->type == Type::Skeleton)
+		{
+			int vertexIndex = 0;
+
+			// skeleton は Skeleton 型の引数とする（もしくはグローバルなどから取得）
+			Skeleton skeleton_ = skeleton; // 例: object に skeleton メンバがある場合
+
+			// 全 Joint を走査
+			for (Joint joint : skeleton_.joints)
+			{
+				// 親が存在する場合に親と子を線で結ぶ
+				if (joint.parent.has_value())
+				{
+					// 親 Joint を取得
+					int parentIndex = joint.parent.value();
+					const Joint& parentJoint = skeleton_.joints[parentIndex];
+
+					// 親のワールド座標 (skeletonSpaceMatrix の4列目)
+					iterator->get()->vertexData[vertexIndex++].position = {
+						parentJoint.skeletonSpaceMatrix.m[3][0],
+						parentJoint.skeletonSpaceMatrix.m[3][1],
+						parentJoint.skeletonSpaceMatrix.m[3][2],
+						1.0f
+					};
+
+					// 子 (現在の joint) のワールド座標
+					iterator->get()->vertexData[vertexIndex++].position = {
+						joint.skeletonSpaceMatrix.m[3][0],
+						joint.skeletonSpaceMatrix.m[3][1],
+						joint.skeletonSpaceMatrix.m[3][2],
+						1.0f
+					};
+				}
+			}
+
+			iterator->get()->vertexIndex = vertexIndex;
+		}
+
+		++iterator;
+	}
+}
+
 void LineDrawerBase::Draw(ViewProjection viewProjection)
 {
 	// プリミティブトポロジーを設定
@@ -465,7 +511,7 @@ void LineDrawerBase::WriteSkeletonLineData(LineObject* object, Skeleton skeleton
 	// 書き込んだ頂点数を反映
 	object->vertexIndex = vertexIndex;
 
-	object->skeleton = &skeleton;
+	object->skeleton = skeleton;
 }
 
 void LineDrawerBase::CreateLineResource(LineObject* object)

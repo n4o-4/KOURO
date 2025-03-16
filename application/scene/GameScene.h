@@ -58,6 +58,9 @@ private:
 
 	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;	
 
+	std::unique_ptr<Object3d> human_ = nullptr;	
+	std::unique_ptr<WorldTransform> worldTransform_ = nullptr;	
+
 private:
 
 	//std::unique_ptr<SkyDome> skyDome_ = nullptr;

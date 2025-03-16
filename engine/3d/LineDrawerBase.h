@@ -61,7 +61,7 @@ private:
 
 		int32_t vertexIndex = 0;
 
-		Skeleton* skeleton;
+		Skeleton skeleton;
 	};
 
 	
@@ -73,6 +73,9 @@ public: // メンバ関数
 	// 更新
 	void Update();
 	
+	// スケルトンの更新
+	void SkeletonUpdate(Skeleton skeleton);
+
 	// 描画
 	void Draw(ViewProjection viewProjection);
 
