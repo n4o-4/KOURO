@@ -84,7 +84,7 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::RadialBlur);
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Dissolve);
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random);
-	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog);
+	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog);
 }
 ///=============================================================================
 ///						終了処理
@@ -487,7 +487,7 @@ void GameScene::Draw() {
 ///                        敵の出現データの読み込み
 void GameScene::LoadEnemyPopData() {
 	std::ifstream file;
-	file.open("./Resources/enemyPop.csv");
+	file.open("./Resources/enemyPopSky.csv");
 	assert(file.is_open());
 
 	enemyPopCommands << file.rdbuf();
@@ -548,8 +548,8 @@ void GameScene::UpdateEnemyPopCommands() {
 ///                        敵の出現
 void GameScene::SpawnEnemy(const Vector3 &position) {
 
-	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<GroundTypeEnemy>();
-	if (auto* enemyNormal = dynamic_cast<GroundTypeEnemy*>(newEnemy.get())) {
+	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<SkyTypeEnemy>();
+	if (auto* enemyNormal = dynamic_cast<SkyTypeEnemy*>(newEnemy.get())) {
 		enemyNormal->Initialize();
 		enemyNormal->SetPosition(position);
 		enemyNormal->SetTarget(player_->GetWorldTransform());

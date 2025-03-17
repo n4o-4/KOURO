@@ -84,6 +84,7 @@
     <ClCompile Include="BaseEnemy.cpp" />
     <ClCompile Include="application\object\PlayerMissile.cpp" />
     <ClCompile Include="GroundTypeEnemy.cpp" />
+    <ClCompile Include="SkyTypeEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="BaseEnemy.h" />
     <ClInclude Include="application\object\PlayerMissile.h" />
     <ClInclude Include="GroundTypeEnemy.h" />
+    <ClInclude Include="SkyTypeEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
