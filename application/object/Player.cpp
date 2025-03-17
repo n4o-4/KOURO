@@ -220,44 +220,43 @@ void Player::UpdateMove(Vector3 direction) {
 ///--------------------------------------------------------------
 ///                        ジャンプ
 void Player::UpdateJump() {
-	if (Input::GetInstance()->PushKey(DIK_SPACE) || Input::GetInstance()->PushGamePadButton(Input::GamePadButton::A)) {
-		isJumping_ = true;
-		isFloating_ = false;
-		fallSpeed_ = 0.0f;    // 降下速度リセット
-		objectTransform_->transform.translate.y += maxSpeed_;  // 上昇
-	} else if (isJumping_) {
-		if (!isFloating_) {
-			// SPACEを離した瞬間、追加上昇を開始（ただし徐々に減衰する）
-			boostVelocity_ = floatBoost_;
-			isFloating_ = true;
+	if (!isJumping_) {
+		// スペースキーが押されたらジャンプ開始
+		if (Input::GetInstance()->Triggerkey(DIK_SPACE) ||
+			Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
+			isJumping_ = true;
+			jumpVelocity_ = 0.6f;  // 初速を設定
+			fallSpeed_ = 0.0f;     // 降下速度リセット
 		}
+	}
 
-		// 追加上昇を適用
-		if (boostVelocity_ > 0.0f) {
-			objectTransform_->transform.translate.y += boostVelocity_;
-			boostVelocity_ -= boostDecay_; // 徐々に減衰
-			if (boostVelocity_ < 0.0f) {
-				boostVelocity_ = 0.0f;
+	if (isJumping_) {
+		// 上昇処理（ふわっと浮く）
+		objectTransform_->transform.translate.y += jumpVelocity_;
+
+		// 上昇速度をゆっくり減衰
+		jumpVelocity_ -= 0.005f;  // これ以上減衰を強くすると上がらない可能性がある
+
+		// 上昇が終了したら降下開始
+		if (jumpVelocity_ <= 0.0f) {
+			jumpVelocity_ = 0.0f;
+			fallSpeed_ += gravity_;
+			if (fallSpeed_ > maxFallSpeed_) {
+				fallSpeed_ = maxFallSpeed_;
 			}
+			objectTransform_->transform.translate.y -= fallSpeed_;
 		}
-
-		// 下降処理（徐々に加速）
-		fallSpeed_ += gravity_;
-		if (fallSpeed_ > maxFallSpeed_) {
-			fallSpeed_ = maxFallSpeed_; // 降下速度の上限を設定
-		}
-		objectTransform_->transform.translate.y -= fallSpeed_;
 
 		// 着地判定
 		if (objectTransform_->transform.translate.y <= initialY_) {
 			objectTransform_->transform.translate.y = initialY_;
 			isJumping_ = false;
-			isFloating_ = false;
+			jumpVelocity_ = 0.0f;
 			fallSpeed_ = 0.0f;
-			boostVelocity_ = 0.0f; // 追加上昇もリセット
 		}
 	}
 }
+
 ///                        ジャンプしているか
 void Player::IsJump() {
 	if (!isJumping_) {
