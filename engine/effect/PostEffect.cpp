@@ -401,3 +401,13 @@ void PostEffect::ApplyEffect(EffectType type)
 
 	activeEffects_.push_back(std::move(newEffect));
 }
+
+void PostEffect::ResetActiveEffect()
+{
+	for (auto it = activeEffects_.begin(); it != activeEffects_.end(); ++it)
+	{
+		it->release();
+	}
+
+	activeEffects_.clear();
+}

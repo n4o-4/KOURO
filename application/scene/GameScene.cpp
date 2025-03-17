@@ -71,9 +71,6 @@ void GameScene::Initialize() {
 
 	player_->SetFollowCamera(cameraManager_->GetFollowCamera());
 
-	// 
-	fade_->Start(Fade::Status::FadeIn, 4.0f);	
-
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Grayscale); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Vignette); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::BoxFilter); //完
@@ -104,11 +101,8 @@ void GameScene::Initialize() {
 
 	human_ = std::make_unique<Object3d>();
 	human_->Initialize(Object3dCommon::GetInstance());
-	human_->SetModel(ModelManager::GetInstance()->FindModel("human/wlak.gltf"));
+	human_->SetModel(ModelManager::GetInstance()->FindModel("human/wlak.gltf"));*/
 
-	worldTransform_ = std::make_unique<WorldTransform>();	
-	worldTransform_->Initialize();
-	worldTransform_->UpdateMatrix();*/
 }
 ///=============================================================================
 ///						終了処理
@@ -381,11 +375,6 @@ void GameScene::Draw() {
 			*pointLight.get(),
 			*spotLight.get());
 
-		/*human_->Draw(*worldTransform_.get(),
-			cameraManager_->GetActiveCamera()->GetViewProjection(),
-			*directionalLight.get(),
-			*pointLight.get(),
-			*spotLight.get());	*/
 		DrawForegroundSprite();
 		/// 前景スプライト描画	
 
@@ -442,9 +431,6 @@ void GameScene::Draw() {
 
 		DrawForegroundSprite();
 		/// 前景スプライト描画	
-
-		// フェード描画
-		DrawFade();
 
 		break;
 
@@ -511,7 +497,6 @@ void GameScene::Draw() {
 	}
 
 	lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
-
 }
 
 ///=============================================================================

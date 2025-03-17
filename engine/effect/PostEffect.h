@@ -95,6 +95,7 @@ public:
 	// カメラマネージャを設定
 	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
 
+	void ResetActiveEffect();
 
 private:
 
