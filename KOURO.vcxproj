@@ -81,6 +81,7 @@
     <ClCompile Include="application\object\Player.cpp" />
     <ClCompile Include="engine\effect\PostEffect.cpp" />
     <ClCompile Include="PlayerMachineGun.cpp" />
+    <ClCompile Include="SkyTypeEnemy.cpp" />
     <ClCompile Include="RadialBlur.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Vignette.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="LinearFog.h" />
     <ClInclude Include="LuminanceBasedOutline.h" />
     <ClInclude Include="PlayerMachineGun.h" />
+    <ClInclude Include="SkyTypeEnemy.h" />
     <ClInclude Include="RadialBlur.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Vignette.h" />

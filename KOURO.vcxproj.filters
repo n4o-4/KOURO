@@ -84,6 +84,7 @@
     <ClCompile Include="BaseEnemy.cpp" />
     <ClCompile Include="application\object\PlayerMissile.cpp" />
     <ClCompile Include="GroundTypeEnemy.cpp" />
+    <ClCompile Include="SkyTypeEnemy.cpp" />
     <ClCompile Include="BaseEffect.cpp" />
     <ClCompile Include="Grayscale.cpp" />
     <ClCompile Include="Vignette.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="BaseEnemy.h" />
     <ClInclude Include="application\object\PlayerMissile.h" />
     <ClInclude Include="GroundTypeEnemy.h" />
+    <ClInclude Include="SkyTypeEnemy.h" />
     <ClInclude Include="BaseEffect.h" />
     <ClInclude Include="Grayscale.h" />
     <ClInclude Include="Vignette.h" />

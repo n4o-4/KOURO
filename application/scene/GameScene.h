@@ -13,6 +13,7 @@
 #include "LockOn.h"
 #include "BaseEnemy.h"
 #include "GroundTypeEnemy.h"
+#include "SkyTypeEnemy.h"
 
 class GameScene : public BaseScene
 {
