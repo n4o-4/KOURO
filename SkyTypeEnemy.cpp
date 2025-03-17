@@ -1,4 +1,4 @@
-#include "SkyTypeEnemy.h"
+ï»¿#include "SkyTypeEnemy.h"
 #include "PlayerMissile.h"
 void SkyTypeEnemy::Initialize() {
 	ModelManager::GetInstance()->LoadModel("enemy/bat/bat.obj");
@@ -9,10 +9,10 @@ void SkyTypeEnemy::Initialize() {
 
 void SkyTypeEnemy::Update() {
     if (hp_ > 0) {
-        // ó‘Ô‚ÌXV
+        // çŠ¶æ…‹ã®æ›´æ–°
         UpdateActionState();
 
-        // Œ»İ‚Ìó‘Ô‚É‰‚¶‚½s“®
+        // ç¾åœ¨ã®çŠ¶æ…‹ã«å¿œã˜ãŸè¡Œå‹•
         switch (currentState_) {
         case ActionState::Wander:
             UpdateWanderState();
@@ -126,34 +126,34 @@ void SkyTypeEnemy::UpdateCombatState() {
 }
 
 void SkyTypeEnemy::UpdateActionState() {
-    // ƒ^ƒCƒ}[‚ÌXV
+    // ã‚¿ã‚¤ãƒãƒ¼ã®æ›´æ–°
     stateTimer_ += 1.0f / 60.0f;
 
-    // ƒ^[ƒQƒbƒg‚ª‘¶İ‚µ‚È‚¢ê‡‚Íœpœj
+    // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒå­˜åœ¨ã—ãªã„å ´åˆã¯å¾˜å¾Š
     if (!target_) {
         currentState_ = ActionState::Wander;
         return;
     }
 
-    // ƒ^[ƒQƒbƒg‚Æ‚Ì‹——£‚ğŒvZ
+    // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¨ã®è·é›¢ã‚’è¨ˆç®—
     Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
     float distance = Length(toTarget);
 
-    // ‹——£‚ÉŠî‚Ã‚¢‚Äó‘Ô‚ğ•ÏX
-    ActionState newState = currentState_; // ƒfƒtƒHƒ‹ƒg‚ÍŒ»İ‚Ìó‘Ô‚ğˆÛ
+    // è·é›¢ã«åŸºã¥ã„ã¦çŠ¶æ…‹ã‚’å¤‰æ›´
+    ActionState newState = currentState_; // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯ç¾åœ¨ã®çŠ¶æ…‹ã‚’ç¶­æŒ
 
     if (distance > chaseDistance_) {
-        // ƒvƒŒƒCƒ„[‚ª‰“‚¢ê‡‚Íœpœj
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒé ã„å ´åˆã¯å¾˜å¾Š
         newState = ActionState::Wander;
     } else if (distance > combatDistance_) {
-        // ’ÇÕ”ÍˆÍ“à‚È‚ç’ÇÕ
+        // è¿½è·¡ç¯„å›²å†…ãªã‚‰è¿½è·¡
         newState = ActionState::Chase;
     } else {
-        // í“¬”ÍˆÍ“à‚È‚çí“¬
+        // æˆ¦é—˜ç¯„å›²å†…ãªã‚‰æˆ¦é—˜
         newState = ActionState::Combat;
     }
 
-    // ó‘Ô‚ª•Ï‰»‚µ‚½ê‡Aƒ^ƒCƒ}[‚ğƒŠƒZƒbƒg
+    // çŠ¶æ…‹ãŒå¤‰åŒ–ã—ãŸå ´åˆã€ã‚¿ã‚¤ãƒãƒ¼ã‚’ãƒªã‚»ãƒƒãƒˆ
     if (newState != currentState_) {
         currentState_ = newState;
         stateTimer_ = 0.0f;
