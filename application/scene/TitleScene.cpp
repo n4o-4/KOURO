@@ -144,6 +144,4 @@ void TitleScene::Draw()
 	fade_->Draw();
 	ParticleManager::GetInstance()->Draw("Resources/circle.png");
 
-
-
 }

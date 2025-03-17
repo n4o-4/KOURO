@@ -137,7 +137,7 @@ void PostEffect::ResetActiveEffect()
 {
 	for (auto it = activeEffects_.begin(); it != activeEffects_.end(); ++it)
 	{
-		it->release();
+		it->get()->effect->Reset();
 	}
 
 	activeEffects_.clear();
