@@ -82,7 +82,7 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog); //完
 
-	///========================================
+	/*///========================================
 	///		ライン描画
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
 	lineDrawer_->Initialize(sceneManager_->GetDxCommon(),sceneManager_->GetSrvManager());
@@ -94,7 +94,7 @@ void GameScene::Initialize() {
 	animationManager->LoadAnimationFile("./Resources/human", "walk.gltf");
 	animationManager->StartAnimation("walk.gltf", 0);
 	animationManager->Update();
-	lineDrawer_->CreateSkeletonObject(animationManager->GetActiveAnimation("walk.gltf").skeleton,nullptr);
+	lineDrawer_->CreateSkeletonObject(animationManager->GetActiveAnimation("walk.gltf").skeleton,nullptr);*/
 
 	///LoadModelでエラー発生中
 	/*ModelManager::GetInstance()->LoadModel("human/wlak.gltf");	///
@@ -115,8 +115,8 @@ void GameScene::Finalize() {
 ///=============================================================================
 ///						更新
 void GameScene::Update() {
-	animationManager->Update();
-	lineDrawer_->SkeletonUpdate(animationManager->GetActiveAnimation("walk.gltf").skeleton);
+	/*animationManager->Update();
+	lineDrawer_->SkeletonUpdate(animationManager->GetActiveAnimation("walk.gltf").skeleton);*/
 	//human_->Update();
 	//========================================
 	// フェーズ切り替え
@@ -291,7 +291,7 @@ void GameScene::Update() {
 		break;
 	}
 
-	lineDrawer_->Update();
+	//lineDrawer_->Update();
 
 	BaseScene::Update();
 	//========================================
@@ -496,7 +496,7 @@ void GameScene::Draw() {
 		break;
 	}
 
-	lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
+	//lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
 }
 
 ///=============================================================================
