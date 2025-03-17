@@ -14,6 +14,7 @@
 #include "BaseEnemy.h"
 #include "GroundTypeEnemy.h"
 #include "SkyTypeEnemy.h"
+#include "LineDrawerBase.h"
 
 class GameScene : public BaseScene
 {
@@ -57,6 +58,10 @@ private:
 	//========================================
 	// 当たり判定マネージャ
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
+
+	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;	
+
+	std::unique_ptr<Object3d> human_ = nullptr;	
 
 private:
 

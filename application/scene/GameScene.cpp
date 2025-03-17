@@ -71,9 +71,6 @@ void GameScene::Initialize() {
 
 	player_->SetFollowCamera(cameraManager_->GetFollowCamera());
 
-	// 
-	fade_->Start(Fade::Status::FadeIn, 4.0f);	
-
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Grayscale); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Vignette); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::BoxFilter); //完
@@ -84,6 +81,28 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Dissolve); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog); //完
+
+	/*///========================================
+	///		ライン描画
+	lineDrawer_ = std::make_unique<LineDrawerBase>();
+	lineDrawer_->Initialize(sceneManager_->GetDxCommon(),sceneManager_->GetSrvManager());
+
+
+	///========================================
+	/// アニメーションマネージャ
+	animationManager = std::make_unique<AnimationManager>();	
+	animationManager->LoadAnimationFile("./Resources/human", "walk.gltf");
+	animationManager->StartAnimation("walk.gltf", 0);
+	animationManager->Update();
+	lineDrawer_->CreateSkeletonObject(animationManager->GetActiveAnimation("walk.gltf").skeleton,nullptr);*/
+
+	///LoadModelでエラー発生中
+	/*ModelManager::GetInstance()->LoadModel("human/wlak.gltf");	///
+
+	human_ = std::make_unique<Object3d>();
+	human_->Initialize(Object3dCommon::GetInstance());
+	human_->SetModel(ModelManager::GetInstance()->FindModel("human/wlak.gltf"));*/
+
 }
 ///=============================================================================
 ///						終了処理
@@ -96,6 +115,9 @@ void GameScene::Finalize() {
 ///=============================================================================
 ///						更新
 void GameScene::Update() {
+	/*animationManager->Update();
+	lineDrawer_->SkeletonUpdate(animationManager->GetActiveAnimation("walk.gltf").skeleton);*/
+	//human_->Update();
 	//========================================
 	// フェーズ切り替え
 	switch(phase_) {
@@ -266,6 +288,7 @@ void GameScene::Update() {
 
 		//========================================
 		// 
+
 		break;
 	case Phase::kMain:
 		break;
@@ -273,6 +296,7 @@ void GameScene::Update() {
 		break;
 	}
 
+	//lineDrawer_->Update();
 
 	BaseScene::Update();
 	//========================================
@@ -355,6 +379,7 @@ void GameScene::Draw() {
 			*directionalLight.get(),
 			*pointLight.get(),
 			*spotLight.get());
+
 		DrawForegroundSprite();
 		/// 前景スプライト描画	
 
@@ -411,9 +436,6 @@ void GameScene::Draw() {
 
 		DrawForegroundSprite();
 		/// 前景スプライト描画	
-
-		// フェード描画
-		DrawFade();
 
 		break;
 
@@ -478,6 +500,8 @@ void GameScene::Draw() {
 
 		break;
 	}
+
+	//lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
 }
 
 ///=============================================================================

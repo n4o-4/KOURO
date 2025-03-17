@@ -66,6 +66,7 @@ void SceneManager::Update()
 		// 
 		if (scene_)
 		{
+			scene_->Finalize();	
 			scene_.reset();
 			scene_ = nullptr;
 		}
@@ -73,7 +74,7 @@ void SceneManager::Update()
 		scene_ = std::move(nextScene_);
 		nextScene_ = nullptr;
 		
-		postEffect_->Finalize();
+		postEffect_->ResetActiveEffect();
 
 		scene_->SetSceneManager(this);
 		scene_->SetSrvManager(srvManager_);

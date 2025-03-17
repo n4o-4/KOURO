@@ -32,7 +32,7 @@ public:
 
 	Transform transform;
 
-	
+	QuaternionTransform quaternionTransform;
 
 	Matrix4x4 matWorld_;
 
