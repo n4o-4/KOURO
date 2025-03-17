@@ -39,7 +39,7 @@ void SkyTypeEnemy::MoveToRush() {
         Vector3 direction = Normalize(toTarget);
 
         // 
-        velocity_ = direction * speed_ * rushSpeedMultiplier_;
+        velocity_ = direction * rushSpeed_ * rushSpeedMultiplier_;
 
         // 
         worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
@@ -52,9 +52,28 @@ void SkyTypeEnemy::MoveToRush() {
         rushTimer_ += 1.0f / 60.0f;
         if (rushTimer_ >= rushDuration_) {
             isRushing_ = false; // 
+            isRising_ = true;   // 
             rushTimer_ = 0.0f;
+            riseTimer_ = 0.0f;  // 
         }
     }
+}
+
+void SkyTypeEnemy::MoveToRise() {
+    // 
+    velocity_.y = riseSpeed_;
+
+    // 
+    worldTransform_->transform.translate.y += velocity_.y;
+
+    // 
+    riseTimer_ += 1.0f / 60.0f;
+    if (riseTimer_ >= riseDuration_) {
+        isRising_ = false; // 
+        velocity_.y = 0.0f; // 
+    }
+
+
 }
 
 void SkyTypeEnemy::Attack() {
@@ -81,6 +100,13 @@ void SkyTypeEnemy::UpdateChaseState() {
 }
 
 void SkyTypeEnemy::UpdateCombatState() {
+    // 
+    if (isRising_) {
+        MoveToRise();
+        return;
+    }
+
+    // 
     if (isRushing_) {
         MoveToRush();
         return;
@@ -91,7 +117,7 @@ void SkyTypeEnemy::UpdateCombatState() {
     float distance = Length(toTarget);
 
     // 
-    if (distance < combatDistance_ * 1.5f && !isRushing_) {
+    if (distance < combatDistance_ * 1.5f && !isRushing_ && !isRising_) {
         isRushing_ = true;
         rushTimer_ = 0.0f;
     } else {
