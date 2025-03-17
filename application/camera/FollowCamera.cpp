@@ -58,6 +58,13 @@ void FollowCamera::CalculationRotate()
     destinationRotate += rotate;
 
     viewProjection_->transform.rotate = Lerp(viewProjection_->transform.rotate, destinationRotate, easingFactor_);
+
+    float clampedX = std::clamp(viewProjection_->transform.rotate.x, -1.5f, 1.5f);
+    if (clampedX != viewProjection_->transform.rotate.x) {
+        destinationRotate.x = viewProjection_->transform.rotate.x;
+    }
+
+    viewProjection_->transform.rotate.x = std::clamp(viewProjection_->transform.rotate.x, -1.5f, 1.5f);
 }
 
 void FollowCamera::CalculationTranslate()
