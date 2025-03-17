@@ -13,7 +13,9 @@ public: // メンバ関数
 
 	void Finalize();
 
-	void SetView();
+	void SetForegroundView();
+
+	void SetBackgroundView();
 
 	void DrawForeground();
 
@@ -40,14 +42,19 @@ private:
 	void CreateRootSignature();
 
 	// グラフィックスパイプラインの生成
-	void CreateGraphicsPipeline();
+	void CreateGraphicsPipelineForeground();
+
+	// グラフィックスパイプラインの生成
+	void CreateGraphicsPipelineBackground();
 
 private:
 	DirectXCommon* dxCommon_;
 
 	Microsoft::WRL::ComPtr< ID3D12RootSignature> rootSignature;
 
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState;
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineStateBackground;
+
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineStateForeground;
 
 	//ID3DBlob* signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr< ID3DBlob> signatureBlob = nullptr;
