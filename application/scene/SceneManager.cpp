@@ -73,6 +73,7 @@ void SceneManager::Update()
 		scene_ = std::move(nextScene_);
 		nextScene_ = nullptr;
 		
+		postEffect_->Finalize();
 
 		scene_->SetSceneManager(this);
 		scene_->SetSrvManager(srvManager_);
