@@ -3,6 +3,7 @@
 struct Material
 {
     float4x4 projectionInverse;
+    float edgeStrength;
 };
 
 ConstantBuffer<Material> gMaterial : register(b0);

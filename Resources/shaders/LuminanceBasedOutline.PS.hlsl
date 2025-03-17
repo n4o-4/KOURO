@@ -1,8 +1,5 @@
 #include "Fullscreen.hlsli"
 
-Texture2D<float4> gTexture : register(t0);
-SamplerState gSampler : register(s0);
-
 struct PixelShaderOutput
 {
     float4 color : SV_TARGET0;
@@ -28,6 +25,16 @@ static const float kPrewittVerticalKernel[3][3] =
     { 0.0f, 0.0f, 0.0f },
     { 1.0f / 6.0f, 1.0f / 6.0f, 1.0f / 6.0f },
 };
+
+struct Material
+{
+    float edgeStrength;
+};
+
+Texture2D<float4> gTexture : register(t0);
+SamplerState gSampler : register(s0);
+ConstantBuffer<Material> gMaterial : register(b0);
+
 
 float Luminance(float3 v)
 {
@@ -60,17 +67,8 @@ PixelShaderOutput main(VertexShaderOutput input)
 
     }
     
-    //==========================================
-    // エッジ検出
-    //// 変化の長さをウエイトとして合成。使う成分に四って検出されるエッジの方向を変えられる difference.xだと横方向
-    //float weight = length(difference);
-    //weight = saturate(weight);
-    
-    //output.color.rgb = weight;
-    //output.color.a = 1.0f;
-    
     float weight = length(difference);
-    weight = saturate(weight * 6.0f);
+    weight = saturate(weight * gMaterial.edgeStrength);
     
     output.color.rgb = (1.0f - weight) * gTexture.Sample(gSampler, input.texcoord).rgb;
     output.color.a = 1.0f;

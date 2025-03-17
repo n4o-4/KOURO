@@ -1,7 +1,17 @@
 #include "Fullscreen.hlsli"
 
+struct Material
+{
+    int numSamples;
+    float2 center;
+    float blurWidth;
+};
+   
+    
+
 Texture2D<float4> gTexture : register(t0);
 SamplerState gSamplerLinear : register(s0);
+ConstantBuffer<Material> gMaterial : register(b0);
 
 struct PixelShaderOutput
 {
@@ -9,28 +19,19 @@ struct PixelShaderOutput
 };
 
 PixelShaderOutput main(VertexShaderOutput input)
-{
-    // 中心点。ここから基準に放射線状にブラーがかかる
-    const float2 kCenter = float2(0.5f, 0.5f); 
-    
-    // サンプリング数。多いほど滑らか (重くなる)
-    const int kNumSamples = 10; 
-    
-    // ぼかしの幅。
-    float kBlurWidth = 0.01f;
-    
+{ 
     // 正規化せず遠い程より遠くをサンプリングする
-    float2 direction = input.texcoord - kCenter;
+    float2 direction = input.texcoord - gMaterial.center;
     float3 outputColor = float3(0.0f, 0.0f, 0.0f);
-    for (int sampleIndex = 0; sampleIndex < kNumSamples;++sampleIndex)
+    for (int sampleIndex = 0; sampleIndex < gMaterial.numSamples;++sampleIndex)
     {
         // 現在のuvから先ほど計算した方向にサンプル点を進めながらサンプリングしていく
-        float2 texcoord = input.texcoord + direction * kBlurWidth * float(sampleIndex);
+        float2 texcoord = input.texcoord + direction * gMaterial.blurWidth * float(sampleIndex);
 
         outputColor.rgb += gTexture.Sample(gSamplerLinear, texcoord).rgb;
     }
     // 平均化する
-    outputColor.rgb *= rcp(kNumSamples);
+    outputColor.rgb *= rcp(gMaterial.numSamples);
     
     PixelShaderOutput output;
     output.color.rgb = outputColor;

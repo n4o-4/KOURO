@@ -66,6 +66,9 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	textureData.metadata = mipImages.GetMetadata();
 	textureData.resource = dxCommon_->CreateTextureResource(textureData.metadata);
 
+	std::wstring wFilePath = std::wstring(filePath.begin(), filePath.end());
+	textureData.resource->SetName((L"TextureResource_" + wFilePath).c_str());
+
 	dxCommon_->UploadTextureData(textureData.resource, mipImages);
 
 	textureData.srvIndex = srvManager_->Allocate();
