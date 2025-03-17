@@ -66,6 +66,7 @@ void SceneManager::Update()
 		// 
 		if (scene_)
 		{
+			scene_->Finalize();	
 			scene_.reset();
 			scene_ = nullptr;
 		}
