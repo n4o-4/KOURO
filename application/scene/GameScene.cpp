@@ -72,7 +72,6 @@ void GameScene::Initialize() {
 	player_->SetFollowCamera(cameraManager_->GetFollowCamera());
 
 	// 
-	fade_->Start(Fade::Status::FadeIn, 4.0f);	
 
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Grayscale); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Vignette); //完
@@ -411,9 +410,6 @@ void GameScene::Draw() {
 
 		DrawForegroundSprite();
 		/// 前景スプライト描画	
-
-		// フェード描画
-		DrawFade();
 
 		break;
 
