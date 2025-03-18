@@ -58,14 +58,14 @@ void BaseScene::DrawObject()
 
 void BaseScene::DrawBackgroundSprite()
 {
-	SpriteCommon::GetInstance()->SetView();
+	SpriteCommon::GetInstance()->SetBackgroundView();
 
 	SpriteCommon::GetInstance()->DrawBackground();
 }
 
 void BaseScene::DrawForegroundSprite()
 {
-	SpriteCommon::GetInstance()->SetView();
+	SpriteCommon::GetInstance()->SetForegroundView();
 
 	SpriteCommon::GetInstance()->DrawForeground();
 }
