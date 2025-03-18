@@ -32,20 +32,18 @@ void ParticleEmitter::Update()
 		
 		emitter.frequencyTime -= emitter.frequency;
 
-		for (std::unordered_map<std::string, ParticleManager::ParticleGroup>::iterator particleGroupIterator = particleGroups.begin(); particleGroupIterator != particleGroups.end();) {
+		if (particleGroups.find(name) != particleGroups.end())
+		{
+			ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count);
+		}
+
+		/*for (std::unordered_map<std::string, ParticleManager::ParticleGroup>::iterator particleGroupIterator = particleGroups.begin(); particleGroupIterator != particleGroups.end();) {
 
 			ParticleManager::ParticleGroup* particleGroup = &(particleGroupIterator->second);
-
-			/*for (std::list<ParticleManager::Particle>::iterator particleIterator = particleGroup->particles.begin(); particleIterator != particleGroup->particles.end();) {
-
-				
-
-				++particleIterator;
-			}*/
 
 			ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count);
 
 			++particleGroupIterator;
-		}
+		}*/
 	}
 }
