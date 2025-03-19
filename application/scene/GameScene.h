@@ -15,9 +15,11 @@
 #include "GroundTypeEnemy.h"
 #include "SkyTypeEnemy.h"
 #include "Spawn.h"
+#include <random>
 class GameScene : public BaseScene
 {
 private:
+	
 	//========================================
 	// ライトクラス
 	std::unique_ptr<DirectionalLight> directionalLight = nullptr;
@@ -105,5 +107,14 @@ private: //静的メンバ関数
 //	int numEnemiesToSpawn_ = 0; // 残った敵数
 //	std::string currentSpawnType_; // 現在スポーンする敵タイプ
 //	Vector3 spawnPosition_; // 敵のスポーン位置
+private:
+	
+	// 敵のスポーン範囲の設定
+	const float minX = -50.0f, maxX = 50.0f;
+	const float minY = 10.0f, maxY = 30.0f;  
+	const float minZ = -50.0f, maxZ = 50.0f;
 
+	// 난수 생성기
+	std::random_device rd;
+	std::mt19937 gen;
 };

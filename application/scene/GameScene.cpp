@@ -545,11 +545,21 @@ void GameScene::UpdateEnemyPopCommands() {
 			getline(line_stream, word, ',');
 			currentSpawnType_ = word;
 
+			float spawnRangeX = 10.0f;
+			float spawnRangeY = 5.0f;
+			float spawnRangeZ = 10.0f;
+
+			std::uniform_real_distribution<float> randomX(x - spawnRangeX, x + spawnRangeX);
+			std::uniform_real_distribution<float> randomY(y - spawnRangeY, y + spawnRangeY);
+			std::uniform_real_distribution<float> randomZ(z - spawnRangeZ, z + spawnRangeZ);
+
 			for (int i = 0; i < num; i++) {
 				if (currentSpawnType_ == "KUMO") {
-					SpawnEnemyKumo(Vector3(x, y, z));
+					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
+					SpawnEnemyKumo(randomPosition);
 				} else if (currentSpawnType_ == "BAT") {
-					SpawnEnemyBat(Vector3(x, y, z));
+					Vector3 randomPosition(randomX(gen), randomY(gen), randomZ(gen));
+					SpawnEnemyBat(randomPosition);
 				} else {
 					SpawnEnemy(Vector3(x, y, z));
 				}
