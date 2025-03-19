@@ -12,12 +12,13 @@ void BaseEnemy::Initialize(Model* model) {
     model_->Initialize(Object3dCommon::GetInstance());
     //========================================
     // モデルを読み込む
-    ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
     model_->SetModel(model);
     //========================================
     // 初期位置を設定
     worldTransform_ = std::make_unique<WorldTransform>();
     worldTransform_->Initialize();
+	spawnWorldTransform_ = std::make_unique<WorldTransform>();
+	spawnWorldTransform_->Initialize();
     //========================================
     // 当たり判定との同期
     BaseObject::Initialize(worldTransform_->transform.translate, 1.0f);
@@ -28,6 +29,8 @@ void BaseEnemy::Initialize(Model* model) {
 
     // スポーン位置の初期化
     spawnPosition_ = worldTransform_->transform.translate;
+
+	
 }
 
 ///=============================================================================
@@ -40,11 +43,11 @@ void BaseEnemy::Update() {
 
         // ワールド変換の更新
         worldTransform_->UpdateMatrix();
+
         // モデルのローカル行列を更新
         model_->SetLocalMatrix(MakeIdentity4x4());
         // モデルの更新
         model_->Update();
-
         //========================================
         // 当たり判定との同期
         BaseObject::Update(worldTransform_->transform.translate);

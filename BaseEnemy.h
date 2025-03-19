@@ -111,4 +111,10 @@ protected:
     std::list<std::unique_ptr<EnemyBullet>> bullets_;
     const float kIntervalTiem = 5.0f;
     float intervalCounter_ = 0.0f;
+
+    //Spawn model
+    std::unique_ptr<Object3d> spawnModel_ = nullptr;
+    //Spawn ワールド変換
+    std::unique_ptr<WorldTransform> spawnWorldTransform_ = nullptr;
+
 };

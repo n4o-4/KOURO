@@ -14,7 +14,7 @@
 #include "BaseEnemy.h"
 #include "GroundTypeEnemy.h"
 #include "SkyTypeEnemy.h"
-
+#include "Spawn.h"
 class GameScene : public BaseScene
 {
 private:
@@ -57,6 +57,8 @@ private:
 	//========================================
 	// 当たり判定マネージャ
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
+	//
+	std::vector<std::unique_ptr<Spawn>> spawns_;
 
 private:
 
@@ -88,5 +90,20 @@ private: //静的メンバ関数
 
 	// 敵の出現  
 	void SpawnEnemy(const Vector3& position);
+
+	void SpawnEnemyKumo(const Vector3& position);
+
+	void SpawnEnemyBat(const Vector3& position);
+
+	void SpawnSet(const Vector3& position);
+
+	std::string currentSpawnType_;
+
+//private: //csv
+//	std::vector<std::string> enemyPopData_; // CSVデータの保存
+//	size_t enemyPopIndex_ = 0; // 現在読んでいる行のインデックス
+//	int numEnemiesToSpawn_ = 0; // 残った敵数
+//	std::string currentSpawnType_; // 現在スポーンする敵タイプ
+//	Vector3 spawnPosition_; // 敵のスポーン位置
 
 };
