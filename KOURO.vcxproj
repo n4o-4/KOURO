@@ -84,6 +84,7 @@
     <ClCompile Include="SkyTypeEnemy.cpp" />
     <ClCompile Include="RadialBlur.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Spawn.cpp" />
     <ClCompile Include="Vignette.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +168,7 @@
     <ClInclude Include="SkyTypeEnemy.h" />
     <ClInclude Include="RadialBlur.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="Spawn.h" />
     <ClInclude Include="Vignette.h" />
   </ItemGroup>
   <ItemGroup>

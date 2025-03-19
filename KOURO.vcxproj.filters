@@ -96,6 +96,7 @@
     <ClCompile Include="Dissolve.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="LinearFog.cpp" />
+    <ClCompile Include="Spawn.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -179,6 +180,7 @@
     <ClInclude Include="Dissolve.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="LinearFog.h" />
+    <ClInclude Include="Spawn.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

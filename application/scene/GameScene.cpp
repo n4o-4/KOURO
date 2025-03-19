@@ -183,6 +183,10 @@ void GameScene::Update() {
 		//---------------------------------------
 		// 敵出現
 		UpdateEnemyPopCommands();
+		//spawnの更新
+		for (const auto &Spawn : spawns_) {
+			Spawn->Update();
+		}
 		// 敵リスト
 		for(const auto &enemy : enemies_) {
 			enemy->Update();
@@ -408,6 +412,14 @@ void GameScene::Draw() {
 			*pointLight.get(),
 			*spotLight.get());
 		//========================================
+		// spawnの描画
+		for (const auto& Spawn : spawns_) {
+			Spawn->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+				*directionalLight.get(),
+				*pointLight.get(),
+				*spotLight.get());
+		}
+		//========================================
 		// 敵
 		for(const auto &enemy : enemies_) {
 			enemy->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
@@ -510,7 +522,7 @@ void GameScene::Draw() {
 ///                        敵の出現データの読み込み
 void GameScene::LoadEnemyPopData() {
 	std::ifstream file;
-	file.open("./Resources/enemyPopSky.csv");
+	file.open("./Resources/enemySpawn.csv");
 	assert(file.is_open());
 
 	enemyPopCommands << file.rdbuf();
@@ -549,8 +561,34 @@ void GameScene::UpdateEnemyPopCommands() {
 
 			getline(line_stream, word, ',');
 			float z = (float)std::atof(word.c_str());
+			SpawnSet(Vector3(x, y, z));
 
-			SpawnEnemy(Vector3(x, y, z));
+			getline(line_stream, word, ',');
+			int num = std::stoi(word);
+
+			getline(line_stream, word, ',');
+			currentSpawnType_ = word;
+
+			float spawnRangeX = 10.0f;
+			float spawnRangeY = 5.0f;
+			float spawnRangeZ = 10.0f;
+
+			std::uniform_real_distribution<float> randomX(x - spawnRangeX, x + spawnRangeX);
+			std::uniform_real_distribution<float> randomY(y - spawnRangeY, y + spawnRangeY);
+			std::uniform_real_distribution<float> randomZ(z - spawnRangeZ, z + spawnRangeZ);
+
+			for (int i = 0; i < num; i++) {
+				if (currentSpawnType_ == "KUMO") {
+					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
+					SpawnEnemyKumo(randomPosition);
+				} else if (currentSpawnType_ == "BAT") {
+					Vector3 randomPosition(randomX(gen), randomY(gen), randomZ(gen));
+					SpawnEnemyBat(randomPosition);
+				} else {
+					SpawnEnemy(Vector3(x, y, z));
+				}
+			}
+			
 		} else if(word.find("WAIT") == 0) {
 
 			getline(line_stream, word, ',');
@@ -571,16 +609,43 @@ void GameScene::UpdateEnemyPopCommands() {
 ///                        敵の出現
 void GameScene::SpawnEnemy(const Vector3 &position) {
 
+	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<Enemy>();
+	if (auto* enemyNormal = dynamic_cast<Enemy*>(newEnemy.get())) {
+		enemyNormal->Initialize();
+		enemyNormal->SetPosition(position);
+		enemyNormal->SetTarget(player_->GetWorldTransform());
+	}
+	
+	enemies_.push_back(std::move(newEnemy));
+
+}
+
+void GameScene::SpawnEnemyKumo(const Vector3& position) {
+	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<GroundTypeEnemy>();
+	if (auto* enemyNormal = dynamic_cast<GroundTypeEnemy*>(newEnemy.get())) {
+		enemyNormal->Initialize();
+		enemyNormal->SetPosition(position);
+		enemyNormal->SetTarget(player_->GetWorldTransform());
+	}
+
+	enemies_.push_back(std::move(newEnemy));
+}
+
+void GameScene::SpawnEnemyBat(const Vector3& position) {
 	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<SkyTypeEnemy>();
 	if (auto* enemyNormal = dynamic_cast<SkyTypeEnemy*>(newEnemy.get())) {
 		enemyNormal->Initialize();
 		enemyNormal->SetPosition(position);
 		enemyNormal->SetTarget(player_->GetWorldTransform());
 	}
-	//newEnemy->SetPosition(position);
-	//newEnemy->SetGameScene(this);
-	//newEnemy->SetPlayer(player_);
-	//newEnemy->SetTarget(player_->GetWorldTransform());
-	enemies_.push_back(std::move(newEnemy));
 
+	enemies_.push_back(std::move(newEnemy));
+}
+
+void GameScene::SpawnSet(const Vector3& position) {
+	std::unique_ptr<Spawn> newSpawn = std::make_unique<Spawn>();
+	newSpawn->Initialize();
+	newSpawn->SetPosition(position);
+	spawns_.push_back(std::move(newSpawn));
+	
 }
