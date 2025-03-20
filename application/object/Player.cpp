@@ -418,8 +418,19 @@ bool Player::HandleBoost() {
 			// 向いている方向または入力方向に即座に最高速度で加速
 			Vector3 boostDirection;
 
+			// アナログスティック入力を合成
+			Vector3 stickInput = Input::GetInstance()->GetLeftStick();
+			Vector3 inputDirection = { 0.0f, 0.0f, 0.0f };	
+			inputDirection.x += stickInput.x;
+			inputDirection.z += stickInput.z;
+
+			// 入力がある場合はその方向
+			if (Length(inputDirection) > 0.0f) {
+				boostDirection = Normalize(inputDirection);
+			}
+
 			// 現在の速度がある場合はその方向、なければ向いている方向
-			if (Length(velocity_) > 0.01f) {
+			else if (Length(velocity_) > 0.01f) {
 				boostDirection = Normalize(velocity_);
 			} else {
 			}
