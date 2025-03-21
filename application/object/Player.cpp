@@ -418,11 +418,19 @@ bool Player::HandleBoost() {
 			// 向いている方向または入力方向に即座に最高速度で加速
 			Vector3 boostDirection;
 
+			Vector3 inputDirection = { 0.0f, 0.0f, 0.0f };	
 			// アナログスティック入力を合成
 			Vector3 stickInput = Input::GetInstance()->GetLeftStick();
-			Vector3 inputDirection = { 0.0f, 0.0f, 0.0f };	
 			inputDirection.x += stickInput.x;
 			inputDirection.z += stickInput.z;
+
+			Vector3 rotate = followCamera_->GetViewProjection().transform.rotate;
+
+			rotate.x = 0.0f;
+
+			Matrix4x4 rotateMatrix = MakeRotateMatrix(rotate);
+
+			inputDirection = TransformNormal(inputDirection, rotateMatrix);
 
 			// 入力がある場合はその方向
 			if (Length(inputDirection) > 0.0f) {
