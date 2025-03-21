@@ -183,10 +183,10 @@ void GameScene::Update() {
 		//---------------------------------------
 		// 敵出現
 		//UpdateEnemyPopCommands();
-		////spawnの更新
-		//for (const auto &Spawn : spawns_) {
-		//	Spawn->Update();
-		//}
+		//spawnの更新
+		for (const auto &Spawn : spawns_) {
+			Spawn->Update();
+		}
 		// 敵リスト
 		for(const auto &enemy : enemies_) {
 			enemy->Update();
@@ -413,12 +413,12 @@ void GameScene::Draw() {
 			*spotLight.get());
 		//========================================
 		// spawnの描画
-		/*for (const auto& Spawn : spawns_) {
+		for (const auto& Spawn : spawns_) {
 			Spawn->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 				*directionalLight.get(),
 				*pointLight.get(),
 				*spotLight.get());
-		}*/
+		}
 		//========================================
 		// 敵
 		for(const auto &enemy : enemies_) {
