@@ -13,7 +13,7 @@ public:
 private:
 	//Spawn model
 	std::unique_ptr<Object3d> spawnModel_ = nullptr;
-	//Spawn ƒ[ƒ‹ƒh•ÏŠ·
+	//Spawn ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½ÏŠï¿½
 	std::unique_ptr<WorldTransform> spawnWorldTransform_ = nullptr;
 };
 

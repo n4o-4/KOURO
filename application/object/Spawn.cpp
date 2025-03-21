@@ -3,7 +3,7 @@
 void Spawn::Initialize() {
 	spawnModel_ = std::make_unique<Object3d>();
 	spawnModel_->Initialize(Object3dCommon::GetInstance());
-	// ƒ‚ƒfƒ‹‚ð“Ç‚Ýž‚Þ
+	// ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ï¿½Ç‚Ýï¿½ï¿½ï¿½
 	ModelManager::GetInstance()->LoadModel("Spawn/Spawn.obj");
 	spawnModel_->SetModel(ModelManager::GetInstance()->FindModel("Spawn/Spawn.obj"));
 
