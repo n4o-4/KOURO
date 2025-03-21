@@ -20,6 +20,33 @@ void ParticleEmitter::Emit()
 
 }
 
+void ParticleEmitter::Emit(uint32_t count)
+{
+    // 一時的にカウントを保存
+    uint32_t originalCount = emitter.count;
+    // 指定されたカウント数に設定
+    emitter.count = count;
+    // 通常のEmitを呼び出し
+    Emit();
+    // 元のカウント数に戻す
+    emitter.count = originalCount;
+}
+
+void ParticleEmitter::SetPosition(const Vector3& position)
+{
+    emitter.transform.translate = position;
+}
+
+void ParticleEmitter::SetParticleCount(uint32_t count)
+{
+    emitter.count = count;
+}
+
+void ParticleEmitter::SetFrequency(float frequency)
+{
+    emitter.frequency = frequency;
+}
+
 void ParticleEmitter::Update()
 {
 

@@ -8,14 +8,31 @@
 // コンストラクタ実装
 PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelocity,
     const Vector3 &scale, const Vector3 &rotate, int lockLevel) {
+
+
+    //===================================================
+    isActive_ = true;  // 明示的にアクティブに設定
+
+    //===================================================
+    // 3Dモデルの初期化
     model_ = std::make_unique<Object3d>();
     model_->Initialize(Object3dCommon::GetInstance());
-
+    // モデルの読み込み
     ModelManager::GetInstance()->LoadModel("missile.obj");
     model_->SetModel("missile.obj");
 
-    isActive_ = true;  // 明示的にアクティブに設定
+    //===================================================
+    // パーティクルの初期化
+    ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png");
+	particleEmitterMissileSmoke_ = std::make_unique<ParticleEmitter>();
+	particleEmitterMissileSmoke_->Initialize("missileSmoke");
+    // パーティクル設定の調整
+    particleEmitterMissileSmoke_->SetParticleCount(4);   // デフォルト発生数
+    particleEmitterMissileSmoke_->SetFrequency(0.2f);    // より高頻度で発生させる
+	particleEmitterMissileSmoke_->Emit();
+	ParticleManager::GetInstance()->SetBlendMode("Add");
 
+    //===================================================
     // トランスフォームの初期化
     worldTransform_ = std::make_unique<WorldTransform>();
     worldTransform_->Initialize();
@@ -23,13 +40,16 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
     // 少し小さくしておく
     worldTransform_->transform.scale = { kMissileScaleXY, kMissileScaleXY, kMissileScaleZ };
     worldTransform_->transform.rotate = rotate;
-
+    
+    //===================================================
     // 初期速度の設定
     velocity_ = initialVelocity;
 
+    //===================================================
     // ロックオンレベルの保存
     lockLevel_ = lockLevel;
 
+    //===================================================
     // ロックオンレベルに応じた性能設定
     if (lockLevel_ == 2) {  // 精密ロックオン
         // 高性能ミサイルの設定
@@ -45,15 +65,18 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
         // 基本設定のままでよい
     }
 
+    //===================================================
     // ミサイル性能にランダムなばらつきを追加
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> dis(kPerformanceVariationMin, kPerformanceVariationMax);
     performanceVariation_ = dis(gen);
 
+    //===================================================
     // 前回視線ベクトルの初期化（初回はゼロでよい）
     prevLineOfSight_ = { 0, 0, 0 };
 
+    //===================================================
     // 簡易ロックオンの場合、発射時のターゲット位置を記録
     if (lockLevel_ == 1 && target_ && target_->GetHp() > 0) {
         targetPosition_ = target_->GetPosition();
@@ -102,6 +125,34 @@ void PlayerMissile::Update() {
     worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
     model_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
     worldTransform_->UpdateMatrix();
+
+    if (particleEmitterMissileSmoke_) {
+        // ミサイルの進行方向を取得
+        Vector3 direction = Normalize(velocity_);
+        
+        // 進行方向の逆向きにオフセットを適用して煙の発生位置を設定
+        Vector3 smokeOffset = direction * -0.5f;  // ミサイルの少し後ろに配置
+        
+        // エミッタの位置を更新
+        particleEmitterMissileSmoke_->SetPosition(worldTransform_->transform.translate + smokeOffset);
+        
+        //// 状態に応じて煙の量を調整
+        //int particleCount;
+        //if (state_ == BulletState::kLaunch) {
+        //    particleCount = 2;  // 発射初期は少なめ
+        //} else if (state_ == BulletState::kFinal) {
+        //    particleCount = 5;  // 最終接近段階では多め
+        //} else {
+        //    particleCount = 3;  // 通常追尾時
+        //}
+        //
+        //// 定期的にパーティクルを追加放出（通常のUpdateに加えて）
+        //if (lifeTime_ % 3 == 0) {
+        //    particleEmitterMissileSmoke_->Emit(particleCount);
+        //}
+        // パーティクルエミッタの更新
+        particleEmitterMissileSmoke_->Update();
+    }
 
     // 当たり判定の更新
     BaseObject::Update(worldTransform_->transform.translate);

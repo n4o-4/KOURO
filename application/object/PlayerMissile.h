@@ -189,6 +189,7 @@ private:
 
     //===================================================
     // メンバ変数
+    //---------------------------------------
     // 状態管理
     /// @brief 現在のミサイル状態
     BulletState state_ = BulletState::kLaunch;
@@ -198,7 +199,8 @@ private:
     bool isActive_ = true;
     /// @brief 経過時間（総フレーム数）
     int lifeTime_ = 0;
-    
+
+    //---------------------------------------
     // 物理量
     /// @brief 速度ベクトル
     Vector3 velocity_;
@@ -210,7 +212,8 @@ private:
     float rotationAngle_ = 0.0f;
     /// @brief 角速度
     float angularVelocity_ = 0.0f;
-    
+
+    //---------------------------------------
     // 誘導システム
     /// @brief 比例航法のゲイン
     float navigationGain_ = 0.001f;
@@ -218,39 +221,46 @@ private:
     Vector3 prevLineOfSight_;
     /// @brief 旋回性能の限界
     float maxTurnRate_ = 0.05f;
-    
+    //---------------------------------------
     // 近接信管
     /// @brief 近接信管の発動フラグ
     bool proximityFused_ = false;
     
+    //---------------------------------------
     // 性能要素
     /// @brief ミサイル性能のランダムばらつき（0.64〜1.28の範囲）
     float performanceVariation_;
     
-    // グラフィック
+    //---------------------------------------
+    // 3Dモデル関連
     /// @brief ミサイルの3Dモデル
     std::unique_ptr<Object3d> model_;
     /// @brief ワールド変換情報
     std::unique_ptr<WorldTransform> worldTransform_;
+
+    //---------------------------------------
+    // パーティクル
+    std::unique_ptr<ParticleEmitter> particleEmitterMissileSmoke_ = nullptr;
     
+    //---------------------------------------
     /// @brief ターゲット
     BaseEnemy *target_ = nullptr;
 
+    //---------------------------------------
     /// @brief ロックオンレベル（0:なし、1:簡易、2:精密）
     int lockLevel_ = 1;
-    
     /// @brief ターゲット固定位置（簡易ロックオン用）
     Vector3 targetPosition_;
+    // 着弾位置
+    /// @brief 着弾位置
+    Vector3 impactPosition_;
     
+    //---------------------------------------
     // 精密ロックオン用のパラメータ
     /// @brief 高性能ミサイル用の旋回性能係数
     float precisionTurnFactor_ = 0.8f;
     /// @brief 高性能ミサイル用の追跡性能係数
     float precisionTrackingFactor_ = 0.8f;
-
-    // 着弾位置
-    /// @brief 着弾位置
-    Vector3 impactPosition_;
 
     //===================================================
     // 内部メソッド

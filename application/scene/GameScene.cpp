@@ -24,6 +24,9 @@ void GameScene::Initialize() {
 	// 基底シーン
 	BaseScene::Initialize();
 	//========================================
+	// テクスチャの読み込み
+	
+	//========================================
 	// ライト
 	// 指向性
 	directionalLight = std::make_unique<DirectionalLight>();
@@ -254,6 +257,10 @@ void GameScene::Update() {
 
 		// 更新
 		collisionManager_->Update();
+
+		//========================================
+		// パーティクル
+		ParticleManager::GetInstance()->Update();
 		
 		//========================================
 		// フェードアウト
@@ -291,7 +298,8 @@ void GameScene::Update() {
 		ground_->Update();
 
 		//========================================
-		// 
+		// パーティクル
+		ParticleManager::GetInstance()->Update();
 
 		break;
 	case Phase::kMain:
@@ -385,7 +393,7 @@ void GameScene::Draw() {
 			*spotLight.get());
 
 		DrawForegroundSprite();
-		/// 前景スプライト描画	
+		/// 前景スプライト描画
 
 		// フェード描画
 		DrawFade();
@@ -447,7 +455,7 @@ void GameScene::Draw() {
 		collisionManager_->Draw();
 
 		DrawForegroundSprite();
-		/// 前景スプライト描画	
+		/// 前景スプライト描画
 
 		break;
 
@@ -502,6 +510,10 @@ void GameScene::Draw() {
 
 		// フェード描画
 		DrawFade();
+		
+		//========================================
+		//パーティクルの描画
+		ParticleManager::GetInstance()->Draw("Resources/circle.png");
 
 		break;
 
@@ -512,6 +524,9 @@ void GameScene::Draw() {
 
 		break;
 	}
+	//========================================
+	//パーティクルの描画
+	ParticleManager::GetInstance()->Draw("Resources/circle.png");	
 
 	//lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
 }
