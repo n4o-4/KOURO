@@ -127,6 +127,14 @@ void PostEffect::ApplyEffect(EffectType type)
 
 		newEffect->effect->SetCameraManager(cameraManager_);
 	}
+	else if (type == EffectType::MotionBlur)
+	{
+		newEffect->effect = std::make_unique<MotionBlur>();
+		newEffect->effect->Initialize(dxCommon_, srvManager_);
+
+		newEffect->effect->SetCameraManager(cameraManager_);
+	}
+
 
 	newEffect->type = type;
 

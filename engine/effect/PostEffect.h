@@ -18,6 +18,7 @@
 #include "Dissolve.h"
 #include "Random.h"
 #include "LinearFog.h"
+#include "MotionBlur.h"
 
 class PostEffect
 {
@@ -55,6 +56,9 @@ public:
 
 		// LinearFog
 		LinearFog,
+
+		// MotionBlur
+		MotionBlur,
 
 		// ↑↑↑追加↑↑↑
 
