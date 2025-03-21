@@ -88,7 +88,7 @@ void Framework::Initialize()
 	* ParticleManagerの初期化
 	-----------------------------------*/
 
-	ParticleManager::GetInstance()->Initialize(dxCommon_, srvManager.get(), Camera::GetInstance());
+	ParticleManager::GetInstance()->Initialize(dxCommon_, srvManager.get());
 	//ParticleManager::GetInstance()->CreateParticleGroup("particle", "Resources/circle.png");
 
 	/*-----------------------------------

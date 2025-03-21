@@ -1,7 +1,7 @@
 #include "BaseScene.h"
 #include "AudioManager.h"
-
 #include "SceneManager.h"
+#include "ParticleManager.h"
 
 void BaseScene::Initialize()
 {
@@ -21,6 +21,8 @@ void BaseScene::Initialize()
 	Input::GetInstance()->SetIsReception(false);
 
 	sceneManager_->GetPostEffect()->SetCameraManager(cameraManager_.get());
+
+	ParticleManager::GetInstance()->SetCameraManager(cameraManager_.get());
 }
 
 void BaseScene::Finalize()

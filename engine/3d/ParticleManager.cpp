@@ -13,7 +13,7 @@ ParticleManager* ParticleManager::GetInstance()
 	return instance.get();
 }
 
-void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager,Camera* camera)
+void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
 	/*----------------------------------------------------------
 	* 引数をメンバ変数に記録
@@ -21,7 +21,6 @@ void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager
 
 	dxCommon_ = dxCommon;
 	srvManager_ = srvManager;
-	camera_ = camera;
 
 	accelerationField.acceleration = { -8.0f,0.0f,0.0f };
 	accelerationField.area.min = { -1.0f,-1.0f,-1.0f };
@@ -73,9 +72,9 @@ void ParticleManager::Update()
 	----------------------------------------------------------*/
 	calculationBillboardMatrix();
 
-	Matrix4x4 viewMatrix = camera_->GetViewProjection().matView_;
+	Matrix4x4 viewMatrix = cameraManager_->GetActiveCamera()->GetViewProjection().matView_;
 
-	Matrix4x4 projectionMatrix = camera_->GetViewProjection().matProjection_;
+	Matrix4x4 projectionMatrix = cameraManager_->GetActiveCamera()->GetViewProjection().matProjection_;
 
 	for (std::unordered_map<std::string, ParticleGroup>::iterator particleGroupIterator = particleGroups.begin(); particleGroupIterator != particleGroups.end();) {
 
@@ -594,7 +593,7 @@ void ParticleManager::calculationBillboardMatrix()
 {
 	Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
 
-	billboardMatrix = Multiply(backToFrontMatrix, camera_->GetWorldMatrix());
+	billboardMatrix = Multiply(backToFrontMatrix, cameraManager_->GetActiveCamera()->GetViewProjection().matWorld_);
 
 	billboardMatrix.m[3][0] = 0.0f;
 	billboardMatrix.m[3][1] = 0.0f;
