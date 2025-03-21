@@ -55,10 +55,13 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
     prevLineOfSight_ = { 0, 0, 0 };
 
     // 簡易ロックオンの場合、発射時のターゲット位置を記録
-    if (target_ && target_->GetHp() > 0) {
+    if (lockLevel_ == 1 && target_ && target_->GetHp() > 0) {
         targetPosition_ = target_->GetPosition();
         // impactPosition_にも同じ値を設定
         impactPosition_ = targetPosition_;
+    } else if (lockLevel_ == 2 && target_ && target_->GetHp() > 0) {
+        // 精密ロックオンの場合はターゲットの位置に向かって飛ぶ
+        impactPosition_ = target_->GetPosition();
     }
 
     //========================================
@@ -70,6 +73,12 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 void PlayerMissile::Update() {
 	// ライフタイムを更新
 	lifeTime_++;
+
+    // 精密ロックオン時のターゲット位置更新
+    if (lockLevel_ == 2 && target_ && target_->GetHp() > 0) {
+        // 継続的にターゲット位置を更新
+        impactPosition_ = target_->GetPosition();
+    }
 
 	// 状態に応じた更新処理
 	switch(state_) {
@@ -99,24 +108,6 @@ void PlayerMissile::Update() {
 	if(lifeTime_ > kLifeTimeLimit) {
 		isActive_ = false;
 	}
-
-    // ターゲットが無効になった場合のチェック
-    if(target_ && target_->GetHp() <= 0) {
-        // ターゲットが無効になった瞬間の位置を記録
-        if (lockLevel_ == 2) {
-            // 精密ロックオンの場合は最後の位置を記録
-            targetPosition_ = target_->GetPosition();
-        }
-        // ターゲットを無効化
-        target_ = nullptr;
-
-        // 状態が最終状態でない場合
-        if(state_ == BulletState::kTracking) {
-            // 簡易ロックオン（lockLevel_ = 1）の場合、記録位置へ飛ぶ
-            // 精密ロックオン（lockLevel_ = 2）の場合も最後の位置へ向かう
-            // 設定済みのtargetPosition_に向かうので特に処理は不要
-        }
-    }
 }
 
 // 発射初期状態の更新

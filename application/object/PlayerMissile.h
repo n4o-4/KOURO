@@ -81,11 +81,11 @@ private:
     
     // ロックオン関連の定数
     /// @brief 精密ロックオン時の旋回性能向上係数
-    static constexpr float kPrecisionTurnFactor = 0.7f;
+    static constexpr float kPrecisionTurnFactor = 0.85f;  // 0.7fから上げる
     /// @brief 精密ロックオン時の追跡性能向上係数
-    static constexpr float kPrecisionTrackingFactor = 1.3f;
+    static constexpr float kPrecisionTrackingFactor = 1.5f;  // 1.3fから上げる
     /// @brief 精密ロックオン時の速度増加係数
-    static constexpr float kPrecisionSpeedFactor = 1.2f;
+    static constexpr float kPrecisionSpeedFactor = 1.35f;  // 1.2fから上げる
     
     // ミサイル性能のランダム性関連
     /// @brief 性能ばらつきの最小値
@@ -95,11 +95,11 @@ private:
     
     // 発射初期段階のパラメータ
     /// @brief 発射初期段階の持続時間
-    static const int kLaunchStateTransitionTime = 60;
+    static const int kLaunchStateTransitionTime = 50;  // 60から減らす
     /// @brief 初期速度の増加率の調整用
     static constexpr float kLaunchSpeedDivider = 40.0f;
     /// @brief 発射直後の初期速度
-    static constexpr float kInitialSpeed = 0.3f;
+    static constexpr float kInitialSpeed = 0.4f;  // 0.3fから上げる
     /// @brief 初期状態での速度増加量
     static constexpr float kSpeedIncreaseFactor = 0.15f;
     /// @brief 慣性飛行の持続時間（フレーム数）
@@ -113,15 +113,15 @@ private:
     /// @brief 弧を描く動きの速さ
     static constexpr float kArcOscillationSpeed = 0.02f;
     /// @brief 弧の大きさ
-    static constexpr float kArcStrength = 0.01f;
+    static constexpr float kArcStrength = 0.008f;  // 0.01fから減らす
     /// @brief 精密ロックオン時の弧の速さ係数
     static constexpr float kPrecisionArcSpeedFactor = 0.5f;
     /// @brief 精密ロックオン時の弧の強さ係数
     static constexpr float kPrecisionArcStrengthFactor = 0.4f;
     /// @brief 簡易ロックオン時の最大旋回率係数
-    static constexpr float kBasicTurnRateFactor = 0.7f;
+    static constexpr float kBasicTurnRateFactor = 0.8f;  // 0.7fから上げる
     /// @brief 追尾時の基本速度
-    static constexpr float kBaseTrackingSpeed = 3.8f;
+    static constexpr float kBaseTrackingSpeed = 4.2f;  // 3.8fから上げる
     /// @brief 簡易ロックオン時の旋回率
     static constexpr float kBasicTurnRate = 0.05f;
     /// @brief 簡易ロックオン時の最終フェーズへの移行フレーム数
@@ -133,21 +133,21 @@ private:
     /// @brief 時間経過による速度増加の調整用
     static constexpr float kSpeedIncreaseDivider = 30.0f;
     /// @brief 比例航法（PN）のナビゲーションゲイン
-    static constexpr float kNavigationGain = 3.0f;
+    static constexpr float kNavigationGain = 3.5f;  // 3.0fから上げる
     /// @brief ターゲットに接近したと判断する距離
     static constexpr float kFinalStateTransitionDistance = 15.0f;
     /// @brief 追尾状態の最大時間（フレーム数）
-    static const int kAutoFinalStateTransitionTime = 60;
+    static const int kAutoFinalStateTransitionTime = 70;  // 60から増やす
     /// @brief 追尾遅延のシミュレーション係数（小さいほど反応が遅い）
-    static constexpr float kTrackingDelayFactor = 1.85f;
+    static constexpr float kTrackingDelayFactor = 2.0f;  // 1.85fから上げる
     /// @brief 滑らかさ調整係数（小さいほど滑らかに変化）
-    static constexpr float kSmoothingFactor = 0.15f;
+    static constexpr float kSmoothingFactor = 0.18f;  // 0.15fから上げる
     /// @brief 旋回制限係数（小さいほど緩やかに旋回）
     static constexpr float kTurnLimitFactor = 0.7f;
 
     // 最終接近段階のパラメータ
     /// @brief 最終接近時の基本速度
-    static constexpr float kBaseFinalSpeed = 1.8f;
+    static constexpr float kBaseFinalSpeed = 2.1f;  // 1.8fから上げる
     /// @brief 時間経過による最終速度の増加量
     static constexpr float kMaxFinalSpeedIncrease = 0.7f;
     /// @brief 時間経過による最終速度増加の調整用
@@ -167,7 +167,7 @@ private:
     /// @brief 曲線運動の振動速度
     static constexpr float kCurveOscillationSpeed = 0.025f;
     /// @brief 曲線運動の強さ
-    static constexpr float kCurveStrength = 0.03f;
+    static constexpr float kCurveStrength = 0.025f;  // 0.03fから減らす
     /// @brief 垂直方向成分の影響度
     static constexpr float kVelocityPerpWeight = 0.01f;
     /// @brief 比例航法のゲイン減少係数
@@ -185,7 +185,7 @@ private:
 
     // 近接信管関連
     /// @brief 近接信管の発動距離
-    static constexpr float kProximityFuseDistance = 3.0f;
+    static constexpr float kProximityFuseDistance = 0.1f;
 
     //===================================================
     // メンバ変数
@@ -244,9 +244,9 @@ private:
     
     // 精密ロックオン用のパラメータ
     /// @brief 高性能ミサイル用の旋回性能係数
-    float precisionTurnFactor_ = 1.0f;
+    float precisionTurnFactor_ = 0.8f;
     /// @brief 高性能ミサイル用の追跡性能係数
-    float precisionTrackingFactor_ = 1.0f;
+    float precisionTrackingFactor_ = 0.8f;
 
     // 着弾位置
     /// @brief 着弾位置
