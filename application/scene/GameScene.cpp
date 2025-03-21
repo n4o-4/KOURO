@@ -182,7 +182,7 @@ void GameScene::Update() {
 		ground_->Update();
 		//---------------------------------------
 		// 敵出現
-		//UpdateEnemyPopCommands();
+		UpdateEnemyPopCommands();
 		//spawnの更新
 		for (const auto &Spawn : spawns_) {
 			Spawn->Update();
