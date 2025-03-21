@@ -71,8 +71,13 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 
 
 void PlayerMissile::Update() {
-	// ライフタイムを更新
-	lifeTime_++;
+    // 非アクティブなら処理しない
+    if (!isActive_) {
+        return;
+    }
+
+    // ライフタイムを更新
+    lifeTime_++;
 
     // 精密ロックオン時のターゲット位置更新
     if (lockLevel_ == 2 && target_ && target_->GetHp() > 0) {
@@ -80,34 +85,34 @@ void PlayerMissile::Update() {
         impactPosition_ = target_->GetPosition();
     }
 
-	// 状態に応じた更新処理
-	switch(state_) {
-	case BulletState::kLaunch:
-		UpdateLaunchState();
-		break;
-	case BulletState::kTracking:
-		UpdateTrackingState();
-		break;
-	case BulletState::kFinal:
-		UpdateFinalState();
-		break;
-	} 
+    // 状態に応じた更新処理
+    switch(state_) {
+    case BulletState::kLaunch:
+        UpdateLaunchState();
+        break;
+    case BulletState::kTracking:
+        UpdateTrackingState();
+        break;
+    case BulletState::kFinal:
+        UpdateFinalState();
+        break;
+    } 
 
-	// 位置の更新
-	worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
-	model_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
-	worldTransform_->UpdateMatrix();
+    // 位置の更新
+    worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
+    model_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
+    worldTransform_->UpdateMatrix();
 
-	// 当たり判定の更新
-	BaseObject::Update(worldTransform_->transform.translate);
+    // 当たり判定の更新
+    BaseObject::Update(worldTransform_->transform.translate);
 
-	// 近接信管の処理
-	ApplyProximityFuse();
+    // 近接信管の処理
+    ApplyProximityFuse();
 
-	// ライフタイム経過によるチェック（寿命）
-	if(lifeTime_ > kLifeTimeLimit) {
-		isActive_ = false;
-	}
+    // ライフタイム経過によるチェック（寿命）
+    if(lifeTime_ > kLifeTimeLimit) {
+        isActive_ = false;
+    }
 }
 
 // 発射初期状態の更新
