@@ -108,7 +108,7 @@ private:
     // s“®ó‘Ô
     ActionState currentState_ = ActionState::Wander;
 
-   
+
 
 
 };

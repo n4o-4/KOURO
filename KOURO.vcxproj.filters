@@ -99,6 +99,7 @@
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="application\object\Spawn.cpp" />
     <ClCompile Include="MotionBlur.cpp" />
+    <ClCompile Include="GroundTypeEnemy2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -184,6 +185,7 @@
     <ClInclude Include="engine\effect\LinearFog.h" />
     <ClInclude Include="application\object\Spawn.h" />
     <ClInclude Include="MotionBlur.h" />
+    <ClInclude Include="GroundTypeEnemy2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

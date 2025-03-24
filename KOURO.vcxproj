@@ -58,6 +58,7 @@
     <ClCompile Include="engine\effect\Grayscale.cpp" />
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="engine\effect\LuminanceBasedOutline.cpp" />
+    <ClCompile Include="GroundTypeEnemy2.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="engine\effect\Random.h" />
     <ClInclude Include="application\object\Spawn.h" />
     <ClInclude Include="engine\effect\Vignette.h" />
+    <ClInclude Include="GroundTypeEnemy2.h" />
     <ClInclude Include="MotionBlur.h" />
   </ItemGroup>
   <ItemGroup>
