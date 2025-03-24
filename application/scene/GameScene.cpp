@@ -24,6 +24,9 @@ void GameScene::Initialize() {
 	// 基底シーン
 	BaseScene::Initialize();
 	//========================================
+	// テクスチャの読み込み
+	
+	//========================================
 	// ライト
 	// 指向性
 	directionalLight = std::make_unique<DirectionalLight>();
@@ -107,6 +110,8 @@ void GameScene::Initialize() {
 ///=============================================================================
 ///						終了処理
 void GameScene::Finalize() {
+	BaseScene::Finalize();
+
 	skyDome_.reset();
 	ground_.reset();
 
@@ -202,6 +207,16 @@ void GameScene::Update() {
 						if(lockOnSystem_) {
 							lockOnSystem_->RemoveLockedEnemy(enemy.get());
 						}
+
+						// 削除したエネミーをターゲットに持つプレイヤーのミサイルのターゲットをnullptrに設定
+						for (auto it = player_->GetBullets().begin(); it != player_->GetBullets().end(); ++it) {
+
+							if (it->get()->GetTarget() == enemy.get())
+							{
+								it->get()->SetTarget(nullptr);
+							}
+						}
+
 						return true; // 削除する
 					}
 					return false; // 削除しない
@@ -254,6 +269,10 @@ void GameScene::Update() {
 
 		// 更新
 		collisionManager_->Update();
+
+		//========================================
+		// パーティクル
+		ParticleManager::GetInstance()->Update();
 		
 		//========================================
 		// フェードアウト
@@ -291,7 +310,8 @@ void GameScene::Update() {
 		ground_->Update();
 
 		//========================================
-		// 
+		// パーティクル
+		ParticleManager::GetInstance()->Update();
 
 		break;
 	case Phase::kMain:
@@ -385,7 +405,7 @@ void GameScene::Draw() {
 			*spotLight.get());
 
 		DrawForegroundSprite();
-		/// 前景スプライト描画	
+		/// 前景スプライト描画
 
 		// フェード描画
 		DrawFade();
@@ -447,7 +467,7 @@ void GameScene::Draw() {
 		collisionManager_->Draw();
 
 		DrawForegroundSprite();
-		/// 前景スプライト描画	
+		/// 前景スプライト描画
 
 		break;
 
@@ -502,6 +522,7 @@ void GameScene::Draw() {
 
 		// フェード描画
 		DrawFade();
+	
 
 		break;
 
@@ -512,6 +533,9 @@ void GameScene::Draw() {
 
 		break;
 	}
+	//========================================
+	//パーティクルの描画
+	ParticleManager::GetInstance()->Draw("Resources/circle.png");	
 
 	//lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
 }

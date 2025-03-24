@@ -8,14 +8,31 @@
 // コンストラクタ実装
 PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelocity,
     const Vector3 &scale, const Vector3 &rotate, int lockLevel) {
+
+
+    //===================================================
+    isActive_ = true;  // 明示的にアクティブに設定
+
+    //===================================================
+    // 3Dモデルの初期化
     model_ = std::make_unique<Object3d>();
     model_->Initialize(Object3dCommon::GetInstance());
-
+    // モデルの読み込み
     ModelManager::GetInstance()->LoadModel("missile.obj");
     model_->SetModel("missile.obj");
 
-    isActive_ = true;  // 明示的にアクティブに設定
+    //===================================================
+    // パーティクルの初期化
+    ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png");
+	particleEmitterMissileSmoke_ = std::make_unique<ParticleEmitter>();
+	particleEmitterMissileSmoke_->Initialize("missileSmoke");
+    // パーティクル設定の調整
+    particleEmitterMissileSmoke_->SetParticleCount(2);   // デフォルト発生数
+    particleEmitterMissileSmoke_->SetFrequency(0.04f);    // より高頻度で発生させる
+	particleEmitterMissileSmoke_->Emit();
+	ParticleManager::GetInstance()->SetBlendMode("Add");
 
+    //===================================================
     // トランスフォームの初期化
     worldTransform_ = std::make_unique<WorldTransform>();
     worldTransform_->Initialize();
@@ -23,13 +40,16 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
     // 少し小さくしておく
     worldTransform_->transform.scale = { kMissileScaleXY, kMissileScaleXY, kMissileScaleZ };
     worldTransform_->transform.rotate = rotate;
-
+    
+    //===================================================
     // 初期速度の設定
     velocity_ = initialVelocity;
 
+    //===================================================
     // ロックオンレベルの保存
     lockLevel_ = lockLevel;
 
+    //===================================================
     // ロックオンレベルに応じた性能設定
     if (lockLevel_ == 2) {  // 精密ロックオン
         // 高性能ミサイルの設定
@@ -45,21 +65,24 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
         // 基本設定のままでよい
     }
 
+    //===================================================
     // ミサイル性能にランダムなばらつきを追加
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> dis(kPerformanceVariationMin, kPerformanceVariationMax);
     performanceVariation_ = dis(gen);
 
+    //===================================================
     // 前回視線ベクトルの初期化（初回はゼロでよい）
     prevLineOfSight_ = { 0, 0, 0 };
 
+    //===================================================
     // 簡易ロックオンの場合、発射時のターゲット位置を記録
-    if (lockLevel_ == 1 && target_ && target_->GetHp() > 0) {
+    if (lockLevel_ == 1 && target_) {
         targetPosition_ = target_->GetPosition();
         // impactPosition_にも同じ値を設定
         impactPosition_ = targetPosition_;
-    } else if (lockLevel_ == 2 && target_ && target_->GetHp() > 0) {
+    } else if (lockLevel_ == 2 && target_) {
         // 精密ロックオンの場合はターゲットの位置に向かって飛ぶ
         impactPosition_ = target_->GetPosition();
     }
@@ -71,43 +94,62 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 
 
 void PlayerMissile::Update() {
-	// ライフタイムを更新
-	lifeTime_++;
+    // ライフタイムを更新
+    lifeTime_++;
+
+    // ライフタイム経過によるチェック（寿命）
+    if(lifeTime_ > kLifeTimeLimit) {
+        isActive_ = false;
+    }
+
+    // 非アクティブなら処理しない
+    if (!isActive_) {
+        return;
+    }
 
     // 精密ロックオン時のターゲット位置更新
-    if (lockLevel_ == 2 && target_ && target_->GetHp() > 0) {
+    if (lockLevel_ == 2 && target_) {
         // 継続的にターゲット位置を更新
         impactPosition_ = target_->GetPosition();
     }
 
-	// 状態に応じた更新処理
-	switch(state_) {
-	case BulletState::kLaunch:
-		UpdateLaunchState();
-		break;
-	case BulletState::kTracking:
-		UpdateTrackingState();
-		break;
-	case BulletState::kFinal:
-		UpdateFinalState();
-		break;
-	} 
+    // 状態に応じた更新処理
+    switch(state_) {
+    case BulletState::kLaunch:
+        UpdateLaunchState();
+        break;
+    case BulletState::kTracking:
+        UpdateTrackingState();
+        break;
+    case BulletState::kFinal:
+        UpdateFinalState();
+        break;
+    } 
 
-	// 位置の更新
-	worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
-	model_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
-	worldTransform_->UpdateMatrix();
+    // 位置の更新
+    worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
+    model_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
+    worldTransform_->UpdateMatrix();
 
-	// 当たり判定の更新
-	BaseObject::Update(worldTransform_->transform.translate);
+    if (particleEmitterMissileSmoke_) {
+        // ミサイルの進行方向を取得
+        Vector3 direction = Normalize(velocity_);
+        
+        // 進行方向の逆向きにオフセットを適用して煙の発生位置を設定
+        Vector3 smokeOffset = direction * -0.5f;  // ミサイルの少し後ろに配置
+        
+        // エミッタの位置を更新
+        particleEmitterMissileSmoke_->SetPosition(worldTransform_->transform.translate + smokeOffset);
 
-	// 近接信管の処理
-	ApplyProximityFuse();
+        // パーティクルエミッタの更新
+        particleEmitterMissileSmoke_->Update();
+    }
 
-	// ライフタイム経過によるチェック（寿命）
-	if(lifeTime_ > kLifeTimeLimit) {
-		isActive_ = false;
-	}
+    // 当たり判定の更新
+    BaseObject::Update(worldTransform_->transform.translate);
+
+    // 近接信管の処理
+    ApplyProximityFuse();
 }
 
 // 発射初期状態の更新
@@ -122,7 +164,7 @@ void PlayerMissile::UpdateLaunchState() {
 		velocity_ = Normalize(velocity_) * ( kInitialSpeed + launchSpeedFactor * 0.1f );
 	} else {
 		// 徐々に目標方向へ旋回を開始
-		if(target_ && target_->GetHp() > 0) {
+		if(target_) {
 			// ターゲットへの方向ベクトル
 			Vector3 targetPos = impactPosition_;
 			Vector3 direction = targetPos - worldTransform_->transform.translate;
@@ -165,7 +207,7 @@ void PlayerMissile::UpdateLaunchState() {
 		stateTimer_ = 0;
 
 		// 前回の視線方向を初期化（追尾状態開始時）
-		if(target_ && target_->GetHp() > 0) {
+		if(target_) {
 			prevLineOfSight_ = impactPosition_ - worldTransform_->transform.translate;
 		}
 	}
@@ -175,7 +217,7 @@ void PlayerMissile::UpdateLaunchState() {
 void PlayerMissile::UpdateTrackingState() {
     stateTimer_++;
 
-    if(target_ && target_->GetHp() > 0) {
+    if(target_) {
         // ターゲットの位置を取得
         Vector3 targetPos = impactPosition_;
         Vector3 myPos = worldTransform_->transform.translate;
@@ -262,7 +304,8 @@ void PlayerMissile::UpdateTrackingState() {
 void PlayerMissile::UpdateFinalState() {
     stateTimer_++;
 
-    if(target_ && target_->GetHp() > 0) {
+	// FIXME : ここから下の処理は、実装が不完全です｡例外スローあり｡
+    if(target_) {
         // ターゲットへの方向
         Vector3 targetPos = impactPosition_;
         Vector3 myPos = worldTransform_->transform.translate;
@@ -324,7 +367,7 @@ void PlayerMissile::UpdateFinalState() {
 
 // 視線ベクトル（LOS: Line of Sight）の計算
 Vector3 PlayerMissile::CalculateLOS() {
-	if(!target_ || target_->GetHp() <= 0) {
+	if(!target_) {
 		return Normalize(velocity_); // ターゲットがない場合は現在の進行方向
 	}
 
@@ -335,7 +378,7 @@ Vector3 PlayerMissile::CalculateLOS() {
 
 // 視線角速度（LOS Rate）の計算
 Vector3 PlayerMissile::CalculateLOSRate() {
-	if(!target_ || target_->GetHp() <= 0) {
+	if(!target_) {
 		return Vector3{ 0, 0, 0 }; // ターゲットがない場合はゼロ
 	}
 
@@ -353,7 +396,7 @@ Vector3 PlayerMissile::CalculateLOSRate() {
 
 // 比例航法ベクトルの計算（PN: Proportional Navigation）
 Vector3 PlayerMissile::CalculateNavigationVector() {
-    if(!target_ || target_->GetHp() <= 0) {
+    if(!target_) {
         return Vector3{ 0, 0, 0 };
     }
 
@@ -412,7 +455,7 @@ Vector3 PlayerMissile::CalculateNavigationVector() {
 
 // 近接信管の処理
 void PlayerMissile::ApplyProximityFuse() {
-	if(!target_ || target_->GetHp() <= 0 || proximityFused_) {
+	if(!target_) {
 		return;
 	}
 

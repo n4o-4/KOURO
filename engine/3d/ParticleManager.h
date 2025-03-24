@@ -8,7 +8,7 @@
 #include "Camera.h"
 #include <random>
 #include <array>
-
+#include "CameraManager.h"
 
 class ParticleManager
 {
@@ -90,7 +90,7 @@ public:
 public:
 	static ParticleManager* GetInstance();
 
-	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager,Camera* camera);
+	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
 	void Update();
 
@@ -132,6 +132,8 @@ public:
 	}
 
 	void SetBlendMode(std::string sBlendMode);
+
+	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
 
 private:
 	static std::unique_ptr<ParticleManager> instance;
@@ -179,7 +181,7 @@ private:
 
 	DirectXCommon* dxCommon_ = nullptr;
 	SrvManager* srvManager_ = nullptr;
-	Camera* camera_ = nullptr;
+	CameraManager* cameraManager_ = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState = nullptr;
@@ -197,7 +199,7 @@ private:
 
 	std::unordered_map<std::string, ParticleGroup> particleGroups;
 
-	const uint32_t kNumMaxInstance = 100;
+	const uint32_t kNumMaxInstance = 10000;
 
 	std::mt19937 randomEngine;
 

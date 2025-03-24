@@ -333,13 +333,13 @@ void Player::Shoot() {
 	Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };
 	Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };
 
-	if (lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
-		for (BaseEnemy* enemy : lockOnSystem_->GetLockedEnemies()) {
-			if (!enemy) continue;
-
-			// 敵ごとのロックオンレベルを取得
-			LockOn::LockLevel lockLevel = lockOnSystem_->GetLockLevel(enemy);
-			int lockLevelValue = static_cast<int>(lockLevel);  // 数値に変換
+    if (lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
+        for (BaseEnemy* enemy : lockOnSystem_->GetLockedEnemies()) {
+            if (!enemy) continue;
+			
+            // 敵ごとのロックオンレベルを取得
+            LockOn::LockLevel lockLevel = lockOnSystem_->GetLockLevel(enemy);
+            int lockLevelValue = static_cast<int>(lockLevel);  // 数値に変換
 
 			Vector3 enemyPos = enemy->GetPosition();
 			Vector3 direction = Normalize(enemyPos - bulletPos);
