@@ -50,6 +50,23 @@ void Player::Update() {
 	// ジャンプ処理
 	UpdateJump();
 
+	// ブースト回転中処理
+	if (isBoostSpinning_) {
+		boostSpin_ += 0.4f;
+		boostSpinFrame_++;
+
+		if (boostSpin_ >= 2.0f * 3.14159265f || boostSpinFrame_ >= 16) { // 16フレーム（約0.26秒）で1回転想定
+			boostSpin_ = 0.0f;
+			isBoostSpinning_ = false;
+			boostSpinFrame_ = 0;
+
+			// ❗滑らかに戻さず、ピタッと元の角度へ
+			objectTransform_->transform.rotate.x = 0.0f;
+		} else {
+			objectTransform_->transform.rotate.x += 0.4f;
+		}
+	}
+
 	objectTransform_->UpdateMatrix();// 行列更新
 	object3d_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 	object3d_->Update();// 更新
@@ -91,9 +108,12 @@ void Player::DrawImGui() {
 	ImGui::Begin("Player Status");
 
 	Vector3 pos = objectTransform_->transform.translate;
+	Vector3 rot = objectTransform_->transform.rotate;
 	Vector3 vel = velocity_;
 	ImGui::Text("Position: (%.2f, %.2f, %.2f)", pos.x, pos.y, pos.z);
+	ImGui::Text("Rotation: (%.2f, %.2f, %.2f)", rot.x, rot.y, rot.z);
 	ImGui::Text("Velocity: (%.2f, %.2f, %.2f)", vel.x, vel.y, vel.z);
+
 	ImGui::Text("Speed: %.2f", Length(vel));
 	ImGui::Text("Boost: %.1f / %.1f", currentBoostTime_, maxBoostTime_);
 	ImGui::Text("Is Jumping: %s", isJumping_ ? "Yes" : "No");
@@ -276,7 +296,7 @@ void Player::UpdateBullets() {
 	}
 	// 画面外に出た弾を削除
 	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(),
-		[](const std::unique_ptr<PlayerMissile> &bullet) { return !bullet->IsActive(); }),
+		[](const std::unique_ptr<PlayerMissile>& bullet) { return !bullet->IsActive(); }),
 		bullets_.end());
 
 	//マシンガンの弾の更新
@@ -309,56 +329,56 @@ void Player::UpdateBullets() {
 }
 ///                        射撃
 void Player::Shoot() {
-    Vector3 bulletPos = objectTransform_->transform.translate;
-    Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };
-    Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };
+	Vector3 bulletPos = objectTransform_->transform.translate;
+	Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };
+	Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };
 
-    if (lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
-        for (BaseEnemy* enemy : lockOnSystem_->GetLockedEnemies()) {
-            if (!enemy) continue;
+	if (lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
+		for (BaseEnemy* enemy : lockOnSystem_->GetLockedEnemies()) {
+			if (!enemy) continue;
 
-            // 敵ごとのロックオンレベルを取得
-            LockOn::LockLevel lockLevel = lockOnSystem_->GetLockLevel(enemy);
-            int lockLevelValue = static_cast<int>(lockLevel);  // 数値に変換
+			// 敵ごとのロックオンレベルを取得
+			LockOn::LockLevel lockLevel = lockOnSystem_->GetLockLevel(enemy);
+			int lockLevelValue = static_cast<int>(lockLevel);  // 数値に変換
 
-            Vector3 enemyPos = enemy->GetPosition();
-            Vector3 direction = Normalize(enemyPos - bulletPos);
+			Vector3 enemyPos = enemy->GetPosition();
+			Vector3 direction = Normalize(enemyPos - bulletPos);
 
-            // ロックオンレベルに応じて初速と挙動を変更
-            Vector3 initialVelocity;
-            if (lockLevel == LockOn::LockLevel::PreciseLock) {
-                // 精密ロックオン：より直線的な初速
-                initialVelocity = Normalize((direction * 0.7f) + Vector3{ 0.0f, 0.3f, 0.0f });
-                initialVelocity = initialVelocity * 0.35f;  // 初速は少し速く
-            } else {
-                // 簡易ロックオン：上向きに弧を描く初速
-                initialVelocity = Normalize((direction * 0.3f) + Vector3{ 0.0f, 0.7f, 0.0f });
-                initialVelocity = initialVelocity * 0.25f;  // 初速は少し遅め
-            }
+			// ロックオンレベルに応じて初速と挙動を変更
+			Vector3 initialVelocity;
+			if (lockLevel == LockOn::LockLevel::PreciseLock) {
+				// 精密ロックオン：より直線的な初速
+				initialVelocity = Normalize((direction * 0.7f) + Vector3{ 0.0f, 0.3f, 0.0f });
+				initialVelocity = initialVelocity * 0.35f;  // 初速は少し速く
+			} else {
+				// 簡易ロックオン：上向きに弧を描く初速
+				initialVelocity = Normalize((direction * 0.3f) + Vector3{ 0.0f, 0.7f, 0.0f });
+				initialVelocity = initialVelocity * 0.25f;  // 初速は少し遅め
+			}
 
-            // 新しい弾を作成してターゲットを設定
-            auto newBullet = std::make_unique<PlayerMissile>(
-                bulletPos, initialVelocity, bulletScale, bulletRotate, lockLevelValue);
-            newBullet->SetTarget(enemy); // ターゲットを設定
-            bullets_.push_back(std::move(newBullet));
+			// 新しい弾を作成してターゲットを設定
+			auto newBullet = std::make_unique<PlayerMissile>(
+				bulletPos, initialVelocity, bulletScale, bulletRotate, lockLevelValue);
+			newBullet->SetTarget(enemy); // ターゲットを設定
+			bullets_.push_back(std::move(newBullet));
 
-            // 発射エフェクト（ロックオンレベルに応じて調整）
-            if (lockLevel == LockOn::LockLevel::PreciseLock) {
-                // TODO:精密ロックオンのエフェクト（より派手に）
-                //ParticleManager::GetInstance()->Emit("missileTrail", bulletPos, 10);
-            } else {
-                // TODO:簡易ロックオンのエフェクト（控えめに）
-                //ParticleManager::GetInstance()->Emit("missileTrail", bulletPos, 5);
-            }
-        }
-    } else {
-        // ロックオンがない場合は上方向に発射（通常ミサイル）
-        Vector3 bulletVelocity = { 0.0f, 0.5f, 0.0f };
-        bullets_.push_back(std::make_unique<PlayerMissile>(bulletPos, bulletVelocity, bulletScale, bulletRotate, 0));
-    }
-    
-    // 発射時の反動や効果音はロックオンレベルに関わらず共通
-    // ...既存コード...
+			// 発射エフェクト（ロックオンレベルに応じて調整）
+			if (lockLevel == LockOn::LockLevel::PreciseLock) {
+				// TODO:精密ロックオンのエフェクト（より派手に）
+				//ParticleManager::GetInstance()->Emit("missileTrail", bulletPos, 10);
+			} else {
+				// TODO:簡易ロックオンのエフェクト（控えめに）
+				//ParticleManager::GetInstance()->Emit("missileTrail", bulletPos, 5);
+			}
+		}
+	} else {
+		// ロックオンがない場合は上方向に発射（通常ミサイル）
+		Vector3 bulletVelocity = { 0.0f, 0.5f, 0.0f };
+		bullets_.push_back(std::make_unique<PlayerMissile>(bulletPos, bulletVelocity, bulletScale, bulletRotate, 0));
+	}
+
+	// 発射時の反動や効果音はロックオンレベルに関わらず共通
+	// ...既存コード...
 }
 
 ///--------------------------------------------------------------
@@ -418,7 +438,7 @@ bool Player::HandleBoost() {
 			// 向いている方向または入力方向に即座に最高速度で加速
 			Vector3 boostDirection;
 
-			Vector3 inputDirection = { 0.0f, 0.0f, 0.0f };	
+			Vector3 inputDirection = { 0.0f, 0.0f, 0.0f };
 			// アナログスティック入力を合成
 			Vector3 stickInput = Input::GetInstance()->GetLeftStick();
 			inputDirection.x += stickInput.x;
@@ -443,8 +463,14 @@ bool Player::HandleBoost() {
 			} else {
 			}
 
+			boostSpin_ = 0.0f;        // 回転量
+			isBoostSpinning_ = true; // 回転中フラグ
+
 			// 即座に最高速度に設定
-			velocity_ = boostDirection * (maxSpeed_ * 32.0f); // 最大速度の5倍
+			//velocity_ = boostDirection * (maxSpeed_ * 32.0f); // 最大速度の5倍
+
+			// 加速ベクトルとして適用する（数フレームで加速）
+			acceleration_ = boostDirection * (accelerationRate_ * 8.0f); // 通常より強めの加速度0
 
 			stateChanged = true;
 		}

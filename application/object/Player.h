@@ -149,6 +149,9 @@ private:
 	float accelerationRate_ = 0.03f;              // 加速度係数
 	float deceleration_ = 0.04f;                  // 減速度
 	float friction_ = 0.02f;                      // 摩擦
+	float boostSpin_ = 0.0f;                      // 回転量
+	bool isBoostSpinning_ = false;                // 回転中フラグ
+	int boostSpinFrame_ = 0;                      // 回転フレーム数
 	// ブースト関連
 	bool isBoosting_ = false;                     // ブースト中かどうか
 	float boostFactor_ = 2.2f + 8.0f;             // ブースト時の速度倍率
