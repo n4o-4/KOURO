@@ -69,6 +69,8 @@ protected:
 
     void RandomMove();
 
+    ////
+    void SetModelColor(const Vector4& color) { if (model_) model_->SetColor(color); }
     
     ///--------------------------------------------------------------
     /// メンバ変数

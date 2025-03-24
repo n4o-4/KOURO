@@ -67,6 +67,8 @@ void GroundTypeEnemy2::UpdateChaseState() {
         // 敵の向きを進行方向に合わせる
         float targetRotationY = std::atan2(direction.x, direction.z);
         worldTransform_->transform.rotate.y = targetRotationY;
+
+        SetModelColor(Vector4{ 1.0f, 1.0f, 1.0f, 1.0f });
     }
 }
 
@@ -78,7 +80,7 @@ void GroundTypeEnemy2::UpdateCombatState() {
 
         // 通常速度の2倍で突進
         float dashSpeed = speed_ * 3.0f;
-        velocity_ = direction * dashSpeed;
+        velocity_ = { direction.x * dashSpeed,0.0f,direction.z * dashSpeed };
 
         // 位置を更新
         worldTransform_->transform.translate += velocity_;
@@ -86,6 +88,8 @@ void GroundTypeEnemy2::UpdateCombatState() {
         // 向きを進行方向に合わせる
         float targetRotationY = std::atan2(direction.x, direction.z);
         worldTransform_->transform.rotate.y = targetRotationY;
+
+        SetModelColor(Vector4{ 1.0f, 0.0f, 0.0f, 1.0f });
     }
 }
 
