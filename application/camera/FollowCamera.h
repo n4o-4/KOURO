@@ -22,6 +22,12 @@ public:
 	// 高さによるFOV演出
 	void UpdateHeightFOVEffect();
 
+	// マシンガン発射時のカメラ演出を更新
+	void UpdateFiringCameraEffect();
+
+	// ミサイル発射時のカメラ演出を更新
+	void UpdateMissileFiringCameraEffect();
+
 private:
 
 	Vector3 CalculationOffset();
@@ -35,11 +41,16 @@ private:
 	// ターゲット
 	WorldTransform* target_ = nullptr;
 	//========================================
+	
 	// 追従対象の残像座標
 	Vector3 interTarget_ = {};
 	//========================================
+
 	// オフセット
 	Vector3 offset_ = {};
+	// デフォルトのオフセット（元の値を保持）
+	Vector3 defaultOffset_ = { 0.0f, 3.0f, -30.0f };
+
 	//========================================
 	// 現在のカメラ位置
 	Vector3 currentPosition_ = {};
@@ -60,4 +71,18 @@ private:
 	float maxHeightForFOV_ = 30.0f;  // 最大効果を得るための高度
 	// 高度追跡用
 	float prevPlayerHeight_ = 0.0f;   // 前フレームの高さ（必要に応じて）
+
+	//========================================
+    // マシンガン発射演出関連
+    bool isFiring_ = false;           // マシンガン発射中フラグ
+    float firingOffsetFactor_ = 0.4f; // 発射中のカメラ距離係数（1.0より小さい値）
+    float firingLerpSpeed_ = 0.9f;    // カメラ距離変更の補間速度
+
+	//========================================
+    // ミサイル発射演出
+    bool isMissileFiring_ = false;    // ミサイル発射中フラグ
+    float missileFiringOffsetFactor_ = 2.0f; // ミサイル発射中のカメラ距離係数（1.0より大きい値で遠ざける）
+    float missileFiringLerpSpeed_ = 0.9f;    // ミサイル発射中のカメラ距離変更の補間速度
+    float missileFireTimer_ = 0.0f;   // ミサイル発射タイマー
+    float missileFireDuration_ = 2.0f; // ミサイル発射演出の持続時間（秒）
 };

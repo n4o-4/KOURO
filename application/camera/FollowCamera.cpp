@@ -4,13 +4,14 @@
 #include <cmath>
 #include "MyMath.h"
 #include "FollowCamera.h"
+#include "Input.h"
 
 ///=============================================================================
 ///                        初期化
 void FollowCamera::Initialize()
 {
     // カメラの初期オフセット設定
-    offset_ = { 0.0f, 3.0f, -30.0f };
+    offset_ = defaultOffset_;
 
     // 基底クラスの初期化
     BaseCamera::Initialize();
@@ -23,6 +24,7 @@ void FollowCamera::Initialize()
     //軽く傾ける
     viewProjection_->transform.rotate = { 0.1f, 0.0f, 0.0f };
 }
+
 ///=============================================================================
 ///                        更新
 void FollowCamera::Update()
@@ -41,10 +43,17 @@ void FollowCamera::Update()
 
     // 高度によるFOV演出
     UpdateHeightFOVEffect();
+    
+    // マシンガン発射時のカメラ演出を更新
+    UpdateFiringCameraEffect();
+
+    // ミサイル発射時のカメラ演出を更新
+    UpdateMissileFiringCameraEffect();
 
     // 基底クラスの更新
     BaseCamera::Update();
 }
+
 ///=============================================================================
 ///                        前方向ベクトルを取得
 Vector3 FollowCamera::GetForwardDirection() const {
@@ -53,6 +62,7 @@ Vector3 FollowCamera::GetForwardDirection() const {
     Vector3 forward = { 0.0f, 0.0f, 1.0f }; // デフォルトの前方向
     return TransformNormal(forward, rotateMatrix);
 }
+
 ///=============================================================================
 ///                        オフセットの計算
 Vector3 FollowCamera::CalculationOffset()
@@ -65,6 +75,7 @@ Vector3 FollowCamera::CalculationOffset()
 
     return offset;
 }
+
 ///=============================================================================
 ///                        回転の計算
 void FollowCamera::CalculationRotate()
@@ -84,6 +95,7 @@ void FollowCamera::CalculationRotate()
 
     viewProjection_->transform.rotate.x = std::clamp(viewProjection_->transform.rotate.x, -1.5f, 1.5f);
 }
+
 ///=============================================================================
 ///                        位置の計算
 void FollowCamera::CalculationTranslate()
@@ -94,6 +106,7 @@ void FollowCamera::CalculationTranslate()
 
     viewProjection_->transform.translate = interTarget_ + offset;
 }
+
 ///=============================================================================
 ///                        高度によるFOV演出
 void FollowCamera::UpdateHeightFOVEffect()
@@ -130,4 +143,54 @@ void FollowCamera::UpdateHeightFOVEffect()
     
     // 現在の高度を保存（必要に応じて）
     prevPlayerHeight_ = playerHeight;
+}
+
+///=============================================================================
+///                        マシンガン発射時のカメラ演出を更新
+void FollowCamera::UpdateFiringCameraEffect(){
+    //ミサイル発射中はマシンガン発射中の演出を無効化
+    if (isMissileFiring_) return;
+
+    Vector3 targetOffset = defaultOffset_;
+    
+    // マシンガン発射中はカメラを近づける
+    // RTボタンが押されている間だけ近づける
+    if (Input::GetInstance()->PushKey(DIK_J) ||
+    Input::GetInstance()->PushGamePadButton(Input::GamePadButton::LEFT_SHOULDER)) {
+        // Z方向（距離）のみ調整して近づける
+        targetOffset.z = defaultOffset_.z * firingOffsetFactor_;
+    }
+    
+    // 現在のオフセットを目標値に滑らかに補間
+    offset_ = Lerp(offset_, targetOffset, firingLerpSpeed_);
+}
+
+///=============================================================================
+///                        ミサイル発射時のカメラ演出を更新
+void FollowCamera::UpdateMissileFiringCameraEffect(){
+    Vector3 targetOffset = defaultOffset_;
+    
+    // ミサイル発射ボタンが押された時に発射状態を開始
+    if (Input::GetInstance()->PushKey(DIK_SPACE) ||
+        Input::GetInstance()->PushGamePadButton(Input::GamePadButton::RIGHT_SHOULDER)) {
+        isMissileFiring_ = true;
+        missileFireTimer_ = 0.0f;  // タイマーをリセット
+    }
+    
+    // ミサイル発射中の処理（数秒間継続）
+    if (isMissileFiring_) {
+        // カメラを遠ざける
+        targetOffset.z = defaultOffset_.z * missileFiringOffsetFactor_;
+        
+        // タイマーを進める（60FPSを想定）
+        missileFireTimer_ += 1.0f / 60.0f;
+        
+        // 持続時間が経過したら演出を終了
+        if (missileFireTimer_ >= missileFireDuration_) {
+            isMissileFiring_ = false;
+        }
+    }
+    
+    // 現在のオフセットを目標値に滑らかに補間
+    offset_ = Lerp(offset_, targetOffset, missileFiringLerpSpeed_);
 }
