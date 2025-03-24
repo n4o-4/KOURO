@@ -199,7 +199,7 @@ private:
 
 	std::unordered_map<std::string, ParticleGroup> particleGroups;
 
-	const uint32_t kNumMaxInstance = 100;
+	const uint32_t kNumMaxInstance = 10000;
 
 	std::mt19937 randomEngine;
 

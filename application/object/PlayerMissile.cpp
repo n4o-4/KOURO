@@ -27,8 +27,8 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 	particleEmitterMissileSmoke_ = std::make_unique<ParticleEmitter>();
 	particleEmitterMissileSmoke_->Initialize("missileSmoke");
     // パーティクル設定の調整
-    particleEmitterMissileSmoke_->SetParticleCount(4);   // デフォルト発生数
-    particleEmitterMissileSmoke_->SetFrequency(0.2f);    // より高頻度で発生させる
+    particleEmitterMissileSmoke_->SetParticleCount(2);   // デフォルト発生数
+    particleEmitterMissileSmoke_->SetFrequency(0.04f);    // より高頻度で発生させる
 	particleEmitterMissileSmoke_->Emit();
 	ParticleManager::GetInstance()->SetBlendMode("Add");
 
@@ -94,16 +94,21 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 
 
 void PlayerMissile::Update() {
+    // ライフタイムを更新
+    lifeTime_++;
+
+    // ライフタイム経過によるチェック（寿命）
+    if(lifeTime_ > kLifeTimeLimit) {
+        isActive_ = false;
+    }
+
     // 非アクティブなら処理しない
     if (!isActive_) {
         return;
     }
 
-    // ライフタイムを更新
-    lifeTime_++;
-
     // 精密ロックオン時のターゲット位置更新
-    if (lockLevel_ == 2 && target_ && target_->GetHp() > 0) {
+    if (lockLevel_ == 2 && target_) {
         // 継続的にターゲット位置を更新
         impactPosition_ = target_->GetPosition();
     }
@@ -135,21 +140,7 @@ void PlayerMissile::Update() {
         
         // エミッタの位置を更新
         particleEmitterMissileSmoke_->SetPosition(worldTransform_->transform.translate + smokeOffset);
-        
-        //// 状態に応じて煙の量を調整
-        //int particleCount;
-        //if (state_ == BulletState::kLaunch) {
-        //    particleCount = 2;  // 発射初期は少なめ
-        //} else if (state_ == BulletState::kFinal) {
-        //    particleCount = 5;  // 最終接近段階では多め
-        //} else {
-        //    particleCount = 3;  // 通常追尾時
-        //}
-        //
-        //// 定期的にパーティクルを追加放出（通常のUpdateに加えて）
-        //if (lifeTime_ % 3 == 0) {
-        //    particleEmitterMissileSmoke_->Emit(particleCount);
-        //}
+
         // パーティクルエミッタの更新
         particleEmitterMissileSmoke_->Update();
     }
@@ -159,11 +150,6 @@ void PlayerMissile::Update() {
 
     // 近接信管の処理
     ApplyProximityFuse();
-
-    // ライフタイム経過によるチェック（寿命）
-    if(lifeTime_ > kLifeTimeLimit) {
-        isActive_ = false;
-    }
 }
 
 // 発射初期状態の更新
@@ -221,7 +207,7 @@ void PlayerMissile::UpdateLaunchState() {
 		stateTimer_ = 0;
 
 		// 前回の視線方向を初期化（追尾状態開始時）
-		if(target_ && target_->GetHp() > 0) {
+		if(target_) {
 			prevLineOfSight_ = impactPosition_ - worldTransform_->transform.translate;
 		}
 	}
@@ -318,7 +304,8 @@ void PlayerMissile::UpdateTrackingState() {
 void PlayerMissile::UpdateFinalState() {
     stateTimer_++;
 
-    if(target_ && target_->GetHp() > 0) {
+	// FIXME : ここから下の処理は、実装が不完全です｡例外スローあり｡
+    if(target_) {
         // ターゲットへの方向
         Vector3 targetPos = impactPosition_;
         Vector3 myPos = worldTransform_->transform.translate;
@@ -380,7 +367,7 @@ void PlayerMissile::UpdateFinalState() {
 
 // 視線ベクトル（LOS: Line of Sight）の計算
 Vector3 PlayerMissile::CalculateLOS() {
-	if(!target_ || target_->GetHp() <= 0) {
+	if(!target_) {
 		return Normalize(velocity_); // ターゲットがない場合は現在の進行方向
 	}
 
@@ -391,7 +378,7 @@ Vector3 PlayerMissile::CalculateLOS() {
 
 // 視線角速度（LOS Rate）の計算
 Vector3 PlayerMissile::CalculateLOSRate() {
-	if(!target_ || target_->GetHp() <= 0) {
+	if(!target_) {
 		return Vector3{ 0, 0, 0 }; // ターゲットがない場合はゼロ
 	}
 
@@ -409,7 +396,7 @@ Vector3 PlayerMissile::CalculateLOSRate() {
 
 // 比例航法ベクトルの計算（PN: Proportional Navigation）
 Vector3 PlayerMissile::CalculateNavigationVector() {
-    if(!target_ || target_->GetHp() <= 0) {
+    if(!target_) {
         return Vector3{ 0, 0, 0 };
     }
 
@@ -468,7 +455,7 @@ Vector3 PlayerMissile::CalculateNavigationVector() {
 
 // 近接信管の処理
 void PlayerMissile::ApplyProximityFuse() {
-	if(!target_ || target_->GetHp() <= 0 || proximityFused_) {
+	if(!target_) {
 		return;
 	}
 
