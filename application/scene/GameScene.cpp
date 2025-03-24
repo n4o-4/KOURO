@@ -584,6 +584,9 @@ void GameScene::UpdateEnemyPopCommands() {
 				} else if (currentSpawnType_ == "BAT") {
 					Vector3 randomPosition(randomX(gen), randomY(gen), randomZ(gen));
 					SpawnEnemyBat(randomPosition);
+				} else if (currentSpawnType_ == "BOMB") {
+					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
+					SpawnEnemyBomb(randomPosition);
 				} else {
 					SpawnEnemy(Vector3(x, y, z));
 				}
@@ -634,6 +637,17 @@ void GameScene::SpawnEnemyKumo(const Vector3& position) {
 void GameScene::SpawnEnemyBat(const Vector3& position) {
 	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<SkyTypeEnemy>();
 	if (auto* enemyNormal = dynamic_cast<SkyTypeEnemy*>(newEnemy.get())) {
+		enemyNormal->Initialize();
+		enemyNormal->SetPosition(position);
+		enemyNormal->SetTarget(player_->GetWorldTransform());
+	}
+
+	enemies_.push_back(std::move(newEnemy));
+}
+
+void GameScene::SpawnEnemyBomb(const Vector3& position) {
+	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<GroundTypeEnemy2>();
+	if (auto* enemyNormal = dynamic_cast<GroundTypeEnemy2*>(newEnemy.get())) {
 		enemyNormal->Initialize();
 		enemyNormal->SetPosition(position);
 		enemyNormal->SetTarget(player_->GetWorldTransform());
