@@ -39,8 +39,6 @@ public:
      */
     void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
-    void MoveToJump();
-
     void Attack();
 
     ///--------------------------------------------------------------
@@ -110,11 +108,7 @@ private:
     // çsìÆèÛë‘
     ActionState currentState_ = ActionState::Wander;
 
-  /*  bool isJumping_ = false;
-    float jumpVelocity_ = 0.0f;
-    float jumpTime_ = 0.0f;
-    float gravity_ = 9.8f;
-    float groundHeight_ = 0.0f;*/
+   
 
 
 };
