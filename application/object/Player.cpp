@@ -427,53 +427,44 @@ bool Player::HandleBoost() {
 
 		// クイックブースト開始条件
 		if (boostInput && quickBoostCooldown_ <= 0.0f && currentBoostTime_ >= quickBoostConsumption_) {
-			// クイックブースト開始
 			isQuickBoosting_ = true;
 			quickBoostFrames_ = maxQuickBoostFrames_;
-
-			// ブースト消費とクールダウン設定
 			currentBoostTime_ -= quickBoostConsumption_;
 			quickBoostCooldown_ = maxQuickBoostCooldown_;
 
-			// 向いている方向または入力方向に即座に最高速度で加速
 			Vector3 boostDirection;
 
 			Vector3 inputDirection = { 0.0f, 0.0f, 0.0f };
-			// アナログスティック入力を合成
 			Vector3 stickInput = Input::GetInstance()->GetLeftStick();
 			inputDirection.x += stickInput.x;
 			inputDirection.z += stickInput.z;
 
 			Vector3 rotate = followCamera_->GetViewProjection().transform.rotate;
-
 			rotate.x = 0.0f;
 
 			Matrix4x4 rotateMatrix = MakeRotateMatrix(rotate);
-
 			inputDirection = TransformNormal(inputDirection, rotateMatrix);
 
-			// 入力がある場合はその方向
+			// ✅ 方向決定 & 回転条件分岐
 			if (Length(inputDirection) > 0.0f) {
 				boostDirection = Normalize(inputDirection);
-			}
-
-			// 現在の速度がある場合はその方向、なければ向いている方向
-			else if (Length(velocity_) > 0.01f) {
+			} else if (Length(velocity_) > 0.01f) {
 				boostDirection = Normalize(velocity_);
 			} else {
+				// ❌ 動いてなかったら演出スキップ
+				return stateChanged;
 			}
 
-			boostSpin_ = 0.0f;        // 回転量
-			isBoostSpinning_ = true; // 回転中フラグ
+			// ✅ 回転開始
+			boostSpin_ = 0.0f;
+			isBoostSpinning_ = true;
 
-			// 即座に最高速度に設定
-			//velocity_ = boostDirection * (maxSpeed_ * 32.0f); // 最大速度の5倍
-
-			// 加速ベクトルとして適用する（数フレームで加速）
-			acceleration_ = boostDirection * (accelerationRate_ * 8.0f); // 通常より強めの加速度0
+			// 加速ベクトルを適用
+			acceleration_ = boostDirection * (accelerationRate_ * 8.0f);
 
 			stateChanged = true;
 		}
+
 
 		// ブースト回復（非クイックブースト中のみ）
 		if (currentBoostTime_ < maxBoostTime_) {
