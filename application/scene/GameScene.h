@@ -120,7 +120,7 @@ private:
 	const float minY = 10.0f, maxY = 30.0f;  
 	const float minZ = -50.0f, maxZ = 50.0f;
 
-	// 난수 생성기
+	// 乱数ジェネレータ
 	std::random_device rd;
 	std::mt19937 gen;
 };
