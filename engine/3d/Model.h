@@ -31,6 +31,8 @@ public:
 
 	void SetEnableLighting(bool flag) { materialData->enableLighting = flag; }
 
+	void SetColor(const Vector4& color) { materialData->color = color; }
+
 private:
 
 	// .mtlファイルの読み込み

@@ -134,6 +134,8 @@ void BaseEnemy::RandomMove()
     // 方向変更タイマーの更新
     directionChangeTimer_ += 1.0f / 60.0f;
 
+    SetModelColor(Vector4{ 1.0f, 1.0f, 1.0f, 1.0f });
+
     // 定期的に方向を変更
     if (directionChangeTimer_ >= directionChangeInterval_) {
         // スポーン地点に戻る方向と、ランダムな方向を混ぜる

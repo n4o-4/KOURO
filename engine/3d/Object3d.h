@@ -61,6 +61,8 @@ public: // メンバ関数
 
 	void SetEnableLighting(bool flag) { model->SetEnableLighting(flag); }
 
+	void SetColor(const Vector4& color) { if (model) model->SetColor(color); }
+
 private:
 
 	
