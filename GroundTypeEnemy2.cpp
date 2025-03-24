@@ -1,8 +1,8 @@
 #include "GroundTypeEnemy2.h"
 
 void GroundTypeEnemy2::Initialize() {
-	ModelManager::GetInstance()->LoadModel("enemy/bomb/bomb.obj");
-	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/bomb/bomb.obj"));
+    ModelManager::GetInstance()->LoadModel("enemy/bomb/bomb.obj");
+    BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/bomb/bomb.obj"));
 }
 
 void GroundTypeEnemy2::Update() {
@@ -25,7 +25,7 @@ void GroundTypeEnemy2::Update() {
     }
 
 
-    
+
 
     BaseEnemy::Update();
 }
@@ -34,8 +34,7 @@ void GroundTypeEnemy2::Draw(ViewProjection viewProjection, DirectionalLight dire
     BaseEnemy::Draw(viewProjection, directionalLight, pointLight, spotLight);
 }
 
-void GroundTypeEnemy2::MoveToJump() {
-}
+
 
 void GroundTypeEnemy2::Attack() {
 }
@@ -50,38 +49,77 @@ void GroundTypeEnemy2::OnCollisionExit(BaseObject* other) {
 }
 
 void GroundTypeEnemy2::UpdateWanderState() {
-    // 方向変更タイマーの更新
-    directionChangeTimer_ += 1.0f / 60.0f;
-
-    // 定期的に方向を変更
-    if (directionChangeTimer_ >= directionChangeInterval_) {
-        // スポーン地点に戻る方向と、ランダムな方向を混ぜる
-        Vector3 toSpawn = spawnPosition_ - worldTransform_->transform.translate;
-        float distanceToSpawn = Length(toSpawn);
-
-        // スポーン地点から遠すぎる場合はスポーン地点に戻る傾向を強める
-        float spawnWeight = std::min(distanceToSpawn / wanderRadius_, 0.8f);
-
-        if (distanceToSpawn > wanderRadius_) {
-            // スポーン地点に戻る方向を優先
-            velocity_ = Normalize(toSpawn) * speed_;
-        } else {
-            // ランダムな方向を選択
-            float angle = angleDist_(rng_);
-            Vector3 randomDir = { cosf(angle), 0.0f, sinf(angle) };
-            velocity_ = Normalize(randomDir) * speed_;
-        }
-
-        directionChangeTimer_ = 0.0f;
-    }
+    BaseEnemy::RandomMove();
 }
 
 void GroundTypeEnemy2::UpdateChaseState() {
-    BaseEnemy::MoveToTarget();
+    if (target_) {
+        // ターゲットに向かうベクトルを計算
+        Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
+        float distance = Length(toTarget);
+
+        Vector3 direction = Normalize(toTarget);
+        velocity_ = { direction.x * speed_,0.0f,direction.z * speed_ };
+
+        // 位置を更新
+        worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
+
+        // 敵の向きを進行方向に合わせる
+        float targetRotationY = std::atan2(direction.x, direction.z);
+        worldTransform_->transform.rotate.y = targetRotationY;
+    }
 }
 
 void GroundTypeEnemy2::UpdateCombatState() {
+    if (target_) {
+        // プレイヤーへの方向ベクトルを計算
+        Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
+        Vector3 direction = Normalize(toTarget);
+
+        // 通常速度の2倍で突進
+        float dashSpeed = speed_ * 3.0f;
+        velocity_ = direction * dashSpeed;
+
+        // 位置を更新
+        worldTransform_->transform.translate += velocity_;
+
+        // 向きを進行方向に合わせる
+        float targetRotationY = std::atan2(direction.x, direction.z);
+        worldTransform_->transform.rotate.y = targetRotationY;
+    }
 }
 
 void GroundTypeEnemy2::UpdateActionState() {
+    // タイマーの更新
+    stateTimer_ += 1.0f / 60.0f;
+
+    // ターゲットが存在しない場合は徘徊
+    if (!target_) {
+        currentState_ = ActionState::Wander;
+        return;
+    }
+
+    // ターゲットとの距離を計算
+    Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
+    float distance = Length(toTarget);
+
+    // 距離に基づいて状態を変更
+    ActionState newState = currentState_; // デフォルトは現在の状態を維持
+
+    if (distance > chaseDistance_) {
+        // プレイヤーが遠い場合は徘徊
+        newState = ActionState::Wander;
+    } else if (distance > combatDistance_) {
+        // 追跡範囲内なら追跡
+        newState = ActionState::Chase;
+    } else {
+        // 戦闘範囲内なら戦闘
+        newState = ActionState::Combat;
+    }
+
+    // 状態が変化した場合、タイマーをリセット
+    if (newState != currentState_) {
+        currentState_ = newState;
+        stateTimer_ = 0.0f;
+    }
 }

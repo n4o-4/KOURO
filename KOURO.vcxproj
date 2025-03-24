@@ -56,6 +56,7 @@
     <ClCompile Include="GroundTypeEnemy.cpp" />
     <ClCompile Include="GaussianFilter.cpp" />
     <ClCompile Include="Grayscale.cpp" />
+    <ClCompile Include="GroundTypeEnemy2.cpp" />
     <ClCompile Include="LinearFog.cpp" />
     <ClCompile Include="LuminanceBasedOutline.cpp" />
     <ClCompile Include="main.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="GroundTypeEnemy.h" />
     <ClInclude Include="GaussianFilter.h" />
     <ClInclude Include="Grayscale.h" />
+    <ClInclude Include="GroundTypeEnemy2.h" />
     <ClInclude Include="LinearFog.h" />
     <ClInclude Include="LuminanceBasedOutline.h" />
     <ClInclude Include="PlayerMachineGun.h" />
