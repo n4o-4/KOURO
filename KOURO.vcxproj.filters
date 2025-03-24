@@ -20,6 +20,7 @@
     <FxCompile Include="Resources\shaders\Dissolve.PS.hlsl" />
     <FxCompile Include="Resources\shaders\Random.PS.hlsl" />
     <FxCompile Include="Resources\shaders\LinearFog.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\MotionBlur.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\collision\BaseObject.cpp" />
@@ -97,6 +98,7 @@
     <ClCompile Include="engine\effect\Random.cpp" />
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="application\object\Spawn.cpp" />
+    <ClCompile Include="MotionBlur.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -181,6 +183,7 @@
     <ClInclude Include="engine\effect\Random.h" />
     <ClInclude Include="engine\effect\LinearFog.h" />
     <ClInclude Include="application\object\Spawn.h" />
+    <ClInclude Include="MotionBlur.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
