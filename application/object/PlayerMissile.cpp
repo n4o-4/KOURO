@@ -78,11 +78,11 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 
     //===================================================
     // 簡易ロックオンの場合、発射時のターゲット位置を記録
-    if (lockLevel_ == 1 && target_ && target_->GetHp() > 0) {
+    if (lockLevel_ == 1 && target_) {
         targetPosition_ = target_->GetPosition();
         // impactPosition_にも同じ値を設定
         impactPosition_ = targetPosition_;
-    } else if (lockLevel_ == 2 && target_ && target_->GetHp() > 0) {
+    } else if (lockLevel_ == 2 && target_) {
         // 精密ロックオンの場合はターゲットの位置に向かって飛ぶ
         impactPosition_ = target_->GetPosition();
     }
@@ -164,7 +164,7 @@ void PlayerMissile::UpdateLaunchState() {
 		velocity_ = Normalize(velocity_) * ( kInitialSpeed + launchSpeedFactor * 0.1f );
 	} else {
 		// 徐々に目標方向へ旋回を開始
-		if(target_ && target_->GetHp() > 0) {
+		if(target_) {
 			// ターゲットへの方向ベクトル
 			Vector3 targetPos = impactPosition_;
 			Vector3 direction = targetPos - worldTransform_->transform.translate;
@@ -217,7 +217,7 @@ void PlayerMissile::UpdateLaunchState() {
 void PlayerMissile::UpdateTrackingState() {
     stateTimer_++;
 
-    if(target_ && target_->GetHp() > 0) {
+    if(target_) {
         // ターゲットの位置を取得
         Vector3 targetPos = impactPosition_;
         Vector3 myPos = worldTransform_->transform.translate;

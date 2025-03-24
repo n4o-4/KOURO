@@ -258,6 +258,22 @@ void LockOn::DetectEnemies(const std::vector<std::unique_ptr<BaseEnemy>>& enemie
 ///                        ロックオンされている敵を削除
 void LockOn::RemoveLockedEnemy(BaseEnemy* enemy)
 {
+    // 1. lockedEnemies_ から削除し、その要素を nullptr にする
+    for (auto& lockedEnemy : lockedEnemies_) {
+        if (lockedEnemy == enemy) {
+            lockedEnemy = nullptr;  // enemy に対応する要素を nullptr に設定
+            //break;  // 見つけたら処理を終了
+        }
+    }
+
+    // 2. lockedEnemiesInfo_ から削除し、その enemy を nullptr にする
+    for (auto& info : lockedEnemiesInfo_) {
+        if (info.enemy == enemy) {
+            info.enemy = nullptr;  // info.enemy を nullptr に設定
+            //break;  // 見つけたら処理を終了
+        }
+    }
+
     // lockedEnemies_ から削除
     auto it = std::remove(lockedEnemies_.begin(), lockedEnemies_.end(), enemy);
     lockedEnemies_.erase(it, lockedEnemies_.end());

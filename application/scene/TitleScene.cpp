@@ -56,6 +56,8 @@ void TitleScene::Initialize()
 
 void TitleScene::Finalize()
 {
+	BaseScene::Finalize();
+
 	//audio->SoundStop("Resources/Spinning_World.mp3");
 }
 

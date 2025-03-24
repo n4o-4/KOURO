@@ -316,7 +316,7 @@ void Player::Shoot() {
     if (lockOnSystem_ && lockOnSystem_->GetLockedEnemyCount() > 0) {
         for (BaseEnemy* enemy : lockOnSystem_->GetLockedEnemies()) {
             if (!enemy) continue;
-
+			
             // 敵ごとのロックオンレベルを取得
             LockOn::LockLevel lockLevel = lockOnSystem_->GetLockLevel(enemy);
             int lockLevelValue = static_cast<int>(lockLevel);  // 数値に変換

@@ -110,6 +110,8 @@ void GameScene::Initialize() {
 ///=============================================================================
 ///						終了処理
 void GameScene::Finalize() {
+	BaseScene::Finalize();
+
 	skyDome_.reset();
 	ground_.reset();
 
@@ -205,6 +207,16 @@ void GameScene::Update() {
 						if(lockOnSystem_) {
 							lockOnSystem_->RemoveLockedEnemy(enemy.get());
 						}
+
+						// 削除したエネミーをターゲットに持つプレイヤーのミサイルのターゲットをnullptrに設定
+						for (auto it = player_->GetBullets().begin(); it != player_->GetBullets().end(); ++it) {
+
+							if (it->get()->GetTarget() == enemy.get())
+							{
+								it->get()->SetTarget(nullptr);
+							}
+						}
+
 						return true; // 削除する
 					}
 					return false; // 削除しない
@@ -510,10 +522,7 @@ void GameScene::Draw() {
 
 		// フェード描画
 		DrawFade();
-		
-		//========================================
-		//パーティクルの描画
-		ParticleManager::GetInstance()->Draw("Resources/circle.png");
+	
 
 		break;
 

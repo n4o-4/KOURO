@@ -31,12 +31,14 @@ public:
         target_ = target; 
         
         // ターゲットが有効な場合は位置を記録
-        if (target_ && target_->GetHp() > 0) {
+        if (target_) {
             targetPosition_ = target_->GetPosition();
             // 初期衝突予測位置にも設定
             impactPosition_ = targetPosition_;
         }
     }
+
+    BaseEnemy* GetTarget() { return target_; }
 
     /// @brief アクティブ状態の取得
     /// @return ミサイルが活動中かどうか

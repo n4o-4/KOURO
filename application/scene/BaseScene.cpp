@@ -22,14 +22,16 @@ void BaseScene::Initialize()
 
 	sceneManager_->GetPostEffect()->SetCameraManager(cameraManager_.get());
 
+	ParticleManager::GetInstance()->Initialize(sceneManager_->GetDxCommon(), srvManager_);
+
 	ParticleManager::GetInstance()->SetCameraManager(cameraManager_.get());
 }
 
 void BaseScene::Finalize()
 {
-
 	AudioManager::GetInstance()->Finalize();
 
+	ParticleManager::GetInstance()->Finalize();
 }
 
 void BaseScene::Update()
