@@ -27,9 +27,9 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 	particleEmitterMissileSmoke_ = std::make_unique<ParticleEmitter>();
 	particleEmitterMissileSmoke_->Initialize("missileSmoke");
     // パーティクル設定の調整
-    particleEmitterMissileSmoke_->SetParticleCount(2);   // デフォルト発生数
+    particleEmitterMissileSmoke_->SetParticleCount(4);   // デフォルト発生数
     particleEmitterMissileSmoke_->SetFrequency(0.04f);    // より高頻度で発生させる
-	particleEmitterMissileSmoke_->Emit();
+	
 	ParticleManager::GetInstance()->SetBlendMode("Add");
 
     //===================================================

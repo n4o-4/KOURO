@@ -35,7 +35,6 @@ void TitleScene::Initialize()
 
 	particleEmitter_1 = std::make_unique<ParticleEmitter>();
 	particleEmitter_1->Initialize("Particle_1");
-	particleEmitter_1->Emit();
 
 	ParticleManager::GetInstance()->SetBlendMode("Add");
 

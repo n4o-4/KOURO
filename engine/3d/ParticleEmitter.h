@@ -9,10 +9,10 @@ public:
 
     void Initialize(std::string name);
 
-    void Emit();
+    void Emit(Vector3 startColor,Vector3 finishColor);
     
     // 指定した数のパーティクルを放出するオーバーロードを追加
-    void Emit(uint32_t count);
+    void Emit(uint32_t count,Vector3 startColor,Vector3 finishColor);
     
     // エミッタの位置を設定するメソッドを追加
     void SetPosition(const Vector3& position);
@@ -40,4 +40,5 @@ private:
 
     std::unordered_map<std::string, ParticleManager::ParticleGroup> particleGroups;
 
+    std::mt19937 randomEngine;
 };

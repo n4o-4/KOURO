@@ -76,6 +76,8 @@ public:
 		Vector4 color;
 		float lifeTime;
 		float currentTime;
+		Vector3 startColor;
+		Vector3 finishColor;
 	};
 
 	struct ParticleGroup {
@@ -99,7 +101,7 @@ public:
 	// パーティクルグループの生成関数
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath);
 
-	void Emit(const std::string name, const Vector3& position, uint32_t count);
+	void Emit(const std::string name, const Vector3& position, uint32_t count, Vector3 startColor, Vector3 finishColor);
 
 	std::unordered_map<std::string, ParticleGroup> GetParticleGroups() { return particleGroups; }
 
@@ -166,7 +168,7 @@ private:
 
 	void calculationBillboardMatrix();
 	
-	Particle MakeNewParticle(const Vector3& translate);
+	Particle MakeNewParticle(const Vector3& translate, Vector3 startColor, Vector3 finishColor);
 
 
 

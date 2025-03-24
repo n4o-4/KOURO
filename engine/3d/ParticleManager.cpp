@@ -139,6 +139,13 @@ void ParticleManager::Update()
 
 				float alpha = 1.0f - ((*particleIterator).currentTime / (*particleIterator).lifeTime);
 
+
+				(*particleIterator).color = {
+					Lerp((*particleIterator).startColor, (*particleIterator).finishColor, alpha).x,
+					Lerp((*particleIterator).startColor, (*particleIterator).finishColor, alpha).y,
+					Lerp((*particleIterator).startColor, (*particleIterator).finishColor, alpha).z
+				};
+
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color.x = (*particleIterator).color.x;
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color.y = (*particleIterator).color.y;
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color.z = (*particleIterator).color.z;
@@ -600,7 +607,7 @@ void ParticleManager::calculationBillboardMatrix()
 	billboardMatrix.m[3][2] = 0.0f;
 }
 
-ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate)
+ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate,Vector3 startColor,Vector3 finishColor)
 {
 		// 新しいパーティクルの生成
 		std::unique_ptr<Particle> newParticle;
@@ -619,23 +626,22 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		// velocityの設定
 		newParticle->velocity = { distribution(randomEngine),distribution(randomEngine) ,distribution(randomEngine) };
 
-		std::uniform_real_distribution<float> distColor(0.0f, 1.0f);
-
-		newParticle->color = { distColor(randomEngine),distColor(randomEngine) ,distColor(randomEngine) ,1.0f };
-
-		std::uniform_real_distribution<float> distTime(1.0f, 3.0f);
+		std::uniform_real_distribution<float> distTime(1.0f, 1.5f);
 
 		newParticle->lifeTime = distTime(randomEngine);
 		newParticle->currentTime = 0.0f;
 
+		newParticle->startColor = startColor;
+		newParticle->finishColor = finishColor;
+
 		return *newParticle;
 }
 
-void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count)
+void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count, Vector3 startColor,Vector3 finishColor)
 {
 	if (particleGroups.find(name) != particleGroups.end()) {
 		for (uint32_t currentCount = 0; currentCount < count;) {
-			particleGroups.find(name)->second.particles.push_back(MakeNewParticle(position));
+			particleGroups.find(name)->second.particles.push_back(MakeNewParticle(position,startColor,finishColor));
 			++currentCount;
 		}
 	}
