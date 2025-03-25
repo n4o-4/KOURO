@@ -58,7 +58,7 @@
     <ClCompile Include="engine\effect\Grayscale.cpp" />
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="engine\effect\LuminanceBasedOutline.cpp" />
-    <ClCompile Include="GroundTypeEnemy2.cpp" />
+    <ClCompile Include="application\object\GroundTypeEnemy2.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -87,7 +87,7 @@
     <ClCompile Include="engine\effect\Random.cpp" />
     <ClCompile Include="application\object\Spawn.cpp" />
     <ClCompile Include="engine\effect\Vignette.cpp" />
-    <ClCompile Include="MotionBlur.cpp" />
+    <ClCompile Include="engine\effect\MotionBlur.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -172,8 +172,8 @@
     <ClInclude Include="engine\effect\Random.h" />
     <ClInclude Include="application\object\Spawn.h" />
     <ClInclude Include="engine\effect\Vignette.h" />
-    <ClInclude Include="GroundTypeEnemy2.h" />
-    <ClInclude Include="MotionBlur.h" />
+    <ClInclude Include="application\object\GroundTypeEnemy2.h" />
+    <ClInclude Include="engine\effect\MotionBlur.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
