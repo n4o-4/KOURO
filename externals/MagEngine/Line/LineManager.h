@@ -1,140 +1,110 @@
-/*********************************************************************
-* \file   LineManager.h
-* \brief  
-* 
-* \author Harukichimaru
-* \date   January 2025
-* \note   
-*********************************************************************/
 #pragma once
 #include <vector>
 #include <memory>
 #include "Line.h"
 #include "LineSetup.h"
-#include "DirectXCore.h"
-#include "SrvSetup.h"
+#include "DirectXCommon.h"
+#include "SrvManager.h"
+#include "ViewProjection.h"
 
-///=============================================================================
-///						ラインマネージャ
+/// ラインマネージャクラス
 class LineManager {
-	///--------------------------------------------------------------
-	///						 メンバ関数
 public:
-	/**----------------------------------------------------------------------------
-	* \brief  GetInstance インスタンスの取得
-	* \return 
-	*/
-	static LineManager *GetInstance();
+    /**
+     * インスタンスの取得
+     */
+    static LineManager* GetInstance();
 
-	/**----------------------------------------------------------------------------
-	* \brief  Initialize 初期化
-	* \param  dxCore
-	*/
-	void Initialize(DirectXCore *dxCore, SrvSetup *srvSetup);
+    /**
+     * 初期化処理
+     */
+    void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
-	/**----------------------------------------------------------------------------
-	* \brief  Finalize 終了処理
-	*/
-	void Finalize();
+    /**
+     * 終了処理
+     */
+    void Finalize();
 
-	/**----------------------------------------------------------------------------
-	* \brief  Update 更新
-	*/
-	void Update();
+    /**
+     * 更新処理
+     */
+    void Update();
 
-	/**----------------------------------------------------------------------------
-	* \brief  Draw 描画
-	*/
-	void Draw();
+    /**
+     * 描画処理
+     */
+    void Draw();
 
-	/**----------------------------------------------------------------------------
-	* \brief  DrawImGui ImGuiの描画
-	*/
-	void DrawImGui();
+    /**
+     * ImGui描画
+     */
+    void DrawImGui();
 
-	/**----------------------------------------------------------------------------
-	* \brief  ClearLines ラインのクリア
-	*/
-	void ClearLines();
+    /**
+     * ラインのクリア
+     */
+    void ClearLines();
 
-	/**----------------------------------------------------------------------------
-	* \brief  AddLine ラインの描画
-	* \param  start 始点
-	* \param  end 終点
-	* \param  color 色
-	*/
-	void DrawLine(const Vector3& start, const Vector3& end, const Vector4& color);
+    /**
+     * ラインの描画
+     */
+    void DrawLine(const Vector3& start, const Vector3& end, const Vector4& color);
 
-	/**----------------------------------------------------------------------------
-	* \brief  DrawGrid グリッドの描画
-	* \param  gridSize グリッドサイズ
-	* \param  divisions 分割数
-	* \param  color 色
-	*/
-	void DrawGrid(float gridSize, int divisions, const Vector4& color);
+    /**
+     * グリッドの描画
+     */
+    void DrawGrid(float gridSize, int divisions, const Vector4& color);
 
-	/**----------------------------------------------------------------------------
-	* \brief  DrawCircle 円描画
-	* \param  center 中心
-	* \param  radius 半径
-	* \param  color 色
-	* \param  divisions 分割数
-	*/
-	void DrawSphere(const Vector3 &center, float radius, const Vector4 &color, int divisions = 32);
+    /**
+     * 球体の描画
+     */
+    void DrawSphere(const Vector3& center, float radius, const Vector4& color, int divisions = 32);
+    
+    /**
+     * 円の描画
+     */
+    void DrawCircle(const Vector3& center, float radius, const Vector4& color, int divisions = 32);
 
-	///--------------------------------------------------------------
-	///						 静的メンバ関数
-public:
+    /**
+     * デフォルトカメラの取得
+     */
+    ViewProjection* GetDefaultCamera() { return lineSetup_->GetDefaultCamera(); }
 
-	/**----------------------------------------------------------------------------
-	* \brief  GetDefaultCamera デフォルトカメラの取得
-	* \return 
-	*/
-	Camera *GetDefaultCamera() { return lineSetup_->GetDefaultCamera(); }
+    /**
+     * デフォルトカメラの設定
+     */
+    void SetDefaultCamera(ViewProjection* viewProjection) { lineSetup_->SetDefaultCamera(viewProjection); }
 
-	void SetDefaultCamera(Camera *camera) { lineSetup_->SetDefaultCamera(camera); }
-
-	///--------------------------------------------------------------
-	///						 メンバ変数
 private:
-	//========================================
-	// コンストラクタを非公開に
-	static LineManager* instance_;
+    static LineManager* instance_;
 
-	//コンストラクタ
-	LineManager() = default;
-	//デストラクタ
-	~LineManager() = default;
-	//コピーコンストラクタ
-	LineManager(const LineManager&) = delete;	
-	//代入演算子
-	LineManager& operator=(const LineManager&) = delete;
+    //コンストラクタ
+    LineManager() = default;
+    //デストラクタ
+    ~LineManager() = default;
+    //コピーコンストラクタ
+    LineManager(const LineManager&) = delete;    
+    //代入演算子
+    LineManager& operator=(const LineManager&) = delete;
 
-	//========================================
-	// DirectXCore への参照
-	DirectXCore* dxCore_ = nullptr;
-	// SrvSetup への参照
-	SrvSetup *srvSetup_ = nullptr;
+    // DirectXCommonへの参照
+    DirectXCommon* dxCommon_ = nullptr;
+    // SrvManagerへの参照
+    SrvManager* srvManager_ = nullptr;
 
-	//========================================
-	// ライン
-	std::unique_ptr<Line> line_;
+    // Line
+    std::unique_ptr<Line> line_;
 
-	//========================================
-	// LineSetup インスタンス
-	std::unique_ptr<LineSetup> lineSetup_;
+    // LineSetupインスタンス
+    std::unique_ptr<LineSetup> lineSetup_;
 
-	//========================================
-	// 描画設定
-	//ラインを描画するか
-	bool isDrawLine_ = true;
-	//グリッドを描画するか
-	bool isDrawGrid_ = true;
-	float gridSize_ = 64.0f;
-	int gridDivisions_ = 8;
-	Vector4 gridColor_ = { 1.0f, 1.0f, 1.0f, 1.0f };
+    // 描画設定
+    bool isDrawLine_ = true;   // ラインを描画するか
+    bool isDrawGrid_ = true;   // グリッドを描画するか
+    float gridSize_ = 64.0f;   // グリッドサイズ
+    int gridDivisions_ = 8;    // グリッド分割数
+    Vector4 gridColor_ = { 0.5f, 0.5f, 0.5f, 1.0f };  // グリッド色
 
-	//球を描画するか
-	bool isDrawSphere_ = true;
-
+    // 球体を描画するか
+    bool isDrawSphere_ = true;
 };

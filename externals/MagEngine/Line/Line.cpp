@@ -1,23 +1,11 @@
-/*********************************************************************
- * \file   Line.cpp
- * \brief 
- * 
- * \author Harukichimaru
- * \date   January 2025
- * \note   
- *********************************************************************/
 #include "Line.h"
 #include "LineSetup.h"
 #include "DirectXCommon.h"
 #include "ViewProjection.h"
 #include "MyMath.h"
 #include <numbers>
-//========================================
-// 数学関数のインクルード
-#define _USE_MATH_DEFINES
-#include <math.h>
 
-oid Line::Initialize(LineSetup* lineSetup) {
+void Line::Initialize(LineSetup* lineSetup) {
     // ラインセットアップの取得
     lineSetup_ = lineSetup;
     
@@ -84,11 +72,14 @@ void Line::Draw() {
     // 描画設定
     auto commandList = lineSetup_->GetDXCommon()->GetCommandList();
     
-    // transformMatrixBufferのマップ
+    // バーテックスバッファビューをセット
     commandList->IASetVertexBuffers(0, 1, &lineSetup_->GetVBV());
     commandList->IASetIndexBuffer(&lineSetup_->GetIBV());
     
+    // 変換行列バッファをセット
     commandList->SetGraphicsRootConstantBufferView(0, transformationMatrixBuffer_->GetGPUVirtualAddress());
+    
+    // 描画
     commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
 }
 
