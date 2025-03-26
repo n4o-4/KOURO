@@ -21,12 +21,6 @@ private:
     // グラフィックスパイプラインの作成
     void CreateGraphicsPipeline();
 
-    // 頂点バッファビューの作成
-    void CreateVertexBufferView();
-
-    // インデックスバッファビューの作成
-    void CreateIndexBufferView();
-
 public:
     // DirectXCommonの取得
     DirectXCommon* GetDXCommon() const { return dxCommon_; }
@@ -39,12 +33,6 @@ public:
     
     // デフォルトカメラの取得
     ViewProjection* GetDefaultCamera() { return defaultCamera_; }
-
-    // 頂点バッファビューの取得
-    D3D12_VERTEX_BUFFER_VIEW GetVBV() const { return vertexBufferView_; }
-
-    // インデックスバッファビューの取得
-    D3D12_INDEX_BUFFER_VIEW GetIBV() const { return indexBufferView_; }
 
 private:
     // DirectXCommonポインタ
@@ -61,16 +49,4 @@ private:
     
     // パイプラインステート
     Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
-
-    // 頂点バッファ
-    Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
-
-    // インデックスバッファ
-    Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_ = nullptr;
-
-    // 頂点バッファビュー
-    D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
-    
-    // インデックスバッファビュー
-    D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
 };

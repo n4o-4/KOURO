@@ -6,6 +6,7 @@
 #include "Matrixs.h"
 #include "DirectXCommon.h"
 #include "ViewProjection.h"
+#include "Camera.h"
 
 // 前方宣言
 class LineSetup;
@@ -54,12 +55,6 @@ public:
         Vector3 rotate = {0.0f, 0.0f, 0.0f};
         Vector3 translate = {0.0f, 0.0f, 0.0f};
     };
-    
-    /// トランスフォームの設定
-    void SetTransform(const TransformStructure& transform) { transform_ = transform; }
-
-    /// トランスフォームの取得
-    TransformStructure GetTransform() const { return transform_; }
 
     /// スケールの設定
     void SetScale(const Vector3& scale) { transform_.scale = scale; }
@@ -80,24 +75,35 @@ public:
     const Vector3& GetTranslate() const { return transform_.translate; }
 
 private:
-    // LineSetupポインタ
+
+    //---------------------------------------
+    // オブジェクト3Dセットアップポインタ
     LineSetup* lineSetup_ = nullptr;
 
-    // ViewProjectionポインタ（カメラ）
-    ViewProjection* camera_ = nullptr;
-
-    // 頂点バッファ
-    Microsoft::WRL::ComPtr<ID3D12Resource> vertexBuffer_ = nullptr;
-
+    //---------------------------------------
     // 頂点データ
     std::vector<LineVertex> vertices_;
 
-    // 変換行列バッファ
-    Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixBuffer_ = nullptr;
+    //---------------------------------------
+    // 頂点バッファ
+    Microsoft::WRL::ComPtr<ID3D12Resource> vertexBuffer_ = nullptr;
+    // バッファリソースの使い道を指すポインタ
+    D3D12_VERTEX_BUFFER_VIEW vertexBufferView_ = {};
 
-    // 変換行列データ
+    //---------------------------------------
+    //トランスフォーメーションマトリックス
+    Microsoft::WRL::ComPtr <ID3D12Resource> transfomationMatrixBuffer_;
+
+    //---------------------------------------
+    // バッファリソース内のデータを指すポインタ
+    //トランスフォーメーションマトリックス
     TransformationMatrix* transformationMatrixData_ = nullptr;
 
-    // トランスフォーム
-    TransformStructure transform_{};
+    //--------------------------------------
+    // Transform
+    Transform transform_ = {};
+
+    //--------------------------------------
+    // カメラ
+    Camera* camera_ = nullptr;
 };

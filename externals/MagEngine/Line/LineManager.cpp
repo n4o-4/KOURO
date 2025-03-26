@@ -7,9 +7,11 @@
 * \note
 *********************************************************************/
 #include "LineManager.h"
-#include "ImGuiManager.h"  // ImGuiSetupからImGuiManagerに変更
-#include "Camera.h"
-#include <numbers>         // math.hからnumbersに変更
+#include "ImGuiManager.h"
+//========================================
+// 数学関数のインクルード
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 ///=============================================================================
 ///						インスタンス
@@ -26,25 +28,22 @@ LineManager *LineManager::GetInstance() {
 
 ///=============================================================================
 ///						初期化
-void LineManager::Initialize(DirectXCommon *dxCommon, SrvManager *srvManager) {
+void LineManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) {
 	//========================================
-	// 引数でdxManagerを受取
+	// DirectXCommonの取得
 	dxCommon_ = dxCommon;
-	// 引数でsrvSetupを受取
+	// SrvSetupの取得
 	srvManager_ = srvManager;
 	//========================================
 	// ラインセットアップの生成
 	lineSetup_ = std::make_unique<LineSetup>();
 	// ラインセットアップの初期化
-	lineSetup_->Initialize(dxCommon_, srvManager_);
+	lineSetup_->Initialize(dxCommon_, nullptr);
 	//========================================
 	// ラインの初期化
 	line_ = std::make_unique<Line>();
 	// ラインの初期化
 	line_->Initialize(lineSetup_.get());
-	//========================================
-	// デフォルトカメラの設定
-	lineSetup_->SetDefaultCamera(&Camera::GetInstance()->GetViewProjection());
 }
 
 ///=============================================================================
@@ -149,7 +148,7 @@ void LineManager::DrawSphere(const Vector3 &center, float radius, const Vector4 
 	if(!isDrawSphere_ || divisions <= 0) {
 		return;
 	}
-	float angleStep = 2.0f * std::numbers::pi_v<float> / divisions;
+	float angleStep = 2.0f * static_cast<float>( M_PI ) / divisions;
 
 	// XY, XZ, YZ 平面の円を描画
 	for(int i = 0; i < divisions; ++i) {
@@ -158,30 +157,30 @@ void LineManager::DrawSphere(const Vector3 &center, float radius, const Vector4 
 
 		// XY 平面の円
 		DrawLine(
-			Vector3(center.x + radius * std::cos(angle1), center.y + radius * std::sin(angle1), center.z),
-			Vector3(center.x + radius * std::cos(angle2), center.y + radius * std::sin(angle2), center.z),
+			Vector3(center.x + radius * cosf(angle1), center.y + radius * sinf(angle1), center.z),
+			Vector3(center.x + radius * cosf(angle2), center.y + radius * sinf(angle2), center.z),
 			color
 		);
 
 		// XZ 平面の円
 		DrawLine(
-			Vector3(center.x + radius * std::cos(angle1), center.y, center.z + radius * std::sin(angle1)),
-			Vector3(center.x + radius * std::cos(angle2), center.y, center.z + radius * std::sin(angle2)),
+			Vector3(center.x + radius * cosf(angle1), center.y, center.z + radius * sinf(angle1)),
+			Vector3(center.x + radius * cosf(angle2), center.y, center.z + radius * sinf(angle2)),
 			color
 		);
 
 		// YZ 平面の円
 		DrawLine(
-			Vector3(center.x, center.y + radius * std::cos(angle1), center.z + radius * std::sin(angle1)),
-			Vector3(center.x, center.y + radius * std::cos(angle2), center.z + radius * std::sin(angle2)),
+			Vector3(center.x, center.y + radius * cosf(angle1), center.z + radius * sinf(angle1)),
+			Vector3(center.x, center.y + radius * cosf(angle2), center.z + radius * sinf(angle2)),
 			color
 		);
 	}
 
 	// 緯度方向の分割を追加
 	for(int lat = 1; lat < divisions / 2; ++lat) {
-		float latAngle1 = std::numbers::pi_v<float> *lat / ( divisions / 2 );
-		float latAngle2 = std::numbers::pi_v<float> *( lat + 1 ) / ( divisions / 2 );
+		float latAngle1 = static_cast<float>( M_PI ) * lat / ( divisions / 2 );
+		float latAngle2 = static_cast<float>( M_PI ) * ( lat + 1 ) / ( divisions / 2 );
 
 		float r1 = radius * sinf(latAngle1);
 		float r2 = radius * sinf(latAngle2);
@@ -194,14 +193,14 @@ void LineManager::DrawSphere(const Vector3 &center, float radius, const Vector4 
 
 			// 緯度方向の円
 			DrawLine(
-				Vector3(center.x + r1 * std::cos(angle1), y1, center.z + r1 * std::sin(angle1)),
-				Vector3(center.x + r1 * std::cos(angle2), y1, center.z + r1 * std::sin(angle2)),
+				Vector3(center.x + r1 * cosf(angle1), y1, center.z + r1 * sinf(angle1)),
+				Vector3(center.x + r1 * cosf(angle2), y1, center.z + r1 * sinf(angle2)),
 				color
 			);
 
 			DrawLine(
-				Vector3(center.x + r2 * std::cos(angle1), y2, center.z + r2 * std::sin(angle1)),
-				Vector3(center.x + r2 * std::cos(angle2), y2, center.z + r2 * std::sin(angle2)),
+				Vector3(center.x + r2 * cosf(angle1), y2, center.z + r2 * sinf(angle1)),
+				Vector3(center.x + r2 * cosf(angle2), y2, center.z + r2 * sinf(angle2)),
 				color
 			);
 		}
@@ -213,8 +212,8 @@ void LineManager::DrawSphere(const Vector3 &center, float radius, const Vector4 
 		float nextLonAngle = angleStep * ( lon + 1 );
 
 		for(int lat = 0; lat <= divisions / 2; ++lat) {
-			float latAngle = std::numbers::pi_v<float> *lat / ( divisions / 2 );
-			float nextLatAngle = std::numbers::pi_v<float> *( lat + 1 ) / ( divisions / 2 );
+			float latAngle = static_cast<float>( M_PI ) * lat / ( divisions / 2 );
+			float nextLatAngle = static_cast<float>( M_PI ) * ( lat + 1 ) / ( divisions / 2 );
 
 			float r1 = radius * sinf(latAngle);
 			float r2 = radius * sinf(nextLatAngle);
@@ -222,31 +221,11 @@ void LineManager::DrawSphere(const Vector3 &center, float radius, const Vector4 
 			float y2 = center.y + radius * cosf(nextLatAngle);
 
 			DrawLine(
-				Vector3(center.x + r1 * std::cos(lonAngle), y1, center.z + r1 * std::sin(lonAngle)),
-				Vector3(center.x + r2 * std::cos(lonAngle), y2, center.z + r2 * std::sin(lonAngle)),
+				Vector3(center.x + r1 * cosf(lonAngle), y1, center.z + r1 * sinf(lonAngle)),
+				Vector3(center.x + r2 * cosf(lonAngle), y2, center.z + r2 * sinf(lonAngle)),
 				color
 			);
 		}
-	}
-}
-
-///=============================================================================
-///						円の描画
-void LineManager::DrawCircle(const Vector3 &center, float radius, const Vector4 &color, int divisions) {
-	if(!isDrawLine_ || divisions <= 0) {
-		return;
-	}
-	float angleStep = 2.0f * std::numbers::pi_v<float> / divisions;
-
-	for(int i = 0; i < divisions; ++i) {
-		float angle1 = angleStep * i;
-		float angle2 = angleStep * ( i + 1 );
-
-		DrawLine(
-			Vector3(center.x + radius * std::cos(angle1), center.y + radius * std::sin(angle1), center.z),
-			Vector3(center.x + radius * std::cos(angle2), center.y + radius * std::sin(angle2), center.z),
-			color
-		);
 	}
 }
 

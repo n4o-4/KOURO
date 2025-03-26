@@ -58,6 +58,10 @@ void MyGame::Update()
 
 	postEffect_->Update();
 
+	//========================================
+	// ラインの更新
+	LineManager::GetInstance()->Update();
+
 #ifdef _DEBUG
 
 	imGuiManager->End();
