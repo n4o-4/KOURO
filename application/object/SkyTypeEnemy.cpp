@@ -1,6 +1,7 @@
 ﻿#include "SkyTypeEnemy.h"
 #include "PlayerMissile.h"
 #include <PlayerMachineGun.h>
+
 void SkyTypeEnemy::Initialize() {
 	ModelManager::GetInstance()->LoadModel("enemy/bat/bat.obj");
 	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/bat/bat.obj"));

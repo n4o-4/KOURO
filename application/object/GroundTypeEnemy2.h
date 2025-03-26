@@ -114,6 +114,9 @@ private:
 
 	float jumpVelocity_ = 0.0f;// ジャンプ速度
 
+    bool isBlinking_ = false;
+    float blinkTimer_ = 0.0f;
+    const float kBlinkDuration_ = 0.3f; // 点滅時間（秒）
 
 };
 

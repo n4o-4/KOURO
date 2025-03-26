@@ -121,6 +121,8 @@ private:
 	float gravity_ = 9.8f;
 	float groundHeight_ = 0.0f;
 
-
+	bool isBlinking_ = false;
+	float blinkTimer_ = 0.0f;
+	const float kBlinkDuration_ = 0.3f; // 点滅時間（秒）
 };
 

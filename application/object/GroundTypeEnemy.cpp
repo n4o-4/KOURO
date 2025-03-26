@@ -36,15 +36,21 @@ void GroundTypeEnemy::Update() {
 		intervalCounter_ = fmod(intervalCounter_, kIntervalTiem);
 	}
 
-	// ジャンプ処理
-	if (worldTransform_->transform.translate.y > 0.0f || jumpVelocity_ > 0.0f) {
-		jumpVelocity_ -= 0.01f; // 重力
-		worldTransform_->transform.translate.y += jumpVelocity_;
+	if (isBlinking_) {
+		blinkTimer_ += 1.0f / 60.0f;
 
-		// 地面に戻ったら停止
-		if (worldTransform_->transform.translate.y < 0.0f) {
-			worldTransform_->transform.translate.y = 0.0f;
-			jumpVelocity_ = 0.0f;
+		// 点滅：0.05秒ごとに完全透明・通常色を切り替える
+		int flashFrame = static_cast<int>(blinkTimer_ * 60.0f) % 2;
+		if (flashFrame == 0) {
+			model_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f }); // 通常色（不透明）
+		} else {
+			model_->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f }); // 完全透明
+		}
+
+		// 点滅終了
+		if (blinkTimer_ >= kBlinkDuration_) {
+			isBlinking_ = false;
+			model_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f }); // 戻す
 		}
 	}
 
@@ -122,9 +128,11 @@ void GroundTypeEnemy::OnCollisionExit(BaseObject* other) {
 
 void GroundTypeEnemy::HitJump()
 {
-	if (worldTransform_->transform.translate.y <= 0.1f) {
-		jumpVelocity_ = 0.3f;
-	}
+	isBlinking_ = true;
+	blinkTimer_ = 0.0f;
+
+	// 点滅開始時に白色にする（仮に SetColor 関数があると仮定）
+	model_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f }); // 真っ白（光った感じ）
 }
 
 void GroundTypeEnemy::UpdateWanderState() {
