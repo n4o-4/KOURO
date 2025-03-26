@@ -94,5 +94,7 @@ private:
 	Model* model = nullptr;
 
 	Camera* camera = nullptr;
+
+	Material materialData_;
 };
 
