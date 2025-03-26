@@ -3,6 +3,7 @@
 #include "BaseObject.h"
 #include "BaseEnemy.h"
 #include "LockOnMarker.h"
+#include "Spawn.h"
 
 class LockOn {
 public:
@@ -29,6 +30,7 @@ public:
     void SetPosition(const Vector3& position) { lockOnWorldTransform_->transform.translate = position; }
     // LockOn 範囲内の敵を検知する関数
     void DetectEnemies(const std::vector<std::unique_ptr<BaseEnemy>>& enemies);
+    void DetectEnemies(const std::vector<BaseEnemy*>& enemies);
     //検出された敵のリストを取得する関数
     size_t GetLockedEnemyCount() const { return lockedEnemies_.size(); }
 

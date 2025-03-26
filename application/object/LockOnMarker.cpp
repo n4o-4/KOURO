@@ -5,8 +5,8 @@ void LockOnMarker::Initialize() {
     // Multi lock on
     multiLockOn_ = std::make_unique<Object3d>();
     multiLockOn_->Initialize(Object3dCommon::GetInstance());
-    ModelManager::GetInstance()->LoadModel("lockOn/Lock_on1.obj");
-    multiLockOn_->SetModel("lockOn/Lock_on1.obj");
+    ModelManager::GetInstance()->LoadModel("lockOn/Lock_on2.obj");
+    multiLockOn_->SetModel("lockOn/Lock_on2.obj");
 
     multiLockOn_->SetEnableLighting(false);
 

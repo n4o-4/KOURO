@@ -193,6 +193,28 @@ void GameScene::Update() {
 		for (const auto &Spawn : spawns_) {
 			Spawn->Update();
 		}
+		//Spawn
+		spawns_.erase(
+			std::remove_if(spawns_.begin(), spawns_.end(),
+				[this](const std::unique_ptr<BaseEnemy>& spawn) {
+					if (spawn->GetSpawnHp() <= 0) {
+						// ロックオンシステムから敵を削除
+						if (lockOnSystem_) {
+							lockOnSystem_->RemoveLockedEnemy(spawn.get());
+						}
+
+						// 削除したエネミーをターゲットに持つプレイヤーのミサイルのターゲットをnullptrに設定
+						for (auto it = player_->GetBullets().begin(); it != player_->GetBullets().end(); ++it) {
+
+							if (it->get()->GetTarget() == spawn.get()) {
+								it->get()->SetTarget(nullptr);
+							}
+						}
+						return true;
+					}
+					return false;
+				}),
+			spawns_.end());
 		// 敵リスト
 		for(const auto &enemy : enemies_) {
 			enemy->Update();
@@ -238,8 +260,10 @@ void GameScene::Update() {
 			}
 			// 敵の検出
 			lockOnSystem_->DetectEnemies(enemies_);
+			lockOnSystem_->DetectEnemies(spawns_);
 			// ロックオン更新
 			lockOnSystem_->Update(enemies_);
+			lockOnSystem_->Update(spawns_);
 		}
 		//---------------------------------------
 		// 当たり判定
@@ -254,7 +278,10 @@ void GameScene::Update() {
 				collisionManager_->AddCollider(bullet.get());
 			}
 		}
-
+		// spwan
+		for (auto& spawn : spawns_) {
+			collisionManager_->AddCollider(spawn.get());
+		}
 		// プレイヤー
 		collisionManager_->AddCollider(player_.get());
 
@@ -602,7 +629,7 @@ void GameScene::UpdateEnemyPopCommands() {
 			std::uniform_real_distribution<float> randomY(y - spawnRangeY, y + spawnRangeY);
 			std::uniform_real_distribution<float> randomZ(z - spawnRangeZ, z + spawnRangeZ);
 
-			for (int i = 0; i < num; i++) {
+			/*for (int i = 0; i < num; i++) {
 				if (currentSpawnType_ == "KUMO") {
 					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
 					SpawnEnemyKumo(randomPosition);
@@ -615,7 +642,7 @@ void GameScene::UpdateEnemyPopCommands() {
 				} else {
 					SpawnEnemy(Vector3(x, y, z));
 				}
-			}
+			}*/
 			
 		} else if(word.find("WAIT") == 0) {
 
@@ -682,9 +709,19 @@ void GameScene::SpawnEnemyBomb(const Vector3& position) {
 }
 
 void GameScene::SpawnSet(const Vector3& position) {
-	std::unique_ptr<Spawn> newSpawn = std::make_unique<Spawn>();
+	std::unique_ptr<BaseEnemy> newSpawn = std::make_unique<Spawn>();
+	if (auto* spawnNormal = dynamic_cast<Spawn*>(newSpawn.get())) {
+		spawnNormal->Initialize();
+		spawnNormal->SetPosition(position);
+		spawnNormal->SetTarget(player_->GetWorldTransform());
+	}
+
+	spawns_.push_back(std::move(newSpawn));
+
+
+	/*std::unique_ptr<Spawn> newSpawn = std::make_unique<Spawn>();
 	newSpawn->Initialize();
 	newSpawn->SetPosition(position);
-	spawns_.push_back(std::move(newSpawn));
+	spawns_.push_back(std::move(newSpawn));*/
 	
 }

@@ -64,7 +64,7 @@ private:
 	// 当たり判定マネージャ
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 	//
-	std::vector<std::unique_ptr<Spawn>> spawns_;
+	std::vector<std::unique_ptr<BaseEnemy>> spawns_;
 
 	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;	
 

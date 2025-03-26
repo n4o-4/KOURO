@@ -37,11 +37,14 @@ public:
 
     virtual WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
+    virtual bool IsAlive() const { return hp_ > 0; }
+
     /**----------------------------------------------------------------------------
    * \brief  GetHp HPを取得
    * \return HP
    */
     const int GetHp() const { return hp_; }
+    const int GetSpawnHp() const { return spawnHp_; }
     ///--------------------------------------------------------------
     ///						 当たり判定
 private:
@@ -83,7 +86,8 @@ protected:
     std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
 
     //HP
-    int hp_ = 1;
+    int hp_ = 3;
+    int spawnHp_ = 1;
 
     // 移動関連
     float speed_ = 0.15f;   // 移動速度
@@ -114,9 +118,9 @@ protected:
     const float kIntervalTiem = 5.0f;
     float intervalCounter_ = 0.0f;
 
-    //Spawn model
-    std::unique_ptr<Object3d> spawnModel_ = nullptr;
-    //Spawn ワールド変換
-    std::unique_ptr<WorldTransform> spawnWorldTransform_ = nullptr;
+    ////Spawn model
+    //std::unique_ptr<Object3d> spawnModel_ = nullptr;
+    ////Spawn ワールド変換
+    //std::unique_ptr<WorldTransform> spawnWorldTransform_ = nullptr;
 
 };
