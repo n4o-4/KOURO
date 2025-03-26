@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "ParticleManager.h"
 
 class ExplosionEmitter
@@ -9,29 +9,28 @@ public:
 
     void Initialize(std::string name);
 
-    void Emit(Vector3 startColor, Vector3 finishColor);
+    void Emit();
 
-    // w’è‚µ‚½”‚Ìƒp[ƒeƒBƒNƒ‹‚ğ•úo‚·‚éƒI[ƒo[ƒ[ƒh‚ğ’Ç‰Á
-    void Emit(uint32_t count, Vector3 startColor, Vector3 finishColor);
-
-    // ƒGƒ~ƒbƒ^‚ÌˆÊ’u‚ğİ’è‚·‚éƒƒ\ƒbƒh‚ğ’Ç‰Á
+    // ã‚¨ãƒŸãƒƒã‚¿ã®ä½ç½®ã‚’è¨­å®šã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰ã‚’è¿½åŠ 
     void SetPosition(const Vector3& position);
 
-    // ƒp[ƒeƒBƒNƒ‹”‚ğİ’è‚·‚éƒƒ\ƒbƒh
+    // ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æ•°ã‚’è¨­å®šã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
     void SetParticleCount(uint32_t count);
 
-    // •úo•p“x‚ğİ’è‚·‚éƒƒ\ƒbƒh
+    // æ”¾å‡ºé »åº¦ã‚’è¨­å®šã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
     void SetFrequency(float frequency);
 
     void Update();
 
+
+
 private:
 
     struct Emitter {
-        ParticleManager::Transform transform; // ƒGƒ~ƒbƒ^‚ÌTransform
-        uint32_t count; // ”­¶”
-        float frequency; // ”­¶•p“x
-        float frequencyTime; // •p“x—p
+        ParticleManager::Transform transform; // ã‚¨ãƒŸãƒƒã‚¿ã®Transform
+        uint32_t count; // ç™ºç”Ÿæ•°
+        float frequency; // ç™ºç”Ÿé »åº¦
+        float frequencyTime; // é »åº¦ç”¨æ™‚åˆ»
     };
 
     Emitter emitter{};

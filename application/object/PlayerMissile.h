@@ -244,6 +244,9 @@ private:
     // パーティクル
     std::unique_ptr<ParticleEmitter> particleEmitterMissileSmoke_ = nullptr;
     
+
+	std::unique_ptr<ExplosionEmitter> explosionEmitter_ = nullptr;
+
     //---------------------------------------
     /// @brief ターゲット
     BaseEnemy *target_ = nullptr;

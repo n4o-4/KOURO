@@ -32,6 +32,14 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 	
 	ParticleManager::GetInstance()->SetBlendMode("Add");
 
+    ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png");
+	explosionEmitter_ = std::make_unique<ExplosionEmitter>();
+	explosionEmitter_->Initialize("missileSmoke");
+    // パーティクル設定の調整
+    
+	explosionEmitter_->SetParticleCount(100);   
+	explosionEmitter_->SetFrequency(0.04f);
+
     //===================================================
     // トランスフォームの初期化
     worldTransform_ = std::make_unique<WorldTransform>();
@@ -509,6 +517,9 @@ void PlayerMissile::OnCollisionEnter(BaseObject *other) {
 
 		// 接触時に爆発エフェクトを発生させるなど
 		// 追加の処理をここに実装できます
+
+		explosionEmitter_->SetPosition(worldTransform_->transform.translate);
+		explosionEmitter_->Emit();
 	}
 }
 

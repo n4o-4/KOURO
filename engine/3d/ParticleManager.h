@@ -103,6 +103,8 @@ public:
 
 	void Emit(const std::string name, const Vector3& position, uint32_t count, Vector3 startColor, Vector3 finishColor);
 
+	void ExplosionEmit(const std::string name, const Vector3& position, uint32_t count, Vector3 startColor, Vector3 finishColor);
+
 	std::unordered_map<std::string, ParticleGroup> GetParticleGroups() { return particleGroups; }
 
 	void Finalize();
@@ -170,7 +172,7 @@ private:
 	
 	Particle MakeNewParticle(const Vector3& translate, Vector3 startColor, Vector3 finishColor);
 
-
+	Particle MakeNewExplosionParticle(const Vector3& translate, Vector3 startColor, Vector3 finishColor, Vector3 velocity);
 
 private:
 

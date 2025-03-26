@@ -637,11 +637,56 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		return *newParticle;
 }
 
+ParticleManager::Particle ParticleManager::MakeNewExplosionParticle(const Vector3& translate, Vector3 startColor, Vector3 finishColor, Vector3 velocity)
+{
+	// 新しいパーティクルの生成
+	std::unique_ptr<Particle> newParticle;
+
+	newParticle = std::make_unique<Particle>();
+
+	//
+	std::uniform_real_distribution<float> distribution(-1.0f, 1.0f);
+	Vector3 randomTranslate = { distribution(randomEngine),distribution(randomEngine) ,distribution(randomEngine) };
+
+	// transformの設定
+	newParticle->transform.scale = { 0.9f,0.9f,0.9f };
+	newParticle->transform.rotate = { 0.0f,0.0f,0.0f };
+	newParticle->transform.translate = translate + randomTranslate;
+
+	// velocityの設定
+	newParticle->velocity = velocity;
+
+	std::uniform_real_distribution<float> distTime(1.0f, 1.5f);
+
+	newParticle->lifeTime = distTime(randomEngine);
+	newParticle->currentTime = 0.0f;
+
+	newParticle->startColor = startColor;
+	newParticle->finishColor = finishColor;
+
+	return *newParticle;
+}
+
 void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count, Vector3 startColor,Vector3 finishColor)
 {
 	if (particleGroups.find(name) != particleGroups.end()) {
 		for (uint32_t currentCount = 0; currentCount < count;) {
 			particleGroups.find(name)->second.particles.push_back(MakeNewParticle(position,startColor,finishColor));
+			++currentCount;
+		}
+	}
+}
+
+void ParticleManager::ExplosionEmit(const std::string name, const Vector3& position, uint32_t count, Vector3 startColor, Vector3 finishColor)
+{
+	if (particleGroups.find(name) != particleGroups.end()) {
+		for (uint32_t currentCount = 0; currentCount < count;) {
+
+			std::uniform_real_distribution<float> dist(-2.0f, 2.0f);
+
+			Vector3 velocity = { dist(randomEngine),dist(randomEngine),dist(randomEngine) };
+
+			particleGroups.find(name)->second.particles.push_back(MakeNewExplosionParticle(position, startColor, finishColor,velocity));
 			++currentCount;
 		}
 	}

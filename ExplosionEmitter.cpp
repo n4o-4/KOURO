@@ -1,9 +1,9 @@
-#include "ExplosionEmitter.h"
+ï»¿#include "ExplosionEmitter.h"
 
 void ExplosionEmitter::Initialize(std::string name)
 {
 	/*----------------------------------------------------------
-	* ƒ‰ƒ“ƒ_ƒ€ƒGƒ“ƒWƒ“‚Ì‰Šú‰»
+	* ãƒ©ãƒ³ãƒ€ãƒ ã‚¨ãƒ³ã‚¸ãƒ³ã®åˆæœŸåŒ–
 	----------------------------------------------------------*/
 
 	std::random_device seedGenerator;
@@ -22,23 +22,21 @@ void ExplosionEmitter::Initialize(std::string name)
 
 }
 
-void ExplosionEmitter::Emit(Vector3 startColor, Vector3 finishColor)
+void ExplosionEmitter::Emit()
 {
+	Vector3 startColor;
 
-	ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count, startColor, finishColor);
+	std::uniform_real_distribution<float> colorR(0.56f, 1.0f); // min , max
+	std::uniform_real_distribution<float> colorG(0.0f, 0.37f);
+	std::uniform_real_distribution<float> colorB(0.0f, 0.19f);
 
-}
+	std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
 
-void ExplosionEmitter::Emit(uint32_t count, Vector3 startColor, Vector3 finishColor)
-{
-	// ˆêŽž“I‚ÉƒJƒEƒ“ƒg‚ð•Û‘¶
-	uint32_t originalCount = emitter.count;
-	// Žw’è‚³‚ê‚½ƒJƒEƒ“ƒg”‚ÉÝ’è
-	emitter.count = count;
-	// ’Êí‚ÌEmit‚ðŒÄ‚Ño‚µ
-	Emit(startColor, finishColor);
-	// Œ³‚ÌƒJƒEƒ“ƒg”‚É–ß‚·
-	emitter.count = originalCount;
+	Vector3 velocity = { dist(randomEngine),dist(randomEngine),dist(randomEngine) };
+
+	velocity = Normalize(velocity);
+
+	ParticleManager::GetInstance()->ExplosionEmit(name, emitter.transform.translate, emitter.count, Vector3(colorR(randomEngine), colorG(randomEngine), colorB(randomEngine)), Vector3(1.0f, 1.0f, 1.0f));
 }
 
 void ExplosionEmitter::SetPosition(const Vector3& position)
@@ -74,9 +72,13 @@ void ExplosionEmitter::Update()
 		std::uniform_real_distribution<float> colorG(0.0f, 0.37f);
 		std::uniform_real_distribution<float> colorB(0.0f, 0.19f);
 
+		std::uniform_real_distribution<float> dist(-2.0f, 2.0f);
+
+		Vector3 velocity = { dist(randomEngine),dist(randomEngine),dist(randomEngine) };
+
 		if (particleGroups.find(name) != particleGroups.end())
 		{
-			ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count, Vector3(colorR(randomEngine), colorG(randomEngine), colorB(randomEngine)), Vector3(1.0f, 1.0f, 1.0f));
+			ParticleManager::GetInstance()->ExplosionEmit(name, emitter.transform.translate, emitter.count, Vector3(colorR(randomEngine), colorG(randomEngine), colorB(randomEngine)), Vector3(1.0f, 1.0f, 1.0f));
 		}
 	}
 }
