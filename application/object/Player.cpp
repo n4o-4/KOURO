@@ -70,6 +70,23 @@ void Player::Update() {
 		}
 	}
 
+	// 無敵時間の処理
+	if (isInvincible_) {
+		invincibleTimer_--;
+
+		// 点滅（フレームごとに表示・非表示切り替え）
+		if (invincibleTimer_ % 10 == 0) { // 10フレームごとに切り替え
+			isVisible_ = !isVisible_;
+		}
+
+		// 無敵時間終了
+		if (invincibleTimer_ <= 0) {
+			isInvincible_ = false;
+			isVisible_ = true;
+		}
+	}
+
+
 	objectTransform_->UpdateMatrix();// 行列更新
 	object3d_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 	object3d_->Update();// 更新
@@ -84,8 +101,11 @@ void Player::Update() {
 ///=============================================================================
 ///                        描画
 void Player::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
-	// オブジェクトの描画
-	object3d_->Draw(*objectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
+	// 無敵時間中は点滅
+	if (!isInvincible_ || isVisible_) {
+		object3d_->Draw(*objectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
+	}
+
 
 	// 弾の描画
 	for (auto& bullet : bullets_) {
@@ -122,6 +142,7 @@ void Player::DrawImGui() {
 	ImGui::Text("Boost: %.1f / %.1f", currentBoostTime_, maxBoostTime_);
 	ImGui::Text("Is Jumping: %s", isJumping_ ? "Yes" : "No");
 	ImGui::Text("Is Boosting: %s", isBoosting_ ? "Yes" : "No");
+	ImGui::Text("In Vincible: %s", isInvincible_ ? "Yes" : "No");
 
 	ImGui::End();
 
@@ -558,41 +579,26 @@ void Player::OnCollisionEnter(BaseObject* other) {
 	//========================================
 	// 敵
 	if (dynamic_cast<BaseEnemy*>(other)) {
-		isJumping_ = true;
+		if (!isInvincible_) {
+			hp_--;
+			isJumping_ = true;
+			isInvincible_ = true;
+			invincibleTimer_ = 60 * 4; // 4秒間（60FPS換算）
+		}
+
 	}
 	//========================================
 	// 敵の弾
 	if (dynamic_cast<EnemyBullet*>(other)) {
-		// ダメージ処理
-		hp_--;
-		// ヒットリアクション
-		isJumping_ = true;
-	}
-	//========================================
-	// SkyTypeEnemy
-	if (dynamic_cast<SkyTypeEnemy*>(other)) {
-		// ダメージ処理
-		hp_--;
-		// ヒットリアクション
-		isJumping_ = true;
-	}
-	//========================================
-	// GroundTypeEnemy
-	if (dynamic_cast<GroundTypeEnemy*>(other)) {
-		// ダメージ処理
-		hp_--;
-		// ヒットリアクション
-		isJumping_ = true;
-	}
-	//========================================
-	// GroundTypeEnemy2
-	if (dynamic_cast<GroundTypeEnemy2*>(other)) {
-		// ダメージ処理
-		hp_--;
-		// ヒットリアクション
-		isJumping_ = true;
-	}
+		if (!isInvincible_) {
+			hp_--;
+			isJumping_ = true;
+			isInvincible_ = true;
+			invincibleTimer_ = 60 * 4; // 4秒間（60FPS換算）
+		}
 
+	}
+	//========================================
 }
 ///--------------------------------------------------------------
 ///						接触継続処理
