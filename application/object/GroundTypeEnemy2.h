@@ -56,6 +56,10 @@ private:
     ///--------------------------------------------------------------
     ///						 入出力関数
 public:
+
+	//ジャンプ
+	void HitJump();
+
     /**----------------------------------------------------------------------------
       * \brief  SetPosition 位置を設定
       * \param  position 位置
@@ -108,7 +112,7 @@ private:
     // 行動状態
     ActionState currentState_ = ActionState::Wander;
 
-
+	float jumpVelocity_ = 0.0f;// ジャンプ速度
 
 
 };

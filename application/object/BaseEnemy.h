@@ -69,6 +69,9 @@ protected:
 
     void RandomMove();
 
+    //ジャンプ 
+	void HitJump();
+
     ////
     void SetModelColor(const Vector4& color) { if (model_) model_->SetColor(color); }
     
