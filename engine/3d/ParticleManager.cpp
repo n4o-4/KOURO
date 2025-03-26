@@ -626,7 +626,8 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		// velocityの設定
 		newParticle->velocity = { distribution(randomEngine),distribution(randomEngine) ,distribution(randomEngine) };
 
-		std::uniform_real_distribution<float> distTime(1.0f, 1.5f);
+		// 時間の設定
+		std::uniform_real_distribution<float> distTime(0.2f, 0.8f);
 
 		newParticle->lifeTime = distTime(randomEngine);
 		newParticle->currentTime = 0.0f;

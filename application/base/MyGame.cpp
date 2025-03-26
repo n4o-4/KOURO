@@ -61,6 +61,8 @@ void MyGame::Update()
 	//========================================
 	// ラインの更新
 	LineManager::GetInstance()->Update();
+	// ImGuiの描画
+	LineManager::GetInstance()->DrawImGui();
 
 #ifdef _DEBUG
 
@@ -80,15 +82,16 @@ void MyGame::Draw()
 
 	Framework::Draw();
 
+	//========================================
+	// Lineの描画
+	LineManager::GetInstance()->Draw();
+
 	DirectXCommon::GetInstance()->RenderTexturePostDraw();
 
 	Framework::DrawEffect();
 
 	DirectXCommon::GetInstance()->PreDraw();
 
-	//========================================
-	// Lineの描画
-	LineManager::GetInstance()->Draw();
 
 #ifdef _DEBUG
 
