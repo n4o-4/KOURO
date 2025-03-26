@@ -145,14 +145,14 @@ void LineSetup::CreateGraphicsPipeline() {
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-	//========================================
-	// DepthStencilStateの設定を行う
-	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
-	depthStencilDesc.DepthEnable = true;
-	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
-	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_UNKNOWN;
+	    //========================================
+    // DepthStencilStateの設定を行う
+    D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
+    depthStencilDesc.DepthEnable = false;  // デプスステンシルを無効化
+    // depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;  // コメントアウトまたは削除
+    // depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;  // コメントアウトまたは削除
+    graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
+    graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_UNKNOWN;  // フォーマットをUNKNOWNに変更
 
 	//========================================
 	// 実際に生成

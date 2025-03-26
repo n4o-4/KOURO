@@ -31,20 +31,23 @@ void Line::Initialize(LineSetup* lineSetup) {
 	transform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	//========================================
 	// カメラの取得
-	camera_ = Camera::GetInstance();
+	camera_ = lineSetup_->GetDefaultCamera();
 }
 
 ///=============================================================================
 ///						更新
 void Line::Update() {
+	// カメラの取得
+	camera_ = lineSetup_->GetDefaultCamera();
+
 	// ワールド行列の作成
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 	Matrix4x4 worldViewProjectionMatrix;
 
 	if(camera_) {
 		// ビュー行列とプロジェクション行列を取得
-		const Matrix4x4 &viewMatrix = camera_->GetViewProjection().matView_;
-		const Matrix4x4& projectionMatrix = camera_->GetViewProjection().matProjection_;
+		const Matrix4x4 &viewMatrix = camera_->matView_;
+		const Matrix4x4& projectionMatrix = camera_->matProjection_;
 
 		// 行列の乗算（ワールド → ビュー → プロジェクション）
 		Matrix4x4 worldViewMatrix = Multiply(worldMatrix, viewMatrix);

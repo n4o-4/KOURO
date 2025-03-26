@@ -105,5 +105,5 @@ private:
 
     //--------------------------------------
     // カメラ
-    Camera* camera_ = nullptr;
+    ViewProjection* camera_ = nullptr;
 };

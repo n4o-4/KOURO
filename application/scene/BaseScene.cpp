@@ -41,6 +41,8 @@ void BaseScene::Finalize()
 void BaseScene::Update()
 {
 
+	LineManager::GetInstance()->SetDefaultCamera(&cameraManager_->GetActiveCamera()->GetViewProjection());
+
 	lineDrawer_->Update();
 
 	cameraManager_->Update();
