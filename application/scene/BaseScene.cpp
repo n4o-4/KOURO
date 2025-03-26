@@ -2,6 +2,7 @@
 #include "AudioManager.h"
 #include "SceneManager.h"
 #include "ParticleManager.h"
+#include "LineManager.h"
 
 void BaseScene::Initialize()
 {
@@ -25,6 +26,9 @@ void BaseScene::Initialize()
 	ParticleManager::GetInstance()->Initialize(sceneManager_->GetDxCommon(), srvManager_);
 
 	ParticleManager::GetInstance()->SetCameraManager(cameraManager_.get());
+
+	// MagEngine
+	LineManager::GetInstance()->SetDefaultCamera(&cameraManager_->GetActiveCamera()->GetViewProjection());
 }
 
 void BaseScene::Finalize()

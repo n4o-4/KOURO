@@ -4,6 +4,7 @@
 #include "DirectXCommon.h"
 #include "SrvManager.h"
 #include "ViewProjection.h"
+#include "Line.h"
 
 class LineSetup {
 public:

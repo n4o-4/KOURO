@@ -100,6 +100,9 @@
     <ClCompile Include="application\object\Spawn.cpp" />
     <ClCompile Include="engine\effect\MotionBlur.cpp" />
     <ClCompile Include="application\object\GroundTypeEnemy2.cpp" />
+    <ClCompile Include="externals\MagEngine\Line\Line.cpp" />
+    <ClCompile Include="externals\MagEngine\Line\LineManager.cpp" />
+    <ClCompile Include="externals\MagEngine\Line\LineSetup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -186,6 +189,9 @@
     <ClInclude Include="application\object\Spawn.h" />
     <ClInclude Include="engine\effect\MotionBlur.h" />
     <ClInclude Include="application\object\GroundTypeEnemy2.h" />
+    <ClInclude Include="externals\MagEngine\Line\LineSetup.h" />
+    <ClInclude Include="externals\MagEngine\Line\Line.h" />
+    <ClInclude Include="externals\MagEngine\Line\LineManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

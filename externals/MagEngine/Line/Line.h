@@ -2,9 +2,8 @@
 #include <vector>
 #include <wrl.h>
 #include <d3d12.h>
-#include "Vector3.h"
-#include "Vector4.h"
-#include "Matrix4x4.h"
+#include "Vectors.h"
+#include "Matrixs.h"
 #include "DirectXCommon.h"
 #include "ViewProjection.h"
 

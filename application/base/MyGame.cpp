@@ -30,13 +30,19 @@ void MyGame::Initialize()
 	TextureManager::GetInstance()->LoadTexture("Resources/uvChecker.png");
 	TextureManager::GetInstance()->LoadTexture("Resources/fruit_suika_red.png");
 
-
+	//========================================
+	// ラインマネージャの初期化
+	LineManager::GetInstance()->Initialize(DirectXCommon::GetInstance(), srvManager.get());
 }
 
 void MyGame::Finalize()
 {
 
 	Framework::Finalize();
+
+	//========================================
+	// ラインマネージャの終了処理
+	LineManager::GetInstance()->Finalize();
 
 }
 
@@ -76,9 +82,17 @@ void MyGame::Draw()
 
 	DirectXCommon::GetInstance()->PreDraw();
 
+	//========================================
+	// Lineの描画
+	LineManager::GetInstance()->Draw();
+
 #ifdef _DEBUG
 
 	imGuiManager->Draw(DirectXCommon::GetInstance());
+
+	//========================================
+	// LineのImGui描画
+	//LineManager::GetInstance()->DrawImGui();
 
 #endif
 

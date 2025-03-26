@@ -73,8 +73,10 @@ void Line::Draw() {
     auto commandList = lineSetup_->GetDXCommon()->GetCommandList();
     
     // バーテックスバッファビューをセット
-    commandList->IASetVertexBuffers(0, 1, &lineSetup_->GetVBV());
-    commandList->IASetIndexBuffer(&lineSetup_->GetIBV());
+    D3D12_VERTEX_BUFFER_VIEW vbv = lineSetup_->GetVBV();
+    D3D12_INDEX_BUFFER_VIEW ibv = lineSetup_->GetIBV();
+    commandList->IASetVertexBuffers(0, 1, &vbv);
+    commandList->IASetIndexBuffer(&ibv);
     
     // 変換行列バッファをセット
     commandList->SetGraphicsRootConstantBufferView(0, transformationMatrixBuffer_->GetGPUVirtualAddress());

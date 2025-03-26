@@ -8,6 +8,7 @@
 *********************************************************************/
 #include "LineManager.h"
 #include "ImGuiManager.h"  // ImGuiSetupからImGuiManagerに変更
+#include "Camera.h"
 #include <numbers>         // math.hからnumbersに変更
 
 ///=============================================================================
@@ -41,6 +42,9 @@ void LineManager::Initialize(DirectXCommon *dxCommon, SrvManager *srvManager) {
 	line_ = std::make_unique<Line>();
 	// ラインの初期化
 	line_->Initialize(lineSetup_.get());
+	//========================================
+	// デフォルトカメラの設定
+	lineSetup_->SetDefaultCamera(&Camera::GetInstance()->GetViewProjection());
 }
 
 ///=============================================================================
@@ -176,8 +180,8 @@ void LineManager::DrawSphere(const Vector3 &center, float radius, const Vector4 
 
 	// 緯度方向の分割を追加
 	for(int lat = 1; lat < divisions / 2; ++lat) {
-		float latAngle1 = std::numbers::pi_v<float> * lat / ( divisions / 2 );
-		float latAngle2 = std::numbers::pi_v<float> * ( lat + 1 ) / ( divisions / 2 );
+		float latAngle1 = std::numbers::pi_v<float> *lat / ( divisions / 2 );
+		float latAngle2 = std::numbers::pi_v<float> *( lat + 1 ) / ( divisions / 2 );
 
 		float r1 = radius * sinf(latAngle1);
 		float r2 = radius * sinf(latAngle2);
@@ -209,8 +213,8 @@ void LineManager::DrawSphere(const Vector3 &center, float radius, const Vector4 
 		float nextLonAngle = angleStep * ( lon + 1 );
 
 		for(int lat = 0; lat <= divisions / 2; ++lat) {
-			float latAngle = std::numbers::pi_v<float> * lat / ( divisions / 2 );
-			float nextLatAngle = std::numbers::pi_v<float> * ( lat + 1 ) / ( divisions / 2 );
+			float latAngle = std::numbers::pi_v<float> *lat / ( divisions / 2 );
+			float nextLatAngle = std::numbers::pi_v<float> *( lat + 1 ) / ( divisions / 2 );
 
 			float r1 = radius * sinf(latAngle);
 			float r2 = radius * sinf(nextLatAngle);
