@@ -26,7 +26,7 @@ void Object3d::Update()
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 	Matrix4x4 worldViewProjectionMatrix;
 	
-	model->SetMaterial(materialData_);
+	
 
 #ifdef _DEBUG
 
@@ -64,6 +64,8 @@ void Object3d::Draw(WorldTransform worldTransform,ViewProjection viewProjection,
 	worldTransform.matWorld_ = localMatrix * worldTransform.matWorld_;
 
 	worldTransform.TransferMatrix();
+
+	model->SetMaterial(materialData_);
 
 	object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, viewProjection.GetViewProjectionResource()->GetGPUVirtualAddress());
 	
