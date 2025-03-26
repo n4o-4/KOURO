@@ -2,6 +2,7 @@
 #include "PlayerMissile.h"
 #include <cmath>
 #include <algorithm>
+#include "PlayerMachineGun.h"
 
 void GroundTypeEnemy::Initialize() {
     ModelManager::GetInstance()->LoadModel("enemy/kumo/kumo.obj");
@@ -94,6 +95,9 @@ void GroundTypeEnemy::OnCollisionEnter(BaseObject* other) {
     if (dynamic_cast<PlayerMissile*>(other)) {
         --hp_;
     }
+	if (dynamic_cast<PlayerMachineGun*>(other)) {
+		--hp_;
+	}
 }
 
 void GroundTypeEnemy::OnCollisionStay(BaseObject* other) {

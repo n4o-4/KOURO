@@ -1,4 +1,6 @@
 #include "GroundTypeEnemy2.h"
+#include <PlayerMissile.h>
+#include <PlayerMachineGun.h>
 
 void GroundTypeEnemy2::Initialize() {
     ModelManager::GetInstance()->LoadModel("enemy/bomb/bomb.obj");
@@ -40,6 +42,12 @@ void GroundTypeEnemy2::Attack() {
 }
 
 void GroundTypeEnemy2::OnCollisionEnter(BaseObject* other) {
+	if (dynamic_cast<PlayerMissile*>(other)) {
+		--hp_;
+	}
+	if (dynamic_cast<PlayerMachineGun*>(other)) {
+		--hp_;
+	}
 }
 
 void GroundTypeEnemy2::OnCollisionStay(BaseObject* other) {

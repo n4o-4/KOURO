@@ -1,5 +1,6 @@
 ﻿#include "SkyTypeEnemy.h"
 #include "PlayerMissile.h"
+#include <PlayerMachineGun.h>
 void SkyTypeEnemy::Initialize() {
 	ModelManager::GetInstance()->LoadModel("enemy/bat/bat.obj");
 	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/bat/bat.obj"));
@@ -83,6 +84,9 @@ void SkyTypeEnemy::OnCollisionEnter(BaseObject* other) {
     if (dynamic_cast<PlayerMissile*>(other)) {
         --hp_;
     }
+	if (dynamic_cast<PlayerMachineGun*>(other)) {
+		--hp_;
+	}
 }
 
 void SkyTypeEnemy::OnCollisionStay(BaseObject* other) {
