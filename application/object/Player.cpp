@@ -8,6 +8,9 @@
 #include "BaseEnemy.h"
 #include "EnemyBullet.h"
 #include "Vectors.h"
+#include "SkyTypeEnemy.h"
+#include "GroundTypeEnemy.h"
+#include "GroundTypeEnemy2.h"
 
 void Player::Initialize() {
 	// Object3d を初期化
@@ -110,6 +113,7 @@ void Player::DrawImGui() {
 	Vector3 pos = objectTransform_->transform.translate;
 	Vector3 rot = objectTransform_->transform.rotate;
 	Vector3 vel = velocity_;
+	ImGui::Text("HP: %d", hp_);
 	ImGui::Text("Position: (%.2f, %.2f, %.2f)", pos.x, pos.y, pos.z);
 	ImGui::Text("Rotation: (%.2f, %.2f, %.2f)", rot.x, rot.y, rot.z);
 	ImGui::Text("Velocity: (%.2f, %.2f, %.2f)", vel.x, vel.y, vel.z);
@@ -564,6 +568,31 @@ void Player::OnCollisionEnter(BaseObject* other) {
 		// ヒットリアクション
 		isJumping_ = true;
 	}
+	//========================================
+	// SkyTypeEnemy
+	if (dynamic_cast<SkyTypeEnemy*>(other)) {
+		// ダメージ処理
+		hp_--;
+		// ヒットリアクション
+		isJumping_ = true;
+	}
+	//========================================
+	// GroundTypeEnemy
+	if (dynamic_cast<GroundTypeEnemy*>(other)) {
+		// ダメージ処理
+		hp_--;
+		// ヒットリアクション
+		isJumping_ = true;
+	}
+	//========================================
+	// GroundTypeEnemy2
+	if (dynamic_cast<GroundTypeEnemy2*>(other)) {
+		// ダメージ処理
+		hp_--;
+		// ヒットリアクション
+		isJumping_ = true;
+	}
+
 }
 ///--------------------------------------------------------------
 ///						接触継続処理
