@@ -22,6 +22,13 @@ void Player::Initialize() {
 	objectTransform_->Initialize();
 	objectTransform_->transform.translate = { 0.0f, initialY_ , 3.0f };
 
+	explosionEmitter_ = std::make_unique<ExplosionEmitter>();
+	explosionEmitter_->Initialize("missileSmoke");
+	// パーティクル設定の調整
+
+	explosionEmitter_->SetParticleCount(10);
+	explosionEmitter_->SetFrequency(0.04f);
+
 	//========================================
 	// 当たり判定との同期
 	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);
@@ -513,6 +520,9 @@ void Player::ShootMachineGun() {
 
 	// **揺れを適用**
 	shakeIntensity_ = 2.0f;
+
+	explosionEmitter_->SetPosition(objectTransform_.get()->transform.translate);
+	explosionEmitter_->Emit();
 }
 
 void Player::ApplyRecoil() {

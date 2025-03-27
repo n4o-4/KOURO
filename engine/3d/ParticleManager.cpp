@@ -626,7 +626,7 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		// velocityの設定
 		newParticle->velocity = { distribution(randomEngine),distribution(randomEngine) ,distribution(randomEngine) };
 
-		std::uniform_real_distribution<float> distTime(1.0f, 1.5f);
+		std::uniform_real_distribution<float> distTime(0.2f, 0.5f);
 
 		newParticle->lifeTime = distTime(randomEngine);
 		newParticle->currentTime = 0.0f;
@@ -682,7 +682,7 @@ void ParticleManager::ExplosionEmit(const std::string name, const Vector3& posit
 	if (particleGroups.find(name) != particleGroups.end()) {
 		for (uint32_t currentCount = 0; currentCount < count;) {
 
-			std::uniform_real_distribution<float> dist(-2.0f, 2.0f);
+			std::uniform_real_distribution<float> dist(-5.0f, 5.0f);
 
 			Vector3 velocity = { dist(randomEngine),dist(randomEngine),dist(randomEngine) };
 
