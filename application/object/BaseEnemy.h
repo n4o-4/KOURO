@@ -49,13 +49,13 @@ public:
     ///						 当たり判定
 private:
     /// \brief 衝突開始時の処理
-    void OnCollisionEnter(BaseObject* other) override;
+    virtual void OnCollisionEnter(BaseObject* other) override;
 
     /// \brief 衝突継続時の処理
-    void OnCollisionStay(BaseObject* other) override;
+    virtual void OnCollisionStay(BaseObject* other) override;
 
     /// \brief 衝突終了時の処理
-    void OnCollisionExit(BaseObject* other) override;
+    virtual void OnCollisionExit(BaseObject* other) override;
 
     ///--------------------------------------------------------------
     ///						 入出力関数
