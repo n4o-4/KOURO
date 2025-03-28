@@ -28,7 +28,7 @@ void Player::Initialize() {
 
 	explosionEmitter_->SetParticleCount(10);
 	explosionEmitter_->SetFrequency(0.04f);
-
+	explosionEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({0.01f,0.01f}));
 	//========================================
 	// 当たり判定との同期
 	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);

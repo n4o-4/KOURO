@@ -20,23 +20,18 @@ void ExplosionEmitter::Initialize(std::string name)
 	emitter.transform.rotate = { 0.0f,0.0f,0.0f };
 	emitter.transform.translate = { 0.0f,0.0f,0.0f };
 
+	startColorRange = { {0.56f,1.0f},{0.0f,0.37f},{0.0f,0.19f},{1.0f,1.0f} };
+
+	finishColorRange = { {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} };
+
+	velocityRange = { {-8.0f,8.0f},{-8.0f,8.0f},{-8.0f,8.0f} };
+
+	lifeTimeRange = { {0.2f,0.5f} };
 }
 
 void ExplosionEmitter::Emit()
 {
-	Vector3 startColor;
-
-	std::uniform_real_distribution<float> colorR(0.56f, 1.0f); // min , max
-	std::uniform_real_distribution<float> colorG(0.0f, 0.37f);
-	std::uniform_real_distribution<float> colorB(0.0f, 0.19f);
-
-	std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
-
-	Vector3 velocity = { dist(randomEngine),dist(randomEngine),dist(randomEngine) };
-
-	velocity = Normalize(velocity);
-
-	ParticleManager::GetInstance()->ExplosionEmit(name, emitter.transform.translate, emitter.count, Vector3(colorR(randomEngine), colorG(randomEngine), colorB(randomEngine)), Vector3(1.0f, 1.0f, 1.0f));
+	ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count, startColorRange,finishColorRange,velocityRange,lifeTimeRange);
 }
 
 void ExplosionEmitter::SetPosition(const Vector3& position)
@@ -78,7 +73,7 @@ void ExplosionEmitter::Update()
 
 		if (particleGroups.find(name) != particleGroups.end())
 		{
-			ParticleManager::GetInstance()->ExplosionEmit(name, emitter.transform.translate, emitter.count, Vector3(colorR(randomEngine), colorG(randomEngine), colorB(randomEngine)), Vector3(1.0f, 1.0f, 1.0f));
+			//ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count, Vector3(colorR(randomEngine), colorG(randomEngine), colorB(randomEngine)), Vector3(1.0f, 1.0f, 1.0f));
 		}
 	}
 }

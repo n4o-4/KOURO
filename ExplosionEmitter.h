@@ -22,7 +22,11 @@ public:
 
     void Update();
 
+    void SetStartColorRange(ParticleManager::ColorRange colorRange) { startColorRange = colorRange; }
+    void SetFinishColorRange(ParticleManager::ColorRange colorRange) { finishColorRange = colorRange; }
 
+    void SetVelocityRange(ParticleManager::VelocityRange velocityRange) { this->velocityRange = velocityRange; }
+    void SetLifeTimeRange(ParticleManager::LifeTimeRange lifeTimeRange) { this->lifeTimeRange = lifeTimeRange; }
 
 private:
 
@@ -40,4 +44,10 @@ private:
     std::unordered_map<std::string, ParticleManager::ParticleGroup> particleGroups;
 
     std::mt19937 randomEngine;
+
+	ParticleManager::ColorRange startColorRange;
+	ParticleManager::ColorRange finishColorRange;
+
+    ParticleManager::VelocityRange velocityRange;
+    ParticleManager::LifeTimeRange lifeTimeRange;
 };

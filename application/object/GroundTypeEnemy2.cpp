@@ -1,4 +1,4 @@
-#include "GroundTypeEnemy2.h"
+ï»¿#include "GroundTypeEnemy2.h"
 
 void GroundTypeEnemy2::Initialize() {
     ModelManager::GetInstance()->LoadModel("enemy/bomb/bomb.obj");
@@ -7,10 +7,10 @@ void GroundTypeEnemy2::Initialize() {
 
 void GroundTypeEnemy2::Update() {
     if (hp_ > 0) {
-        // ó‘Ô‚ÌXV
+        // çŠ¶æ…‹ã®æ›´æ–°
         UpdateActionState();
 
-        // Œ»İ‚Ìó‘Ô‚É‰‚¶‚½s“®
+        // ç¾åœ¨ã®çŠ¶æ…‹ã«å¿œã˜ãŸè¡Œå‹•
         switch (currentState_) {
         case ActionState::Wander:
             UpdateWanderState();
@@ -54,17 +54,17 @@ void GroundTypeEnemy2::UpdateWanderState() {
 
 void GroundTypeEnemy2::UpdateChaseState() {
     if (target_) {
-        // ƒ^[ƒQƒbƒg‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ğŒvZ
+        // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
         Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
         float distance = Length(toTarget);
 
         Vector3 direction = Normalize(toTarget);
         velocity_ = { direction.x * speed_,0.0f,direction.z * speed_ };
 
-        // ˆÊ’u‚ğXV
+        // ä½ç½®ã‚’æ›´æ–°
         worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
 
-        // “G‚ÌŒü‚«‚ğis•ûŒü‚É‡‚í‚¹‚é
+        // æ•µã®å‘ãã‚’é€²è¡Œæ–¹å‘ã«åˆã‚ã›ã‚‹
         float targetRotationY = std::atan2(direction.x, direction.z);
         worldTransform_->transform.rotate.y = targetRotationY;
 
@@ -74,18 +74,18 @@ void GroundTypeEnemy2::UpdateChaseState() {
 
 void GroundTypeEnemy2::UpdateCombatState() {
     if (target_) {
-        // ƒvƒŒƒCƒ„[‚Ö‚Ì•ûŒüƒxƒNƒgƒ‹‚ğŒvZ
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¸ã®æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
         Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
         Vector3 direction = Normalize(toTarget);
 
-        // ’Êí‘¬“x‚Ì2”{‚Å“Ëi
+        // é€šå¸¸é€Ÿåº¦ã®2å€ã§çªé€²
         float dashSpeed = speed_ * 3.0f;
         velocity_ = { direction.x * dashSpeed,0.0f,direction.z * dashSpeed };
 
-        // ˆÊ’u‚ğXV
+        // ä½ç½®ã‚’æ›´æ–°
         worldTransform_->transform.translate += velocity_;
 
-        // Œü‚«‚ğis•ûŒü‚É‡‚í‚¹‚é
+        // å‘ãã‚’é€²è¡Œæ–¹å‘ã«åˆã‚ã›ã‚‹
         float targetRotationY = std::atan2(direction.x, direction.z);
         worldTransform_->transform.rotate.y = targetRotationY;
 
@@ -94,34 +94,34 @@ void GroundTypeEnemy2::UpdateCombatState() {
 }
 
 void GroundTypeEnemy2::UpdateActionState() {
-    // ƒ^ƒCƒ}[‚ÌXV
+    // ã‚¿ã‚¤ãƒãƒ¼ã®æ›´æ–°
     stateTimer_ += 1.0f / 60.0f;
 
-    // ƒ^[ƒQƒbƒg‚ª‘¶İ‚µ‚È‚¢ê‡‚Íœpœj
+    // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒå­˜åœ¨ã—ãªã„å ´åˆã¯å¾˜å¾Š
     if (!target_) {
         currentState_ = ActionState::Wander;
         return;
     }
 
-    // ƒ^[ƒQƒbƒg‚Æ‚Ì‹——£‚ğŒvZ
+    // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¨ã®è·é›¢ã‚’è¨ˆç®—
     Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
     float distance = Length(toTarget);
 
-    // ‹——£‚ÉŠî‚Ã‚¢‚Äó‘Ô‚ğ•ÏX
-    ActionState newState = currentState_; // ƒfƒtƒHƒ‹ƒg‚ÍŒ»İ‚Ìó‘Ô‚ğˆÛ
+    // è·é›¢ã«åŸºã¥ã„ã¦çŠ¶æ…‹ã‚’å¤‰æ›´
+    ActionState newState = currentState_; // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯ç¾åœ¨ã®çŠ¶æ…‹ã‚’ç¶­æŒ
 
     if (distance > chaseDistance_) {
-        // ƒvƒŒƒCƒ„[‚ª‰“‚¢ê‡‚Íœpœj
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒé ã„å ´åˆã¯å¾˜å¾Š
         newState = ActionState::Wander;
     } else if (distance > combatDistance_) {
-        // ’ÇÕ”ÍˆÍ“à‚È‚ç’ÇÕ
+        // è¿½è·¡ç¯„å›²å†…ãªã‚‰è¿½è·¡
         newState = ActionState::Chase;
     } else {
-        // í“¬”ÍˆÍ“à‚È‚çí“¬
+        // æˆ¦é—˜ç¯„å›²å†…ãªã‚‰æˆ¦é—˜
         newState = ActionState::Combat;
     }
 
-    // ó‘Ô‚ª•Ï‰»‚µ‚½ê‡Aƒ^ƒCƒ}[‚ğƒŠƒZƒbƒg
+    // çŠ¶æ…‹ãŒå¤‰åŒ–ã—ãŸå ´åˆã€ã‚¿ã‚¤ãƒãƒ¼ã‚’ãƒªã‚»ãƒƒãƒˆ
     if (newState != currentState_) {
         currentState_ = newState;
         stateTimer_ = 0.0f;

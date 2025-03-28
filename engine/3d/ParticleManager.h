@@ -76,17 +76,38 @@ public:
 		Vector4 color;
 		float lifeTime;
 		float currentTime;
-		Vector3 startColor;
-		Vector3 finishColor;
+		Vector4 startColor;
+		Vector4 finishColor;
 	};
 
-	struct ParticleGroup {
+	struct ParticleGroup 
+	{
 		MaterialData materialData;
 		std::list<Particle> particles;
 		uint32_t srvIndex;
 		Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource;
 		uint32_t kNumInstance;
 		ParticleForGPU* instancingData;
+	};
+
+	struct ColorRange
+	{
+		Vector2 R;
+		Vector2 G;
+		Vector2 B;
+		Vector2 A;
+	};
+
+	struct LifeTimeRange
+	{
+		Vector2 range;
+	};
+
+	struct VelocityRange
+	{
+		Vector2 x;
+		Vector2 y;
+		Vector2 z;
 	};
 
 public:
@@ -101,9 +122,7 @@ public:
 	// パーティクルグループの生成関数
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath);
 
-	void Emit(const std::string name, const Vector3& position, uint32_t count, Vector3 startColor, Vector3 finishColor);
-
-	void ExplosionEmit(const std::string name, const Vector3& position, uint32_t count, Vector3 startColor, Vector3 finishColor);
+	void Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange,VelocityRange velocityRange,LifeTimeRange lifeTimeRange);
 
 	std::unordered_map<std::string, ParticleGroup> GetParticleGroups() { return particleGroups; }
 
@@ -170,9 +189,7 @@ private:
 
 	void calculationBillboardMatrix();
 	
-	Particle MakeNewParticle(const Vector3& translate, Vector3 startColor, Vector3 finishColor);
-
-	Particle MakeNewExplosionParticle(const Vector3& translate, Vector3 startColor, Vector3 finishColor, Vector3 velocity);
+	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
 
 private:
 

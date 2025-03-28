@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Kouro.h"
 #include "BaseObject.h"
 #include <iostream>
@@ -12,100 +12,100 @@
 
 class GroundTypeEnemy2 :public BaseEnemy {
 
-    // s“®ó‘Ô
+    // è¡Œå‹•çŠ¶æ…‹
     enum class ActionState {
-        Wander,     // œpœjiƒXƒ|[ƒ“•t‹ß‚Å“®‚«‰ñ‚éj
-        Chase,      // ’ÇÕiƒvƒŒƒCƒ„[‚É‹ß‚Ã‚­j
-        Combat      // í“¬iƒXƒgƒ‰ƒbƒtƒBƒ“ƒO‚µ‚È‚ª‚çUŒ‚j
+        Wander,     // å¾˜å¾Šï¼ˆã‚¹ãƒãƒ¼ãƒ³ä»˜è¿‘ã§å‹•ãå›ã‚‹ï¼‰
+        Chase,      // è¿½è·¡ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«è¿‘ã¥ãï¼‰
+        Combat      // æˆ¦é—˜ï¼ˆã‚¹ãƒˆãƒ©ãƒƒãƒ•ã‚£ãƒ³ã‚°ã—ãªãŒã‚‰æ”»æ’ƒï¼‰
     };
 
     ///--------------------------------------------------------------
-    ///						 ƒƒ“ƒoŠÖ” 
+    ///						 ãƒ¡ãƒ³ãƒé–¢æ•° 
 public:
 
 
     GroundTypeEnemy2() : BaseEnemy() {}
 
-    // @brief ‰Šú‰»
+    // @brief åˆæœŸåŒ–
     void Initialize();
-    // @brief XV
+    // @brief æ›´æ–°
     void Update();
     /**----------------------------------------------------------------------------
-     * \brief  Draw •`‰æ
-     * \param  viewProjection ƒrƒ…[Ë‰es—ñ
-     * \param  directionalLight ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒg
-     * \param  pointLight ƒ|ƒCƒ“ƒgƒ‰ƒCƒg
-     * \param  spotLight ƒXƒ|ƒbƒgƒ‰ƒCƒg
+     * \brief  Draw æç”»
+     * \param  viewProjection ãƒ“ãƒ¥ãƒ¼å°„å½±è¡Œåˆ—
+     * \param  directionalLight ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆ
+     * \param  pointLight ãƒã‚¤ãƒ³ãƒˆãƒ©ã‚¤ãƒˆ
+     * \param  spotLight ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆ
      */
     void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
     void Attack();
 
     ///--------------------------------------------------------------
-    ///						 “–‚½‚è”»’è
+    ///						 å½“ãŸã‚Šåˆ¤å®š
 private:
-    /// \brief Õ“ËŠJn‚Ìˆ—
+    /// \brief è¡çªé–‹å§‹æ™‚ã®å‡¦ç†
     void OnCollisionEnter(BaseObject* other) override;
 
-    /// \brief Õ“ËŒp‘±‚Ìˆ—
+    /// \brief è¡çªç¶™ç¶šæ™‚ã®å‡¦ç†
     void OnCollisionStay(BaseObject* other) override;
 
-    /// \brief Õ“ËI—¹‚Ìˆ—
+    /// \brief è¡çªçµ‚äº†æ™‚ã®å‡¦ç†
     void OnCollisionExit(BaseObject* other) override;
 
     ///--------------------------------------------------------------
-    ///						 “üo—ÍŠÖ”
+    ///						 å…¥å‡ºåŠ›é–¢æ•°
 public:
     /**----------------------------------------------------------------------------
-      * \brief  SetPosition ˆÊ’u‚ğİ’è
-      * \param  position ˆÊ’u
+      * \brief  SetPosition ä½ç½®ã‚’è¨­å®š
+      * \param  position ä½ç½®
       */
     void SetPosition(const Vector3& position) {
         worldTransform_->transform.translate = position;
-        spawnPosition_ = position; // ƒXƒ|[ƒ“ˆÊ’u‚à•Û‘¶
+        spawnPosition_ = position; // ã‚¹ãƒãƒ¼ãƒ³ä½ç½®ã‚‚ä¿å­˜
     }
 
     /**----------------------------------------------------------------------------
-     * \brief  SetHp HP‚ğİ’è
+     * \brief  SetHp HPã‚’è¨­å®š
      * \param  hp HP
      */
     void SetHp(const int hp) { hp_ = hp; }
 
     /**----------------------------------------------------------------------------
-     * \brief  GetPosition ˆÊ’u‚ğæ“¾
-     * \return ˆÊ’u
+     * \brief  GetPosition ä½ç½®ã‚’å–å¾—
+     * \return ä½ç½®
      */
     const Vector3& GetPosition() const {
         return worldTransform_->transform.translate;
     }
 
     /**----------------------------------------------------------------------------
-     * \brief  GetHp HP‚ğæ“¾
+     * \brief  GetHp HPã‚’å–å¾—
      * \return HP
      */
     const int GetHp() const { return hp_; }
 
     void SetTarget(WorldTransform* target) { target_ = target; }
 
-    //’e‚Ìæ“¾
+    //å¼¾ã®å–å¾—
     std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
 
 private:
-    // s“®ó‘Ô•Ê‚ÌXVƒƒ\ƒbƒh
+    // è¡Œå‹•çŠ¶æ…‹åˆ¥ã®æ›´æ–°ãƒ¡ã‚½ãƒƒãƒ‰
     void UpdateWanderState();
     void UpdateChaseState();
     void UpdateCombatState();
 
-    // ó‘Ô‚ğ‘I‘ğ‚·‚éƒƒ\ƒbƒh
+    // çŠ¶æ…‹ã‚’é¸æŠã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
     void UpdateActionState();
 
 
     ///--------------------------------------------------------------
-    /// ƒƒ“ƒo•Ï”
+    /// ãƒ¡ãƒ³ãƒå¤‰æ•°
 private:
 
 
-    // s“®ó‘Ô
+    // è¡Œå‹•çŠ¶æ…‹
     ActionState currentState_ = ActionState::Wander;
 
 

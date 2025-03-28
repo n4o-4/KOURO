@@ -144,7 +144,7 @@ void PlayerMissile::Update() {
         Vector3 direction = Normalize(velocity_);
         
         // 進行方向の逆向きにオフセットを適用して煙の発生位置を設定
-        Vector3 smokeOffset = direction * -0.5f;  // ミサイルの少し後ろに配置
+        Vector3 smokeOffset = direction * -2.6f;  // ミサイルの少し後ろに配置
         
         // エミッタの位置を更新
         particleEmitterMissileSmoke_->SetPosition(worldTransform_->transform.translate + smokeOffset);
