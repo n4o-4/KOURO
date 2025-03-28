@@ -303,12 +303,22 @@ void GameScene::Update() {
 				// カメラからの視点方向をロックオンシステムに設定
 				lockOnSystem_->SetViewDirection(followCamera->GetForwardDirection());
 			}
-			// 敵の検出
-			lockOnSystem_->DetectEnemies(enemies_);
-			lockOnSystem_->DetectEnemies(spawns_);
-			// ロックオン更新
-			lockOnSystem_->Update(enemies_);
-			lockOnSystem_->Update(spawns_);
+			std::vector<BaseEnemy*> allTargets;
+			for (const auto& enemy : enemies_) {
+				allTargets.push_back(enemy.get());
+			}
+			for (const auto& spawn : spawns_) {
+				allTargets.push_back(spawn.get());
+			}
+
+			lockOnSystem_->DetectEnemiesRaw(allTargets);
+			lockOnSystem_->UpdateRaw(allTargets);
+			//// 敵の検出
+			//lockOnSystem_->DetectEnemies(enemies_);
+			//lockOnSystem_->DetectEnemies(spawns_);
+			//// ロックオン更新
+			//lockOnSystem_->Update(enemies_);
+			//lockOnSystem_->Update(spawns_);
 		}
 		//---------------------------------------
 		// 当たり判定
