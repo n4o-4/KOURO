@@ -104,6 +104,7 @@
     <ClCompile Include="externals\MagEngine\Line\LineManager.cpp" />
     <ClCompile Include="externals\MagEngine\Line\LineSetup.cpp" />
     <ClCompile Include="Hud.cpp" />
+    <ClCompile Include="ExplosionEmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -194,6 +195,7 @@
     <ClInclude Include="externals\MagEngine\Line\Line.h" />
     <ClInclude Include="externals\MagEngine\Line\LineManager.h" />
     <ClInclude Include="Hud.h" />
+    <ClInclude Include="ExplosionEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

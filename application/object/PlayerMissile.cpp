@@ -32,6 +32,14 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 	
 	ParticleManager::GetInstance()->SetBlendMode("Add");
 
+    ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png");
+	explosionEmitter_ = std::make_unique<ExplosionEmitter>();
+	explosionEmitter_->Initialize("missileSmoke");
+    // パーティクル設定の調整
+    
+	explosionEmitter_->SetParticleCount(100);   
+	explosionEmitter_->SetFrequency(0.04f);
+
     //===================================================
     // トランスフォームの初期化
     worldTransform_ = std::make_unique<WorldTransform>();
@@ -136,7 +144,7 @@ void PlayerMissile::Update() {
         Vector3 direction = Normalize(velocity_);
         
         // 進行方向の逆向きにオフセットを適用して煙の発生位置を設定
-        Vector3 smokeOffset = direction * -0.5f;  // ミサイルの少し後ろに配置
+        Vector3 smokeOffset = direction * -2.6f;  // ミサイルの少し後ろに配置
         
         // エミッタの位置を更新
         particleEmitterMissileSmoke_->SetPosition(worldTransform_->transform.translate + smokeOffset);
@@ -509,6 +517,9 @@ void PlayerMissile::OnCollisionEnter(BaseObject *other) {
 
 		// 接触時に爆発エフェクトを発生させるなど
 		// 追加の処理をここに実装できます
+
+		explosionEmitter_->SetPosition(worldTransform_->transform.translate);
+		explosionEmitter_->Emit();
 	}
 }
 

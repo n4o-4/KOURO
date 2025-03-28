@@ -25,6 +25,13 @@ void Player::Initialize() {
 	objectTransform_->Initialize();
 	objectTransform_->transform.translate = { 0.0f, initialY_ , 3.0f };
 
+	explosionEmitter_ = std::make_unique<ExplosionEmitter>();
+	explosionEmitter_->Initialize("missileSmoke");
+	// パーティクル設定の調整
+
+	explosionEmitter_->SetParticleCount(10);
+	explosionEmitter_->SetFrequency(0.04f);
+	explosionEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({0.01f,0.01f}));
 	//========================================
 	// 当たり判定との同期
 	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);
@@ -460,22 +467,31 @@ bool Player::HandleBoost() {
 			Vector3 boostDirection;
 
 			Vector3 inputDirection = { 0.0f, 0.0f, 0.0f };
+
+			// 移動入力の取得
 			Vector3 stickInput = Input::GetInstance()->GetLeftStick();
 			inputDirection.x += stickInput.x;
 			inputDirection.z += stickInput.z;
 
+			// カメラの向きに合わせて入力方向を変換
 			Vector3 rotate = followCamera_->GetViewProjection().transform.rotate;
 			rotate.x = 0.0f;
 
 			Matrix4x4 rotateMatrix = MakeRotateMatrix(rotate);
+
 			inputDirection = TransformNormal(inputDirection, rotateMatrix);
 
 			// ✅ 方向決定 & 回転条件分岐
-			if (Length(inputDirection) > 0.0f) {
+			if (Length(inputDirection) > 0.0f) 
+			{
 				boostDirection = Normalize(inputDirection);
-			} else if (Length(velocity_) > 0.01f) {
+			} 
+			else if (Length(velocity_) > 0.01f) 
+			{
 				boostDirection = Normalize(velocity_);
-			} else {
+			} 
+			else
+			{
 				// ❌ 動いてなかったら演出スキップ
 				return stateChanged;
 			}
@@ -485,7 +501,8 @@ bool Player::HandleBoost() {
 			isBoostSpinning_ = true;
 
 			// 加速ベクトルを適用
-			acceleration_ = boostDirection * (accelerationRate_ * 8.0f);
+			//acceleration_ = boostDirection * (accelerationRate_ * 8.0f);
+			velocity_ = boostDirection * (accelerationRate_ * 8.0f);
 
 			stateChanged = true;
 		}
@@ -528,6 +545,9 @@ void Player::ShootMachineGun() {
 
 	// **揺れを適用**
 	shakeIntensity_ = 2.0f;
+
+	explosionEmitter_->SetPosition(objectTransform_.get()->transform.translate);
+	explosionEmitter_->Emit();
 }
 
 void Player::ApplyRecoil() {

@@ -137,20 +137,11 @@ void ParticleManager::Update()
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].World = worldMatrix;
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].WVP = worldViewProjectionMatrix;
 
-				float alpha = 1.0f - ((*particleIterator).currentTime / (*particleIterator).lifeTime);
+				float lifeRatio = 1.0f - ((*particleIterator).currentTime / (*particleIterator).lifeTime);
 
-
-				(*particleIterator).color = {
-					Lerp((*particleIterator).startColor, (*particleIterator).finishColor, alpha).x,
-					Lerp((*particleIterator).startColor, (*particleIterator).finishColor, alpha).y,
-					Lerp((*particleIterator).startColor, (*particleIterator).finishColor, alpha).z
-				};
-
-				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color.x = (*particleIterator).color.x;
-				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color.y = (*particleIterator).color.y;
-				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color.z = (*particleIterator).color.z;
-
-				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color.w = alpha;
+				(*particleIterator).color = Vect4::Lerp((*particleIterator).startColor, (*particleIterator).finishColor, lifeRatio);
+					
+				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color = (*particleIterator).color;
 
 				++particleGroupIterator->second.kNumInstance;
 			}
@@ -607,14 +598,14 @@ void ParticleManager::calculationBillboardMatrix()
 	billboardMatrix.m[3][2] = 0.0f;
 }
 
-ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate,Vector3 startColor,Vector3 finishColor)
+ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange)
 {
 		// 新しいパーティクルの生成
 		std::unique_ptr<Particle> newParticle;
 
 		newParticle = std::make_unique<Particle>();
 
-		//
+		// positionの設定
 		std::uniform_real_distribution<float> distribution(-1.0f, 1.0f);
 		Vector3 randomTranslate = { distribution(randomEngine),distribution(randomEngine) ,distribution(randomEngine) };
 
@@ -623,14 +614,34 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		newParticle->transform.rotate = { 0.0f,0.0f,0.0f };
 		newParticle->transform.translate = translate + randomTranslate;
 
+		std::uniform_real_distribution<float> distVelocityX(velocityRange.x.x,velocityRange.x.y );
+		std::uniform_real_distribution<float> distVelocityY(velocityRange.y.x, velocityRange.y.y);
+		std::uniform_real_distribution<float> distVelocityZ(velocityRange.z.x, velocityRange.z.y);
+
 		// velocityの設定
-		newParticle->velocity = { distribution(randomEngine),distribution(randomEngine) ,distribution(randomEngine) };
+		newParticle->velocity = { distVelocityX(randomEngine),distVelocityY(randomEngine),distVelocityZ(randomEngine) };
 
-		// 時間の設定
-		std::uniform_real_distribution<float> distTime(0.2f, 0.8f);
+		std::uniform_real_distribution<float> distTime(lifeTimeRange.range.x, lifeTimeRange.range.y);
 
+		// ライフタイムの設定
 		newParticle->lifeTime = distTime(randomEngine);
 		newParticle->currentTime = 0.0f;
+
+		// 発生時の色の設定
+		std::uniform_real_distribution<float> startColorR(startColorRange.R.x, startColorRange.R.y);
+		std::uniform_real_distribution<float> startColorG(startColorRange.G.x, startColorRange.G.y);
+		std::uniform_real_distribution<float> startColorB(startColorRange.B.x, startColorRange.B.y);
+		std::uniform_real_distribution<float> startColorA(startColorRange.A.x, startColorRange.A.y);
+
+		Vector4 startColor = { startColorR(randomEngine),startColorG(randomEngine),startColorB(randomEngine),startColorA(randomEngine) };
+
+		// 終了時の色の設定
+		std::uniform_real_distribution<float> finishColorR(finishColorRange.R.x, finishColorRange.R.y);
+		std::uniform_real_distribution<float> finishColorG(finishColorRange.G.x, finishColorRange.G.y);
+		std::uniform_real_distribution<float> finishColorB(finishColorRange.B.x, finishColorRange.B.y);
+		std::uniform_real_distribution<float> finishColorA(finishColorRange.A.x, finishColorRange.A.y);
+
+		Vector4 finishColor = { finishColorR(randomEngine),finishColorG(randomEngine),finishColorB(randomEngine),finishColorA(randomEngine) };
 
 		newParticle->startColor = startColor;
 		newParticle->finishColor = finishColor;
@@ -638,11 +649,11 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		return *newParticle;
 }
 
-void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count, Vector3 startColor,Vector3 finishColor)
+void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange)
 {
 	if (particleGroups.find(name) != particleGroups.end()) {
 		for (uint32_t currentCount = 0; currentCount < count;) {
-			particleGroups.find(name)->second.particles.push_back(MakeNewParticle(position,startColor,finishColor));
+			particleGroups.find(name)->second.particles.push_back(MakeNewParticle(position,startColorRange,finishColorRange,velocityRange,lifeTimeRange));
 			++currentCount;
 		}
 	}

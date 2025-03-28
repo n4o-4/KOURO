@@ -36,4 +36,6 @@ private:
 
 	// 弾の寿命
 	int lifeTime_ = 0;
+
+	std::unique_ptr<ParticleEmitter> particleEmitter_;
 };

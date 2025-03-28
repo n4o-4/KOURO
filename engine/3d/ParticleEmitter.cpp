@@ -9,8 +9,6 @@ void ParticleEmitter::Initialize(std::string name)
 	std::random_device seedGenerator;
 	randomEngine.seed(seedGenerator());
 
-	
-
 	this->name = name;
 
 	emitter.count = 3;
@@ -19,13 +17,21 @@ void ParticleEmitter::Initialize(std::string name)
 	emitter.transform.scale = { 1.0f,1.0f,1.0f };
 	emitter.transform.rotate = { 0.0f,0.0f,0.0f };
 	emitter.transform.translate = { 0.0f,0.0f,0.0f };
+	emitter.lifeTime = 1.0f;
 
+	startColorRange = { {0.56f,1.0f},{0.0f,0.37f},{0.0f,0.19f},{1.0f,1.0f} };
+
+	finishColorRange = { {1.0f,1.0f},{1.0f,1.0f},{1.0f,1.0f},{1.0f,1.0f} };
+
+	velocityRange = { {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} };
+
+	lifeTimeRange = { {0.2f,0.5f} };
 }
 
-void ParticleEmitter::Emit(Vector3 startColor,Vector3 finishColor)
+void ParticleEmitter::Emit()
 {
 
-	ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,startColor,finishColor);
+	ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,lifeTimeRange);
 
 }
 
@@ -36,7 +42,7 @@ void ParticleEmitter::Emit(uint32_t count,Vector3 startColor,Vector3 finishColor
     // 指定されたカウント数に設定
     emitter.count = count;
     // 通常のEmitを呼び出し
-    Emit(startColor,finishColor);
+    Emit();
     // 元のカウント数に戻す
     emitter.count = originalCount;
 }
@@ -76,16 +82,7 @@ void ParticleEmitter::Update()
 	
 		if (particleGroups.find(name) != particleGroups.end())
 		{
-			ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,Vector3(colorR(randomEngine), colorG(randomEngine), colorB(randomEngine)),Vector3(1.0f,1.0f,1.0f));
+			ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,lifeTimeRange);
 		}
-
-		/*for (std::unordered_map<std::string, ParticleManager::ParticleGroup>::iterator particleGroupIterator = particleGroups.begin(); particleGroupIterator != particleGroups.end();) {
-
-			ParticleManager::ParticleGroup* particleGroup = &(particleGroupIterator->second);
-
-			ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count);
-
-			++particleGroupIterator;
-		}*/
 	}
 }

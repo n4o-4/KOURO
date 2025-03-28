@@ -205,4 +205,6 @@ private:
 	FollowCamera* followCamera_ = nullptr;
 
 	float distinationRotateY_;
+
+	std::unique_ptr<ExplosionEmitter> explosionEmitter_ = nullptr;
 };

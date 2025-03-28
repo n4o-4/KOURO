@@ -63,6 +63,7 @@
     <ClCompile Include="externals\MagEngine\Line\LineManager.cpp" />
     <ClCompile Include="externals\MagEngine\Line\LineSetup.cpp" />
     <ClCompile Include="Hud.cpp" />
+    <ClCompile Include="ExplosionEmitter.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="externals\MagEngine\Line\LineManager.h" />
     <ClInclude Include="externals\MagEngine\Line\LineSetup.h" />
     <ClInclude Include="Hud.h" />
+    <ClInclude Include="ExplosionEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

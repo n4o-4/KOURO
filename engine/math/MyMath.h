@@ -774,3 +774,11 @@ static Matrix4x4 MakeAffineMatrixforQuater(const Vector3& scale, const Quaternio
 
 	return result;
 }
+
+namespace Vect4
+{
+	static Vector4 Lerp(const Vector4& a, const Vector4& b, float t)
+	{
+		return a * (1.0f - t) + b * t;
+	}
+}
