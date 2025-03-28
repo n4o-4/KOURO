@@ -195,6 +195,11 @@ private:
 	float shakeIntensity_ = 0.0f; // 揺れの強さ
 	float shakeDecay_ = 0.9f; // 揺れの減衰率
 	//========================================	
+	// 無敵時間用
+	bool isInvincible_ = false;
+	int invincibleTimer_ = 0;
+	bool isVisible_ = true; // 点滅制御用
+	//========================================
 
 	// カメラ
 	FollowCamera* followCamera_ = nullptr;

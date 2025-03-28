@@ -33,6 +33,10 @@ public:
 
 	void SetColor(const Vector4& color) { materialData->color = color; }
 
+	Material GetMaterial() { return *materialData; }
+
+	void SetMaterial(Material material) { *materialData = material; }	
+
 private:
 
 	// .mtlファイルの読み込み

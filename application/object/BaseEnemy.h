@@ -69,6 +69,9 @@ protected:
 
     void RandomMove();
 
+    //ジャンプ 
+	void HitJump();
+
     ////
     void SetModelColor(const Vector4& color) { if (model_) model_->SetColor(color); }
     
@@ -83,7 +86,7 @@ protected:
     std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
 
     //HP
-    int hp_ = 1;
+    int hp_ = 5;
 
     // 移動関連
     float speed_ = 0.15f;   // 移動速度

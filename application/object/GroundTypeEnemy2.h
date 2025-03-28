@@ -56,6 +56,10 @@ private:
     ///--------------------------------------------------------------
     ///						 入出力関数
 public:
+
+	//ジャンプ
+	void HitJump();
+
     /**----------------------------------------------------------------------------
       * \brief  SetPosition 位置を設定
       * \param  position 位置
@@ -108,8 +112,17 @@ private:
     // 行動状態
     ActionState currentState_ = ActionState::Wander;
 
+	float jumpVelocity_ = 0.0f;// ジャンプ速度
 
+    bool isBlinking_ = false;
+    float blinkTimer_ = 0.0f;
+    const float kBlinkDuration_ = 0.3f; // 点滅時間（秒）
 
+    // クラス内の private: の下に追加
+    bool isHitReacting_ = false;
+    float hitReactionTimer_ = 0.0f;
+    Vector3 startScale_;
+    Vector3 targetScale_;
 
 };
 
