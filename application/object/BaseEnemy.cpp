@@ -17,8 +17,8 @@ void BaseEnemy::Initialize(Model* model) {
     // 初期位置を設定
     worldTransform_ = std::make_unique<WorldTransform>();
     worldTransform_->Initialize();
-	spawnWorldTransform_ = std::make_unique<WorldTransform>();
-	spawnWorldTransform_->Initialize();
+	/*spawnWorldTransform_ = std::make_unique<WorldTransform>();
+	spawnWorldTransform_->Initialize();*/
     //========================================
     // 当たり判定との同期
     BaseObject::Initialize(worldTransform_->transform.translate, 1.0f);
@@ -36,7 +36,7 @@ void BaseEnemy::Initialize(Model* model) {
 ///=============================================================================
 ///						描画
 void BaseEnemy::Update() {
-    if (hp_ > 0) {
+    if (IsAlive()) {
 
         // 弾の更新
         BulletUpdate();
@@ -61,7 +61,7 @@ void BaseEnemy::Draw(ViewProjection viewProjection, DirectionalLight directional
 
     //========================================
     // モデルの描画
-    if (hp_ > 0) {
+    if (IsAlive()) {
         model_->Draw(*worldTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
     }
 }
