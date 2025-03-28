@@ -95,6 +95,17 @@ public:
 	Vector3 GetPosition() { return objectTransform_->transform.translate; }
 
 	/**----------------------------------------------------------------------------
+	 * \brief  GetRotation 回転の取得
+	 * \return 
+	 */
+	Vector3 GetRotation() { return objectTransform_->transform.rotate; }
+	/**----------------------------------------------------------------------------
+	 * \brief  GetVelocity 速度の取得
+	 * \return 
+	 */
+	Vector3 GetVelocity() { return velocity_; }
+
+	/**----------------------------------------------------------------------------
 	 * \brief  GetWorldTransform ワールドトランスフォームの取得
 	 * \param  return
 	 */
