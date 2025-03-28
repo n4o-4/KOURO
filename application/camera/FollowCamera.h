@@ -19,14 +19,11 @@ public:
 	// 前方向ベクトルを取得
 	Vector3 GetForwardDirection() const;
 
-	// 高さによるFOV演出
-	void UpdateHeightFOVEffect();
+	// 右方向ベクトルを取得
+	Vector3 GetRightDirection() const;
 
-	// マシンガン発射時のカメラ演出を更新
-	void UpdateFiringCameraEffect();
-
-	// ミサイル発射時のカメラ演出を更新
-	void UpdateMissileFiringCameraEffect();
+	// 上方向ベクトルを取得
+	Vector3 GetUpDirection() const;
 
 private:
 
@@ -35,6 +32,15 @@ private:
 	void CalculationRotate();
 
 	void CalculationTranslate();
+
+	// 高さによるFOV演出
+	void UpdateHeightFOVEffect();
+
+	// マシンガン発射時のカメラ演出を更新
+	void UpdateFiringCameraEffect();
+	
+	// ミサイル発射時のカメラ演出を更新
+	void UpdateMissileFiringCameraEffect();
 
 private:
 	//========================================

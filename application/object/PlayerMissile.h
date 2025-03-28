@@ -73,7 +73,7 @@ private:
     // 定数定義
     // 全般的なパラメータ
     /// @brief 弾の最大寿命（フレーム数）
-    static const int kLifeTimeLimit = 600;
+    static const int kLifeTimeLimit = 360;
 
     // モデル関連の定数
     /// @brief ミサイルのX・Yスケール
@@ -149,11 +149,11 @@ private:
 
     // 最終接近段階のパラメータ
     /// @brief 最終接近時の基本速度
-    static constexpr float kBaseFinalSpeed = 2.1f;  // 1.8fから上げる
+    static constexpr float kBaseFinalSpeed = 2.1f;  // 2.1fから上げる
     /// @brief 時間経過による最終速度の増加量
     static constexpr float kMaxFinalSpeedIncrease = 0.7f;
     /// @brief 時間経過による最終速度増加の調整用
-    static constexpr float kFinalSpeedIncreaseDivider = 8.0f;
+    static constexpr float kFinalSpeedIncreaseDivider = 16.0f;
     /// @brief 最終段階での旋回率増加係数
     static constexpr float kFinalTurnRateFactor = 1.0f;
     /// @brief ランダム挙動開始フレーム

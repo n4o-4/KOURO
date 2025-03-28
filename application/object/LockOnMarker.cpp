@@ -3,18 +3,18 @@
 
 void LockOnMarker::Initialize() {
     // Multi lock on
-    multiLockOn_ = std::make_unique<Object3d>();
-    multiLockOn_->Initialize(Object3dCommon::GetInstance());
-    ModelManager::GetInstance()->LoadModel("lockOn/Lock_on2.obj");
-    multiLockOn_->SetModel("lockOn/Lock_on2.obj");
+    //multiLockOn_ = std::make_unique<Object3d>();
+    //multiLockOn_->Initialize(Object3dCommon::GetInstance());
+    //ModelManager::GetInstance()->LoadModel("lockOn/Lock_on1.obj");
+    //multiLockOn_->SetModel("lockOn/Lock_on1.obj");
 
-    multiLockOn_->SetEnableLighting(false);
+    //multiLockOn_->SetEnableLighting(false);
 
-	multilockOnWorldTransform_ = std::make_unique<WorldTransform>();
-	multilockOnWorldTransform_->Initialize();
+	//multilockOnWorldTransform_ = std::make_unique<WorldTransform>();
+	//multilockOnWorldTransform_->Initialize();
     
     // 最初は最大スケールから始める
-    multilockOnWorldTransform_->transform.scale = { maxScale_, maxScale_, maxScale_ };
+    //multilockOnWorldTransform_->transform.scale = { maxScale_, maxScale_, maxScale_ };
 
     isVisible_ = false;
     isAnimating_ = false;
@@ -25,7 +25,7 @@ void LockOnMarker::Show() {
     isVisible_ = true;
     isAnimating_ = true;
     // アニメーションを開始時は最大スケールから始める
-    multilockOnWorldTransform_->transform.scale = { maxScale_, maxScale_, maxScale_ };
+    //multilockOnWorldTransform_->transform.scale = { maxScale_, maxScale_, maxScale_ };
     animationTimer_ = 0.0f;
 }
 
@@ -41,7 +41,7 @@ void LockOnMarker::Update(const Vector3& playerPosition, const Vector3& markerPo
     }
     
     // マーカーの位置を設定
-    multilockOnWorldTransform_->transform.translate = markerPosition;
+    //multilockOnWorldTransform_->transform.translate = markerPosition;
     
     // プレイヤーからマーカーへの方向ベクトルを計算
     Vector3 toPlayer = {
@@ -69,7 +69,7 @@ void LockOnMarker::Update(const Vector3& playerPosition, const Vector3& markerPo
         float pitch = std::atan2(-normalized.y, std::sqrt(normalized.x * normalized.x + normalized.z * normalized.z));
         
         // マーカーの回転を設定
-        multilockOnWorldTransform_->transform.rotate = { pitch, yaw, 0.0f };
+        //multilockOnWorldTransform_->transform.rotate = { pitch, yaw, 0.0f };
     }
     
     // アニメーション処理
@@ -82,11 +82,11 @@ void LockOnMarker::Update(const Vector3& playerPosition, const Vector3& markerPo
         float currentScale = maxScale_ - (maxScale_ - minScale_) * t;
         
         // スケール値を設定
-        multilockOnWorldTransform_->transform.scale = { 
-            currentScale, 
-            currentScale, 
-            currentScale 
-        };
+        //multilockOnWorldTransform_->transform.scale = { 
+        //    currentScale, 
+        //    currentScale, 
+        //    currentScale 
+        //};
     }
     
     // アニメーション更新（レベルに応じた挙動）
@@ -106,22 +106,22 @@ void LockOnMarker::Update(const Vector3& playerPosition, const Vector3& markerPo
         float currentScale = maxScale_ - (maxScale_ - minScale_) * t;
         
         // スケール値を設定
-        multilockOnWorldTransform_->transform.scale = { 
-            currentScale, 
-            currentScale, 
-            currentScale 
-        };
+    //    multilockOnWorldTransform_->transform.scale = { 
+    //        currentScale, 
+    //        currentScale, 
+    //        currentScale 
+    //    };
     }
 
     // 行列を更新
-    multilockOnWorldTransform_->UpdateMatrix();
-    multiLockOn_->SetLocalMatrix(MakeIdentity4x4());
-    multiLockOn_->Update();
+    //multilockOnWorldTransform_->UpdateMatrix();
+    //multiLockOn_->SetLocalMatrix(MakeIdentity4x4());
+    //multiLockOn_->Update();
 }
 
 void LockOnMarker::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
 	if (isVisible_) {
-	multiLockOn_->Draw(*multilockOnWorldTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
+	//multiLockOn_->Draw(*multilockOnWorldTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
 	}
 }
 

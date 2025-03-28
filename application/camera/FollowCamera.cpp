@@ -64,6 +64,24 @@ Vector3 FollowCamera::GetForwardDirection() const {
 }
 
 ///=============================================================================
+///                        カメラからの右方向ベクトルを取得
+Vector3 FollowCamera::GetRightDirection() const {
+    // カメラの回転行列から右方向ベクトルを計算
+    Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);
+    Vector3 right = { 1.0f, 0.0f, 0.0f }; // デフォルトの右方向
+    return TransformNormal(right, rotateMatrix);
+}
+
+///=============================================================================
+///                        カメラからの上方向ベクトルを取得
+Vector3 FollowCamera::GetUpDirection() const {
+    // カメラの回転行列から上方向ベクトルを計算
+    Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);
+    Vector3 up = { 0.0f, 1.0f, 0.0f }; // デフォルトの上方向
+    return TransformNormal(up, rotateMatrix);
+}
+
+///=============================================================================
 ///                        オフセットの計算
 Vector3 FollowCamera::CalculationOffset()
 {

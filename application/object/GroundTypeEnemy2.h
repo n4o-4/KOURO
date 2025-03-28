@@ -12,113 +12,113 @@
 
 class GroundTypeEnemy2 :public BaseEnemy {
 
-    // s“®ó‘Ô
+    // ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½
     enum class ActionState {
-        Wander,     // œpœjiƒXƒ|[ƒ“•t‹ß‚Å“®‚«‰ñ‚éj
-        Chase,      // ’ÇÕiƒvƒŒƒCƒ„[‚É‹ß‚Ã‚­j
-        Combat      // í“¬iƒXƒgƒ‰ƒbƒtƒBƒ“ƒO‚µ‚È‚ª‚çUŒ‚j
+        Wander,     // ï¿½pï¿½jï¿½iï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½tï¿½ß‚Å“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½j
+        Chase,      // ï¿½ÇÕiï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½É‹ß‚Ã‚ï¿½ï¿½j
+        Combat      // ï¿½í“¬ï¿½iï¿½Xï¿½gï¿½ï¿½ï¿½bï¿½tï¿½Bï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½Uï¿½ï¿½ï¿½j
     };
 
     ///--------------------------------------------------------------
-    ///						 ƒƒ“ƒoŠÖ” 
+    ///						 ï¿½ï¿½ï¿½ï¿½ï¿½oï¿½Öï¿½ 
 public:
 
 
     GroundTypeEnemy2() : BaseEnemy() {}
 
-    // @brief ‰Šú‰»
+    // @brief ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     void Initialize();
-    // @brief XV
+    // @brief ï¿½Xï¿½V
     void Update();
     /**----------------------------------------------------------------------------
-     * \brief  Draw •`‰æ
-     * \param  viewProjection ƒrƒ…[Ë‰es—ñ
-     * \param  directionalLight ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒg
-     * \param  pointLight ƒ|ƒCƒ“ƒgƒ‰ƒCƒg
-     * \param  spotLight ƒXƒ|ƒbƒgƒ‰ƒCƒg
+     * \brief  Draw ï¿½`ï¿½ï¿½
+     * \param  viewProjection ï¿½rï¿½ï¿½ï¿½[ï¿½Ë‰eï¿½sï¿½ï¿½
+     * \param  directionalLight ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½Vï¿½ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½g
+     * \param  pointLight ï¿½|ï¿½Cï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Cï¿½g
+     * \param  spotLight ï¿½Xï¿½|ï¿½bï¿½gï¿½ï¿½ï¿½Cï¿½g
      */
     void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
     void Attack();
 
     ///--------------------------------------------------------------
-    ///						 “–‚½‚è”»’è
+    ///						 ï¿½ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½
 private:
-    /// \brief Õ“ËŠJn‚Ìˆ—
+    /// \brief ï¿½Õ“ËŠJï¿½nï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
     void OnCollisionEnter(BaseObject* other) override;
 
-    /// \brief Õ“ËŒp‘±‚Ìˆ—
+    /// \brief ï¿½Õ“ËŒpï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
     void OnCollisionStay(BaseObject* other) override;
 
-    /// \brief Õ“ËI—¹‚Ìˆ—
+    /// \brief ï¿½Õ“ËIï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
     void OnCollisionExit(BaseObject* other) override;
 
     ///--------------------------------------------------------------
-    ///						 “üo—ÍŠÖ”
+    ///						 ï¿½ï¿½ï¿½oï¿½ÍŠÖï¿½
 public:
 
-	//ƒWƒƒƒ“ƒv
+	//ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½v
 	void HitJump();
 
     /**----------------------------------------------------------------------------
-      * \brief  SetPosition ˆÊ’u‚ğİ’è
-      * \param  position ˆÊ’u
+      * \brief  SetPosition ï¿½Ê’uï¿½ï¿½İ’ï¿½
+      * \param  position ï¿½Ê’u
       */
     void SetPosition(const Vector3& position) {
         worldTransform_->transform.translate = position;
-        spawnPosition_ = position; // ƒXƒ|[ƒ“ˆÊ’u‚à•Û‘¶
+        spawnPosition_ = position; // ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½Ê’uï¿½ï¿½Û‘ï¿½
     }
 
     /**----------------------------------------------------------------------------
-     * \brief  SetHp HP‚ğİ’è
+     * \brief  SetHp HPï¿½ï¿½İ’ï¿½
      * \param  hp HP
      */
     void SetHp(const int hp) { hp_ = hp; }
 
     /**----------------------------------------------------------------------------
-     * \brief  GetPosition ˆÊ’u‚ğæ“¾
-     * \return ˆÊ’u
+     * \brief  GetPosition ï¿½Ê’uï¿½ï¿½æ“¾
+     * \return ï¿½Ê’u
      */
     const Vector3& GetPosition() const {
         return worldTransform_->transform.translate;
     }
 
     /**----------------------------------------------------------------------------
-     * \brief  GetHp HP‚ğæ“¾
+     * \brief  GetHp HPï¿½ï¿½æ“¾
      * \return HP
      */
     const int GetHp() const { return hp_; }
 
     void SetTarget(WorldTransform* target) { target_ = target; }
 
-    //’e‚Ìæ“¾
+    //ï¿½eï¿½Ìæ“¾
     std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
 
 private:
-    // s“®ó‘Ô•Ê‚ÌXVƒƒ\ƒbƒh
+    // ï¿½sï¿½ï¿½ï¿½ï¿½Ô•Ê‚ÌXï¿½Vï¿½ï¿½ï¿½\ï¿½bï¿½h
     void UpdateWanderState();
     void UpdateChaseState();
     void UpdateCombatState();
 
-    // ó‘Ô‚ğ‘I‘ğ‚·‚éƒƒ\ƒbƒh
+    // ï¿½ï¿½Ô‚ï¿½Iï¿½ï¿½ï¿½ï¿½éƒï¿½\ï¿½bï¿½h
     void UpdateActionState();
 
 
     ///--------------------------------------------------------------
-    /// ƒƒ“ƒo•Ï”
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½oï¿½Ïï¿½
 private:
 
 
-    // s“®ó‘Ô
+    // ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½
     ActionState currentState_ = ActionState::Wander;
 
-	float jumpVelocity_ = 0.0f;// ƒWƒƒƒ“ƒv‘¬“x
+	float jumpVelocity_ = 0.0f;// ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½x
 
     bool isBlinking_ = false;
     float blinkTimer_ = 0.0f;
-    const float kBlinkDuration_ = 0.3f; // “_–ÅŠÔi•bj
+    const float kBlinkDuration_ = 0.3f; // ï¿½_ï¿½Åï¿½ï¿½Ôiï¿½bï¿½j
 
-    // ƒNƒ‰ƒX“à‚Ì private: ‚Ì‰º‚É’Ç‰Á
+    // ï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ private: ï¿½Ì‰ï¿½ï¿½É’Ç‰ï¿½
     bool isHitReacting_ = false;
     float hitReactionTimer_ = 0.0f;
     Vector3 startScale_;

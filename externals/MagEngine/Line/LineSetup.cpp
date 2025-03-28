@@ -1,24 +1,26 @@
 /*********************************************************************
- * \file   LineSetup.cpp
- * \brie
- * 
- * \author Harukichimaru
- * \date   January 2025
- * \note   
- *********************************************************************/
+* \file   LineSetup.cpp
+* \brie
+* 
+* \author Harukichimaru
+* \date   January 2025
+* \note   
+*********************************************************************/
 #include "LineSetup.h"
 
- ///=============================================================================
- ///						初期化
-void LineSetup::Initialize(DirectXCore* dxCore, SrvSetup* srvSetup) {
-	/// ===引数でdxManagerを受取=== ///
-	dxCore_ = dxCore;
+///=============================================================================
+///						初期化
+void LineSetup::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) {
+	//========================================
+	// DirectXCommonの取得
+	dxCommon_ = dxCommon;
 
 	//========================================
 	// SrvSetupの取得
-	srvSetup_ = srvSetup;
+	srvManager_ = srvManager;
 
-	/// ===グラフィックスパイプラインの生成=== ///
+	//========================================
+	// ルートシグネチャの作成
 	CreateGraphicsPipeline();
 }
 
@@ -27,7 +29,7 @@ void LineSetup::Initialize(DirectXCore* dxCore, SrvSetup* srvSetup) {
 void LineSetup::CommonDrawSetup() {
 	//コマンドリストの取得
 	// NOTE:Getを複数回呼び出すのは非効率的なので、変数に保持しておく
-	auto commandList = dxCore_->GetCommandList();
+	auto commandList = dxCommon_->GetCommandList();
 	//ルートシグネイチャのセット
 	commandList->SetGraphicsRootSignature(rootSignature_.Get());
 	//グラフィックスパイプラインステートをセット
@@ -63,12 +65,11 @@ void LineSetup::CreateRootSignature() {
 		throw std::runtime_error(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	hr = dxCore_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
+	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
 		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
 	if (FAILED(hr)) {
 		throw std::runtime_error("Failed to create root signature");
 	}
-	Log("Particle Root signature created successfully :)", LogLevel::Success);
 }
 
 
@@ -116,22 +117,22 @@ void LineSetup::CreateGraphicsPipeline() {
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
+    rasterizerDesc.DepthBias = 100;             // 深度バイアスを設定
+    rasterizerDesc.DepthBiasClamp = 0.0f;       // バイアスの最大値
+    rasterizerDesc.SlopeScaledDepthBias = 1.0f; // 傾斜によるバイアスの倍率
+
 	//========================================
 	// VertexShaderをコンパイルする
-	Microsoft::WRL::ComPtr <IDxcBlob> vertexShaderBlob = dxCore_->CompileShader(L"resources/shader/Line.VS.hlsl", L"vs_6_0");
+	Microsoft::WRL::ComPtr <IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"externals/MagEngine/Line/Line.VS.hlsl", L"vs_6_0");
 	if(!vertexShaderBlob) {
-		Log("Particle Failed to compile vertex shader :(", LogLevel::Error);
 		throw std::runtime_error("Particle Failed to compile vertex shader :(");
 	}
-	Log("Particle Vertex shader created successfully :)", LogLevel::Success);
 	//========================================
 	// PixelShaderをコンパイルする
-	Microsoft::WRL::ComPtr <IDxcBlob> pixelShaderBlob = dxCore_->CompileShader(L"resources/shader/Line.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr <IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"externals/MagEngine/Line/Line.PS.hlsl", L"ps_6_0");
 	if(!pixelShaderBlob) {
-		Log("Particle Failed to compile pixel shader :(", LogLevel::Error);
 		throw std::runtime_error("Particle Failed to compile pixel shader :(");
 	}
-	Log("Particle Pixel shader state created successfully :)", LogLevel::Success);
 
 	//========================================
 	// PSOを生成する
@@ -149,21 +150,19 @@ void LineSetup::CreateGraphicsPipeline() {
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
 	//========================================
-	// DepthStencilStateの設定を行う
-	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
-	depthStencilDesc.DepthEnable = true;
-	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
+    // DepthStencilStateの設定を行う
+    D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
+	depthStencilDesc.DepthEnable = false;  // デプスステンシルを有効
+    depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+    depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL; 
+    graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	//========================================
 	// 実際に生成
-	HRESULT hr = dxCore_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc,
+	HRESULT hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc,
 		IID_PPV_ARGS(&graphicsPipelineState_));
 	if(FAILED(hr)) {
-		Log("Particle Failed to create graphics pipeline state :(", LogLevel::Error);
 		throw std::runtime_error("Particle Failed to create graphics pipeline state :(");
 	}
-	Log("Particle Graphics pipeline state created successfully :)", LogLevel::Success);
 }

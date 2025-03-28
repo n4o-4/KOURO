@@ -59,6 +59,10 @@
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="engine\effect\LuminanceBasedOutline.cpp" />
     <ClCompile Include="application\object\GroundTypeEnemy2.cpp" />
+    <ClCompile Include="externals\MagEngine\Line\Line.cpp" />
+    <ClCompile Include="externals\MagEngine\Line\LineManager.cpp" />
+    <ClCompile Include="externals\MagEngine\Line\LineSetup.cpp" />
+    <ClCompile Include="Hud.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -174,6 +178,10 @@
     <ClInclude Include="engine\effect\Vignette.h" />
     <ClInclude Include="application\object\GroundTypeEnemy2.h" />
     <ClInclude Include="engine\effect\MotionBlur.h" />
+    <ClInclude Include="externals\MagEngine\Line\Line.h" />
+    <ClInclude Include="externals\MagEngine\Line\LineManager.h" />
+    <ClInclude Include="externals\MagEngine\Line\LineSetup.h" />
+    <ClInclude Include="Hud.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
@@ -364,7 +372,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\object;$(ProjectDir)application\collision;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\effect;$(ProjectDir)engine\effect;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\object;$(ProjectDir)application\collision;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\effect;$(ProjectDir)engine\effect;$(ProjectDir)externals\MagEngine\Line;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -389,7 +397,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\object;$(ProjectDir)application\collision;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\effect;$(ProjectDir)engine\effect;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\object;$(ProjectDir)application\collision;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\effect;$(ProjectDir)engine\effect;$(ProjectDir)externals\MagEngine\Line;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

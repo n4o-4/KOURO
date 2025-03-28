@@ -1,12 +1,3 @@
-/*********************************************************************
- * \file   Line.h
- * \brief
- * 
- * \author Harukichimaru
- * \date   January 2025
- * \note   
- *********************************************************************/
-#pragma once
 #pragma once
 #include <vector>
 #include <wrl.h>
@@ -14,19 +5,11 @@
 #include "Vectors.h"
 #include "Matrixs.h"
 #include "DirectXCommon.h"
-#include "WorldTransform.h"
 #include "ViewProjection.h"
- //========================================
- // DX12include
-#include<d3d12.h>
-#include<dxgi1_6.h>
-#include <wrl/client.h>
-#pragma comment(lib,"d3d12.lib")
-#pragma comment(lib,"dxgi.lib")
- //========================================
- // DXC
-#include <dxcapi.h>
-#pragma comment(lib,"dxcompiler.lib")
+#include "Camera.h"
+
+// 前方宣言
+class LineSetup;
 
 // ラインの頂点データ
 struct LineVertex {
@@ -41,146 +24,86 @@ struct TransformationMatrix {
     Matrix4x4 WorldInvTranspose; // ワールド行列の逆行列の転置行列
 };
 
-class Camera;
-class LineSetup;
 class Line {
-	///--------------------------------------------------------------
-	///							メンバ関数
 public:
+    /// 初期化
+    void Initialize(LineSetup* lineSetup);
 
-	/// \brief 初期化
-	void Initialize(LineSetup *lineSetup);
+    /// 更新
+    void Update();
 
-	/// \brief 更新
-	void Update();
+    /// 描画
+    void Draw();
 
-	/// \brief 描画 
-	void Draw();
+    /// ラインのクリア
+    void ClearLines();
 
-	/**----------------------------------------------------------------------------
-	 * \brief  ClearLines 
-	 */
-	void ClearLines();
+    /// ライン描画
+    void DrawLine(const Vector3& start, const Vector3& end, const Vector4& color);
 
-	/**----------------------------------------------------------------------------
-	 * \brief  DrawLine ライン描画
-	 * \param  start 始点
-	 * \param  end 終点
-	 * \param  color 色
-	 */
-	void DrawLine(const Vector3 &start, const Vector3 &end, const Vector4 &color);
-
-	///--------------------------------------------------------------
-	///						 静的メンバ関数
 private:
-	/**----------------------------------------------------------------------------
-	 * \brief  CreateVertexBuffer 頂点バッファの作成
-	 */
-	void CreateVertexBuffer();
+    /// 頂点バッファの作成
+    void CreateVertexBuffer();
 
-	/**----------------------------------------------------------------------------
-	 * \brief  CreateTransformationMatrixBuffer 
-	 * \return 
-	 */
-	void CreateTransformationMatrixBuffer();
+    /// 変換行列バッファの作成
+    void CreateTransformationMatrixBuffer();
 
-	///--------------------------------------------------------------
-	///							入出力関数
 public:
+    // トランスフォーム系
+    struct TransformStructure {
+        Vector3 scale = {1.0f, 1.0f, 1.0f};
+        Vector3 rotate = {0.0f, 0.0f, 0.0f};
+        Vector3 translate = {0.0f, 0.0f, 0.0f};
+    };
 
-	
+    /// スケールの設定
+    void SetScale(const Vector3& scale) { transform_.scale = scale; }
+    
+    /// スケールの取得
+    const Vector3& GetScale() const { return transform_.scale; }
 
-	/**----------------------------------------------------------------------------
-	* \brief  SetTransform トランスフォーメーションの設定
-	* \param  transform トランスフォーメーション
-	* \note
-	*/
-	void SetTransform(const Transform& transform) { transform_ = transform; }
+    /// 回転の設定
+    void SetRotate(const Vector3& rotate) { transform_.rotate = rotate; }
+    
+    /// 回転の取得
+    const Vector3& GetRotate() const { return transform_.rotate; }
 
-	/**----------------------------------------------------------------------------
-	 * \brief  GetTransform 
-	 * \return 
-	 */
-	Transform GetTransform() const { return transform_; }
+    /// 平行移動の設定
+    void SetTranslate(const Vector3& translate) { transform_.translate = translate; }
+    
+    /// 平行移動の取得
+    const Vector3& GetTranslate() const { return transform_.translate; }
 
-	/**----------------------------------------------------------------------------
-	* \brief  SetModel モデルの設定
-	* \param  model モデル
-	* \note
-	*/
-	void SetScale(const Vector3& scale) { transform_.scale = scale; }
-	/**----------------------------------------------------------------------------
-	* \brief  GetScale スケールの取得
-	* \return Vector3 スケール
-	* \note
-	*/
-	const Vector3& GetScale() const { return transform_.scale; }
-
-	/**----------------------------------------------------------------------------
-	* \brief  SetRotate 回転の設定
-	* \param  rotate 回転
-	* \note
-	*/
-	void SetRotation(const Vector3& rotate) { transform_.rotate = rotate; }
-	/**----------------------------------------------------------------------------
-	* \brief  GetRotate 回転の取得
-	* \return Vector3 回転
-	* \note
-	*/
-	const Vector3& GetRotation() const { return transform_.rotate; }
-
-	/**----------------------------------------------------------------------------
-	* \brief  SetTranslate 移動の設定
-	* \param  translate 移動
-	* \note
-	*/
-	void SetPosition(const Vector3& translate) { transform_.translate = translate; } 
-	/**----------------------------------------------------------------------------
-	* \brief  GetTranslate 移動の取得
-	* \return Vector3 移動
-	* \note
-	*/
-	const Vector3& GetPosition() const { return transform_.translate; }
-
-	/**----------------------------------------------------------------------------
-	* \brief  SetCamera カメラの設定
-	* \param  camera
-	*/
-	void SetCamera(Camera* camera) { this->camera_ = camera; }
-
-	///--------------------------------------------------------------
-	///							メンバ変数
 private:
 
-	//---------------------------------------
-	// オブジェクト3Dセットアップポインタ
-	LineSetup* lineSetup_ = nullptr;
+    //---------------------------------------
+    // オブジェクト3Dセットアップポインタ
+    LineSetup* lineSetup_ = nullptr;
 
-	//---------------------------------------
-	// 頂点データ
-	std::vector<LineVertex> vertices_;
+    //---------------------------------------
+    // 頂点データ
+    std::vector<LineVertex> vertices_;
 
-	//---------------------------------------
-	// 頂点バッファ
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexBuffer_ = nullptr;
-	// バッファリソースの使い道を指すポインタ
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_ = {};
+    //---------------------------------------
+    // 頂点バッファ
+    Microsoft::WRL::ComPtr<ID3D12Resource> vertexBuffer_ = nullptr;
+    // バッファリソースの使い道を指すポインタ
+    D3D12_VERTEX_BUFFER_VIEW vertexBufferView_ = {};
 
-	//---------------------------------------
-	//トランスフォーメーションマトリックス
-	Microsoft::WRL::ComPtr <ID3D12Resource> transfomationMatrixBuffer_;
+    //---------------------------------------
+    //トランスフォーメーションマトリックス
+    Microsoft::WRL::ComPtr <ID3D12Resource> transfomationMatrixBuffer_;
 
-	//---------------------------------------
-	// バッファリソース内のデータを指すポインタ
-	//トランスフォーメーションマトリックス
-	TransformationMatrix* transformationMatrixData_ = nullptr;
+    //---------------------------------------
+    // バッファリソース内のデータを指すポインタ
+    //トランスフォーメーションマトリックス
+    TransformationMatrix* transformationMatrixData_ = nullptr;
 
-	//--------------------------------------
-	// Transform
-	Transform transform_ = {};
+    //--------------------------------------
+    // Transform
+    Transform transform_ = {};
 
-	//--------------------------------------
-	// カメラ
-	Camera* camera_ = nullptr;
+    //--------------------------------------
+    // カメラ
+    ViewProjection* camera_ = nullptr;
 };
-

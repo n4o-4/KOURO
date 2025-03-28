@@ -18,6 +18,7 @@
 #include <random>
 #include "LineDrawerBase.h"
 #include "GroundTypeEnemy2.h"
+#include "Hud.h"
 
 
 class GameScene : public BaseScene
@@ -51,6 +52,8 @@ private:
 	std::unique_ptr<Player> player_ = nullptr;
 	// ロックオン
 	std::unique_ptr<LockOn> lockOnSystem_ = nullptr;
+	// HUD
+	std::unique_ptr<Hud> hud_ = nullptr;
 	//========================================
 	// 敵出現
     std::stringstream enemyPopCommands;
