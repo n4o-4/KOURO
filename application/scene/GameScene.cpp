@@ -56,8 +56,16 @@ void GameScene::Initialize() {
 	// 🔹 SetLockOnSystem() に std::move を使用
 	player_->SetLockOnSystem(lockOnSystem_.get());  // 🔹 `std::move()` を使わず `get()` でポインタを渡す
 	//========================================
+
+	waveCsvPaths_ = {
+	"./Resources/enemySpawn1.csv",
+	"./Resources/enemySpawn2.csv",
+	"./Resources/enemySpawn3.csv"
+	};
+
 	// 敵出現
-	LoadEnemyPopData();
+	//========================================
+	LoadEnemyPopData(waveIndex_);
 
 	//========================================
 	// 当たり判定マネージャ
@@ -107,6 +115,27 @@ void GameScene::Initialize() {
 	human_->Initialize(Object3dCommon::GetInstance());
 	human_->SetModel(ModelManager::GetInstance()->FindModel("human/wlak.gltf"));*/
 
+	//wave sprite
+	TextureManager::GetInstance()->LoadTexture("Resources/text/wave1.png");
+	wave1_ = std::make_unique<Sprite>();
+	wave1_->Initialize(SpriteCommon::GetInstance(), "Resources/text/wave1.png");
+	wave1_->SetTexSize({ 1280.0f,720.0f });
+	wave1_->SetSize({ 1280.0f,720.0f });
+	wave1_->SetPosition({ 0.0f,0.0f });
+
+	TextureManager::GetInstance()->LoadTexture("Resources/text/wave2.png");
+	wave2_ = std::make_unique<Sprite>();
+	wave2_->Initialize(SpriteCommon::GetInstance(), "Resources/text/wave2.png");
+	wave2_->SetTexSize({ 1280.0f,720.0f });
+	wave2_->SetSize({ 1280.0f,720.0f });
+	wave2_->SetPosition({ 0.0f,0.0f });
+
+	TextureManager::GetInstance()->LoadTexture("Resources/text/wave3.png");
+	wave3_ = std::make_unique<Sprite>();
+	wave3_->Initialize(SpriteCommon::GetInstance(), "Resources/text/wave3.png");
+	wave3_->SetTexSize({ 1280.0f,720.0f });
+	wave3_->SetSize({ 1280.0f,720.0f });
+	wave3_->SetPosition({ 0.0f,0.0f });
 }
 ///=============================================================================
 ///						終了処理
@@ -215,6 +244,22 @@ void GameScene::Update() {
 					return false;
 				}),
 			spawns_.end());
+		if (spawns_.empty() && waveReady_) {
+			enemies_.clear();
+
+			waveIndex_++;
+
+			if (waveIndex_ < waveCsvPaths_.size()) {
+
+				currentWaveImageIndex_ = waveIndex_+1;  
+				waveDisplayTimer_ = waveDisplayDuration_;
+
+				LoadEnemyPopData(waveIndex_);
+				waveReady_ = false; 
+			} else {
+				isGameClear_ = true; 
+			}
+		}
 		// 敵リスト
 		for(const auto &enemy : enemies_) {
 			enemy->Update();
@@ -302,6 +347,18 @@ void GameScene::Update() {
 		// パーティクル
 		ParticleManager::GetInstance()->Update();
 		
+		// wave sprite
+		wave1_->Update();
+		wave2_->Update();
+		wave3_->Update();
+
+		if (waveDisplayTimer_ > 0) {
+			--waveDisplayTimer_;
+			if (waveDisplayTimer_ <= 0) {
+				currentWaveImageIndex_ = -1;
+			}
+		}
+
 		//========================================
 		// フェードアウト
 		break;
@@ -395,6 +452,14 @@ void GameScene::Update() {
 		ImGui::TreePop();
 	}
 
+	if(ImGui::TreeNode("wave")) {
+		ImGui::TextWrapped("waveDisplayTimer_ : %d", waveDisplayTimer_);
+		ImGui::TextWrapped("currentWaveImageIndex_ : %d", currentWaveImageIndex_);
+		ImGui::TextWrapped("waveIndex_ : %d", waveIndex_);
+		ImGui::TextWrapped("waveCsvPaths_ : %d", waveCsvPaths_.size());
+		ImGui::TreePop();
+	}
+
 	ImGui::Checkbox("useDebugCamera", &cameraManager_->useDebugCamera_);
 	ImGui::Checkbox("sceneConticue", &isContinue);
 
@@ -434,6 +499,8 @@ void GameScene::Draw() {
 
 		DrawForegroundSprite();
 		/// 前景スプライト描画
+
+		
 
 		// フェード描画
 		DrawFade();
@@ -496,6 +563,14 @@ void GameScene::Draw() {
 
 		DrawForegroundSprite();
 		/// 前景スプライト描画
+
+		if (currentWaveImageIndex_ == 1 && wave1_) {
+			wave1_->Draw();
+		} else if (currentWaveImageIndex_ == 2 && wave2_) {
+			wave2_->Draw();
+		} else if (currentWaveImageIndex_ == 3 && wave3_) {
+			wave3_->Draw();
+		}
 
 		break;
 
@@ -561,6 +636,8 @@ void GameScene::Draw() {
 
 		break;
 	}
+	
+
 	//========================================
 	//パーティクルの描画
 	ParticleManager::GetInstance()->Draw("Resources/circle.png");	
@@ -572,9 +649,15 @@ void GameScene::Draw() {
 ///                        静的メンバ関数
 ///--------------------------------------------------------------
 ///                        敵の出現データの読み込み
-void GameScene::LoadEnemyPopData() {
-	std::ifstream file;
-	file.open("./Resources/enemySpawn.csv");
+void GameScene::LoadEnemyPopData(int index) {
+	enemyPopCommands.str("");
+	enemyPopCommands.clear();
+
+	if (index < 0 || index >= waveCsvPaths_.size()) {
+		return;
+	}
+
+	std::ifstream file(waveCsvPaths_[index]);
 	assert(file.is_open());
 
 	enemyPopCommands << file.rdbuf();
@@ -629,7 +712,7 @@ void GameScene::UpdateEnemyPopCommands() {
 			std::uniform_real_distribution<float> randomY(y - spawnRangeY, y + spawnRangeY);
 			std::uniform_real_distribution<float> randomZ(z - spawnRangeZ, z + spawnRangeZ);
 
-			/*for (int i = 0; i < num; i++) {
+			for (int i = 0; i < num; i++) {
 				if (currentSpawnType_ == "KUMO") {
 					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
 					SpawnEnemyKumo(randomPosition);
@@ -642,7 +725,7 @@ void GameScene::UpdateEnemyPopCommands() {
 				} else {
 					SpawnEnemy(Vector3(x, y, z));
 				}
-			}*/
+			}
 			
 		} else if(word.find("WAIT") == 0) {
 
@@ -658,6 +741,9 @@ void GameScene::UpdateEnemyPopCommands() {
 		}
 
 
+	}
+	if (enemyPopCommands.eof()) {
+		waveReady_ = true;
 	}
 }
 ///--------------------------------------------------------------

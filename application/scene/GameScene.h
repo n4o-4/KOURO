@@ -93,7 +93,7 @@ public: // メンバ関数
 private: //静的メンバ関数
 
 	// 敵の出現データの読み込み
-	void LoadEnemyPopData();
+	void LoadEnemyPopData(int index);
 
 	// 敵の出現データの更新
 	void UpdateEnemyPopCommands();
@@ -127,4 +127,16 @@ private:
 	// 乱数ジェネレータ
 	std::random_device rd;
 	std::mt19937 gen;
+
+
+	// wave
+	int waveIndex_ = 0;
+	bool waveReady_ = true;
+	std::vector<std::string> waveCsvPaths_;
+	int waveDisplayTimer_ = 120;
+	const int waveDisplayDuration_ = 120;
+	int currentWaveImageIndex_ = 1;
+	std::unique_ptr<Sprite> wave1_ = nullptr;
+	std::unique_ptr<Sprite> wave2_ = nullptr;
+	std::unique_ptr<Sprite> wave3_ = nullptr;
 };
