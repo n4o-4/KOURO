@@ -88,7 +88,7 @@ void Framework::Initialize()
 	* ParticleManagerの初期化
 	-----------------------------------*/
 
-	ParticleManager::GetInstance()->Initialize(dxCommon_, srvManager.get(), Camera::GetInstance());
+	ParticleManager::GetInstance()->Initialize(dxCommon_, srvManager.get());
 	//ParticleManager::GetInstance()->CreateParticleGroup("particle", "Resources/circle.png");
 
 	/*-----------------------------------
@@ -100,16 +100,22 @@ void Framework::Initialize()
 	particleEmitter->Initialize("particle");
 	particleEmitter->Emit();*/
 
-	SceneManager::GetInstance()->Initialize(srvManager.get(),Camera::GetInstance());
+	SceneManager::GetInstance()->Initialize(dxCommon_,srvManager.get(),Camera::GetInstance());
 
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
 	lineDrawer_->Initialize(dxCommon_,srvManager.get());
+
+	postEffect_ = std::make_unique<PostEffect>();
+	postEffect_->Initialize(dxCommon_,srvManager.get());
+
+	SceneManager::GetInstance()->SetPostEffect(postEffect_.get());
 }
 
 void Framework::Finalize()
 {
-
 	SceneManager::GetInstance()->Finalize(); ///
+
+	postEffect_->Finalize();
 
 	ParticleManager::GetInstance()->Finalize(); ///
 
@@ -152,6 +158,13 @@ void Framework::Draw()
 	SceneManager::GetInstance()->Draw();
 
 }
+
+void Framework::DrawEffect()
+{
+	postEffect_->Draw();
+}
+
+
 
 void Framework::Run()
 {

@@ -8,7 +8,7 @@ void TitleScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture("Resources/uvChecker.png");
 	TextureManager::GetInstance()->LoadTexture("Resources/fruit_suika_red.png");
 
-	sprite = std::make_unique<Sprite>();
+	/*sprite = std::make_unique<Sprite>();
 
 	sprite->Initialize(SpriteCommon::GetInstance(), "Resources/monsterBall.png");
 
@@ -18,7 +18,7 @@ void TitleScene::Initialize()
 
 	sprite->SetPosition({ 640.0f,360.0f });
 
-	sprite->SetSize({ 1280.0f,720.0f });
+	sprite->SetSize({ 1280.0f,720.0f });*/
 
 	ModelManager::GetInstance()->LoadModel("axis.obj");
 
@@ -35,30 +35,73 @@ void TitleScene::Initialize()
 
 	particleEmitter_1 = std::make_unique<ParticleEmitter>();
 	particleEmitter_1->Initialize("Particle_1");
-	particleEmitter_1->Emit();
 
 	ParticleManager::GetInstance()->SetBlendMode("Add");
 
-	audio = std::make_unique<Audio>();
-	audio->Initialize();
-	audio->SoundPlay("Resources/Spinning_World.mp3",999);
+	//audio = std::make_unique<Audio>();
+	//audio->Initialize();
+	//audio->SoundPlay("Resources/Spinning_World.mp3",999);
+
+	//title
+	TextureManager::GetInstance()->LoadTexture("Resources/scene/title.png");
+	title_ = std::make_unique<Sprite>();
+	title_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/title.png");
+	//title_->SetAnchorPoint({ 0.5f,0.5f });
+	title_->SetTexSize({ 1280.0f,720.0f });
+	title_->SetSize({ 1280.0f,720.0f });
+	title_->SetPosition({ 0.0f,0.0f });
+	
 }
 
 void TitleScene::Finalize()
 {
-	audio->SoundStop("Resources/Spinning_World.mp3");
+	BaseScene::Finalize();
+
+	//audio->SoundStop("Resources/Spinning_World.mp3");
 }
 
 void TitleScene::Update()
 {
-	if (Input::GetInstance()->Triggerkey(DIK_RETURN))
+	switch (phase_)
 	{
-		SceneManager::GetInstance()->ChangeScene("GAME");
+	case Phase::kFadeIn:
 
-		return;
+		if (fade_->IsFinished())
+		{
+			Input::GetInstance()->SetIsReception(true);
+			phase_ = Phase::kMain;
+		}
+
+		break;
+	case Phase::kMain:
+
+		if (Input::GetInstance()->Triggerkey(DIK_RETURN) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
+		{
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+			phase_ = Phase::kFadeOut;
+		}
+
+		break;
+	case Phase::kFadeOut:
+
+		if (fade_->IsFinished())
+		{
+			SceneManager::GetInstance()->ChangeScene("GAME");
+
+			return;
+		}
+
+		break;
+
+	case Phase::kPlay:
+		break;
+	case Phase::kPose:
+		break;
 	}
 
-	sprite->Update();
+	BaseScene::Update();
+
+	//sprite->Update();
 
 	/*Vector3 rotato = object3d->GetRotation();
 
@@ -76,14 +119,21 @@ void TitleScene::Update()
 
 	ParticleManager::GetInstance()->Update();
 	particleEmitter_1->Update();
+
+	//title
+	title_->Update();
+
 }
 
 void TitleScene::Draw()
 {
+	BaseScene::Draw();
 
 	DrawBackgroundSprite();
 	/// 背景スプライト描画
 
+	//title
+	title_->Draw();
 
 	DrawObject();
 	/// オブジェクト描画	
@@ -92,6 +142,7 @@ void TitleScene::Draw()
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	
 
-
+	fade_->Draw();
 	ParticleManager::GetInstance()->Draw("Resources/circle.png");
+
 }

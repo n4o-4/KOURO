@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <numbers>
 
+
 const float kDeltaTime = 1.0f / 60.0f;
 
 struct AABB {
@@ -14,11 +15,21 @@ struct AABB {
 
 inline Vector3 Normalize(Vector3 v)
 {
-	Vector3 RVector3;
-	float lenght = sqrtf(v.x * v.x + v.y * v.y);
-	lenght = sqrtf(lenght * lenght + v.z * v.z);
-	RVector3 = { (v.x / lenght),(v.y / lenght),(v.z / lenght) };
-	return RVector3;
+	Vector3 result;
+
+	// ベクトルの長さを計算
+	float length = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+
+	// 長さが 0 の場合、NaN を防ぐためにそのまま返す
+	if (length == 0.0f)
+	{
+		return v; // ゼロベクトルはそのまま返す
+	}
+
+	// 長さが 0 でない場合、正規化
+	result = { v.x / length, v.y / length, v.z / length };
+
+	return result;
 }
 
 inline Vector3 Cross(const Vector3& v1, const Vector3& v2) {
@@ -50,6 +61,34 @@ inline Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
 		t * v1.x + (1.0f - t) * v2.x,
 		t * v1.y + (1.0f - t) * v2.y,
 		t * v1.z + (1.0f - t) * v2.z };
+}
+
+inline float fLerp(float startPos, float endPos, float t) {
+	return { startPos * (1.0f - t) + t * endPos };
+}
+
+inline float LerpShortAngle(float a, float b, float t) {
+	float diff = b - a;
+
+	diff = std::fmod(diff, static_cast<float>(std::numbers::pi) * 2.0f);
+
+	if (diff > static_cast<float>(std::numbers::pi)) {
+		diff += (static_cast<float>(std::numbers::pi) * -2.0f);
+	}
+
+	if (diff < static_cast<float>(-std::numbers::pi)) {
+		diff += (static_cast<float>(std::numbers::pi) * 2.0f);
+	}
+
+	return fLerp(a, a + diff, t);
+}
+
+static Vector3 TransformNormal(const Vector3& normal, const Matrix4x4& mat) {
+	Vector3 result;
+	result.x = normal.x * mat.m[0][0] + normal.y * mat.m[1][0] + normal.z * mat.m[2][0];
+	result.y = normal.x * mat.m[0][1] + normal.y * mat.m[1][1] + normal.z * mat.m[2][1];
+	result.z = normal.x * mat.m[0][2] + normal.y * mat.m[1][2] + normal.z * mat.m[2][2];
+	return result;
 }
 
 static Matrix4x4 MakeRotateXMatrix(float rotate)
@@ -112,6 +151,15 @@ static Matrix4x4 Multiply(Matrix4x4 m1, Matrix4x4 m2)
 	return resultMatrix;
 }
 
+static Matrix4x4 MakeRotateMatrix(const Vector3& rotate)
+{
+	Matrix4x4 rXM = MakeRotateXMatrix(rotate.x);
+	Matrix4x4 rYM = MakeRotateYMatrix(rotate.y);
+	Matrix4x4 rZM = MakeRotateZMatrix(rotate.z);
+
+	return Multiply(rXM, Multiply(rYM, rZM));
+}
+
 static Matrix4x4 MakeScaleMatrix(const Vector3& scale)
 {
 	// スケーリング行列の作成
@@ -143,28 +191,18 @@ static Matrix4x4 MakeScaleMatrix(const Vector3& scale)
 static Matrix4x4 MakeTranslateMatrix(const Vector3& translate)
 {
 	// 平行移動行列の作成
-	Matrix4x4 translateMatrix;
+	Matrix4x4 translateMatrix = {};
 
-	translateMatrix.m[0][0] = 1.0f;  // x軸方向のスケーリング（変化なし）
-	translateMatrix.m[0][1] = 0.0f;  // x軸とy軸のオフセット
-	translateMatrix.m[0][2] = 0.0f;  // x軸とz軸のオフセット
-	translateMatrix.m[0][3] = translate.x;  // x軸方向の移動量
+	// 対角成分を 1.0 にする（単位行列の作成）
+	translateMatrix.m[0][0] = 1.0f;
+	translateMatrix.m[1][1] = 1.0f;
+	translateMatrix.m[2][2] = 1.0f;
+	translateMatrix.m[3][3] = 1.0f;
 
-	translateMatrix.m[1][0] = 0.0f;  // y軸とx軸のオフセット
-	translateMatrix.m[1][1] = 1.0f;  // y軸方向のスケーリング（変化なし）
-	translateMatrix.m[1][2] = 0.0f;  // y軸とz軸のオフセット
-	translateMatrix.m[1][3] = translate.y;  // y軸方向の移動量
-
-	translateMatrix.m[2][0] = 0.0f;  // z軸とx軸のオフセット
-	translateMatrix.m[2][1] = 0.0f;  // z軸とy軸のオフセット
-	translateMatrix.m[2][2] = 1.0f;  // z軸方向のスケーリング（変化なし）
-	translateMatrix.m[2][3] = translate.z;  // z軸方向の移動量
-
-	translateMatrix.m[3][0] = 0.0f;  // 同次座標のため、位置情報に関係ない部分
-	translateMatrix.m[3][1] = 0.0f;  // 同上
-	translateMatrix.m[3][2] = 0.0f;  // 同上
-	translateMatrix.m[3][3] = 1.0f;  // 同次座標の一部（1）
-
+	// 平行移動成分をセット
+	translateMatrix.m[3][0] = translate.x;  // X方向の移動
+	translateMatrix.m[3][1] = translate.y;  // Y方向の移動
+	translateMatrix.m[3][2] = translate.z;  // Z方向の移動
 	return translateMatrix;
 }
 
@@ -735,4 +773,12 @@ static Matrix4x4 MakeAffineMatrixforQuater(const Vector3& scale, const Quaternio
 	result = scaleMatrix * rotateMatrix * translateMatrix;
 
 	return result;
+}
+
+namespace Vect4
+{
+	static Vector4 Lerp(const Vector4& a, const Vector4& b, float t)
+	{
+		return a * (1.0f - t) + b * t;
+	}
 }

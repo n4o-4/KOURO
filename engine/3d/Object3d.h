@@ -55,10 +55,13 @@ public: // メンバ関数
 	void SetCamera(Camera* camera) { this->camera = camera; }
 
 	// setter
-	void SetModel(Model* model) { this->model = model; }
+	void SetModel(Model* model) { this->model = model, materialData_ = model->GetMaterial(); }
 
 	void SetLocalMatrix(Matrix4x4 localMatrix) { this->localMatrix = localMatrix; }
 
+	void SetEnableLighting(bool flag) { materialData_.enableLighting = flag; }
+
+	void SetColor(const Vector4& color) { materialData_.color = color; }
 
 private:
 
@@ -91,5 +94,7 @@ private:
 	Model* model = nullptr;
 
 	Camera* camera = nullptr;
+
+	Material materialData_;
 };
 

@@ -29,39 +29,13 @@ public:
 	// 描画
 	void Draw(WorldTransform worldTransform);
 
-private:
+	void SetEnableLighting(bool flag) { materialData->enableLighting = flag; }
 
-	
+	void SetColor(const Vector4& color) { materialData->color = color; }
 
-	/*struct MaterialData
-	{
-		std::string textureFilePath;
-		uint32_t textureIndex;
-	};
+	Material GetMaterial() { return *materialData; }
 
-	struct Material {
-		Vector4 color;
-		int enableLighting;
-		float padding[3];
-		Matrix4x4 uvTransform;
-		float shininess;
-		Vector3 specularColor;
-	};*/
-
-public:
-
-//struct VertexData
-//	{
-//		Vector4 position;
-//		Vector2 texcoord;
-//		Vector3 normal;
-//	};
-//
-//	struct ModelData {
-//		std::vector<VertexData> vertices;
-//		MaterialData material;
-//		Node rootNode;
-//	};
+	void SetMaterial(Material material) { *materialData = material; }	
 
 private:
 
@@ -70,11 +44,11 @@ private:
 
 	static ModelData LoadModelFile(const std::string& directoryPath, const std::string& filename);
 
-
-
 public:
 
 	static Node ReadNode(aiNode* node);
+
+private:
 
 private:
 	ModelCommon* modelCommon_;

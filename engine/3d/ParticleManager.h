@@ -8,7 +8,7 @@
 #include "Camera.h"
 #include <random>
 #include <array>
-
+#include "CameraManager.h"
 
 class ParticleManager
 {
@@ -76,9 +76,12 @@ public:
 		Vector4 color;
 		float lifeTime;
 		float currentTime;
+		Vector4 startColor;
+		Vector4 finishColor;
 	};
 
-	struct ParticleGroup {
+	struct ParticleGroup 
+	{
 		MaterialData materialData;
 		std::list<Particle> particles;
 		uint32_t srvIndex;
@@ -87,10 +90,30 @@ public:
 		ParticleForGPU* instancingData;
 	};
 
+	struct ColorRange
+	{
+		Vector2 R;
+		Vector2 G;
+		Vector2 B;
+		Vector2 A;
+	};
+
+	struct LifeTimeRange
+	{
+		Vector2 range;
+	};
+
+	struct VelocityRange
+	{
+		Vector2 x;
+		Vector2 y;
+		Vector2 z;
+	};
+
 public:
 	static ParticleManager* GetInstance();
 
-	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager,Camera* camera);
+	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
 	void Update();
 
@@ -99,7 +122,7 @@ public:
 	// パーティクルグループの生成関数
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath);
 
-	void Emit(const std::string name, const Vector3& position, uint32_t count);
+	void Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange,VelocityRange velocityRange,LifeTimeRange lifeTimeRange);
 
 	std::unordered_map<std::string, ParticleGroup> GetParticleGroups() { return particleGroups; }
 
@@ -133,6 +156,8 @@ public:
 
 	void SetBlendMode(std::string sBlendMode);
 
+	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
+
 private:
 	static std::unique_ptr<ParticleManager> instance;
 
@@ -164,9 +189,7 @@ private:
 
 	void calculationBillboardMatrix();
 	
-	Particle MakeNewParticle(const Vector3& translate);
-
-
+	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
 
 private:
 
@@ -179,7 +202,7 @@ private:
 
 	DirectXCommon* dxCommon_ = nullptr;
 	SrvManager* srvManager_ = nullptr;
-	Camera* camera_ = nullptr;
+	CameraManager* cameraManager_ = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState = nullptr;
@@ -197,7 +220,7 @@ private:
 
 	std::unordered_map<std::string, ParticleGroup> particleGroups;
 
-	const uint32_t kNumMaxInstance = 100;
+	const uint32_t kNumMaxInstance = 100000;
 
 	std::mt19937 randomEngine;
 

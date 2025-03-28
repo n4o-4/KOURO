@@ -18,22 +18,22 @@ struct DirectionLight
 
 struct PointLight
 {
-    float4 color; // ƒ‰ƒCƒg‚ÌF
-    float3 position; // ƒ‰ƒCƒg‚ÌF
-    float intensity; // ‹P“x
-    float radius; // ƒ‰ƒCƒg‚Ì“Í‚­Å‘å‹——£
-    float decay; // Œ¸Š—¦
+    float4 color; // ï¿½ï¿½ï¿½Cï¿½gï¿½ÌF
+    float3 position; // ï¿½ï¿½ï¿½Cï¿½gï¿½ÌF
+    float intensity; // ï¿½Pï¿½x
+    float radius; // ï¿½ï¿½ï¿½Cï¿½gï¿½Ì“Í‚ï¿½ï¿½Å‘å‹—ï¿½ï¿½
+    float decay; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 };
 
 struct SpotLight
 {
-    float4 color; // ƒ‰ƒCƒg‚ÌF
-    float3 position; // ƒ‰ƒCƒg‚ÌˆÊ’u
-    float intensity; // ‹P“x
-    float3 direction; // ƒ‰ƒCƒg‚Ì•ûŒü
-    float distance; // ƒ‰ƒCƒg‚Ì“Í‚­Å‘å‹——£
-    float decay; // Œ¸Š—¦
-    float cosAngle; // ƒXƒ|ƒbƒgƒ‰ƒCƒg‚Ì—]Œ·
+    float4 color; // ï¿½ï¿½ï¿½Cï¿½gï¿½ÌF
+    float3 position; // ï¿½ï¿½ï¿½Cï¿½gï¿½ÌˆÊ’u
+    float intensity; // ï¿½Pï¿½x
+    float3 direction; // ï¿½ï¿½ï¿½Cï¿½gï¿½Ì•ï¿½ï¿½ï¿½
+    float distance; // ï¿½ï¿½ï¿½Cï¿½gï¿½Ì“Í‚ï¿½ï¿½Å‘å‹—ï¿½ï¿½
+    float decay; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    float cosAngle; // ï¿½Xï¿½|ï¿½bï¿½gï¿½ï¿½ï¿½Cï¿½gï¿½Ì—]ï¿½ï¿½
     float cosFalloffStart;
 };
 
@@ -65,7 +65,7 @@ float3 CalculationDirectionalLight(VertexShaderOutput input)
     float3 toEye = normalize(input.cameraPosition - input.worldPosition);
     
     
-         // Phong Reflection«««««««««««««««««««««««««««««««««««««««««««««««««««««««
+         // Phong Reflectionï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         
         //float3 reflectLight = reflect(gDirectionalLight.direction, normalize(input.normal));
         
@@ -73,11 +73,11 @@ float3 CalculationDirectionalLight(VertexShaderOutput input)
         
         //float specularPow = pow(saturate(RdotE), gMaterial.shininess);
         
-        // Phong Reflectionªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªª
+        // Phong Reflectionï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         
         
         
-        // BlinnPhong Reflection«««««««««««««««««««««««««««««««««««««««««««««««««««««««
+        // BlinnPhong Reflectionï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     float3 halfVector = normalize(-gDirectionalLight.direction + toEye);
         
@@ -85,7 +85,7 @@ float3 CalculationDirectionalLight(VertexShaderOutput input)
         
     float specularPow = pow(saturate(NDotH), gMaterial.shininess);
         
-        // BlinnPhong Reflectionªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªª
+        // BlinnPhong Reflectionï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         
     float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
         
@@ -94,10 +94,10 @@ float3 CalculationDirectionalLight(VertexShaderOutput input)
         //output.color = gMaterial.color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity;  
         
         
-        // ŠgU”½Ë
+        // ï¿½gï¿½Uï¿½ï¿½ï¿½ï¿½
     float3 directionalLight_Diffuse = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
         
-        // ‹¾–Ê”½Ë
+        // ï¿½ï¿½ï¿½Ê”ï¿½ï¿½ï¿½
     float3 directionalLight_Specular = gDirectionalLight.color.rgb * gDirectionalLight.intensity * specularPow * gMaterial.specularColor;
     
     resultColor = directionalLight_Diffuse + directionalLight_Specular;
@@ -130,10 +130,10 @@ float3 CalculationPointLight(VertexShaderOutput input)
         
     float pointLight_Cos = pow(pointLight_NDotL * 0.5 + 0.5f, 2.0f);
        
-        // ŠgU”½Ë
+        // ï¿½gï¿½Uï¿½ï¿½ï¿½ï¿½
     float3 pointLight_Diffuse = gMaterial.color.rgb * textureColor.rgb * gPointLight.color.rgb * pointLight_Cos * gPointLight.intensity * factor;
         
-        // ‹¾–Ê”½Ë
+        // ï¿½ï¿½ï¿½Ê”ï¿½ï¿½ï¿½
     float3 pointLight_Specular = gPointLight.color.rgb * gPointLight.intensity * pointLight_SpecularPow * factor * gMaterial.specularColor;
     
     resultColor = pointLight_Diffuse + pointLight_Specular;
@@ -150,7 +150,7 @@ float3 CalculationSpottLight(VertexShaderOutput input)
     float3 toEye = normalize(input.cameraPosition - input.worldPosition);
    
         
-    float spotLight_Distance = length(gSpotLight.position - input.worldPosition); // ƒ|ƒCƒ“ƒgƒ‰ƒCƒg‚Ö‚Ì‹——£
+    float spotLight_Distance = length(gSpotLight.position - input.worldPosition); // ï¿½|ï¿½Cï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Cï¿½gï¿½Ö‚Ì‹ï¿½ï¿½ï¿½
         
     float attenuationFactor = pow(saturate(-spotLight_Distance / gSpotLight.distance + 1.0), gSpotLight.decay);
         
@@ -170,10 +170,10 @@ float3 CalculationSpottLight(VertexShaderOutput input)
         
     float spotLight_Cos = pow(spotLight_NdotL * 0.5f + 0.5f, 2.0f);
         
-        // ŠgU”½Ë
+        // ï¿½gï¿½Uï¿½ï¿½ï¿½ï¿½
     float3 spotLight_Diffuse = gMaterial.color.rgb * textureColor.rgb * gSpotLight.color.rgb * gSpotLight.intensity * falloffFactor * attenuationFactor * spotLight_Cos;
         
-        // ‹¾–Ê”½Ë
+        // ï¿½ï¿½ï¿½Ê”ï¿½ï¿½ï¿½
     float3 spotLight_Specular = gSpotLight.color.rgb * gSpotLight.intensity * spotLight_SpecularPow * falloffFactor * attenuationFactor * gMaterial.specularColor;
     
     resultColor = spotLight_Diffuse + spotLight_Specular;
@@ -205,6 +205,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     {
         output.color = gMaterial.color * textureColor;
     }
+    
     
     return output;
 }

@@ -61,26 +61,15 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
 	assert(SUCCEEDED(hr));
 
-	// テクスチャーデータを追加
-	//textureDatas.resize(textureDatas.size() + 1);
-
-	// テクスチャデータを追加して書き込む
 	TextureData& textureData = textureDatas[filePath];
-
-	// 追加したテクスチャデータの参照を取得する
-	//TextureData& textureData = textureDatas.back();
-
-	//textureData.filePath = filePath;
+	
 	textureData.metadata = mipImages.GetMetadata();
 	textureData.resource = dxCommon_->CreateTextureResource(textureData.metadata);
 
+	std::wstring wFilePath = std::wstring(filePath.begin(), filePath.end());
+	textureData.resource->SetName((L"TextureResource_" + wFilePath).c_str());
+
 	dxCommon_->UploadTextureData(textureData.resource, mipImages);
-
-	// テクスチャデータの要素番号をSRVのインデックスとする
-	/*uint32_t srvIndex = static_cast<uint32_t>(textureDatas.size() - 1) + kSRVIndexTop;
-
-	textureData.srvHandleCPU = dxCommon_->GetCPUDescriptorHandle(dxCommon_->srvDescriptorHeap, dxCommon_->descriptorSizeSRV,srvIndex);
-	textureData.srvHandleGPU = dxCommon_->GetGPUDescriptorHandle(dxCommon_->srvDescriptorHeap, dxCommon_->descriptorSizeSRV,srvIndex);*/
 
 	textureData.srvIndex = srvManager_->Allocate();
 	textureData.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData.srvIndex);
@@ -129,13 +118,21 @@ const DirectX::TexMetadata& TextureManager::GetMetaData(std::string filePath)
 
 void TextureManager::CreateRenderTextureMetaData()
 {
+	TextureData& textureData1 = textureDatas["RenderTexture0"];
+
+	textureData1.srvIndex = srvManager_->Allocate();
+	textureData1.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData1.srvIndex);
+	textureData1.srvHandleGPU = srvManager_->GetGPUDescriptorHandle(textureData1.srvIndex);
+																			   
+	srvManager_->CreateOffScreenTexture(textureData1.srvIndex,0);
+	
 
 
-	TextureData& textureData = textureDatas["RenderTexture"];
+	TextureData& textureData2 = textureDatas["RenderTexture1"];
 
-	textureData.srvIndex = srvManager_->Allocate();
-	textureData.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData.srvIndex);
-	textureData.srvHandleGPU = srvManager_->GetGPUDescriptorHandle(textureData.srvIndex);
+	textureData2.srvIndex = srvManager_->Allocate();
+	textureData2.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData2.srvIndex);
+	textureData2.srvHandleGPU = srvManager_->GetGPUDescriptorHandle(textureData2.srvIndex);
 
-	srvManager_->CreateOffScreenTexture(textureData.srvIndex);
+	srvManager_->CreateOffScreenTexture(textureData2.srvIndex,1);
 }

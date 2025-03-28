@@ -23,6 +23,7 @@
 #include "AbstractSceneFactory.h"
 
 #include "LineDrawerBase.h"
+#include "PostEffect.h"
 
 #include "LeakChecker.h"
 
@@ -40,14 +41,19 @@ protected:
 
 	std::unique_ptr<ModelCommon> modelCommon = nullptr;
 
+#ifdef _DEBUG
+
 	std::unique_ptr<ImGuiManager> imGuiManager = nullptr;
 
+#endif
 	std::unique_ptr<AbstaractSceneFactory> sceneFactory_ = nullptr;
 
 	
 	bool endRequest_ = false;
 
 	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
+
+	std::unique_ptr<PostEffect> postEffect_ = nullptr;
 
 public:
 
@@ -64,6 +70,8 @@ public:
 
 	// 描画
 	virtual void Draw();
+
+	virtual void DrawEffect();
 
 	// 終了チェック
 	virtual bool IsEndRequest() { return endRequest_; }

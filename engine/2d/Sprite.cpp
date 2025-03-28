@@ -99,7 +99,7 @@ void Sprite::Draw()
 	// 背景描画のフラグが立っている場合	
 	if (spriteCommon->GetIsDrawBackground())
 	{
-		transform.translate.z = 0.999999f;
+		transform.translate.z = -100.0f;
 
 		Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 		Matrix4x4 viewMatrix = MakeIdentity4x4();
@@ -112,7 +112,7 @@ void Sprite::Draw()
 	// 前景描画のフラグが立っている場合
 	else if (spriteCommon->GetIsDrawForeground())
 	{
-		transform.translate.z = 0.000001f;
+		transform.translate.z = 0.000000f;
 
 		Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 		Matrix4x4 viewMatrix = MakeIdentity4x4();

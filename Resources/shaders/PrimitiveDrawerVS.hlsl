@@ -12,25 +12,24 @@ struct ViewProjection
     float4x4 matViewProjection;
 };
 
+ConstantBuffer<LineForGPU> gLineForGPU : register(b0);
 
-StructuredBuffer<LineForGPU> gLineForGPU : register(t0);
-
-ConstantBuffer<ViewProjection> gViewProjection : register(b0);
+ConstantBuffer<ViewProjection> gViewProjection : register(b1);
 
 struct VertexShaderInput
 {
     float4 position : POSITION0;
 };
 
-VertexShaderOutput main(VertexShaderInput input, uint instanceId : SV_InstanceID)
+VertexShaderOutput main(VertexShaderInput input)
 {
     VertexShaderOutput output;
     
-    float4x4 WVP = mul(gLineForGPU[instanceId].matWorld, gViewProjection.matViewProjection);
+    float4x4 WVP = mul(gLineForGPU.matWorld, gViewProjection.matViewProjection);
     
     output.position = mul(input.position, WVP);
     
-    output.color = gLineForGPU[instanceId].color;
+    output.color = gLineForGPU.color;
     
     return output;
 }

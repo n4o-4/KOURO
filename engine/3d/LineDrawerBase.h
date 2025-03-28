@@ -3,16 +3,22 @@
 #include "SrvManager.h"
 #include "WorldTransform.h"
 #include "ViewProjection.h"
+#include "ModelDatas.h"
 
-enum class Type
-{
-	AABB,
-	Sphere
-};
 
 
 class LineDrawerBase
 {
+public:
+
+	enum class Type
+	{
+		AABB,
+		Sphere,
+		Grid,
+		Skeleton,
+	};
+
 private:
 
 	struct Sphere {
@@ -32,8 +38,6 @@ private:
 	struct VertexData
 	{
 		Vector4 position;
-		int vertexIndex;
-		int padding[3];
 	};
 
 	struct LineForGPU
@@ -47,21 +51,17 @@ private:
 		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;
 		VertexData* vertexData = nullptr;
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
-
-		Microsoft::WRL::ComPtr<ID3D12Resource> indexResource = nullptr;
-		uint32_t* indexData = nullptr;
-		D3D12_INDEX_BUFFER_VIEW indexBufferView;
-
-		Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource = nullptr;
-		LineForGPU* instancingData = nullptr;
 		
-		int32_t srvIndex;
+		Microsoft::WRL::ComPtr<ID3D12Resource> lineResource = nullptr;
+		LineForGPU* lineData = nullptr;
 
-		unsigned int vertexIndex;
+		WorldTransform* transform;
 
-		LineDrawerBase::Sphere sphere;
+		Type type;
 
-		WorldTransform transform;
+		int32_t vertexIndex = 0;
+
+		Skeleton skeleton;
 	};
 
 	
@@ -73,40 +73,35 @@ public: // メンバ関数
 	// 更新
 	void Update();
 	
+	// スケルトンの更新
+	void SkeletonUpdate(Skeleton skeleton);
+
 	// 描画
 	void Draw(ViewProjection viewProjection);
 
 private: // メンバ関数
 
-	void CreateLineResource();
-
 	void CreateRootSignature();
 
 	void CreatePipellineState();
 
-	void CreateLineObject(Type type);
+public:
+
+	void CreateLineObject(Type type, WorldTransform* transform);
+
+	void CreateSkeletonObject(Skeleton skeleton, WorldTransform* transform);
+
+private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateVertexResource();
 
 	void CreateVertexBufferView(LineObject* object);
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateIndexResource();
+	void WriteLineData(LineObject* object);
 
-	void CreateIndexBufferView(LineObject* object);
+	void WriteSkeletonLineData(LineObject* object, Skeleton skeleton);
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateInstancingResource();
-
-	// indexData書き込み
-
-	void WriteSphereIndexData(LineObject* lineObject);
-
-	void WriteAABBIndexData(LineObject* lineObject);
-
-	/// vertexData書き込み
-
-	void WriteSphereVertexData(LineObject* lineObject);
-
-	void WriteAABBVertexData(LineObject* lineObject,Vector3 radius);
+	void CreateLineResource(LineObject* object);
 
 private: // メンバ変数
 
@@ -118,6 +113,6 @@ private: // メンバ変数
 
 	std::list<std::unique_ptr<LineObject>> lineObjects_;
 
-	uint32_t instanceNum = 0;
+	std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
 };
 

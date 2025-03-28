@@ -16,7 +16,6 @@ void Camera::Initialize()
 {
 
 
-
 	BaseCamera::Initialize();
 }
 

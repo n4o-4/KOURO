@@ -10,6 +10,8 @@ ImGuiManager::~ImGuiManager()
 
 }
 
+#include "imgui.h" // 追加
+
 void ImGuiManager::Initialize(WinApp* winApp, DirectXCommon* dxCommon)
 {
 	// ImGuiのコンテキストを生成
@@ -36,6 +38,10 @@ void ImGuiManager::Initialize(WinApp* winApp, DirectXCommon* dxCommon)
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, srvHeap_.Get(),
 		srvHeap_->GetCPUDescriptorHandleForHeapStart(),
 		srvHeap_->GetGPUDescriptorHandleForHeapStart());
+
+
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // ドッキングを
 }
 
 void ImGuiManager::Begin()

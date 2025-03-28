@@ -17,17 +17,16 @@ class OffScreenRendring
 ///---------------------------------
 public:
 	void Initialzie();
+
 	void PreDraw();
+
 	void PostDraw();
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> GetRenderTextureResource() { return renderTextureResources; }
+	void SetRenderTextureResource(ID3D12Resource* renderTextureResources) { *renderTextureResources_ = renderTextureResources; }
 
 private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor);
-
-	void CreateRenderTextureRTV();
-
 
 /// --------------------------------
 /// メンバ変数
@@ -36,7 +35,7 @@ public:
 
 private:
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResources = nullptr ;
+	ID3D12Resource* renderTextureResources_[2] = {nullptr};
 
 	D3D12_RESOURCE_BARRIER barrier{};
 };

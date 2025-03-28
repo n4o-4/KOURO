@@ -32,6 +32,12 @@ std::unique_ptr<BaseScene> SceneFactory::CreateScene(const std::string& sceneNam
 	{
 		newScene = std::make_unique<MiyaScene>();
 	}
+	else if (sceneName == "CLEAR") {
+		newScene = std::make_unique<GameClear>();
+	}
+	else if (sceneName == "OVER") {
+		newScene = std::make_unique<GameOver>();
+	}
 
     return newScene;
 }

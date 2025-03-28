@@ -4,7 +4,7 @@
 #include "AbstractSceneFactory.h"
 #include "Camera.h"
 #include "SrvManager.h"
-
+#include "PostEffect.h"
 // シーン管理
 class SceneManager
 {
@@ -13,7 +13,7 @@ public:
 	static SceneManager* GetInstance();
 
 	// 初期化
-	void Initialize(SrvManager* srvManager,Camera* camera);
+	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,Camera* camera);
 
 	void Finalize();
 
@@ -27,9 +27,15 @@ public:
 	
 	void SetSceneFactory(AbstaractSceneFactory& sceneFactory) { sceneFactory_ = &sceneFactory; }
 
+	void SetPostEffect(PostEffect* postEffect) { postEffect_ = postEffect; }
+
+	DirectXCommon* GetDxCommon() { return dxCommon_; }	
+
 	SrvManager* GetSrvManager() { return srvManager_; }
 
 	Camera* GetCamera() { return camera_; }
+
+	PostEffect* GetPostEffect() { return postEffect_; }
 
 private:
 
@@ -54,5 +60,9 @@ private:
 
 	SrvManager* srvManager_ = nullptr;
 
+	DirectXCommon* dxCommon_ = nullptr;
+
 	Camera* camera_ = nullptr;
+
+	PostEffect* postEffect_ = nullptr;
 };
