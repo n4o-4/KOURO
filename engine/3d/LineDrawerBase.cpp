@@ -15,12 +15,10 @@ void LineDrawerBase::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	worldTransform_ = std::make_unique<WorldTransform>();
 	worldTransform_->Initialize();
 	
-	worldTransform_->transform.scale = { 1.0f,1.0f,1.0f };
-	worldTransform_->transform.translate = { 0.0f,2.0f,0.0f };
+	worldTransform_->transform.scale = { 10.0f,10.0f,10.0f };
+	worldTransform_->transform.translate = { 0.0f,1.0f,0.0f };
 
 	worldTransform_->UpdateMatrix();
-
-	//CreateLineObject(Type::Sphere,worldTransform_.get());
 }
 
 void LineDrawerBase::Update()
@@ -237,13 +235,13 @@ void LineDrawerBase::CreatePipellineState()
 	//DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 	//Depthの機能を有効化する
-	depthStencilDesc.DepthEnable = false;
+	depthStencilDesc.DepthEnable = true;
 
 	// 書き込みします
-	//depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 
 	// 比較関数はLessEqual。近ければ描画される
-	//depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
 
 	/*----------------------------------------------------------

@@ -97,13 +97,14 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog); //完
 	sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::MotionBlur);
 
-	/*///========================================
+	///========================================
 	///		ライン描画
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
 	lineDrawer_->Initialize(sceneManager_->GetDxCommon(),sceneManager_->GetSrvManager());
 
+	lineDrawer_->CreateLineObject(LineDrawerBase::Type::Grid, nullptr);
 
-	///========================================
+	/*///========================================
 	/// アニメーションマネージャ
 	animationManager = std::make_unique<AnimationManager>();	
 	animationManager->LoadAnimationFile("./Resources/human", "walk.gltf");
@@ -488,6 +489,8 @@ void GameScene::Update() {
 	ImGui::Checkbox("sceneConticue", &isContinue);
 
 #endif
+
+	lineDrawer_->Update();
 }
 
 ///=============================================================================
@@ -672,7 +675,7 @@ void GameScene::Draw() {
 	//パーティクルの描画
 	ParticleManager::GetInstance()->Draw("Resources/circle.png");	
 
-	//lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
+	lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
 }
 
 ///=============================================================================
