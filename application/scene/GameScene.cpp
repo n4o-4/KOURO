@@ -110,6 +110,10 @@ void GameScene::Initialize() {
 	human_->Initialize(Object3dCommon::GetInstance());
 	human_->SetModel(ModelManager::GetInstance()->FindModel("human/wlak.gltf"));*/
 
+	//========================================
+	// HUD
+	hud_ = std::make_unique<Hud>();
+	hud_->Initialize( cameraManager_->GetFollowCamera(), player_.get(), lockOnSystem_.get() );
 }
 ///=============================================================================
 ///						終了処理
@@ -130,8 +134,8 @@ void GameScene::Update() {
 	//========================================
 	// フェーズ切り替え
 	switch(phase_) {
-		//========================================
-		// 
+		///=============================================================================
+		// フェードイン
 	case Phase::kFadeIn:
 
 		if(fade_->IsFinished()) {
@@ -152,8 +156,8 @@ void GameScene::Update() {
 		// 地面
 		ground_->Update();
 
-		//========================================
-		//
+		///=============================================================================
+		// ゲームプレイ
 		break;
 	case Phase::kPlay:
 
@@ -180,15 +184,19 @@ void GameScene::Update() {
 			phase_ = Phase::kFadeOut;
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
 		}
+
 		//---------------------------------------
 		// プレイヤーの更新
 		player_->Update();
+
 		//---------------------------------------
 		// 天球
 		skyDome_->Update();
+
 		//---------------------------------------
 		// 地面
 		ground_->Update();
+
 		//---------------------------------------
 		// 敵出現
 		UpdateEnemyPopCommands();
@@ -227,6 +235,7 @@ void GameScene::Update() {
 				}),
 			// 実際に削除する
 			enemies_.end());
+		
 		//---------------------------------------
 		// ロックオンの処理追加
 		if(lockOnSystem_) {
@@ -244,6 +253,7 @@ void GameScene::Update() {
 			// ロックオン更新
 			lockOnSystem_->Update(enemies_);
 		}
+
 		//---------------------------------------
 		// 当たり判定
 		// リセット
@@ -257,28 +267,28 @@ void GameScene::Update() {
 				collisionManager_->AddCollider(bullet.get());
 			}
 		}
-
 		// プレイヤー
 		collisionManager_->AddCollider(player_.get());
-
 		// プレイヤーの弾リスト
 		for(auto &bullet : player_->GetBullets()) {
 			collisionManager_->AddCollider(bullet.get());
 		}
-
 		// プレイヤーのマシンガン弾リスト
 		for (auto& machineGunBullet : player_->GetMachineGunBullets()) {
 			collisionManager_->AddCollider(machineGunBullet.get());
 		}
-
 		// 更新
 		collisionManager_->Update();
 
-		//========================================
+		//---------------------------------------
+		// HUD
+		hud_->Update();
+
+		//---------------------------------------
 		// パーティクル
 		ParticleManager::GetInstance()->Update();
 		
-		//========================================
+		///=============================================================================
 		// フェードアウト
 		break;
 	case Phase::kFadeOut:
@@ -382,6 +392,7 @@ void GameScene::Update() {
 void GameScene::Draw() {
 
 	switch(phase_) {
+		///=============================================================================
 	case Phase::kFadeIn:
 
 		DrawBackgroundSprite();
@@ -415,7 +426,7 @@ void GameScene::Draw() {
 		DrawFade();
 
 		break;
-
+		///=============================================================================
 	case Phase::kPlay:
 
 		DrawBackgroundSprite();
@@ -460,21 +471,25 @@ void GameScene::Draw() {
 		//========================================
 		// LockOn
 		// 🔽 LockOnの描画処理を追加
-		if(lockOnSystem_) {
-			lockOnSystem_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
-				*directionalLight.get(),
-				*pointLight.get(),
-				*spotLight.get());
-		}
+		//if(lockOnSystem_) {
+		//	lockOnSystem_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+		//		*directionalLight.get(),
+		//		*pointLight.get(),
+		//		*spotLight.get());
+		//}
 		//========================================
 		// 当たり判定マネージャ
 		collisionManager_->Draw();
+
+		//========================================
+		// HUD
+		hud_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
 
 		DrawForegroundSprite();
 		/// 前景スプライト描画
 
 		break;
-
+		///=============================================================================
 	case Phase::kFadeOut:
 
 		DrawBackgroundSprite();
@@ -529,10 +544,11 @@ void GameScene::Draw() {
 	
 
 		break;
-
+		///=============================================================================
 	case Phase::kMain:
 
 		break;
+		///=============================================================================
 	case Phase::kPose:
 
 		break;

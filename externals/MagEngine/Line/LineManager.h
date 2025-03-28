@@ -10,69 +10,98 @@
 /// ラインマネージャクラス
 class LineManager {
 public:
-    /**
-     * インスタンスの取得
-     */
+
+	/// @brief インスタンスの取得
+	/// @return LineManager* インスタンスのポインタ
     static LineManager* GetInstance();
 
-    /**
-     * 初期化処理
-     */
+	/// @brief 初期化
+	/// @param dxCommon ダイレクトX共通クラス
+	/// @param srvManager SRVマネージャ
     void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
-    /**
-     * 終了処理
-     */
+	/// @brief 終了処理
     void Finalize();
 
-    /**
-     * 更新処理
-     */
+	/// @brief 更新処理
     void Update();
 
-    /**
-     * 描画処理
-     */
+	/// @brief 描画
     void Draw();
 
-    /**
-     * ImGui描画
-     */
+	/// @brief ImGuiの描画
     void DrawImGui();
 
-    /**
-     * ラインのクリア
-     */
+	/// @brief ラインのクリア
     void ClearLines();
 
-    /**
-     * ラインの描画
-     */
+	/// @brief ラインの追加
+    /// @param start 始点
+	/// @param end 終点
+	/// @param color 色
     void DrawLine(const Vector3& start, const Vector3& end, const Vector4& color);
 
-    /**
-     * グリッドの描画
-     */
+	/// @brief グリッドの描画
+    /// @param gridSize サイズ
+	/// @param divisions 分割数
+	/// @param color 色
     void DrawGrid(float gridSize, int divisions, const Vector4& color);
 
-    /**
-     * 球体の描画
-     */
+	/// @brief 球体の描画
+    /// @param center 中心
+	/// @param radius 半径
+	/// @param color 色
+	/// @param divisions 分割数
     void DrawSphere(const Vector3& center, float radius, const Vector4& color, int divisions = 32);
     
-    /**
-     * 円の描画
-     */
+	/// @brief 円の描画
+	/// @param center 中心
+    /// @param radius 半径
+    /// @param color 色
+    /// @param divisions 分割数
     void DrawCircle(const Vector3& center, float radius, const Vector4& color, int divisions = 32);
 
-    /**
-     * デフォルトカメラの取得
-     */
+    /// @brief 箱型
+    /// @param center 中心
+    /// @param size サイズ
+    /// @param color 色
+    void DrawBox(const Vector3& center, const Vector3& size, const Vector4& color);
+
+    /// @brief 矩形の描画
+    /// @param center 中心
+    /// @param size サイズ
+    /// @param color 色
+    void DrawRectangle(const Vector3& center, const Vector2& size, const Vector4& color);
+
+    /// @brief 矢印の描画
+    /// @param start 始点
+    /// @param end 終点
+    /// @param headSize 矢じりのサイズ
+    /// @param color 色
+    void DrawArrow(const Vector3& start, const Vector3& end, float headSize, const Vector4& color);
+
+    /// @brief 円柱の描画
+    /// @param start 始点
+    /// @param end 終点
+    /// @param radius 半径
+    /// @param color 色
+    /// @param divisions 分割数
+    void DrawCylinder(const Vector3& start, const Vector3& end, float radius, const Vector4& color, int divisions = 32);
+
+    /// @brief コーンの描画
+    /// @param start 始点
+    /// @param end 終点
+    /// @param radius 半径
+    /// @param color 色
+    /// @param divisions 分割数
+    void DrawCone(const Vector3& start, const Vector3& end, float radius, const Vector4& color, int divisions = 32);
+
+	/// @brief ラインの描画設定
+	/// @return bool ラインを描画するか
     ViewProjection* GetDefaultCamera() { return lineSetup_->GetDefaultCamera(); }
 
-    /**
-     * デフォルトカメラの設定
-     */
+	/// @brief ラインの描画設定
+	/// @param viewProjection ビュープロジェクション
     void SetDefaultCamera(ViewProjection* viewProjection) { lineSetup_->SetDefaultCamera(viewProjection); }
 
 private:

@@ -55,7 +55,7 @@ Vector3 GetLockedEnemyPosition(BaseEnemy* enemy) const;
 
 private:
     //lockOn model
-    std::unique_ptr<Object3d> lockOn_ = nullptr;
+    //std::unique_ptr<Object3d> lockOn_ = nullptr;
     //ワールド変換
     std::unique_ptr<WorldTransform> lockOnWorldTransform_ = nullptr;
     

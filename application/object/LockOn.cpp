@@ -6,12 +6,7 @@
 ///=============================================================================
 ///                        初期化
 void LockOn::Initialize() {
-
-	//lockOn model
-	lockOn_ = std::make_unique<Object3d>();
-	lockOn_->Initialize(Object3dCommon::GetInstance());
 	ModelManager::GetInstance()->LoadModel("lockOn/Lock_on1.obj");	
-	lockOn_->SetModel("lockOn/Lock_on1.obj");
 
 	lockOnWorldTransform_ = std::make_unique<WorldTransform>();
 	lockOnWorldTransform_->Initialize();
@@ -81,8 +76,6 @@ void LockOn::Update(const std::vector<std::unique_ptr<BaseEnemy>>& enemies) {
     
     // 行列を更新
     lockOnWorldTransform_->UpdateMatrix();
-    lockOn_->SetLocalMatrix(MakeIdentity4x4());
-    lockOn_->Update();
     
     // 各ロックオン対象のタイマーと状態を更新
     float deltaTime = 1.0f / 60.0f; // 60FPSを想定
@@ -130,11 +123,8 @@ void LockOn::Update(const std::vector<std::unique_ptr<BaseEnemy>>& enemies) {
 ///=============================================================================
 ///                        描画処理
 void LockOn::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
-	lockOn_->Draw(*lockOnWorldTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
-	for (auto& marker : lockOnMarkers_) {
-		marker->Draw(viewProjection, directionalLight, pointLight, spotLight);
-	}
 }
+
 ///=============================================================================
 ///                        ロックオン範囲内の敵を検知する関数
 void LockOn::DetectEnemies(const std::vector<std::unique_ptr<BaseEnemy>>& enemies) {

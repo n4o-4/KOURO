@@ -22,8 +22,8 @@ public:
 
 private:
     // Multi lock on
-    std::unique_ptr<Object3d> multiLockOn_ = nullptr;
-    std::unique_ptr<WorldTransform> multilockOnWorldTransform_ = nullptr;
+    // std::unique_ptr<Object3d> multiLockOn_ = nullptr;
+    // std::unique_ptr<WorldTransform> multilockOnWorldTransform_ = nullptr;
     bool isVisible_ = false;
 
     // アニメーション用変数
