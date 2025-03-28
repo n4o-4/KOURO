@@ -5,6 +5,9 @@
 void GroundTypeEnemy2::Initialize() {
 	ModelManager::GetInstance()->LoadModel("enemy/bomb/bomb.obj");
 	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/bomb/bomb.obj"));
+
+	startScale_.x = startScale_.y = startScale_.z = 1.0f;
+	targetScale_.x = targetScale_.y = targetScale_.z = 1.0f;
 }
 
 void GroundTypeEnemy2::Update() {
@@ -27,23 +30,32 @@ void GroundTypeEnemy2::Update() {
 	}
 
 
-	if (isBlinking_) {
-		blinkTimer_ += 1.0f / 60.0f;
+	if (isHitReacting_) {
+		hitReactionTimer_ += 1.0f / 60.0f;
 
-		// 点滅：0.05秒ごとに完全透明・通常色を切り替える
-		int flashFrame = static_cast<int>(blinkTimer_ * 60.0f) % 2;
-		if (flashFrame == 0) {
-			model_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f }); // 通常色（不透明）
-		} else {
-			model_->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f }); // 完全透明
-		}
+		const float kTotalReactionTime = 0.3f; // 全体時間
+		float t = hitReactionTimer_ / kTotalReactionTime;
 
-		// 点滅終了
-		if (blinkTimer_ >= kBlinkDuration_) {
-			isBlinking_ = false;
-			model_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f }); // 戻す
+		// clamp
+		if (t > 1.0f) t = 1.0f;
+
+		// イージング（バウンド風：t=0で1.0、t=0.5で1.7、t=1.0で1.0）
+		float scaleFactor = 1.0f + 0.7f * sinf(t * 3.141592f); // πで1周期 → 1→1.7→1
+
+		worldTransform_->transform.scale.x = scaleFactor;
+		worldTransform_->transform.scale.y = scaleFactor;
+		worldTransform_->transform.scale.z = scaleFactor;
+
+		if (t >= 1.0f) {
+			isHitReacting_ = false;
+			hitReactionTimer_ = 0.0f;
+			worldTransform_->transform.scale.x = 1.0f;
+			worldTransform_->transform.scale.y = 1.0f;
+			worldTransform_->transform.scale.z = 1.0f;
 		}
 	}
+
+
 
 	BaseEnemy::Update();
 }
@@ -76,11 +88,10 @@ void GroundTypeEnemy2::OnCollisionExit(BaseObject* other) {
 
 void GroundTypeEnemy2::HitJump()
 {
-	isBlinking_ = true;
-	blinkTimer_ = 0.0f;
-
-	// 点滅開始時に白色にする（仮に SetColor 関数があると仮定）
-	model_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f }); // 真っ白（光った感じ）
+	isHitReacting_ = true;
+	hitReactionTimer_ = 0.0f;
+	startScale_ = worldTransform_->transform.scale;
+	targetScale_ = { 1.7f, 1.7f, 1.7f };  // 一時的に大きくする
 }
 
 void GroundTypeEnemy2::UpdateWanderState() {

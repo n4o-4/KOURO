@@ -118,6 +118,12 @@ private:
     float blinkTimer_ = 0.0f;
     const float kBlinkDuration_ = 0.3f; // 点滅時間（秒）
 
+    // クラス内の private: の下に追加
+    bool isHitReacting_ = false;
+    float hitReactionTimer_ = 0.0f;
+    Vector3 startScale_;
+    Vector3 targetScale_;
+
 };
 
 
