@@ -42,10 +42,10 @@ void Hud::Update() {
 ///=============================================================================
 ///						描画
 void Hud::Draw(ViewProjection viewProjection) {
-    // 戦闘モードでない場合は描画しない
-    if(!isCombatMode_) {
-        return;
-    }
+	// 戦闘モードでない場合は描画しない
+	if(!isCombatMode_) {
+		return;
+	}
 
     // 半透明グリッドラインの描画（最背面）
     DrawGridLines();
@@ -58,7 +58,7 @@ void Hud::Draw(ViewProjection viewProjection) {
 
     // 戦闘情報パネル
     DrawCrosshair(viewProjection);
-    DrawLockOn(viewProjection);
+	DrawLockOn(viewProjection);
     DrawMissileWarning();
     DrawIFFSystem(viewProjection);
     DrawWeaponIndicator();
@@ -83,80 +83,88 @@ void Hud::CombatModeDeactive() {
 void Hud::DrawCrosshair(ViewProjection viewProjection) {
     // プレイヤーの前方位置を計算
     Vector3 forward = followCamera_->GetForwardDirection();
-    Vector3 playerPos = player_->GetPosition();
-    Vector3 crosshairPos = {
+	Vector3 playerPos = player_->GetPosition();
+
+	// カメラの前方向ベクトルを取得
+	Vector3 cameraForward = followCamera_->GetForwardDirection();
+
+	// 照準の位置を計算（プレイヤーの少し前方）
+	Vector3 crosshairPos = {
         playerPos.x + forward.x * crosshairDistance_,
         playerPos.y + forward.y * crosshairDistance_,
         playerPos.z + forward.z * crosshairDistance_
-    };
-    
+	};
+
     // カメラの右方向と上方向を取得
     Vector3 right = followCamera_->GetRightDirection();
     Vector3 up = followCamera_->GetUpDirection();
-    
+
     // 中央の円を描画
     DrawFacingCircle(crosshairPos, crosshairCenterRadius_, crosshairColor_, crosshairCircleSegments_, forward);
-    
+
     // 十字線を描画（中央にギャップあり）
     // 右
-    Vector3 rightStart = {
+	Vector3 rightStart = {
         crosshairPos.x + right.x * crosshairGap_,
         crosshairPos.y + right.y * crosshairGap_,
         crosshairPos.z + right.z * crosshairGap_
-    };
-    
-    Vector3 rightEnd = {
+	};
+
+	Vector3 rightEnd = {
         crosshairPos.x + right.x * (crosshairGap_ + crosshairSize_),
         crosshairPos.y + right.y * (crosshairGap_ + crosshairSize_),
         crosshairPos.z + right.z * (crosshairGap_ + crosshairSize_)
-    };
-    
-    lineManager_->DrawLine(rightStart, rightEnd, crosshairColor_);
-    
+	};
+
+	lineManager_->DrawLine(rightStart, rightEnd, crosshairColor_);
+
     // 左
-    Vector3 leftStart = {
+	Vector3 leftStart = {
         crosshairPos.x - right.x * crosshairGap_,
         crosshairPos.y - right.y * crosshairGap_,
         crosshairPos.z - right.z * crosshairGap_
-    };
-    
-    Vector3 leftEnd = {
+	};
+
+	Vector3 leftEnd = {
         crosshairPos.x - right.x * (crosshairGap_ + crosshairSize_),
         crosshairPos.y - right.y * (crosshairGap_ + crosshairSize_),
         crosshairPos.z - right.z * (crosshairGap_ + crosshairSize_)
-    };
-    
-    lineManager_->DrawLine(leftStart, leftEnd, crosshairColor_);
-    
+	};
+
+	lineManager_->DrawLine(leftStart, leftEnd, crosshairColor_);
+
     // 上
-    Vector3 upStart = {
+	Vector3 upStart = {
         crosshairPos.x + up.x * crosshairGap_,
         crosshairPos.y + up.y * crosshairGap_,
         crosshairPos.z + up.z * crosshairGap_
-    };
-    
-    Vector3 upEnd = {
+	};
+
+	Vector3 upEnd = {
         crosshairPos.x + up.x * (crosshairGap_ + crosshairSize_),
         crosshairPos.y + up.y * (crosshairGap_ + crosshairSize_),
         crosshairPos.z + up.z * (crosshairGap_ + crosshairSize_)
-    };
-    
-    lineManager_->DrawLine(upStart, upEnd, crosshairColor_);
-    
+	};
+
+	lineManager_->DrawLine(upStart, upEnd, crosshairColor_);
+
     // 下
-    Vector3 downStart = {
+	Vector3 downStart = {
         crosshairPos.x - up.x * crosshairGap_,
         crosshairPos.y - up.y * crosshairGap_,
         crosshairPos.z - up.z * crosshairGap_
-    };
-    
-    Vector3 downEnd = {
+	};
+
+	Vector3 downEnd = {
         crosshairPos.x - up.x * (crosshairGap_ + crosshairSize_),
         crosshairPos.y - up.y * (crosshairGap_ + crosshairSize_),
         crosshairPos.z - up.z * (crosshairGap_ + crosshairSize_)
-    };
-    
-    lineManager_->DrawLine(downStart, downEnd, crosshairColor_);
+	};
+
+	lineManager_->DrawLine(downStart, downEnd, crosshairColor_);
+
+	// 中央の小さい円
+	lineManager_->DrawCircle(center, crosshairCenterRadius_, crosshairColor_, crosshairCircleSegments_);
 }
 
 void Hud::DrawLockOn(ViewProjection viewProjection) {
@@ -429,7 +437,7 @@ void Hud::DrawDottedLine(const Vector2& start, const Vector2& end, const Vector4
         
         currentLength += segmentLength;
         drawLine = !drawLine;
-    }
+	}
 }
 
 // ヘルパー関数：円弧の描画

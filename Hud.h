@@ -18,6 +18,7 @@ public:
     // 更新
     void Update();
     
+    
     // 描画
     void Draw(ViewProjection viewProjection);
     
@@ -39,7 +40,7 @@ private:
     
     // ロックオンの描画
     void DrawLockOn(ViewProjection viewProjection);
-    
+
     // カメラに正対する円を描画する補助関数
     void DrawFacingCircle(const Vector3& center, float radius, const Vector4& color, int segments, const Vector3& cameraForward);
     
@@ -96,7 +97,7 @@ private:
     
     ///=============================================================================
     ///                        メンバ変数
-private:
+    private:
     // 各種ポインタ
     FollowCamera* followCamera_ = nullptr;
     // プレイヤー
