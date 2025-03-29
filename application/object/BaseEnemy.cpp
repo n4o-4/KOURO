@@ -30,7 +30,11 @@ void BaseEnemy::Initialize(Model* model) {
     // スポーン位置の初期化
     spawnPosition_ = worldTransform_->transform.translate;
 
-	
+    particleEmitter_ = std::make_unique<ParticleEmitter>();
+    particleEmitter_->Initialize("missileSmoke");
+    particleEmitter_->SetParticleCount(80);
+    particleEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ 1.0f,1.5f }));
+    particleEmitter_->SetVelocityRange(ParticleManager::VelocityRange({ -10.0f,10.0f }, { -10.0f,10.0f }, { -10.0f,10.0f }));
 }
 
 ///=============================================================================
@@ -48,6 +52,10 @@ void BaseEnemy::Update() {
         model_->SetLocalMatrix(MakeIdentity4x4());
         // モデルの更新
         model_->Update();
+
+        // パーティクルの位置を更新
+        particleEmitter_->SetPosition(worldTransform_->transform.translate);
+
         //========================================
         // 当たり判定との同期
         BaseObject::Update(worldTransform_->transform.translate);

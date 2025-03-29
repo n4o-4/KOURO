@@ -126,4 +126,5 @@ protected:
     ////Spawn ワールド変換
     //std::unique_ptr<WorldTransform> spawnWorldTransform_ = nullptr;
 
+    std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 };
