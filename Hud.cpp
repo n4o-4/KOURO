@@ -22,21 +22,40 @@ void Hud::Initialize(FollowCamera *followCamera, Player *player, LockOn *lockOnS
 
 	// 初期状態では戦闘モードをアクティブにする
 	isCombatMode_ = true;
+    
+    // レーダー表示をアクティブにする
+    showRadar_ = true;
+}
+
+///=============================================================================
+///						敵コンテナとスポーンブロックの設定
+void Hud::SetEnemiesAndSpawns(const std::vector<std::unique_ptr<BaseEnemy>>* enemies, 
+                             const std::vector<std::unique_ptr<BaseEnemy>>* spawns) {
+    enemies_ = enemies;
+    spawns_ = spawns;
 }
 
 ///=============================================================================
 ///						更新
 void Hud::Update() {
-	// 戦闘モードでない場合は更新しない
-	if(!isCombatMode_) {
-		return;
-	}
+    // 戦闘モードでない場合は更新しない
+    if(!isCombatMode_) {
+        return;
+    }
 
-	// ロックオン表示の回転を更新
-	lockOnRotation_ += lockOnRotationSpeed_;
-	if(lockOnRotation_ > kTwoPi) {
-		lockOnRotation_ -= kTwoPi;
-	}
+    // ロックオン表示の回転を更新
+    lockOnRotation_ += lockOnRotationSpeed_;
+    if(lockOnRotation_ > kTwoPi) {
+        lockOnRotation_ -= kTwoPi;
+    }
+    
+    // レーダーの回転をカメラの向きに合わせる
+    if (rotateWithCamera_ && followCamera_) {
+        // カメラの前方向ベクトルからY軸周りの回転角を計算
+        Vector3 forward = followCamera_->GetForwardDirection();
+        // Z軸を前として、X軸を右とした場合の角度を計算
+        radarRotation_ = atan2f(forward.x, forward.z);
+    }
 }
 
 ///=============================================================================
@@ -52,6 +71,11 @@ void Hud::Draw(ViewProjection viewProjection) {
 
 	// ロックオンの描画
 	DrawLockOn(viewProjection);
+    
+    // レーダーディスプレイの描画
+    if (showRadar_) {
+        DrawRadarDisplay(viewProjection);
+    }
 }
 
 ///=============================================================================
@@ -356,4 +380,151 @@ void Hud::DrawFacingProgressArc(const Vector3 &center, float radius, float start
 			lineManager_->DrawLine(point1, point2, color);
 		}
 	}
+}
+
+///=============================================================================
+///						レーダーディスプレイの描画
+void Hud::DrawRadarDisplay(ViewProjection viewProjection) {
+    // プレイヤーの位置を取得
+    Vector3 playerPos = player_->GetPosition();
+    
+    // 3Dワールド座標での描画（レーダーの枠）
+    // カメラの位置と向きからレーダーの表示位置を計算
+    Vector3 cameraForward = followCamera_->GetForwardDirection();
+    Vector3 cameraRight = followCamera_->GetRightDirection();
+    Vector3 cameraUp = followCamera_->GetUpDirection();
+    
+    // レーダーの位置を計算
+    float halfSize = radarSize_ * 0.5f;
+    Vector3 radarCenter = {
+        playerPos.x + cameraRight.x * radarPositionX_ + cameraUp.x * radarPositionY_,
+        playerPos.y + cameraRight.y * radarPositionX_ + cameraUp.y * radarPositionY_,
+        playerPos.z + cameraRight.z * radarPositionX_ + cameraUp.z * radarPositionY_
+    };
+    
+    // レーダーの枠を描画
+    Vector3 topLeft = {
+        radarCenter.x - cameraRight.x * halfSize + cameraUp.x * halfSize,
+        radarCenter.y - cameraRight.y * halfSize + cameraUp.y * halfSize,
+        radarCenter.z - cameraRight.z * halfSize + cameraUp.z * halfSize
+    };
+    
+    Vector3 topRight = {
+        radarCenter.x + cameraRight.x * halfSize + cameraUp.x * halfSize,
+        radarCenter.y + cameraRight.y * halfSize + cameraUp.y * halfSize,
+        radarCenter.z + cameraRight.z * halfSize + cameraUp.z * halfSize
+    };
+    
+    Vector3 bottomLeft = {
+        radarCenter.x - cameraRight.x * halfSize - cameraUp.x * halfSize,
+        radarCenter.y - cameraRight.y * halfSize - cameraUp.y * halfSize,
+        radarCenter.z - cameraRight.z * halfSize - cameraUp.z * halfSize
+    };
+    
+    Vector3 bottomRight = {
+        radarCenter.x + cameraRight.x * halfSize - cameraUp.x * halfSize,
+        radarCenter.y + cameraRight.y * halfSize - cameraUp.y * halfSize,
+        radarCenter.z + cameraRight.z * halfSize - cameraUp.z * halfSize
+    };
+    
+    // レーダーの背景と枠を描画
+    lineManager_->DrawLine(topLeft, topRight, radarBorderColor_);
+    lineManager_->DrawLine(topRight, bottomRight, radarBorderColor_);
+    lineManager_->DrawLine(bottomRight, bottomLeft, radarBorderColor_);
+    lineManager_->DrawLine(bottomLeft, topLeft, radarBorderColor_);
+    
+    // レーダー上にプレイヤーを中心点として表示（カメラ方向に合わせる）
+    Vector3 radarPlayerPos = radarCenter;
+    
+    // プレイヤーの位置を中心点として描画（カメラに正対する円）
+    DrawFacingCircle(radarPlayerPos, 0.5f, {0.0f, 0.8f, 1.0f, 1.0f}, 12, cameraForward);
+    
+    // 敵をレーダー上に表示
+    if (enemies_ && !enemies_->empty()) {
+        for (const auto& enemy : *enemies_) {
+            if (enemy) {
+                // 敵の位置を取得
+                Vector3 enemyPos = enemy->GetPosition();
+                
+                // プレイヤーから敵への相対位置を計算
+                Vector3 relativePos = {
+                    enemyPos.x - playerPos.x,
+                    0.0f,  // Y座標は無視する（2Dレーダー）
+                    enemyPos.z - playerPos.z
+                };
+                
+                // 距離を計算
+                float distance = sqrt(relativePos.x * relativePos.x + relativePos.z * relativePos.z);
+                
+                // レーダーの範囲内にある場合のみ表示
+                if (distance <= radarRange_) {
+                    // レーダー上での敵の位置を計算
+                    float scale = halfSize / radarRange_;
+                    
+                    // ヘッドアップディスプレイのための正しい座標変換（修正部分）
+                    // カメラの向きを基準とした極座標に変換してから直交座標に戻す
+                    float angle = atan2f(relativePos.x, relativePos.z) - radarRotation_;
+                    float rotatedX = sinf(angle) * distance * scale;
+                    float rotatedZ = cosf(angle) * distance * scale;
+                    
+                    // レーダー上の位置を計算
+                    Vector3 radarEnemyPos = {
+                        radarCenter.x + rotatedX,
+                        radarCenter.y + rotatedZ,
+                        radarCenter.z
+                    };
+                    
+                    // 敵を小さな点で表示（カメラ方向に正対）
+                    DrawFacingCircle(radarEnemyPos, enemyDotSize_, enemyDotColor_, 8, cameraForward);
+                    
+                    // プレイヤーから敵への放射線を描画
+                    lineManager_->DrawLine(radarPlayerPos, radarEnemyPos, radiationLineColor_);
+                }
+            }
+        }
+    }
+    
+    // スポーンブロックをレーダー上に表示
+    if (spawns_ && !spawns_->empty()) {
+        for (const auto& spawn : *spawns_) {
+            if (spawn) {
+                // スポーンの位置を取得
+                Vector3 spawnPos = spawn->GetPosition();
+                
+                // プレイヤーからスポーンへの相対位置を計算
+                Vector3 relativePos = {
+                    spawnPos.x - playerPos.x,
+                    0.0f,  // Y座標は無視する（2Dレーダー）
+                    spawnPos.z - playerPos.z
+                };
+                
+                // 距離を計算
+                float distance = sqrt(relativePos.x * relativePos.x + relativePos.z * relativePos.z);
+                
+                // レーダーの範囲内にある場合のみ表示
+                if (distance <= radarRange_) {
+                    // レーダー上でのスポーンの位置を計算
+                    float scale = halfSize / radarRange_;
+                    
+                    // ヘッドアップディスプレイのための正しい座標変換（修正部分）
+                    float angle = atan2f(relativePos.x, relativePos.z) - radarRotation_;
+                    float rotatedX = sinf(angle) * distance * scale;
+                    float rotatedZ = cosf(angle) * distance * scale;
+                    
+                    // レーダー上の位置を計算
+                    Vector3 radarSpawnPos = {
+                        radarCenter.x + rotatedX,
+                        radarCenter.y + rotatedZ,
+                        radarCenter.z
+                    };
+                    
+                    // スポーンを小さな四角形で表示
+                    DrawFacingSquare(radarSpawnPos, spawnBlockSize_, spawnBlockColor_, cameraRight, cameraUp);
+                    
+                    // プレイヤーからスポーンへの放射線を描画
+                    lineManager_->DrawLine(radarPlayerPos, radarSpawnPos, radiationLineColor_);
+                }
+            }
+        }
+    }
 }

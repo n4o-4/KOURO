@@ -143,6 +143,8 @@ void GameScene::Initialize() {
 	//========================================
 	// HUD
 	hud_ = std::make_unique<Hud>();
+	// 敵とスポーンの情報を最新に保つ
+	hud_->SetEnemiesAndSpawns(&enemies_, &spawns_);
 	hud_->Initialize( cameraManager_->GetFollowCamera(), player_.get(), lockOnSystem_.get() );
 }
 ///=============================================================================
@@ -366,6 +368,7 @@ void GameScene::Update() {
 
 		//---------------------------------------
 		// HUD
+		hud_->SetEnemiesAndSpawns(&enemies_, &spawns_);
 		hud_->Update();
 
 		//---------------------------------------
