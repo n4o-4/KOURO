@@ -8,6 +8,7 @@ void SkyDome::Initialize() {
 	ModelManager::GetInstance()->LoadModel("skyDome/skyDome.obj");
 	ModelManager::GetInstance()->LoadModel("skyDome/skyDomeBg.obj");
 	ModelManager::GetInstance()->LoadModel("skyDome/skyDomeCloud.obj");
+	ModelManager::GetInstance()->LoadModel("skyDome/cube.obj");
 	//========================================
 	// モデルの初期化
 	// 基本スカイドーム
@@ -22,6 +23,10 @@ void SkyDome::Initialize() {
 	modelSkydomeCloud_ = std::make_unique<Object3d>();
 	modelSkydomeCloud_->Initialize(Object3dCommon::GetInstance());
 	modelSkydomeCloud_->SetModel("skyDome/skyDomeCloud.obj");
+	// cube
+	cube_ = std::make_unique<Object3d>();
+	cube_->Initialize(Object3dCommon::GetInstance());
+	cube_->SetModel("skyDome/cube.obj");
 	//========================================
 	// ワールド変換の初期化
 	// 基本スカイドーム
@@ -36,6 +41,11 @@ void SkyDome::Initialize() {
 	worldTransformSkydomeCloud_ = std::make_unique<WorldTransform>();
 	worldTransformSkydomeCloud_->Initialize();
 	worldTransformSkydomeCloud_->transform.scale = { 1.0f,1.0f,1.0f };
+	// cube
+	worldTransformCube_ = std::make_unique<WorldTransform>();
+	worldTransformCube_->Initialize();
+	worldTransformCube_->transform.scale = { 1.0f,1.0f,1.0f };
+	worldTransformCube_->transform.translate = { 0.0f,50.0f,0.0f };
 }
 ///=============================================================================
 ///						更新
@@ -64,11 +74,17 @@ void SkyDome::Update() {
 	worldTransformSkydomeCloud_->UpdateMatrix();
 	modelSkydomeCloud_->SetLocalMatrix(MakeIdentity4x4());
 	modelSkydomeCloud_->Update();
+
+	// cube
+	worldTransformCube_->UpdateMatrix();	
+	cube_->SetLocalMatrix(MakeIdentity4x4());
+	cube_->Update();
 }
 ///=============================================================================
 ///						描画
 void SkyDome::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
 	//model_->Draw(*worldTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
-	modelSkydomeBg_->Draw(*worldTransformSkydomeBg_.get(), viewProjection, directionalLight, pointLight, spotLight);
-	modelSkydomeCloud_->Draw(*worldTransformSkydomeCloud_.get(), viewProjection, directionalLight, pointLight, spotLight);
+	//modelSkydomeBg_->Draw(*worldTransformSkydomeBg_.get(), viewProjection, directionalLight, pointLight, spotLight);
+	//modelSkydomeCloud_->Draw(*worldTransformSkydomeCloud_.get(), viewProjection, directionalLight, pointLight, spotLight);
+	cube_->Draw(*worldTransformCube_.get(), viewProjection, directionalLight, pointLight, spotLight);
 }

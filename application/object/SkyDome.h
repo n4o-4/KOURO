@@ -19,5 +19,9 @@ private:
 	// スカイドームの雲
 	std::unique_ptr<Object3d> modelSkydomeCloud_ = nullptr;
 	std::unique_ptr<WorldTransform> worldTransformSkydomeCloud_ = nullptr;
+	//cube
+	std::unique_ptr<Object3d> cube_ = nullptr;
+	std::unique_ptr<WorldTransform> worldTransformCube_ = nullptr;
+
 };
 
