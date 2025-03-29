@@ -66,89 +66,91 @@ void Hud::CombatModeDeactive() {
 
 ///=============================================================================
 ///						照準の描画
+///=============================================================================
+///						照準の描画
 void Hud::DrawCrosshair(ViewProjection viewProjection) {
-	// プレイヤーの位置を取得
-	Vector3 playerPos = player_->GetPosition();
+    // プレイヤーの位置を取得
+    Vector3 playerPos = player_->GetPosition();
 
-	// カメラの前方向ベクトルを取得
-	Vector3 cameraForward = followCamera_->GetForwardDirection();
+    // カメラの前方向ベクトルを取得
+    Vector3 cameraForward = followCamera_->GetForwardDirection();
 
-	// 照準の位置を計算（プレイヤーの少し前方）
-	Vector3 crosshairPos = {
-		playerPos.x + cameraForward.x * crosshairDistance_,
-		playerPos.y + cameraForward.y * crosshairDistance_,
-		playerPos.z + cameraForward.z * crosshairDistance_
-	};
+    // 照準の位置を計算（プレイヤーの少し前方）
+    Vector3 crosshairPos = {
+        playerPos.x + cameraForward.x * crosshairDistance_,
+        playerPos.y + cameraForward.y * crosshairDistance_,
+        playerPos.z + cameraForward.z * crosshairDistance_
+    };
 
-	// 上下左右の線の位置計算用に、カメラの右方向と上方向を取得
-	Vector3 rightDir = followCamera_->GetRightDirection();
-	Vector3 upDir = followCamera_->GetUpDirection();
+    // 上下左右の線の位置計算用に、カメラの右方向と上方向を取得
+    Vector3 rightDir = followCamera_->GetRightDirection();
+    Vector3 upDir = followCamera_->GetUpDirection();
 
-	// 中心点
-	Vector3 center = crosshairPos;
+    // 中心点
+    Vector3 center = crosshairPos;
 
-	// 右線
-	Vector3 rightStart = {
-		center.x + rightDir.x * crosshairGap_,
-		center.y + rightDir.y * crosshairGap_,
-		center.z + rightDir.z * crosshairGap_
-	};
+    // 右線
+    Vector3 rightStart = {
+        center.x + rightDir.x * crosshairGap_,
+        center.y + rightDir.y * crosshairGap_,
+        center.z + rightDir.z * crosshairGap_
+    };
 
-	Vector3 rightEnd = {
-		rightStart.x + rightDir.x * crosshairSize_,
-		rightStart.y + rightDir.y * crosshairSize_,
-		rightStart.z + rightDir.z * crosshairSize_
-	};
+    Vector3 rightEnd = {
+        rightStart.x + rightDir.x * crosshairSize_,
+        rightStart.y + rightDir.y * crosshairSize_,
+        rightStart.z + rightDir.z * crosshairSize_
+    };
 
-	lineManager_->DrawLine(rightStart, rightEnd, crosshairColor_);
+    lineManager_->DrawLine(rightStart, rightEnd, crosshairColor_);
 
-	// 左線
-	Vector3 leftStart = {
-		center.x - rightDir.x * crosshairGap_,
-		center.y - rightDir.y * crosshairGap_,
-		center.z - rightDir.z * crosshairGap_
-	};
+    // 左線
+    Vector3 leftStart = {
+        center.x - rightDir.x * crosshairGap_,
+        center.y - rightDir.y * crosshairGap_,
+        center.z - rightDir.z * crosshairGap_
+    };
 
-	Vector3 leftEnd = {
-		leftStart.x - rightDir.x * crosshairSize_,
-		leftStart.y - rightDir.y * crosshairSize_,
-		leftStart.z - rightDir.z * crosshairSize_
-	};
+    Vector3 leftEnd = {
+        leftStart.x - rightDir.x * crosshairSize_,
+        leftStart.y - rightDir.y * crosshairSize_,
+        leftStart.z - rightDir.z * crosshairSize_
+    };
 
-	lineManager_->DrawLine(leftStart, leftEnd, crosshairColor_);
+    lineManager_->DrawLine(leftStart, leftEnd, crosshairColor_);
 
-	// 上線
-	Vector3 upStart = {
-		center.x + upDir.x * crosshairGap_,
-		center.y + upDir.y * crosshairGap_,
-		center.z + upDir.z * crosshairGap_
-	};
+    // 上線
+    Vector3 upStart = {
+        center.x + upDir.x * crosshairGap_,
+        center.y + upDir.y * crosshairGap_,
+        center.z + upDir.z * crosshairGap_
+    };
 
-	Vector3 upEnd = {
-		upStart.x + upDir.x * crosshairSize_,
-		upStart.y + upDir.y * crosshairSize_,
-		upStart.z + upDir.z * crosshairSize_
-	};
+    Vector3 upEnd = {
+        upStart.x + upDir.x * crosshairSize_,
+        upStart.y + upDir.y * crosshairSize_,
+        upStart.z + upDir.z * crosshairSize_
+    };
 
-	lineManager_->DrawLine(upStart, upEnd, crosshairColor_);
+    lineManager_->DrawLine(upStart, upEnd, crosshairColor_);
 
-	// 下線
-	Vector3 downStart = {
-		center.x - upDir.x * crosshairGap_,
-		center.y - upDir.y * crosshairGap_,
-		center.z - upDir.z * crosshairGap_
-	};
+    // 下線
+    Vector3 downStart = {
+        center.x - upDir.x * crosshairGap_,
+        center.y - upDir.y * crosshairGap_,
+        center.z - upDir.z * crosshairGap_
+    };
 
-	Vector3 downEnd = {
-		downStart.x - upDir.x * crosshairSize_,
-		downStart.y - upDir.y * crosshairSize_,
-		downStart.z - upDir.z * crosshairSize_
-	};
+    Vector3 downEnd = {
+        downStart.x - upDir.x * crosshairSize_,
+        downStart.y - upDir.y * crosshairSize_,
+        downStart.z - upDir.z * crosshairSize_
+    };
 
-	lineManager_->DrawLine(downStart, downEnd, crosshairColor_);
+    lineManager_->DrawLine(downStart, downEnd, crosshairColor_);
 
-	// 中央の小さい円
-	lineManager_->DrawCircle(center, crosshairCenterRadius_, crosshairColor_, crosshairCircleSegments_);
+    // 中央の小さい円（カメラに正対するように変更）
+    DrawFacingCircle(center, crosshairCenterRadius_, crosshairColor_, crosshairCircleSegments_, cameraForward);
 }
 
 void Hud::DrawLockOn(ViewProjection viewProjection) {
