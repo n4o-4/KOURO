@@ -98,6 +98,9 @@ public:
 	std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
 
 private:
+
+	void RandomWanderMove();
+
 	// 行動状態別の更新メソッド
 	void UpdateWanderState();
 	void UpdateChaseState();
@@ -120,6 +123,9 @@ private:
 	float jumpTime_ = 0.0f;
 	float gravity_ = 9.8f;
 	float groundHeight_ = 0.0f;
+
+	float jumpCooldownTimer_ = 0.0f;
+	const float kJumpInterval_ = 3.0f;
 
 	bool isBlinking_ = false;
 	float blinkTimer_ = 0.0f;

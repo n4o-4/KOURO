@@ -89,6 +89,7 @@ void SkyTypeEnemy::MoveToRush() {
 		if (rushTimer_ >= rushDuration_) {
 			isRushing_ = false; // 
 			isRising_ = true;   // 
+			hasJustRushed_ = true;
 			rushTimer_ = 0.0f;
 			riseTimer_ = 0.0f;  // 
 		}
@@ -96,17 +97,16 @@ void SkyTypeEnemy::MoveToRush() {
 }
 
 void SkyTypeEnemy::MoveToRise() {
-	// 
-	velocity_.y = riseSpeed_;
+	if (!hasJustRushed_) return; // <- Rush한 이후가 아니면 실행 금지
 
-	// 
+	velocity_.y = riseSpeed_;
 	worldTransform_->transform.translate.y += velocity_.y;
 
-	// 
 	riseTimer_ += 1.0f / 60.0f;
 	if (riseTimer_ >= riseDuration_) {
-		isRising_ = false; // 
-		velocity_.y = 0.0f; // 
+		isRising_ = false;
+		hasJustRushed_ = false; // <- 상승 완료 후 초기화
+		velocity_.y = 0.0f;
 	}
 
 
@@ -157,7 +157,7 @@ void SkyTypeEnemy::UpdateCombatState() {
 		return;
 	}
 
-	// 
+	//// 
 	if (isRushing_) {
 		MoveToRush();
 		return;
@@ -165,6 +165,7 @@ void SkyTypeEnemy::UpdateCombatState() {
 
 	// 
 	Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
+	toTarget.y = 0.0f;
 	float distance = Length(toTarget);
 
 	// 
