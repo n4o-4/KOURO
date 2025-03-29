@@ -216,6 +216,10 @@ void GameScene::Update() {
 			phase_ = Phase::kFadeOut;
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
 		}
+		if (isGameClear_) {
+			phase_ = Phase::kFadeOut;
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+		}
 
 		//---------------------------------------
 		// プレイヤーの更新
@@ -274,7 +278,10 @@ void GameScene::Update() {
 				LoadEnemyPopData(waveIndex_);
 				waveReady_ = false; 
 			} else {
+				player_->GetBullets().clear();
+				player_->GetMachineGunBullets().clear();
 				isGameClear_ = true; 
+
 			}
 		}
 		// 敵リスト
