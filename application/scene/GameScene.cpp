@@ -268,6 +268,9 @@ void GameScene::Update() {
 				currentWaveImageIndex_ = waveIndex_+1;  
 				waveDisplayTimer_ = waveDisplayDuration_;
 
+				player_->GetBullets().clear();
+				player_->GetMachineGunBullets().clear();
+
 				LoadEnemyPopData(waveIndex_);
 				waveReady_ = false; 
 			} else {
