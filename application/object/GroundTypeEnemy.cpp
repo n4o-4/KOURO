@@ -76,10 +76,10 @@ void GroundTypeEnemy::Draw(ViewProjection viewProjection, DirectionalLight direc
 void GroundTypeEnemy::MoveToJump() {
 	if (!target_) return;
 
-	// 점프 쿨다운 타이머 갱신
+	// ジャンプクールダウンタイマーの更新
 	if (jumpCooldownTimer_ < kJumpInterval_) {
 		jumpCooldownTimer_ += 1.0f / 60.0f;
-		RandomWanderMove(); // <- 여기에 추가!
+		RandomWanderMove(); 
 		return;
 	}
 
@@ -88,18 +88,18 @@ void GroundTypeEnemy::MoveToJump() {
 	float distance = Length(toTarget);
 	Vector3 direction = Normalize(toTarget);
 
-	// 점프 조건: 현재 점프 중이 아니고, 쿨다운이 지났을 때
+	// ジャンプ条件：現在ジャンプ中ではなく、クールダウンが過ぎたとき
 	if (!isJumping_ && jumpCooldownTimer_ >= kJumpInterval_) {
 		isJumping_ = true;
 		jumpVelocity_ = 2.3f;
 		jumpTime_ = 0.0f;
-		jumpCooldownTimer_ = 0.0f; // 쿨다운 초기화
+		jumpCooldownTimer_ = 0.0f; // クールダウンの初期化
 	}
 
-	// 점프 처리
+	// ジャンプ処理
 	if (isJumping_) {
 		jumpTime_ += 1.0f / 60.0f;
-		jumpVelocity_ -= gravity_ * 0.2f * jumpTime_; // 낙하 속도 약간 느리게
+		jumpVelocity_ -= gravity_ * 0.2f * jumpTime_; // 落下速度少し遅い
 
 		Vector3 moveDirection = direction * speed_;
 		moveDirection.y = jumpVelocity_;

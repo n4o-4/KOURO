@@ -117,13 +117,16 @@ private:
 
 	bool isRushing_ = false; // 突進 flag
 	bool isRising_ = false;   // 上昇 flag
+	bool hasJustRushed_ = false; // 突進直後 flag
 	float rushTimer_ = 0.0f; // 突進 timer
 	float riseTimer_ = 0.0f;   // 上昇 timer
 	const float rushDuration_ = 1.0f; // 突進 timer (秒)
-	const float riseDuration_ = 2.0f;   // 上昇 timer (秒)
+	const float riseDuration_ = 1.0f;   // 上昇 timer (秒)
 	const float rushSpeedMultiplier_ = 2.5f; // 突進時の速度倍率
 	const float rushSpeed_ = 0.3f;   // 突進速度
 	const float riseSpeed_ = 1.8f;   // 上昇速度
+
+	//
 
 	// クラス内の private: の下に追加
 	bool isHitReacting_ = false;
