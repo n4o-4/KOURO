@@ -74,39 +74,43 @@ void GroundTypeEnemy::Draw(ViewProjection viewProjection, DirectionalLight direc
 }
 
 void GroundTypeEnemy::MoveToJump() {
-	if (target_) {
+	if (!target_) return;
 
-		Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
-		toTarget.y = 0.0f; // 高さ方向の距離は無視
-		float distance = Length(toTarget);
-		Vector3 direction = Normalize(toTarget);
+	// 점프 쿨다운 타이머 갱신
+	if (jumpCooldownTimer_ < kJumpInterval_) {
+		jumpCooldownTimer_ += 1.0f / 60.0f;
+		RandomWanderMove(); // <- 여기에 추가!
+		return;
+	}
 
+	Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
+	toTarget.y = 0.0f;
+	float distance = Length(toTarget);
+	Vector3 direction = Normalize(toTarget);
 
-		if (!isJumping_) {
-			isJumping_ = true;
-			jumpVelocity_ = 1.2f;
-			jumpTime_ = 0.0f;
-		}
+	// 점프 조건: 현재 점프 중이 아니고, 쿨다운이 지났을 때
+	if (!isJumping_ && jumpCooldownTimer_ >= kJumpInterval_) {
+		isJumping_ = true;
+		jumpVelocity_ = 2.3f;
+		jumpTime_ = 0.0f;
+		jumpCooldownTimer_ = 0.0f; // 쿨다운 초기화
+	}
 
-
-		jumpTime_ += 1.0f / 1200.0f;
-		jumpVelocity_ -= gravity_ * jumpTime_;
-
+	// 점프 처리
+	if (isJumping_) {
+		jumpTime_ += 1.0f / 60.0f;
+		jumpVelocity_ -= gravity_ * 0.2f * jumpTime_; // 낙하 속도 약간 느리게
 
 		Vector3 moveDirection = direction * speed_;
 		moveDirection.y = jumpVelocity_;
 
-
-		worldTransform_->transform.translate = worldTransform_->transform.translate + moveDirection;
-
+		worldTransform_->transform.translate += moveDirection;
 
 		if (worldTransform_->transform.translate.y <= groundHeight_) {
 			worldTransform_->transform.translate.y = groundHeight_;
 			isJumping_ = false;
 			jumpVelocity_ = 0.0f;
 		}
-
-
 	}
 
 }
@@ -146,8 +150,7 @@ void GroundTypeEnemy::HitJump()
 	targetScale_ = { 1.7f, 1.7f, 1.7f };  // 一時的に大きくする
 }
 
-void GroundTypeEnemy::UpdateWanderState() {
-
+void GroundTypeEnemy::RandomWanderMove() {
 	directionChangeTimer_ += 1.0f / 60.0f;
 
 
@@ -186,6 +189,11 @@ void GroundTypeEnemy::UpdateWanderState() {
 		float targetRotationY = std::atan2(velocity_.x, velocity_.z);
 		worldTransform_->transform.rotate.y = targetRotationY;
 	}
+}
+
+void GroundTypeEnemy::UpdateWanderState() {
+	RandomWanderMove();
+	
 }
 
 void GroundTypeEnemy::UpdateChaseState() {
