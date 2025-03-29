@@ -8,6 +8,10 @@ void GroundTypeEnemy2::Initialize() {
 
 	startScale_.x = startScale_.y = startScale_.z = 1.0f;
 	targetScale_.x = targetScale_.y = targetScale_.z = 1.0f;
+
+	particleEmitter_->SetParticleCount(20);
+	particleEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ 1.0f,1.0f }));
+	particleEmitter_->SetVelocityRange(ParticleManager::VelocityRange({ -3.0f,3.0f }, { -3.0f,3.0f }, { -3.0f,3.0f }));
 }
 
 void GroundTypeEnemy2::Update() {
@@ -73,10 +77,12 @@ void GroundTypeEnemy2::OnCollisionEnter(BaseObject* other) {
 	if (dynamic_cast<PlayerMissile*>(other)) {
 		--hp_;
 		HitJump();
+		particleEmitter_->Emit();
 	}
 	if (dynamic_cast<PlayerMachineGun*>(other)) {
 		--hp_;
 		HitJump();
+		particleEmitter_->Emit();
 	}
 }
 

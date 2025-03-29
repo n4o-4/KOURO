@@ -137,7 +137,7 @@ void ParticleManager::Update()
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].World = worldMatrix;
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].WVP = worldViewProjectionMatrix;
 
-				float lifeRatio = 1.0f - ((*particleIterator).currentTime / (*particleIterator).lifeTime);
+				float lifeRatio = (*particleIterator).currentTime / (*particleIterator).lifeTime;
 
 				(*particleIterator).color = Vect4::Lerp((*particleIterator).startColor, (*particleIterator).finishColor, lifeRatio);
 					

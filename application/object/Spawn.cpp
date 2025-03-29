@@ -38,9 +38,11 @@ void Spawn::Draw(ViewProjection viewProjection, DirectionalLight directionalLigh
 void Spawn::OnCollisionEnter(BaseObject* other) {
 	if (dynamic_cast<PlayerMissile*>(other)) {
 		--spawnHp_;
+		particleEmitter_->Emit();
 	}
 	if (dynamic_cast<PlayerMachineGun*>(other)) {
 		--spawnHp_;
+		particleEmitter_->Emit();
 	}
 }
 

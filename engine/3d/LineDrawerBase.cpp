@@ -16,7 +16,7 @@ void LineDrawerBase::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	worldTransform_->Initialize();
 	
 	worldTransform_->transform.scale = { 10.0f,10.0f,10.0f };
-	worldTransform_->transform.translate = { 0.0f,1.0f,0.0f };
+	worldTransform_->transform.translate = { 0.0f,0.0f,0.0f };
 
 	worldTransform_->UpdateMatrix();
 }

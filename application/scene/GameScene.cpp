@@ -675,7 +675,7 @@ void GameScene::Draw() {
 	//パーティクルの描画
 	ParticleManager::GetInstance()->Draw("Resources/circle.png");	
 
-	lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
+	//lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
 }
 
 ///=============================================================================

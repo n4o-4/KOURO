@@ -9,6 +9,9 @@ void SkyTypeEnemy::Initialize() {
 	startScale_.x = startScale_.y = startScale_.z = 1.0f;
 	targetScale_.x = targetScale_.y = targetScale_.z = 1.0f;
 
+	particleEmitter_->SetParticleCount(20);
+	particleEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ 1.0f,1.0f }));
+	particleEmitter_->SetVelocityRange(ParticleManager::VelocityRange({ -3.0f,3.0f }, { -3.0f,3.0f }, { -3.0f,3.0f }));
 }
 
 void SkyTypeEnemy::Update() {
@@ -116,10 +119,12 @@ void SkyTypeEnemy::OnCollisionEnter(BaseObject* other) {
 	if (dynamic_cast<PlayerMissile*>(other)) {
 		--hp_;
 		HitReaction();
+		particleEmitter_->Emit();
 	}
 	if (dynamic_cast<PlayerMachineGun*>(other)) {
 		--hp_;
 		HitReaction();
+		particleEmitter_->Emit();
 	}
 }
 
