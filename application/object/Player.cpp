@@ -151,6 +151,12 @@ void Player::DrawImGui() {
 	ImGui::Text("Is Boosting: %s", isBoosting_ ? "Yes" : "No");
 	ImGui::Text("In Vincible: %s", isInvincible_ ? "Yes" : "No");
 
+	ImGui::Text("QuickBoost Used: %d / %d", quickBoostUsedCount_, maxQuickBoostUses_);
+	ImGui::Text("QuickBoost Cooldown: %d", quickBoostChargeCooldown_);
+
+	ImGui::Text("Missile Cooldown: %d", missileCooldown_);
+
+
 	ImGui::End();
 
 	// 弾の情報も表示
@@ -319,9 +325,19 @@ void Player::IsJump() {
 ///--------------------------------------------------------------
 ///						 弾の処理と更新
 void Player::UpdateBullets() {
-	if (Input::GetInstance()->Triggerkey(DIK_RETURN) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::RIGHT_SHOULDER)) {
-		Shoot();
+	// ミサイルのクールタイム減少
+	if (missileCooldown_ > 0) {
+		missileCooldown_--;
 	}
+
+	// 発射入力かつクールタイム終了してたら撃つ
+	if (missileCooldown_ <= 0 &&
+		(Input::GetInstance()->Triggerkey(DIK_RETURN) ||
+			Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::RIGHT_SHOULDER))) {
+		Shoot();
+		missileCooldown_ = missileCooldownMax_; // クールタイム開始
+	}
+
 	// 弾の更新
 	for (auto& bullet : bullets_) {
 		bullet->Update();
@@ -418,106 +434,129 @@ void Player::Shoot() {
 bool Player::HandleBoost() {
 	bool stateChanged = false;
 
-	// クイックブーストのクールダウンを減少
+	// ================================
+	// クールダウンやリチャージの管理
+	// ================================
+
+	// 内部クールタイム（連打防止用）
 	if (quickBoostCooldown_ > 0.0f) {
 		quickBoostCooldown_ -= 1.0f;
 	}
 
+	// クールタイム中の処理（3回使った直後の3秒間）
+	if (quickBoostChargeCooldown_ > 0) {
+		quickBoostChargeCooldown_--;
+		if (quickBoostChargeCooldown_ == 0) {
+			quickBoostUsedCount_ = 0; // 全回復
+		}
+		quickBoostRegenTimer_ = 0; // クールタイム中は自然回復停止
+	}
+	// クールタイムではないけど、回数が減ってる場合は自然回復
+	else if (quickBoostUsedCount_ > 0) {
+		quickBoostRegenTimer_++;
+		if (quickBoostRegenTimer_ >= quickBoostRegenInterval_) {
+			quickBoostUsedCount_--;
+			if (quickBoostUsedCount_ < 0) quickBoostUsedCount_ = 0;
+			quickBoostRegenTimer_ = 0;
+		}
+	} else {
+		quickBoostRegenTimer_ = 0; // 回数が満タンならタイマーリセット
+	}
+
+	// ================================
 	// クイックブースト中の処理
+	// ================================
+
 	if (isQuickBoosting_) {
-		// フレームカウントを減らす
 		quickBoostFrames_--;
 
-		// クイックブースト中は一定の高速度を維持する
 		if (Length(velocity_) > 0.01f) {
 			Vector3 boostDirection = Normalize(velocity_);
-			float boostSpeed = maxSpeed_ * 4.0f; // 通常速度の4倍の速さ
+			boostDirection.y = 0.0f; // ✅ Y方向カット！
 
-			// フレーム後半になると徐々に減速（緩急をつける）
+			float boostSpeed = maxSpeed_ * 4.0f;
+
 			if (quickBoostFrames_ < maxQuickBoostFrames_ / 2) {
 				float ratio = static_cast<float>(quickBoostFrames_) / (maxQuickBoostFrames_ / 2);
-				boostSpeed *= (0.7f + 0.3f * ratio); // 70%～100%の間で調整
+				boostSpeed *= (0.7f + 0.3f * ratio);
 			}
 
-			// 速度を直接設定（加算ではなく）
 			velocity_ = boostDirection * boostSpeed;
 		}
 
-		// クイックブースト終了判定
 		if (quickBoostFrames_ <= 0) {
 			isQuickBoosting_ = false;
-			// 急に遅くならないように減速率を設定
-			velocity_ = velocity_ * 0.8f;
+			velocity_ *= 0.8f;
 			stateChanged = true;
 		}
+		return stateChanged;
 	}
-	// 通常状態での入力処理
-	else {
-		// ブースト入力の検出
-		bool boostInput = Input::GetInstance()->Triggerkey(DIK_LSHIFT) ||
-			Input::GetInstance()->PushGamePadButton(Input::GamePadButton::X);
 
-		// クイックブースト開始条件
-		if (boostInput && quickBoostCooldown_ <= 0.0f && currentBoostTime_ >= quickBoostConsumption_) {
-			isQuickBoosting_ = true;
-			quickBoostFrames_ = maxQuickBoostFrames_;
-			currentBoostTime_ -= quickBoostConsumption_;
-			quickBoostCooldown_ = maxQuickBoostCooldown_;
+	// ================================
+	// ブースト入力判定と処理
+	// ================================
 
-			Vector3 boostDirection;
+	bool boostInput = Input::GetInstance()->Triggerkey(DIK_LSHIFT) ||
+		Input::GetInstance()->PushGamePadButton(Input::GamePadButton::X);
 
-			Vector3 inputDirection = { 0.0f, 0.0f, 0.0f };
+	if (boostInput &&
+		quickBoostCooldown_ <= 0.0f &&
+		currentBoostTime_ >= quickBoostConsumption_ &&
+		quickBoostUsedCount_ < maxQuickBoostUses_) {
 
-			// 移動入力の取得
-			Vector3 stickInput = Input::GetInstance()->GetLeftStick();
-			inputDirection.x += stickInput.x;
-			inputDirection.z += stickInput.z;
+		// 使用開始！
+		isQuickBoosting_ = true;
+		quickBoostFrames_ = maxQuickBoostFrames_;
+		currentBoostTime_ -= quickBoostConsumption_;
+		quickBoostCooldown_ = maxQuickBoostCooldown_;
+		quickBoostUsedCount_++;
 
-			// カメラの向きに合わせて入力方向を変換
-			Vector3 rotate = followCamera_->GetViewProjection().transform.rotate;
-			rotate.x = 0.0f;
-
-			Matrix4x4 rotateMatrix = MakeRotateMatrix(rotate);
-
-			inputDirection = TransformNormal(inputDirection, rotateMatrix);
-
-			// ✅ 方向決定 & 回転条件分岐
-			if (Length(inputDirection) > 0.0f) 
-			{
-				boostDirection = Normalize(inputDirection);
-			} 
-			else if (Length(velocity_) > 0.01f) 
-			{
-				boostDirection = Normalize(velocity_);
-			} 
-			else
-			{
-				// ❌ 動いてなかったら演出スキップ
-				return stateChanged;
-			}
-
-			// ✅ 回転開始
-			boostSpin_ = 0.0f;
-			isBoostSpinning_ = true;
-
-			// 加速ベクトルを適用
-			//acceleration_ = boostDirection * (accelerationRate_ * 8.0f);
-			velocity_ = boostDirection * (accelerationRate_ * 8.0f);
-
-			stateChanged = true;
+		// 3回目だったらクールタイム突入
+		if (quickBoostUsedCount_ >= maxQuickBoostUses_) {
+			quickBoostChargeCooldown_ = quickBoostChargeTime_;
 		}
 
+		// 入力方向でブーストベクトルを作成
+		Vector3 boostDirection;
+		Vector3 inputDirection = { 0.0f, 0.0f, 0.0f };
 
-		// ブースト回復（非クイックブースト中のみ）
-		if (currentBoostTime_ < maxBoostTime_) {
-			float recoveryMultiplier = (Length(velocity_) < 0.05f) ? 2.0f : 1.0f;
-			currentBoostTime_ += boostRecoveryRate_ * recoveryMultiplier;
-			if (currentBoostTime_ > maxBoostTime_) currentBoostTime_ = maxBoostTime_;
+		Vector3 stickInput = Input::GetInstance()->GetLeftStick();
+		inputDirection.x += stickInput.x;
+		inputDirection.z += stickInput.z;
+
+		Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate);
+		inputDirection = TransformNormal(inputDirection, rotateMatrix);
+
+		if (Length(inputDirection) > 0.0f) {
+			boostDirection = Normalize(inputDirection);
+		} else if (Length(velocity_) > 0.01f) {
+			boostDirection = Normalize(velocity_);
+		} else {
+			return stateChanged;
 		}
+
+		boostDirection.y = 0.0f; // ✅ Y方向を削除！
+
+		boostSpin_ = 0.0f;
+		isBoostSpinning_ = true;
+		velocity_ = boostDirection * (accelerationRate_ * 8.0f);
+		stateChanged = true;
+	}
+
+	// ================================
+	// ブーストエネルギー回復処理
+	// ================================
+
+	if (currentBoostTime_ < maxBoostTime_) {
+		float recoveryMultiplier = (Length(velocity_) < 0.05f) ? 2.0f : 1.0f;
+		currentBoostTime_ += boostRecoveryRate_ * recoveryMultiplier;
+		if (currentBoostTime_ > maxBoostTime_) currentBoostTime_ = maxBoostTime_;
 	}
 
 	return stateChanged;
 }
+
+
 void Player::ShootMachineGun() {
 	// 弾の初期位置をプレイヤーの位置に設定
 	Vector3 bulletPos = objectTransform_->transform.translate;

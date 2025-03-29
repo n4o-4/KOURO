@@ -159,6 +159,12 @@ private:
 	float maxBoostTime_ = 30.0f;                  // 最大ブースト時間
 	float currentBoostTime_ = 30.0f;              // 現在のブースト残量
 	float boostRecoveryRate_ = 0.15f + 8.0f;      // ブースト回復速度
+	int quickBoostUsedCount_ = 0;        // 使用した回数
+	int quickBoostChargeCooldown_ = 0;   // クールタイム用カウント（フレーム単位）
+	const int maxQuickBoostUses_ = 3;    // 最大使用回数
+	const int quickBoostChargeTime_ = 180; // クールタイム（3秒 = 180フレーム）
+	int quickBoostRegenTimer_ = 0;            // クイックブーストのリチャージタイマー
+	const int quickBoostRegenInterval_ = 60;  // 1回復までの時間（1秒）
 	// クイックブースト関連
 	bool isQuickBoosting_ = false;                // クイックブースト中かどうか
 	int quickBoostFrames_ = 0;                    // クイックブーストの残りフレーム
@@ -207,4 +213,8 @@ private:
 	float distinationRotateY_;
 
 	std::unique_ptr<ExplosionEmitter> explosionEmitter_ = nullptr;
+
+	int missileCooldown_ = 0; // ミサイルのクールダウンタイマー
+	const int missileCooldownMax_ = 300; // 5秒（60FPS換算）
+
 };
