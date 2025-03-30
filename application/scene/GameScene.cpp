@@ -34,12 +34,20 @@ void GameScene::Initialize() {
 	// 指向性
 	directionalLight = std::make_unique<DirectionalLight>();
 	directionalLight->Initilaize();
+	directionalLight->intensity_ = 0.0f;
 	// 点光源
 	pointLight = std::make_unique<PointLight>();
 	pointLight->Initilize();
+	pointLight->intensity_ = 0.0f;
 	// スポットライト
 	spotLight = std::make_unique<SpotLight>();
 	spotLight->Initialize();
+	spotLight->direction_ = { 0.0f,-1.0f,0.0f };
+	spotLight->position_ = { 0.0f,200.0f,0.0f };
+	spotLight->intensity_ = 11.0f;
+	spotLight->decay_ = 0.87f;
+	spotLight->distance_ = 280.0f;
+	spotLight->cosAngle_ = 0.5f;
 	//========================================
 	// 天球
 	skyDome_ = std::make_unique<SkyDome>();
@@ -487,6 +495,9 @@ void GameScene::Update() {
 		ImGui::DragFloat3("spotLight.position", &spotLight->position_.x, 0.01f);
 		ImGui::DragFloat("spotLight.decay", &spotLight->decay_, 0.01f);
 		ImGui::DragFloat("spotLight.intensity", &spotLight->intensity_, 0.01f);
+		ImGui::DragFloat("spotLight.distance", &spotLight->distance_, 0.01f);
+		ImGui::DragFloat("spotLight.cosAngle", &spotLight->cosAngle_, 0.01f);
+		ImGui::DragFloat("spotLight.cosFalloffStart", &spotLight->cosFalloffStart_, 0.01f);
 		ImGui::TreePop();
 	}
 
