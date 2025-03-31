@@ -146,6 +146,10 @@ void GameScene::Initialize() {
 	// 敵とスポーンの情報を最新に保つ
 	hud_->SetEnemiesAndSpawns(&enemies_, &spawns_);
 	hud_->Initialize( cameraManager_->GetFollowCamera(), player_.get(), lockOnSystem_.get() );
+
+	//Enemy
+	BaseEnemy::s_allEnemies = &enemies_;
+
 }
 ///=============================================================================
 ///						終了処理
@@ -849,11 +853,5 @@ void GameScene::SpawnSet(const Vector3& position) {
 	}
 
 	spawns_.push_back(std::move(newSpawn));
-
-
-	/*std::unique_ptr<Spawn> newSpawn = std::make_unique<Spawn>();
-	newSpawn->Initialize();
-	newSpawn->SetPosition(position);
-	spawns_.push_back(std::move(newSpawn));*/
 	
 }

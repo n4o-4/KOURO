@@ -14,9 +14,9 @@ class GroundTypeEnemy2 :public BaseEnemy {
 
     // �s�����
     enum class ActionState {
-        Wander,     // �p�j�i�X�|�[���t�߂œ������j
-        Chase,      // �ǐՁi�v���C���[�ɋ߂Â��j
-        Combat      // �퓬�i�X�g���b�t�B���O���Ȃ���U���j
+        Wander,     //徘徊（スポーン付近で動き回る）
+        Chase,      //追跡（プレイヤーに近づく）
+        Combat      //戦闘（ストラッフィングしながら攻撃）
     };
 
     ///--------------------------------------------------------------
@@ -38,6 +38,8 @@ public:
      * \param  spotLight �X�|�b�g���C�g
      */
     void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
+
+    void ApplySeparationFromOthers(const std::vector<GroundTypeEnemy2*>& others);
 
     void Attack();
 

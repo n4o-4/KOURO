@@ -42,6 +42,8 @@ public:
 
 	void MoveToJump();
 
+	void ApplySeparationFromOthers(const std::vector<GroundTypeEnemy*>& others);
+
 	void Attack();
 
 	///--------------------------------------------------------------

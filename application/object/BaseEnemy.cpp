@@ -3,6 +3,8 @@
 #include <cmath>
 #include <algorithm>
 
+std::vector<std::unique_ptr<BaseEnemy>>* BaseEnemy::s_allEnemies = nullptr;
+
 ///=============================================================================
 ///						初期化
 void BaseEnemy::Initialize(Model* model) {
@@ -35,6 +37,7 @@ void BaseEnemy::Initialize(Model* model) {
     particleEmitter_->SetParticleCount(80);
     particleEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ 1.0f,1.5f }));
     particleEmitter_->SetVelocityRange(ParticleManager::VelocityRange({ -10.0f,10.0f }, { -10.0f,10.0f }, { -10.0f,10.0f }));
+
 }
 
 ///=============================================================================
@@ -126,7 +129,8 @@ void BaseEnemy::MoveToTarget()
         float distance = Length(toTarget);
 
         Vector3 direction = Normalize(toTarget);
-        velocity_ = direction * speed_;
+        float speedVariation = strengthDist_(rng_);
+        velocity_ = direction * speed_ * speedVariation;
 
         // 位置を更新
         worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;

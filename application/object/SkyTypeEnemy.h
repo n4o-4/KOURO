@@ -42,6 +42,8 @@ public:
 
 	void MoveToRise();
 
+	void ApplySeparationFromOthers(const std::vector<SkyTypeEnemy*>& others);
+
 	void Attack();
 
 	///--------------------------------------------------------------

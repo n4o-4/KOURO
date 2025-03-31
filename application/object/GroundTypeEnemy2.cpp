@@ -59,13 +59,37 @@ void GroundTypeEnemy2::Update() {
 		}
 	}
 
-
+	std::vector<GroundTypeEnemy2*> sameTypeEnemies;
+	for (const auto& enemy : *BaseEnemy::s_allEnemies) {
+		if (auto* same = dynamic_cast<GroundTypeEnemy2*>(enemy.get())) {
+			sameTypeEnemies.push_back(same);
+		}
+	}
+	ApplySeparationFromOthers(sameTypeEnemies);
 
 	BaseEnemy::Update();
 }
 
 void GroundTypeEnemy2::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
 	BaseEnemy::Draw(viewProjection, directionalLight, pointLight, spotLight);
+}
+
+void GroundTypeEnemy2::ApplySeparationFromOthers(const std::vector<GroundTypeEnemy2*>& others) {
+	Vector3 separationForce = { 0.0f, 0.0f, 0.0f };
+	const float separationDistance = 2.0f;
+
+	for (const auto& other : others) {
+		if (other == this) continue;
+
+		Vector3 toOther = worldTransform_->transform.translate - other->GetPosition();
+		float dist = Length(toOther);
+
+		if (dist < separationDistance && dist > 0.001f) {
+			separationForce = separationForce + Normalize(toOther) * (separationDistance - dist);
+		}
+	}
+
+	velocity_ = velocity_ + separationForce * 0.01f;
 }
 
 
@@ -106,17 +130,20 @@ void GroundTypeEnemy2::UpdateWanderState() {
 
 void GroundTypeEnemy2::UpdateChaseState() {
 	if (target_) {
-		// �^�[�Q�b�g�Ɍ������x�N�g����v�Z
+		//
 		Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
-		float distance = Length(toTarget);
+		//float distance = Length(toTarget);
 
 		Vector3 direction = Normalize(toTarget);
-		velocity_ = { direction.x * speed_,0.0f,direction.z * speed_ };
+		float speedVariation = strengthDist_(rng_); 
+		
 
-		// �ʒu��X�V
+		velocity_ = { direction.x * speed_ * speedVariation,0.0f,direction.z * speed_ * speedVariation };
+
+		// 
 		worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
 
-		// �G�̌�����i�s�����ɍ��킹��
+		// 
 		float targetRotationY = std::atan2(direction.x, direction.z);
 		worldTransform_->transform.rotate.y = targetRotationY;
 

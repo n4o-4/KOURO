@@ -67,7 +67,13 @@ void GroundTypeEnemy::Update() {
 		}
 	}
 
-
+	std::vector<GroundTypeEnemy*> sameTypeEnemies;
+	for (const auto& enemy : *BaseEnemy::s_allEnemies) {
+		if (auto* same = dynamic_cast<GroundTypeEnemy*>(enemy.get())) {
+			sameTypeEnemies.push_back(same);
+		}
+	}
+	ApplySeparationFromOthers(sameTypeEnemies);
 
 	BaseEnemy::Update();
 }
@@ -116,6 +122,25 @@ void GroundTypeEnemy::MoveToJump() {
 		}
 	}
 
+}
+
+void GroundTypeEnemy::ApplySeparationFromOthers(const std::vector<GroundTypeEnemy*>& others) {
+	Vector3 separationForce = { 0.0f, 0.0f, 0.0f };
+	const float separationDistance = 2.0f; // 近いと遠くなる距離
+
+	for (const auto& other : others) {
+		if (other == this) continue;
+
+		Vector3 toOther = worldTransform_->transform.translate - other->GetPosition();
+		float dist = Length(toOther);
+
+		if (dist < separationDistance && dist > 0.001f) {
+			separationForce = separationForce + Normalize(toOther) * (separationDistance - dist);
+		}
+	}
+
+	// この力を現在の速度に弱く加える
+	velocity_ = velocity_ + separationForce * 0.01f;
 }
 
 void GroundTypeEnemy::Attack() {

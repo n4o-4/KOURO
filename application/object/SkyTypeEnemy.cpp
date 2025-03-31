@@ -59,7 +59,13 @@ void SkyTypeEnemy::Update() {
 		}
 	}
 
-
+	std::vector<SkyTypeEnemy*> sameTypeEnemies;
+	for (const auto& enemy : *BaseEnemy::s_allEnemies) {
+		if (auto* same = dynamic_cast<SkyTypeEnemy*>(enemy.get())) {
+			sameTypeEnemies.push_back(same);
+		}
+	}
+	ApplySeparationFromOthers(sameTypeEnemies);
 
 
 	BaseEnemy::Update();
@@ -97,7 +103,7 @@ void SkyTypeEnemy::MoveToRush() {
 }
 
 void SkyTypeEnemy::MoveToRise() {
-	if (!hasJustRushed_) return; // <- Rush한 이후가 아니면 실행 금지
+	if (!hasJustRushed_) return; // <- 
 
 	velocity_.y = riseSpeed_;
 	worldTransform_->transform.translate.y += velocity_.y;
@@ -105,10 +111,29 @@ void SkyTypeEnemy::MoveToRise() {
 	riseTimer_ += 1.0f / 60.0f;
 	if (riseTimer_ >= riseDuration_) {
 		isRising_ = false;
-		hasJustRushed_ = false; // <- 상승 완료 후 초기화
+		hasJustRushed_ = false; // <- 
 		velocity_.y = 0.0f;
 	}
 
+
+}
+
+void SkyTypeEnemy::ApplySeparationFromOthers(const std::vector<SkyTypeEnemy*>& others) {
+	Vector3 separationForce = { 0.0f, 0.0f, 0.0f };
+	const float separationDistance = 2.0f;
+
+	for (const auto& other : others) {
+		if (other == this) continue;
+
+		Vector3 toOther = worldTransform_->transform.translate - other->GetPosition();
+		float dist = Length(toOther);
+		if (dist < separationDistance && dist > 0.001f) {
+			separationForce = separationForce + Normalize(toOther) * (separationDistance - dist);
+		}
+	}
+
+	// 分離力を現在の速度に加える
+	velocity_ = velocity_ + separationForce * 0.01f;
 
 }
 
@@ -170,8 +195,10 @@ void SkyTypeEnemy::UpdateCombatState() {
 
 	// 
 	if (distance < combatDistance_ * 1.5f && !isRushing_ && !isRising_) {
+		if (stateTimer_ > 0.8f + angleDist_(rng_) * 0.9f) {
 		isRushing_ = true;
 		rushTimer_ = 0.0f;
+		}
 	} else {
 		BaseEnemy::MoveToTarget(); // 
 	}

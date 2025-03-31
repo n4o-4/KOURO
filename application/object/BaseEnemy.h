@@ -45,6 +45,9 @@ public:
    */
     const int GetHp() const { return hp_; }
     const int GetSpawnHp() const { return spawnHp_; }
+
+    ///--------------------------------------------------------------
+    static std::vector<std::unique_ptr<BaseEnemy>>* s_allEnemies;
     ///--------------------------------------------------------------
     ///						 当たり判定
 private:
@@ -115,6 +118,7 @@ protected:
     std::mt19937 rng_;
     std::uniform_real_distribution<float> angleDist_{ 0.0f, 2.0f * 3.14159f };
     std::uniform_real_distribution<float> strengthDist_{ 0.5f, 1.0f };
+    std::uniform_real_distribution<float> delayDist_{ 0.0f, 0.9f };
 
     WorldTransform* target_;
     std::list<std::unique_ptr<EnemyBullet>> bullets_;
