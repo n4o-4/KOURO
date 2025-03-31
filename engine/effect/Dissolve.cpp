@@ -14,13 +14,25 @@ void Dissolve::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	// マテリアルの生成
 	CreateMaterial();
 
-	data_->Threshold = 0.3f;
-	data_->ThresholdWidth = 0.03f;
+
+    edgeColor = (1.0f,0.3f,0.25f);
+
+	threshold = 0.3f;
+
+    thresholdWidth= 0.03f;
+
+	data_->threshold = 0.3f;
+	data_->thresholdWidth = 0.03f;
 	data_->edgeColor = (1.0f, 0.3, 0.25f);
 }
 
 void Dissolve::Update()
 {
+
+	data_->threshold = threshold;
+	data_->thresholdWidth = thresholdWidth;
+	data_->edgeColor = edgeColor;
+
 }
 
 void Dissolve::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)

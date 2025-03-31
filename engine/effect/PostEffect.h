@@ -94,13 +94,20 @@ public:
 	void Draw();
 
 	// 指定のエフェクトをる
-	void ApplyEffect(EffectType type);
+	void ApplyEffect(std::string name,EffectType type);
 
 	// カメラマネージャを設定
 	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
 
 	void ResetActiveEffect();
 
+    BaseEffect* GetEffectData(std::string name) { 
+       auto it = activeEffects_.find(name); 
+       if (it != activeEffects_.end()) { 
+           return it->second->effect.get(); 
+       } 
+       return nullptr; 
+    }
 private:
 
 private: // メンバ変数
@@ -111,6 +118,8 @@ private: // メンバ変数
 
 	CameraManager* cameraManager_ = nullptr;
 
-	std::list<std::unique_ptr<ActiveEffect>> activeEffects_;
+	//std::list<std::unique_ptr<ActiveEffect>> activeEffects_;
+
+	std::unordered_map<std::string, std::unique_ptr<ActiveEffect>> activeEffects_;
 };
 

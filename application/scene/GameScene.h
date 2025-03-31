@@ -73,6 +73,8 @@ private:
 
 	std::unique_ptr<Object3d> human_ = nullptr;	
 
+	Dissolve* dissolve_ = nullptr;
+
 private:
 
 	//std::unique_ptr<SkyDome> skyDome_ = nullptr;

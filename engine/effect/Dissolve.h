@@ -6,10 +6,10 @@ namespace DissolveShader
 	struct Material
 	{
 		Vector3 edgeColor;
-		float Threshold;
-		float ThresholdWidth;
-
-		float padding[3];
+		float threshold;
+		float thresholdWidth;
+		float mask;
+		float padding[2];
 	};
 }
 
@@ -42,6 +42,16 @@ private:
 
 	// マテリアルの生成
 	void CreateMaterial();
+
+public:
+
+	Vector3 edgeColor;
+
+	float threshold;
+
+	float thresholdWidth;
+
+	float mask;
 
 private: // メンバ変数
 

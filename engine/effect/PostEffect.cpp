@@ -10,8 +10,7 @@ void PostEffect::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 void PostEffect::Finalize()
 {
 	for (auto it = activeEffects_.begin(); it != activeEffects_.end(); ++it) {
-
-		(*it).get()->effect->Reset();
+		(*it).second->effect->Reset();
 	}
 
 	activeEffects_.clear();
@@ -21,9 +20,7 @@ void PostEffect::Update()
 {
 	for (auto it = activeEffects_.begin(); it != activeEffects_.end(); ++it) {
 
-
-		(*it).get()->effect->Update();
-
+		(*it).second->effect->Update();
 
 	}
 }
@@ -40,7 +37,7 @@ void PostEffect::Draw()
 	for (auto it = activeEffects_.begin(); it != activeEffects_.end(); ++it) {
 
 		// 
-		(*it).get()->effect->Draw(targetIndex,resourceIndex);
+		(*it).second->effect->Draw(targetIndex,resourceIndex);
 
 		// 現在書き込んだ方を読み込み用に変換
 		D3D12_RESOURCE_BARRIER barrier1{};
@@ -69,7 +66,7 @@ void PostEffect::Draw()
 	dxCommon_->SetRenderResourceIndex(resourceIndex);
 }
 
-void PostEffect::ApplyEffect(EffectType type)
+void PostEffect::ApplyEffect(std::string name, EffectType type)
 {
 	std::unique_ptr<PostEffect::ActiveEffect> newEffect = std::make_unique<PostEffect::ActiveEffect>();
 
@@ -135,17 +132,16 @@ void PostEffect::ApplyEffect(EffectType type)
 		newEffect->effect->SetCameraManager(cameraManager_);
 	}
 
-
 	newEffect->type = type;
 
-	activeEffects_.push_back(std::move(newEffect));
+	activeEffects_[name] = std::move(newEffect);
 }
 
 void PostEffect::ResetActiveEffect()
 {
 	for (auto it = activeEffects_.begin(); it != activeEffects_.end(); ++it)
 	{
-		it->get()->effect->Reset();
+		(*it).second->effect->Reset();
 	}
 
 	activeEffects_.clear();
