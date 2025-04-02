@@ -76,7 +76,7 @@ protected:
 	void HitJump();
 
     ////
-    void SetModelColor(const Vector4& color) { if (model_) model_->SetColor(color); }
+    void SetModelColor(const Vector4& color) { model_->SetColor(color); }
     
     ///--------------------------------------------------------------
     /// メンバ変数

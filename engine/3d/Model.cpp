@@ -23,18 +23,18 @@ void Model::Initialize(ModelCommon* modelCommon, const std::string& directoryPat
 	vertexResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
 
-	materialResource = this->modelCommon_->GetDxCommon()->CreateBufferResource(sizeof(Material));
+	//materialResource = this->modelCommon_->GetDxCommon()->CreateBufferResource(sizeof(Material));
 
-	// 書き込むためのアドレスを取得
-	materialResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
+	//// 書き込むためのアドレスを取得
+	//materialResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 
-	materialData->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	materialData->enableLighting = true;
-	materialData->uvTransform = MakeIdentity4x4();
+	//materialData->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	//materialData->enableLighting = true;
+	//materialData->uvTransform = MakeIdentity4x4();
 
-	materialData->shininess = 48.3f;
+	//materialData->shininess = 48.3f;
 
-	materialData->specularColor = { 1.0f,1.0f,1.0f };
+	//materialData->specularColor = { 1.0f,1.0f,1.0f };
 
 	/*TextureManager::GetInstance()->LoadTexture(modelData.material.textureFilePath);
 
@@ -48,8 +48,6 @@ void Model::Draw(WorldTransform worldTransform)
 	//worldTransform.UpdateMatrix();
 
 	modelCommon_->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);  // VBVを設定
-
-	modelCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource.Get()->GetGPUVirtualAddress());
 
 	modelCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData.material.textureFilePath));
 

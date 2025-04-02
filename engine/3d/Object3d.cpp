@@ -19,6 +19,19 @@ void Object3d::Initialize(Object3dCommon* object3dCommon)
 	this->camera = object3dCommon->GetDefaultCamera();
 
 	transform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+
+	materialResource_ = object3dCommon->GetDxCommon()->CreateBufferResource(sizeof(Material));
+
+	// 書き込むためのアドレスを取得
+	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
+
+	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	materialData_->enableLighting = true;
+	materialData_->uvTransform = MakeIdentity4x4();
+
+	materialData_->shininess = 48.3f;
+
+	materialData_->specularColor = { 1.0f,1.0f,1.0f };
 }
 
 void Object3d::Update()
@@ -26,8 +39,6 @@ void Object3d::Update()
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 	Matrix4x4 worldViewProjectionMatrix;
 	
-	
-
 #ifdef _DEBUG
 
 	//ImGui::DragFloat3("light.Direction", &directionLightData->direction.x);
@@ -65,7 +76,7 @@ void Object3d::Draw(WorldTransform worldTransform,ViewProjection viewProjection,
 
 	worldTransform.TransferMatrix();
 
-	model->SetMaterial(materialData_);
+	object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_.Get()->GetGPUVirtualAddress());
 
 	object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, viewProjection.GetViewProjectionResource()->GetGPUVirtualAddress());
 	
@@ -83,8 +94,6 @@ void Object3d::Draw(WorldTransform worldTransform,ViewProjection viewProjection,
 void Object3d::SetModel(const std::string& filePath)
 {
 	model = ModelManager::GetInstance()->FindModel(filePath);
-
-	materialData_ = model->GetMaterial();
 }
 
 

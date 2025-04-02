@@ -27,15 +27,7 @@ public:
 	void Initialize(ModelCommon* modelCommon,const std::string& directoryPath,const std::string& filename);
 
 	// 描画
-	void Draw(WorldTransform worldTransform);
-
-	void SetEnableLighting(bool flag) { materialData->enableLighting = flag; }
-
-	void SetColor(const Vector4& color) { materialData->color = color; }
-
-	Material GetMaterial() { return *materialData; }
-
-	void SetMaterial(Material material) { *materialData = material; }	
+	void Draw(WorldTransform worldTransform);	
 
 private:
 
@@ -62,8 +54,8 @@ private:
 
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
+	/*Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
 
-	Material* materialData = nullptr;
+	Material* materialData = nullptr;*/
 };
 

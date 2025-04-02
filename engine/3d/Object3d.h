@@ -43,6 +43,8 @@ public: // メンバ関数
 
 	void SetModel(const std::string& filePath);
 
+	void SetModel(Model* model) { this->model = model; }
+
 	// setter
 	void SetScale(const Vector3& scale) { transform.scale = scale; }
 	void SetRotation(const Vector3& rotation) { transform.rotate = rotation; }
@@ -54,14 +56,9 @@ public: // メンバ関数
 
 	void SetCamera(Camera* camera) { this->camera = camera; }
 
-	// setter
-	void SetModel(Model* model) { this->model = model, materialData_ = model->GetMaterial(); }
-
 	void SetLocalMatrix(Matrix4x4 localMatrix) { this->localMatrix = localMatrix; }
 
-	void SetEnableLighting(bool flag) { materialData_.enableLighting = flag; }
-
-	void SetColor(const Vector4& color) { materialData_.color = color; }
+	void SetColor(Vector4 color) { materialData_->color = color; }
 
 private:
 
@@ -95,6 +92,8 @@ private:
 
 	Camera* camera = nullptr;
 
-	Material materialData_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
+
+	Material* materialData_ = nullptr;
 };
 
