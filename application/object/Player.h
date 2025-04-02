@@ -206,15 +206,52 @@ private:
 	int invincibleTimer_ = 0;
 	bool isVisible_ = true; // 点滅制御用
 	//========================================
-
 	// カメラ
 	FollowCamera* followCamera_ = nullptr;
-
 	float distinationRotateY_;
-
 	std::unique_ptr<ExplosionEmitter> explosionEmitter_ = nullptr;
 
+	//========================================
+	// ロックオン関連
 	int missileCooldown_ = 0; // ミサイルのクールダウンタイマー
 	const int missileCooldownMax_ = 300; // 5秒（60FPS換算）
 
+    // 初期化関連
+    const float kInitialZ_ = 3.0f;
+    const int kExplosionParticleCount_ = 10;
+    const float kExplosionFrequency_ = 0.04f;
+    const float kExplosionLifeTime_ = 0.01f;
+
+    // 回転関連
+    const float kBoostSpinSpeed_ = 0.4f;
+    const float kTwoPI_ = 2.0f * 3.14159265f;
+    const int kBoostSpinMaxFrames_ = 16;
+    const float kRotationLerpFactor_ = 0.1f;
+
+    // 無敵時間関連
+    const int kInvincibleBlinkInterval_ = 10;
+    const int kInvincibleDuration_ = 60 * 4;  // 4秒間（60FPS換算）
+
+    // 移動関連
+    const float kVelocityStopThreshold_ = 0.01f;
+    const float kPostBoostSlowdownRate_ = 0.95f;
+
+    // ジャンプ関連
+    const float kJumpInitialVelocity_ = 0.6f;
+    const float kJumpVelocityDecay_ = 0.005f;
+    const float kFloatJumpVelocity_ = 0.2f;
+
+    // ブースト関連
+    const float kPreciseLockDirectionFactor_ = 0.7f;
+    const float kPreciseLockVerticalFactor_ = 0.3f;
+    const float kPreciseLockInitialSpeed_ = 0.35f;
+    const float kSimpleLockDirectionFactor_ = 0.3f;
+    const float kSimpleLockVerticalFactor_ = 0.7f;
+    const float kSimpleLockInitialSpeed_ = 0.25f;
+    const float kQuickBoostSpeedMultiplier_ = 4.0f;
+    const float kQuickBoostSpeedRetainFactor_ = 0.8f;
+    const float kStationaryBoostRecoveryMultiplier_ = 2.0f;
+
+	const float kRecoilThreshold_ = 0.001f;
+	const float kShakeDecayRate_ = 0.92f;
 };
