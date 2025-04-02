@@ -53,6 +53,10 @@ public:
 		DPAD_RIGHT = XINPUT_GAMEPAD_DPAD_RIGHT,
 	};
 
+	// ゲームパッドを振動させる
+void VibrateGamePad(WORD leftMotor, WORD rightMotor);
+
+
 public: // メンバ変数
 	// シングルトンインスタンスの取得
 	static Input* GetInstance();

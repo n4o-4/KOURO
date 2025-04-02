@@ -1,6 +1,16 @@
 ﻿#include "Input.h"
+#include <thread>
 
 std::unique_ptr<Input> Input::instance = nullptr;
+
+void Input::VibrateGamePad(WORD leftMotor, WORD rightMotor)
+{
+	XINPUT_VIBRATION vibration;
+	ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
+	vibration.wLeftMotorSpeed = static_cast<WORD>(leftMotor * 65535.0f);
+	vibration.wRightMotorSpeed = static_cast<WORD>(rightMotor * 65535.0f);
+	XInputSetState(0, &vibration);
+}
 
 Input* Input::GetInstance()
 {

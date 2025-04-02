@@ -334,6 +334,13 @@ void Player::UpdateBullets() {
 	if(missileCooldown_ <= 0 &&
 		( Input::GetInstance()->Triggerkey(DIK_RETURN) ||
 			Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::RIGHT_SHOULDER) )) {
+		/// StartVibration(左モーターの強さ, 右モーターの強さ, 振動時間[ミリ秒])
+		Input::GetInstance()->VibrateGamePad(
+			30000, // 左モーターの振動の強さ（0 ～ 65535）
+			30000 // 右モーターの振動の強さ（0 ～ 65535）
+			//1000   // 振動の時間（ミリ秒）→ 1000ms = 1秒間振動
+		);
+		///
 		Shoot();
 		missileCooldown_ = missileCooldownMax_; // クールタイム開始
 	}
@@ -351,6 +358,13 @@ void Player::UpdateBullets() {
 	 // マシンガンの発射
 	if(Input::GetInstance()->PushKey(DIK_J) ||
 		Input::GetInstance()->PushGamePadButton(Input::GamePadButton::LEFT_SHOULDER)) {
+		/// StartVibration(左モーターの強さ, 右モーターの強さ, 振動時間[ミリ秒])
+		Input::GetInstance()->VibrateGamePad(
+			2000, // 左モーターの振動の強さ（0 ～ 65535）
+			2000 // 右モーターの振動の強さ（0 ～ 65535）
+			//500   // 振動の時間（ミリ秒）→ 1000ms = 1秒間振動
+		);
+		///
 		isShootingMachineGun_ = true;
 	} else {
 		isShootingMachineGun_ = false;
@@ -377,6 +391,7 @@ void Player::UpdateBullets() {
 }
 ///                        射撃
 void Player::Shoot() {
+
 	Vector3 bulletPos = objectTransform_->transform.translate;
 	Vector3 bulletScale = { 0.5f, 0.5f, 0.5f };
 	Vector3 bulletRotate = { 0.0f, 0.0f, 0.0f };
