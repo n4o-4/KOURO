@@ -895,7 +895,11 @@ void GameScene::AvoidOverlap(std::vector<BaseEnemy*>& allEnemies, float avoidRad
 				adjustment = adjustment + Normalize(diff) * (avoidRadius - dist);
 			}
 		}
-		self->GetWorldTransform()->transform.translate =
-			self->GetWorldTransform()->transform.translate + adjustment * 0.1f; 
+		Vector3& selfPos = self->GetWorldTransform()->transform.translate;
+		float originalY = selfPos.y;
+		selfPos += adjustment * 0.1f;
+		if (dynamic_cast<GroundTypeEnemy*>(self) || dynamic_cast<GroundTypeEnemy2*>(self)) {
+			selfPos.y = originalY;
+		}
 	}
 }
