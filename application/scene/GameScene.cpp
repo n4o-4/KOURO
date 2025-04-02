@@ -298,6 +298,16 @@ void GameScene::Update() {
 		for(const auto &enemy : enemies_) {
 			enemy->Update();
 		}
+		{
+			std::vector<BaseEnemy*> allEnemies;
+			for (const auto& e : enemies_) {
+				allEnemies.push_back(e.get());
+			}
+			for (const auto& s : spawns_) {
+				allEnemies.push_back(s.get());
+			}
+			AvoidOverlap(allEnemies, 4.0f); 
+		}
 		// 敵の削除
 		enemies_.erase(
 			// 削除条件
@@ -872,4 +882,20 @@ void GameScene::SpawnSet(const Vector3& position) {
 	newSpawn->SetPosition(position);
 	spawns_.push_back(std::move(newSpawn));*/
 	
+}
+
+void GameScene::AvoidOverlap(std::vector<BaseEnemy*>& allEnemies, float avoidRadius) {
+	for (auto* self : allEnemies) {
+		Vector3 adjustment = { 0.0f, 0.0f, 0.0f };
+		for (auto* other : allEnemies) {
+			if (self == other) continue;
+			Vector3 diff = self->GetPosition() - other->GetPosition();
+			float dist = Length(diff);
+			if (dist < avoidRadius && dist > 0.001f) {
+				adjustment = adjustment + Normalize(diff) * (avoidRadius - dist);
+			}
+		}
+		self->GetWorldTransform()->transform.translate =
+			self->GetWorldTransform()->transform.translate + adjustment * 0.1f; 
+	}
 }

@@ -116,6 +116,8 @@ private: //静的メンバ関数
 
 	std::string currentSpawnType_;
 
+	void AvoidOverlap(std::vector<BaseEnemy*>& allEnemies, float avoidRadius);
+
 //private: //csv
 //	std::vector<std::string> enemyPopData_; // CSVデータの保存
 //	size_t enemyPopIndex_ = 0; // 現在読んでいる行のインデックス
