@@ -156,6 +156,12 @@ void Player::DrawImGui() {
 
 	ImGui::Text("Missile Cooldown: %d", missileCooldown_);
 
+	ImGui::Text("Machine Gun Heat: %.1f / %.1f", heatLevel_, maxHeat_);
+	ImGui::ProgressBar(heatLevel_ / maxHeat_, ImVec2(0.0f, 0.0f));
+	if (isOverheated_) {
+		ImGui::TextColored(ImVec4(1, 0, 0, 1), "OVERHEATED!");
+	}
+
 
 	ImGui::End();
 
@@ -356,10 +362,10 @@ void Player::UpdateBullets() {
 		isShootingMachineGun_ = false;
 	}
 
-	if(isShootingMachineGun_ && machineGunCooldown_ <= 0) {
-		ShootMachineGun();
-		machineGunCooldown_ = 5;  // 定数を使用
-	}
+	//if(isShootingMachineGun_ && machineGunCooldown_ <= 0) {
+	//	ShootMachineGun();
+	//	machineGunCooldown_ = 5;  // 定数を使用
+	//}
 
 	if(machineGunCooldown_ > 0) {
 		machineGunCooldown_--;
@@ -374,6 +380,29 @@ void Player::UpdateBullets() {
 	machineGunBullets_.erase(std::remove_if(machineGunBullets_.begin(), machineGunBullets_.end(),
 		[](const std::unique_ptr<PlayerMachineGun> &bullet) { return !bullet->IsActive(); }),
 		machineGunBullets_.end());
+
+	// 発射入力
+	if (isShootingMachineGun_ && !isOverheated_ && machineGunCooldown_ <= 0) {
+		ShootMachineGun();
+		heatLevel_ += heatPerShot_;
+		if (heatLevel_ >= maxHeat_) {
+			isOverheated_ = true;
+			overheatTimer_ = overheatRecoveryTime_;
+		}
+		machineGunCooldown_ = 5;
+	}
+
+	// 自然冷却 or クールダウン処理
+	if (isOverheated_) {
+		overheatTimer_--;
+		if (overheatTimer_ <= 0) {
+			isOverheated_ = false;
+			heatLevel_ = 0.0f;
+		}
+	} else {
+		heatLevel_ = std::max(0.0f, heatLevel_ - heatCooldownRate_);
+	}
+
 }
 ///                        射撃
 void Player::Shoot() {
