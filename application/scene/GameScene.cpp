@@ -104,6 +104,7 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect("Blur",PostEffect::EffectType::MotionBlur);
+	//sceneManager_->GetPostEffect()->ApplyEffect("Grtich",PostEffect::EffectType::Gritch); //完
 
     dissolve_ = dynamic_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
 

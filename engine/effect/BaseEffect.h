@@ -30,6 +30,8 @@ public:
 
 	virtual void Reset();
 
+	bool GetIsActive() { return isActive_; }
+
 protected:
 
 	DirectXCommon* dxCommon_ = nullptr;
@@ -37,5 +39,7 @@ protected:
 	SrvManager* srvManager_ = nullptr;
 
 	std::unique_ptr<Pipeline> pipeline_ = nullptr;
+
+	bool isActive_ = true;
 };
 

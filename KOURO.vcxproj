@@ -62,6 +62,7 @@
     <ClCompile Include="externals\MagEngine\Line\Line.cpp" />
     <ClCompile Include="externals\MagEngine\Line\LineManager.cpp" />
     <ClCompile Include="externals\MagEngine\Line\LineSetup.cpp" />
+    <ClCompile Include="Gritch.cpp" />
     <ClCompile Include="Hud.cpp" />
     <ClCompile Include="ExplosionEmitter.cpp" />
     <ClCompile Include="main.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="externals\MagEngine\Line\Line.h" />
     <ClInclude Include="externals\MagEngine\Line\LineManager.h" />
     <ClInclude Include="externals\MagEngine\Line\LineSetup.h" />
+    <ClInclude Include="Gritch.h" />
     <ClInclude Include="Hud.h" />
     <ClInclude Include="ExplosionEmitter.h" />
   </ItemGroup>
@@ -241,6 +243,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\shaders\Grayscale.PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\Gritch.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
