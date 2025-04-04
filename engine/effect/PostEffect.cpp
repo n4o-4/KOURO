@@ -20,6 +20,10 @@ void PostEffect::Update()
 {
 	for (auto it = activeEffects_.begin(); it != activeEffects_.end(); ++it) {
 
+		if (!(*it).second->effect->GetIsActive()) {
+			continue;
+		}
+
 		(*it).second->effect->Update();
 
 	}
@@ -35,6 +39,11 @@ void PostEffect::Draw()
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	for (auto it = activeEffects_.begin(); it != activeEffects_.end(); ++it) {
+
+
+		if (!(*it).second->effect->GetIsActive()) {
+			continue;
+		}
 
 		// 
 		(*it).second->effect->Draw(targetIndex,resourceIndex);
@@ -131,7 +140,12 @@ void PostEffect::ApplyEffect(std::string name, EffectType type)
 
 		newEffect->effect->SetCameraManager(cameraManager_);
 	}
-
+	else if (type == EffectType::Gritch)
+	{
+		newEffect->effect = std::make_unique<Gritch>();
+		newEffect->effect->Initialize(dxCommon_, srvManager_);
+	}
+	
 	newEffect->type = type;
 
 	activeEffects_[name] = std::move(newEffect);

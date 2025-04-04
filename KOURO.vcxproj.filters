@@ -21,6 +21,7 @@
     <FxCompile Include="Resources\shaders\Random.PS.hlsl" />
     <FxCompile Include="Resources\shaders\LinearFog.PS.hlsl" />
     <FxCompile Include="Resources\shaders\MotionBlur.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\Gritch.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\collision\BaseObject.cpp" />
@@ -106,6 +107,7 @@
     <ClCompile Include="Hud.cpp" />
     <ClCompile Include="ExplosionEmitter.cpp" />
     <ClCompile Include="GroundTypeEnemy3.cpp" />
+    <ClCompile Include="Gritch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -198,6 +200,7 @@
     <ClInclude Include="Hud.h" />
     <ClInclude Include="ExplosionEmitter.h" />
     <ClInclude Include="GroundTypeEnemy3.h" />
+    <ClInclude Include="Gritch.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
