@@ -12,57 +12,57 @@
 
 class GroundTypeEnemy2 :public BaseEnemy {
 
-    // �s�����
+    // 行動状態
     enum class ActionState {
-        Wander,     // �p�j�i�X�|�[���t�߂œ������j
-        Chase,      // �ǐՁi�v���C���[�ɋ߂Â��j
-        Combat      // �퓬�i�X�g���b�t�B���O���Ȃ���U���j
+        Wander,   // 徘徊（スポーン付近で動き回る）
+        Chase,    // 追跡（プレイヤーに近づく）
+        Combat    // 戦闘（ストラッフィングしながら攻撃）
     };
 
     ///--------------------------------------------------------------
-    ///						 �����o�֐� 
+    ///						メンバ関数 
 public:
 
 
     GroundTypeEnemy2() : BaseEnemy() {}
 
-    // @brief ������
+    // @brief 初期化
     void Initialize();
-    // @brief �X�V
+    // @brief 更新
     void Update();
     /**----------------------------------------------------------------------------
-     * \brief  Draw �`��
-     * \param  viewProjection �r���[�ˉe�s��
-     * \param  directionalLight �f�B���N�V���i�����C�g
-     * \param  pointLight �|�C���g���C�g
-     * \param  spotLight �X�|�b�g���C�g
-     */
+      * \brief  Draw 描画
+      * \param  viewProjection ビュー射影行列
+      * \param  directionalLight ディレクショナルライト
+      * \param  pointLight ポイントライト
+      * \param  spotLight スポットライト
+      */
     void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
     void Attack();
 
     ///--------------------------------------------------------------
-    ///						 �����蔻��
+    ///						
 private:
-    /// \brief �ՓˊJ�n���̏���
+    /// \brief 衝突開始時の処理
     void OnCollisionEnter(BaseObject* other) override;
 
-    /// \brief �Փˌp�����̏���
+    /// \brief 衝突継続時の処理
     void OnCollisionStay(BaseObject* other) override;
 
-    /// \brief �ՓˏI�����̏���
+    /// \brief 衝突終了時の処理
     void OnCollisionExit(BaseObject* other) override;
 
     ///--------------------------------------------------------------
-    ///						 ���o�͊֐�
+    ///						 
 public:
 
-	//�W�����v
+    //ジャンプ
 	void HitJump();
 
     /**----------------------------------------------------------------------------
-      * \brief  SetPosition �ʒu��ݒ�
-      * \param  position �ʒu
+      * \brief  SetPosition 位置を設定
+      * \param  position 位置
       */
     void SetPosition(const Vector3& position) {
         worldTransform_->transform.translate = position;
@@ -70,55 +70,55 @@ public:
     }
 
     /**----------------------------------------------------------------------------
-     * \brief  SetHp HP��ݒ�
-     * \param  hp HP
-     */
+      * \brief  GetHp HPを取得
+      * \return HP
+      */
     void SetHp(const int hp) { hp_ = hp; }
 
     /**----------------------------------------------------------------------------
-     * \brief  GetPosition �ʒu��擾
-     * \return �ʒu
+     * \brief  GetPosition 
+     * \return 
      */
     const Vector3& GetPosition() const {
         return worldTransform_->transform.translate;
     }
 
     /**----------------------------------------------------------------------------
-     * \brief  GetHp HP��擾
-     * \return HP
-     */
+       * \brief  GetPosition 位置を取得
+       * \return 位置
+       */
     const int GetHp() const { return hp_; }
 
     void SetTarget(WorldTransform* target) { target_ = target; }
 
-    //�e�̎擾
+    //弾の取得
     std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
 
 private:
-    // �s����ԕʂ̍X�V���\�b�h
+    // 行動状態別の更新メソッド
     void UpdateWanderState();
     void UpdateChaseState();
     void UpdateCombatState();
 
-    // ��Ԃ�I����郁�\�b�h
+    // 状態を選択するメソッド
     void UpdateActionState();
 
 
     ///--------------------------------------------------------------
-    /// �����o�ϐ�
+    /// メンバ変数
 private:
 
 
-    // �s�����
+    // 行動状態
     ActionState currentState_ = ActionState::Wander;
 
-	float jumpVelocity_ = 0.0f;// �W�����v���x
+	float jumpVelocity_ = 0.0f;//
 
     bool isBlinking_ = false;
     float blinkTimer_ = 0.0f;
-    const float kBlinkDuration_ = 0.3f; // �_�Ŏ��ԁi�b�j
+    const float kBlinkDuration_ = 0.3f; //
 
-    // �N���X��� private: �̉��ɒǉ�
+    // クラス内の private: の下に追加
     bool isHitReacting_ = false;
     float hitReactionTimer_ = 0.0f;
     Vector3 startScale_;
