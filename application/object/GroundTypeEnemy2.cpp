@@ -16,10 +16,10 @@ void GroundTypeEnemy2::Initialize() {
 
 void GroundTypeEnemy2::Update() {
 	if (hp_ > 0) {
-		// ��Ԃ̍X�V
+		// 状態の更新
 		UpdateActionState();
 
-		// ���݂̏�Ԃɉ������s��
+		// 現在の状態に応じた行動
 		switch (currentState_) {
 		case ActionState::Wander:
 			UpdateWanderState();
@@ -37,14 +37,14 @@ void GroundTypeEnemy2::Update() {
 	if (isHitReacting_) {
 		hitReactionTimer_ += 1.0f / 60.0f;
 
-		const float kTotalReactionTime = 0.3f; // �S�̎���
+		const float kTotalReactionTime = 0.3f; // 全体時間
 		float t = hitReactionTimer_ / kTotalReactionTime;
 
 		// clamp
 		if (t > 1.0f) t = 1.0f;
 
-		// �C�[�W���O�i�o�E���h���Ft=0��1.0�At=0.5��1.7�At=1.0��1.0�j
-		float scaleFactor = 1.0f + 0.7f * sinf(t * 3.141592f); // �΂�1���� �� 1��1.7��1
+		// イージング（バウンド風：t=0で1.0、t=0.5で1.7、t=1.0で1.0）
+		float scaleFactor = 1.0f + 0.7f * sinf(t * 3.141592f); // πで1周期 → 1→1.7→1
 
 		worldTransform_->transform.scale.x = scaleFactor;
 		worldTransform_->transform.scale.y = scaleFactor;
@@ -97,7 +97,7 @@ void GroundTypeEnemy2::HitJump()
 	isHitReacting_ = true;
 	hitReactionTimer_ = 0.0f;
 	startScale_ = worldTransform_->transform.scale;
-	targetScale_ = { 1.7f, 1.7f, 1.7f };  // �ꎞ�I�ɑ傫������
+	targetScale_ = { 1.7f, 1.7f, 1.7f };   // 一時的に大きくする
 }
 
 void GroundTypeEnemy2::UpdateWanderState() {
@@ -106,17 +106,17 @@ void GroundTypeEnemy2::UpdateWanderState() {
 
 void GroundTypeEnemy2::UpdateChaseState() {
 	if (target_) {
-		// �^�[�Q�b�g�Ɍ������x�N�g����v�Z
+		// ターゲットに向かうベクトルを計算
 		Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
 		float distance = Length(toTarget);
 
 		Vector3 direction = Normalize(toTarget);
 		velocity_ = { direction.x * speed_,0.0f,direction.z * speed_ };
 
-		// �ʒu��X�V
+		//
 		worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
 
-		// �G�̌�����i�s�����ɍ��킹��
+		//
 		float targetRotationY = std::atan2(direction.x, direction.z);
 		worldTransform_->transform.rotate.y = targetRotationY;
 
@@ -126,18 +126,18 @@ void GroundTypeEnemy2::UpdateChaseState() {
 
 void GroundTypeEnemy2::UpdateCombatState() {
 	if (target_) {
-		// �v���C���[�ւ̕����x�N�g����v�Z
+		// 
 		Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
 		Vector3 direction = Normalize(toTarget);
 
-		// �ʏ푬�x��2�{�œːi
+		//
 		float dashSpeed = speed_ * 3.0f;
 		velocity_ = { direction.x * dashSpeed,0.0f,direction.z * dashSpeed };
 
-		// �ʒu��X�V
+		//
 		worldTransform_->transform.translate += velocity_;
 
-		// ������i�s�����ɍ��킹��
+		// 
 		float targetRotationY = std::atan2(direction.x, direction.z);
 		worldTransform_->transform.rotate.y = targetRotationY;
 
@@ -146,34 +146,34 @@ void GroundTypeEnemy2::UpdateCombatState() {
 }
 
 void GroundTypeEnemy2::UpdateActionState() {
-	// �^�C�}�[�̍X�V
+	// タイマーの更新
 	stateTimer_ += 1.0f / 60.0f;
 
-	// �^�[�Q�b�g�����݂��Ȃ��ꍇ�͜p�j
+	// ターゲットが存在しない場合は徘徊
 	if (!target_) {
 		currentState_ = ActionState::Wander;
 		return;
 	}
 
-	// �^�[�Q�b�g�Ƃ̋�����v�Z
+	// ターゲットとの距離を計算
 	Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
 	float distance = Length(toTarget);
 
-	// �����Ɋ�Â��ď�Ԃ�ύX
-	ActionState newState = currentState_; // �f�t�H���g�͌��݂̏�Ԃ�ێ�
+	// 距離に基づいて状態を変更 
+	ActionState newState = currentState_; // デフォルトは現在の状態を維持
 
 	if (distance > chaseDistance_) {
-		// �v���C���[�������ꍇ�͜p�j
+		// プレイヤーが遠い場合は徘徊 
 		newState = ActionState::Wander;
 	} else if (distance > combatDistance_) {
-		// �ǐՔ͈͓�Ȃ�ǐ�
+		// 追跡範囲内なら追跡
 		newState = ActionState::Chase;
 	} else {
-		// �퓬�͈͓�Ȃ�퓬
+		// 戦闘範囲内なら戦闘
 		newState = ActionState::Combat;
 	}
 
-	// ��Ԃ��ω������ꍇ�A�^�C�}�[����Z�b�g
+	// 状態が変化した場合、タイマーをリセット
 	if (newState != currentState_) {
 		currentState_ = newState;
 		stateTimer_ = 0.0f;

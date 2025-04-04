@@ -794,6 +794,9 @@ void GameScene::UpdateEnemyPopCommands() {
 				} else if (currentSpawnType_ == "BOMB") {
 					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
 					SpawnEnemyBomb(randomPosition);
+				} else if (currentSpawnType_ == "CHAIR") {
+					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
+					SpawnEnemyChair(randomPosition);
 				} else {
 					SpawnEnemy(Vector3(x, y, z));
 				}
@@ -858,6 +861,17 @@ void GameScene::SpawnEnemyBat(const Vector3& position) {
 void GameScene::SpawnEnemyBomb(const Vector3& position) {
 	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<GroundTypeEnemy2>();
 	if (auto* enemyNormal = dynamic_cast<GroundTypeEnemy2*>(newEnemy.get())) {
+		enemyNormal->Initialize();
+		enemyNormal->SetPosition(position);
+		enemyNormal->SetTarget(player_->GetWorldTransform());
+	}
+
+	enemies_.push_back(std::move(newEnemy));
+}
+
+void GameScene::SpawnEnemyChair(const Vector3& position) {
+	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<GroundTypeEnemy3>();
+	if (auto* enemyNormal = dynamic_cast<GroundTypeEnemy3*>(newEnemy.get())) {
 		enemyNormal->Initialize();
 		enemyNormal->SetPosition(position);
 		enemyNormal->SetTarget(player_->GetWorldTransform());
