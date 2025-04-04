@@ -1,4 +1,4 @@
-#include "GroundTypeEnemy3.h"
+ï»¿#include "GroundTypeEnemy3.h"
 #include "PlayerMissile.h"
 #include <cmath>
 #include <algorithm>
@@ -20,10 +20,10 @@ void GroundTypeEnemy3::Initialize() {
 
 void GroundTypeEnemy3::Update() {
 	if (hp_ > 0) {
-		// ó‘Ô‚ÌXV
+		// çŠ¶æ…‹ã®æ›´æ–°
 		UpdateActionState();
 
-		// Œ»İ‚Ìó‘Ô‚É‰‚¶‚½s“®
+		// ç¾åœ¨ã®çŠ¶æ…‹ã«å¿œã˜ãŸè¡Œå‹•
 		switch (currentState_) {
 		case ActionState::Wander:
 			UpdateWanderState();
@@ -47,8 +47,8 @@ void GroundTypeEnemy3::Update() {
 		// clamp
 		if (t > 1.0f) t = 1.0f;
 
-		// ƒC[ƒWƒ“ƒOiƒoƒEƒ“ƒh•—Ft=0‚Å1.0At=0.5‚Å1.7At=1.0‚Å1.0j
-		float scaleFactor = 1.0f + 0.7f * sinf(t * 3.141592f); // ƒÎ‚Å1üŠú ¨ 1¨1.7¨1
+		// ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°ï¼ˆãƒã‚¦ãƒ³ãƒ‰é¢¨ï¼št=0ã§1.0ã€t=0.5ã§1.7ã€t=1.0ã§1.0ï¼‰
+		float scaleFactor = 1.0f + 0.7f * sinf(t * 3.141592f); // Ï€ã§1å‘¨æœŸ â†’ 1â†’1.7â†’1
 
 		worldTransform_->transform.scale.x = scaleFactor;
 		worldTransform_->transform.scale.y = scaleFactor;
@@ -71,27 +71,27 @@ void GroundTypeEnemy3::Draw(ViewProjection viewProjection, DirectionalLight dire
 
 void GroundTypeEnemy3::PushTargetAway() {
 	if (!target_) return;
-	// Œ»İ’n‚ğ•Û‘¶
+	// ç¾åœ¨åœ°ã‚’ä¿å­˜
 	Vector3 enemyPos = worldTransform_->transform.translate;
 	Vector3 targetPos = target_->transform.translate;
 
-	// “G¨ƒ^[ƒQƒbƒg•ûŒü
+	// æ•µâ†’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆæ–¹å‘
 	Vector3 direction = targetPos - enemyPos;
-	direction.y = 0.0f; // y²‚Ì‰e‹¿‚ğæ‚èœ‚­
+	direction.y = 0.0f; // yè»¸ã®å½±éŸ¿ã‚’å–ã‚Šé™¤ã
 
-	// •ûŒüƒxƒNƒgƒ‹‚Ì³‹K‰»
+	// æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã®æ­£è¦åŒ–
 	direction = Normalize(direction);
 
-	// ‰Ÿ‚µo‚·—Í
+	// æŠ¼ã—å‡ºã™åŠ›
 	const float pushStrength = 30.5f;
 
-	// y²’l‚Ì•Û‘¶
+	// yè»¸å€¤ã®ä¿å­˜
 	float originalY = target_->transform.translate.y;
 
-	// ‰Ÿ‚µo‚·
+	// æŠ¼ã—å‡ºã™
 	target_->transform.translate += direction * pushStrength;
 
-	// y²‚Ì•œŒ³
+	// yè»¸ã®å¾©å…ƒ
 	target_->transform.translate.y = originalY;
 }
 
@@ -120,7 +120,7 @@ void GroundTypeEnemy3::HitJump() {
 	isHitReacting_ = true;
 	hitReactionTimer_ = 0.0f;
 	startScale_ = worldTransform_->transform.scale;
-	targetScale_ = { 1.7f, 1.7f, 1.7f };   // ˆê“I‚É‘å‚«‚­‚·‚é
+	targetScale_ = { 1.7f, 1.7f, 1.7f };   // ä¸€æ™‚çš„ã«å¤§ããã™ã‚‹
 }
 
 
@@ -130,7 +130,7 @@ void GroundTypeEnemy3::UpdateWanderState() {
 
 void GroundTypeEnemy3::UpdateChaseState() {
 	if (target_) {
-		// ƒ^[ƒQƒbƒg‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ğŒvZ
+		// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
 		Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
 		float distance = Length(toTarget);
 
@@ -151,70 +151,70 @@ void GroundTypeEnemy3::UpdateChaseState() {
 void GroundTypeEnemy3::UpdateCombatState() {
 	if (!target_) return;
 
-	// ƒ^[ƒQƒbƒg‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ğŒvZ
+	// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
 	Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
 
-	// y²‚Ì·‚ğŠm”Fi‚‚³‚ª‚Ù‚Ú“¯‚¶‚©ƒ`ƒFƒbƒNj
+	// yè»¸ã®å·®ã‚’ç¢ºèªï¼ˆé«˜ã•ãŒã»ã¼åŒã˜ã‹ãƒã‚§ãƒƒã‚¯ï¼‰
 	float yDiff = std::abs(toTarget.y);
-	const float yTolerance = 3.0f; // ‚‚³‚Ì·‚ª3ˆÈ‰º‚Ì‚Æ‚«‚Ì‚İ‰Ÿ‚·‚±‚Æ‚ª‚Å‚«‚Ü‚·
+	const float yTolerance = 3.0f; // é«˜ã•ã®å·®ãŒ3ä»¥ä¸‹ã®ã¨ãã®ã¿æŠ¼ã™ã“ã¨ãŒã§ãã¾ã™
 
-	// …•½•ûŒü‚ÌƒxƒNƒgƒ‹iXZ•½–Ê‚Ì‚İ‚Å‹——£ŒvZj
+	// æ°´å¹³æ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«ï¼ˆXZå¹³é¢ã®ã¿ã§è·é›¢è¨ˆç®—ï¼‰
 	toTarget.y = 0.0f;
 	float distance = Length(toTarget);
 
-	// ’ÇÕˆÚ“®
+	// è¿½è·¡ç§»å‹•
 	Vector3 direction = Normalize(toTarget);
 	velocity_ = direction * speed_ * 3.0f;
 
-	// ˆÊ’uXViy²ˆÛj
+	// ä½ç½®æ›´æ–°ï¼ˆyè»¸ç¶­æŒï¼‰
 	float originalY = worldTransform_->transform.translate.y;
 	worldTransform_->transform.translate += velocity_;
 	worldTransform_->transform.translate.y = originalY;
 
-	// ‰ñ“]‚ÌXV
+	// å›è»¢ã®æ›´æ–°
 	float targetRotationY = std::atan2(direction.x, direction.z);
 	worldTransform_->transform.rotate.y = targetRotationY;
 
-	// ˆê’è‹——£“à‚É‚ ‚èAy²‚à‚Ù‚Ú“¯‚¶‚Æ‚«‚¾‚¯‰Ÿ‚µo‚·
+	// ä¸€å®šè·é›¢å†…ã«ã‚ã‚Šã€yè»¸ã‚‚ã»ã¼åŒã˜ã¨ãã ã‘æŠ¼ã—å‡ºã™
 	const float pushThreshold = 1.0f;
 	if (distance < pushThreshold && yDiff < yTolerance) {
 		PushTargetAway();
 	}
 
-	// ƒJƒ‰[•ÏX(í“¬ó‘Ô—p)
+	// ã‚«ãƒ©ãƒ¼å¤‰æ›´(æˆ¦é—˜çŠ¶æ…‹ç”¨)
 	SetModelColor(Vector4{ 0.4f, 0.0f, 0.0f, 1.0f });
 	
 }
 
 void GroundTypeEnemy3::UpdateActionState() {
-	// ƒ^ƒCƒ}[‚ÌXV
+	// ã‚¿ã‚¤ãƒãƒ¼ã®æ›´æ–°
 	stateTimer_ += 1.0f / 60.0f;
 
-	// ƒ^[ƒQƒbƒg‚ª‘¶İ‚µ‚È‚¢ê‡‚Íœpœj
+	// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒå­˜åœ¨ã—ãªã„å ´åˆã¯å¾˜å¾Š
 	if (!target_) {
 		currentState_ = ActionState::Wander;
 		return;
 	}
 
-	// ƒ^[ƒQƒbƒg‚Æ‚Ì‹——£‚ğŒvZ
+	// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¨ã®è·é›¢ã‚’è¨ˆç®—
 	Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
 	float distance = Length(toTarget);
 
-	// ‹——£‚ÉŠî‚Ã‚¢‚Äó‘Ô‚ğ•ÏX 
-	ActionState newState = currentState_; // ƒfƒtƒHƒ‹ƒg‚ÍŒ»İ‚Ìó‘Ô‚ğˆÛ
+	// è·é›¢ã«åŸºã¥ã„ã¦çŠ¶æ…‹ã‚’å¤‰æ›´ 
+	ActionState newState = currentState_; // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯ç¾åœ¨ã®çŠ¶æ…‹ã‚’ç¶­æŒ
 
 	if (distance > chaseDistance_) {
-		// ƒvƒŒƒCƒ„[‚ª‰“‚¢ê‡‚Íœpœj 
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒé ã„å ´åˆã¯å¾˜å¾Š 
 		newState = ActionState::Wander;
 	} else if (distance > combatDistance_) {
-		// ’ÇÕ”ÍˆÍ“à‚È‚ç’ÇÕ
+		// è¿½è·¡ç¯„å›²å†…ãªã‚‰è¿½è·¡
 		newState = ActionState::Chase;
 	} else {
-		// í“¬”ÍˆÍ“à‚È‚çí“¬
+		// æˆ¦é—˜ç¯„å›²å†…ãªã‚‰æˆ¦é—˜
 		newState = ActionState::Combat;
 	}
 
-	// ó‘Ô‚ª•Ï‰»‚µ‚½ê‡Aƒ^ƒCƒ}[‚ğƒŠƒZƒbƒg
+	// çŠ¶æ…‹ãŒå¤‰åŒ–ã—ãŸå ´åˆã€ã‚¿ã‚¤ãƒãƒ¼ã‚’ãƒªã‚»ãƒƒãƒˆ
 	if (newState != currentState_) {
 		currentState_ = newState;
 		stateTimer_ = 0.0f;
