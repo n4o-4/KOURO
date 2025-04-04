@@ -195,13 +195,13 @@ private:
 	int machineGunCooldown_ = 0;// マシンガンのクールダウン
 	//オーバーヒート関連
 	float heatLevel_ = 0.0f;            // 現在の熱量
-	float maxHeat_ = 100.0f;            // オーバーヒートライン
+	float maxHeat_ = 150.0f;            // オーバーヒートライン
 	float heatPerShot_ = 5.0f;          // 1発ごとの加熱量
 	float heatCooldownRate_ = 0.2f;     // 自然冷却速度（毎フレーム）
 	bool isOverheated_ = false;        // オーバーヒート中か
-	int overheatRecoveryTime_ = 180;   // オーバーヒート時のクールダウン（フレーム）
+	int overheatRecoveryTime_ = 300;   // オーバーヒート時のクールダウン（フレーム）
 	int overheatTimer_ = 0;            // クールダウン用カウント
-
+	std::unique_ptr<ParticleEmitter> smokeEmitter_ = nullptr;// 煙のエミッター
 	//========================================
 	// 反動関連
 	Vector3 recoilVelocity_ = { 0.0f, 0.0f, 0.0f }; // 反動による速度

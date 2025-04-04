@@ -32,6 +32,42 @@ void Player::Initialize() {
 	explosionEmitter_->SetParticleCount(kExplosionParticleCount_);
 	explosionEmitter_->SetFrequency(kExplosionFrequency_);
 	explosionEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ kExplosionLifeTime_,kExplosionLifeTime_ }));
+
+	// 煙のエミッターを初期化
+	//ParticleManager::GetInstance()->CreateParticleGroup("overheatSmoke", "Resources/circle.png");
+	smokeEmitter_ = std::make_unique<ParticleEmitter>();
+	smokeEmitter_->Initialize("missileSmoke");  // パーティクル名は適宜変更
+	smokeEmitter_->SetParticleCount(4);
+	smokeEmitter_->SetFrequency(0.1f);
+	smokeEmitter_->SetLifeTimeRange({ {0.3f, 0.5f} });  // ちょっと長めの煙
+	//色変更
+	// 最初は濃いめグレー
+	smokeEmitter_->SetStartColorRange(
+		ParticleManager::ColorRange(
+			{ 0.3f, 0.5f },  // R：ちょい暗い
+			{ 0.3f, 0.5f },  // G：ちょい暗い
+			{ 0.3f, 0.5f },  // B：ちょい暗い
+			{ 0.8f, 1.0f }   // A：はっきり
+		)
+	);
+
+	// 終わりは透明・薄めグレー
+	smokeEmitter_->SetFinishColorRange(
+		ParticleManager::ColorRange(
+			{ 0.6f, 0.8f },  // R：ちょい明るめ
+			{ 0.6f, 0.8f },  // G
+			{ 0.6f, 0.8f },  // B
+			{ 0.0f, 0.3f }   // A：透明に近づく
+		)
+	);
+	//煙の様に上に向かう
+	smokeEmitter_->SetVelocityRange(
+		ParticleManager::VelocityRange(
+			{ 0.0f, 0.0f },  // X：横移動なし
+			{ 0.0f, 6.0f },  // Y：上昇
+			{ -1.0f, 1.0f }   // Z：前後移動
+		)
+	);
 	//========================================
 	// 当たり判定との同期
 	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);
@@ -362,11 +398,6 @@ void Player::UpdateBullets() {
 		isShootingMachineGun_ = false;
 	}
 
-	//if(isShootingMachineGun_ && machineGunCooldown_ <= 0) {
-	//	ShootMachineGun();
-	//	machineGunCooldown_ = 5;  // 定数を使用
-	//}
-
 	if(machineGunCooldown_ > 0) {
 		machineGunCooldown_--;
 	}
@@ -398,6 +429,11 @@ void Player::UpdateBullets() {
 		if (overheatTimer_ <= 0) {
 			isOverheated_ = false;
 			heatLevel_ = 0.0f;
+		}
+		// 煙を出す
+		if (smokeEmitter_) {
+			smokeEmitter_->SetPosition(objectTransform_->transform.translate);
+			smokeEmitter_->Update();  // 一定間隔でEmitしてくれる
 		}
 	} else {
 		heatLevel_ = std::max(0.0f, heatLevel_ - heatCooldownRate_);
