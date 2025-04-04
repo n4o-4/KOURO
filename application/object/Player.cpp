@@ -34,9 +34,9 @@ void Player::Initialize() {
 	explosionEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ kExplosionLifeTime_,kExplosionLifeTime_ }));
 
 	// 煙のエミッターを初期化
-	//ParticleManager::GetInstance()->CreateParticleGroup("overheatSmoke", "Resources/circle.png");
+	ParticleManager::GetInstance()->CreateParticleGroup("overheatSmoke", "Resources/smoke.png");
 	smokeEmitter_ = std::make_unique<ParticleEmitter>();
-	smokeEmitter_->Initialize("missileSmoke");  // パーティクル名は適宜変更
+	smokeEmitter_->Initialize("overheatSmoke");  // パーティクル名は適宜変更
 	smokeEmitter_->SetParticleCount(4);
 	smokeEmitter_->SetFrequency(0.1f);
 	smokeEmitter_->SetLifeTimeRange({ {0.3f, 0.5f} });  // ちょっと長めの煙

@@ -129,6 +129,8 @@ void GameScene::Initialize() {
 	human_->Initialize(Object3dCommon::GetInstance());
 	human_->SetModel(ModelManager::GetInstance()->FindModel("human/wlak.gltf"));*/
 
+	TextureManager::GetInstance()->LoadTexture("Resources/smoke.png");
+
 	//wave sprite
 	TextureManager::GetInstance()->LoadTexture("Resources/text/wave1.png");
 	wave1_ = std::make_unique<Sprite>();
