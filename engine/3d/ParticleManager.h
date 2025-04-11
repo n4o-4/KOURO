@@ -124,6 +124,8 @@ public:
 
 	void Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange,VelocityRange velocityRange,LifeTimeRange lifeTimeRange);
 
+	void HitEmit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
+
 	std::unordered_map<std::string, ParticleGroup> GetParticleGroups() { return particleGroups; }
 
 	void Finalize();
@@ -190,6 +192,8 @@ private:
 	void calculationBillboardMatrix();
 	
 	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
+
+	Particle MakeNewHitParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
 
 private:
 

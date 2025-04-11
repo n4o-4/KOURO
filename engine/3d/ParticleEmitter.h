@@ -14,6 +14,8 @@ public:
     // 指定した数のパーティクルを放出するオーバーロードを追加
     void Emit(uint32_t count,Vector3 startColor,Vector3 finishColor);
     
+	void HitEmit();
+
     // エミッタの位置を設定するメソッドを追加
     void SetPosition(const Vector3& position);
     

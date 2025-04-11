@@ -17,12 +17,13 @@ void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager
 {
 	/*----------------------------------------------------------
 	* 引数をメンバ変数に記録
-	----------------------------------------------------------*/
+	-------------------------------------------------------
+	---*/
 
 	dxCommon_ = dxCommon;
 	srvManager_ = srvManager;
 
-	accelerationField.acceleration = { -8.0f,0.0f,0.0f };
+	accelerationField.acceleration = { 0.0f,0.0f,0.0f };
 	accelerationField.area.min = { -1.0f,-1.0f,-1.0f };
 	accelerationField.area.max = { 1.0f,1.0f,1.0f };
 
@@ -114,6 +115,9 @@ void ParticleManager::Update()
 				scaleMatrix.m[3][3] = 1;
 
 				Matrix4x4 worldMatrix = MakeIdentity4x4();
+
+				Matrix4x4 rotationZ = MakeRotateZMatrix(particleIterator->transform.rotate.z);
+				billboardMatrix = Multiply(worldMatrix, rotationZ);
 
 				worldMatrix.m[0][0] = scaleMatrix.m[0][0] * billboardMatrix.m[0][0];
 				worldMatrix.m[0][1] = scaleMatrix.m[0][0] * billboardMatrix.m[0][1];
@@ -649,11 +653,72 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		return *newParticle;
 }
 
+ParticleManager::Particle ParticleManager::MakeNewHitParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange)
+{
+	// 新しいパーティクルの生成
+	std::unique_ptr<Particle> newParticle;
+
+	newParticle = std::make_unique<Particle>();
+
+	std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
+
+	std::uniform_real_distribution<float> distScale(0.4f, 1.5f);
+
+	// transformの設定
+	newParticle->transform.scale = { 0.05f,distScale(randomEngine),1.0f};
+	newParticle->transform.rotate = { 0.0f,0.0f,distRotate(randomEngine)};
+	newParticle->transform.translate = translate;
+
+	std::uniform_real_distribution<float> distVelocityX(velocityRange.x.x, velocityRange.x.y);
+	std::uniform_real_distribution<float> distVelocityY(velocityRange.y.x, velocityRange.y.y);
+	std::uniform_real_distribution<float> distVelocityZ(velocityRange.z.x, velocityRange.z.y);
+
+	// velocityの設定
+	newParticle->velocity = { distVelocityX(randomEngine),distVelocityY(randomEngine),distVelocityZ(randomEngine) };
+
+	std::uniform_real_distribution<float> distTime(lifeTimeRange.range.x, lifeTimeRange.range.y);
+
+	// ライフタイムの設定
+	newParticle->lifeTime = distTime(randomEngine);
+	newParticle->currentTime = 0.0f;
+
+	// 発生時の色の設定
+	std::uniform_real_distribution<float> startColorR(startColorRange.R.x, startColorRange.R.y);
+	std::uniform_real_distribution<float> startColorG(startColorRange.G.x, startColorRange.G.y);
+	std::uniform_real_distribution<float> startColorB(startColorRange.B.x, startColorRange.B.y);
+	std::uniform_real_distribution<float> startColorA(startColorRange.A.x, startColorRange.A.y);
+
+	Vector4 startColor = { startColorR(randomEngine),startColorG(randomEngine),startColorB(randomEngine),startColorA(randomEngine) };
+
+	// 終了時の色の設定
+	std::uniform_real_distribution<float> finishColorR(finishColorRange.R.x, finishColorRange.R.y);
+	std::uniform_real_distribution<float> finishColorG(finishColorRange.G.x, finishColorRange.G.y);
+	std::uniform_real_distribution<float> finishColorB(finishColorRange.B.x, finishColorRange.B.y);
+	std::uniform_real_distribution<float> finishColorA(finishColorRange.A.x, finishColorRange.A.y);
+
+	Vector4 finishColor = { finishColorR(randomEngine),finishColorG(randomEngine),finishColorB(randomEngine),finishColorA(randomEngine) };
+
+	newParticle->startColor = startColor;
+	newParticle->finishColor = finishColor;
+
+	return *newParticle;
+}
+
 void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange)
 {
 	if (particleGroups.find(name) != particleGroups.end()) {
 		for (uint32_t currentCount = 0; currentCount < count;) {
 			particleGroups.find(name)->second.particles.push_back(MakeNewParticle(position,startColorRange,finishColorRange,velocityRange,lifeTimeRange));
+			++currentCount;
+		}
+	}
+}
+
+void ParticleManager::HitEmit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange)
+{
+	if (particleGroups.find(name) != particleGroups.end()) {
+		for (uint32_t currentCount = 0; currentCount < count;) {
+			particleGroups.find(name)->second.particles.push_back(MakeNewHitParticle(position, startColorRange, finishColorRange, velocityRange, lifeTimeRange));
 			++currentCount;
 		}
 	}

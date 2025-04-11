@@ -22,27 +22,19 @@ void MyGame::Initialize()
 
 	SceneManager::GetInstance()->SetSceneFactory(*sceneFactory_);
 
-	SceneManager::GetInstance()->ChangeScene("TITLE");
+	SceneManager::GetInstance()->ChangeScene("GAME");
 
 #pragma endregion 基盤システムの初期化
 
 	TextureManager::GetInstance()->LoadTexture("Resources/monsterBall.png");
 	TextureManager::GetInstance()->LoadTexture("Resources/uvChecker.png");
 	TextureManager::GetInstance()->LoadTexture("Resources/fruit_suika_red.png");
-
-	//========================================
-	// ラインマネージャの初期化
-	LineManager::GetInstance()->Initialize(DirectXCommon::GetInstance(), srvManager.get());
 }
 
 void MyGame::Finalize()
 {
 
 	Framework::Finalize();
-
-	//========================================
-	// ラインマネージャの終了処理
-	LineManager::GetInstance()->Finalize();
 
 }
 
@@ -57,12 +49,6 @@ void MyGame::Update()
 	Framework::Update();
 
 	postEffect_->Update();
-
-	//========================================
-	// ラインの更新
-	LineManager::GetInstance()->Update();
-	// ImGuiの描画
-	LineManager::GetInstance()->DrawImGui();
 
 #ifdef _DEBUG
 
@@ -81,10 +67,6 @@ void MyGame::Draw()
 	
 
 	Framework::Draw();
-
-	//========================================
-	// Lineの描画
-	LineManager::GetInstance()->Draw();
 
 	DirectXCommon::GetInstance()->RenderTexturePostDraw();
 

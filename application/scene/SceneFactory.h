@@ -4,10 +4,6 @@
 #include "TitleScene.h"
 #include "GameScene.h"
 
-#include "OkaScene.h"	
-#include "PakuScene.h"
-#include "MaruScene.h"
-#include "MiyaScene.h"
 #include "GameClear.h"
 #include "GameOver.h"
 

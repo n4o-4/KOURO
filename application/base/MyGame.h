@@ -6,9 +6,6 @@
 
 #include "SceneFactory.h"
 
-// MagEngine
-#include "LineManager.h"
-
 // ゲーム全体
 class MyGame : public Framework
 {

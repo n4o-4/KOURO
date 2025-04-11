@@ -9,7 +9,7 @@ void DebugCamera::Initialize()
    targetTransform_->Initialize();  
 
    // ターゲットからのオフセットを初期化  
-   offset = { 0.0f,0.0f,-10.0f };  
+   offset = { 0.0f,0.0f,-10.0f }; 
 }  
 
 void DebugCamera::Update()  
@@ -37,7 +37,19 @@ void DebugCamera::Update()
    }  
 
 #ifdef _DEBUG
-   ImGui::Text("offset.z%f", static_cast<float>(Input::GetInstance()->mouseState.lZ));  
+
+   if (ImGui::DragFloat3("camera.rotate", &viewProjection_->transform.rotate.x, 0.01f))
+   {
+       // カメラの角度から回転行列を計算  
+       Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);
+
+       // オフセットをカメラの回転に合わせて回転  
+       offSet = TransformNormal(offset, rotateMatrix);
+
+       // カメラの位置をターゲットの位置からオフセット分ずらす  
+       viewProjection_->transform.translate = targetTransform_->transform.translate + offSet;
+   }
+  
 #endif
    if (Input::GetInstance()->PushMouseButton(Input::MouseButton::LEFT))  
    {  

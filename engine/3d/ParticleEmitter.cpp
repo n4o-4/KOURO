@@ -47,6 +47,11 @@ void ParticleEmitter::Emit(uint32_t count,Vector3 startColor,Vector3 finishColor
     emitter.count = originalCount;
 }
 
+void ParticleEmitter::HitEmit()
+{
+	ParticleManager::GetInstance()->HitEmit(name, emitter.transform.translate, emitter.count, startColorRange, finishColorRange, velocityRange, lifeTimeRange);
+}
+
 void ParticleEmitter::SetPosition(const Vector3& position)
 {
     emitter.transform.translate = position;
@@ -82,7 +87,7 @@ void ParticleEmitter::Update()
 	
 		if (particleGroups.find(name) != particleGroups.end())
 		{
-			ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,lifeTimeRange);
+			ParticleManager::GetInstance()->HitEmit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,lifeTimeRange);
 		}
 	}
 }

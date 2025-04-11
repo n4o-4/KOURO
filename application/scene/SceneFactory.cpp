@@ -12,32 +12,17 @@ std::unique_ptr<BaseScene> SceneFactory::CreateScene(const std::string& sceneNam
     {
         newScene = std::make_unique<GameScene>();
     }
-	
+    else if (sceneName == "CLEAR") {
+        newScene = std::make_unique<GameClear>();
+    }
+    else if (sceneName == "OVER") {
+        newScene = std::make_unique<GameOver>();
+    }
 
 
 	/// 各個人のシーン
-	else if (sceneName == "OKA")
-	{
-		newScene = std::make_unique<OkaScene>();
-	}
-	else if (sceneName == "PAKU")
-	{
-		newScene = std::make_unique<PakuScene>();
-	}
-	else if (sceneName == "MARU")
-	{
-		newScene = std::make_unique<MaruScene>();
-	}
-	else if (sceneName == "MIYA")
-	{
-		newScene = std::make_unique<MiyaScene>();
-	}
-	else if (sceneName == "CLEAR") {
-		newScene = std::make_unique<GameClear>();
-	}
-	else if (sceneName == "OVER") {
-		newScene = std::make_unique<GameOver>();
-	}
+
+	
 
     return newScene;
 }
