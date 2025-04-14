@@ -96,23 +96,6 @@ void Player::Update() {
 	// ジャンプ処理
 	UpdateJump();
 
-	// ブースト回転中処理
-	if (isBoostSpinning_) {
-		boostSpin_ += kBoostSpinSpeed_;
-		boostSpinFrame_++;
-
-		if (boostSpin_ >= kTwoPI_ || boostSpinFrame_ >= kBoostSpinMaxFrames_) { // 16フレーム（約0.26秒）で1回転想定
-			boostSpin_ = 0.0f;
-			isBoostSpinning_ = false;
-			boostSpinFrame_ = 0;
-
-			// ❗滑らかに戻さず、ピタッと元の角度へ
-			objectTransform_->transform.rotate.x = 0.0f;
-		} else {
-			objectTransform_->transform.rotate.x += kBoostSpinSpeed_;
-		}
-	}
-
 	// 無敵時間の処理
 	if (isInvincible_) {
 		invincibleTimer_--;
@@ -312,12 +295,20 @@ void Player::UpdateMove(Vector3 direction) {
 		distinationRotateY_ = std::atan2(velocity_.x, velocity_.z);
 	}
 
-	// プレイヤーの向き
+	// Y軸回転（向き）は今まで通り
 	objectTransform_->transform.rotate.y = LerpShortAngle(objectTransform_->transform.rotate.y, distinationRotateY_, 0.1f);
-	// 位置の更新
-	objectTransform_->transform.translate = (objectTransform_->transform.translate + velocity_);
-	// ========================================
-	// 移動制限：座標の範囲を制限する
+
+	// 高速移動中は進行方向に傾ける
+	float targetTilt = 0.0f;
+	if (isQuickBoosting_ || isBoosting_) {
+		targetTilt = velocity_.x * -1.0f;// 進行方向に傾ける
+	}
+	objectTransform_->transform.rotate.z = fLerp(objectTransform_->transform.rotate.z, targetTilt, 0.2f);
+
+	// 位置の更新（抜けてたやつ）
+	objectTransform_->transform.translate += velocity_;
+
+	// 移動制限
 	objectTransform_->transform.translate.x = std::clamp(objectTransform_->transform.translate.x, -99.0f, 99.0f);
 	objectTransform_->transform.translate.z = std::clamp(objectTransform_->transform.translate.z, -99.0f, 99.0f);
 

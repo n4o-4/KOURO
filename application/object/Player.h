@@ -124,6 +124,13 @@ public:
 	 */
 	void SetHp(int hp) { hp_ = hp; }
 
+	/**----------------------------------------------------------------------------
+	 * \brief  GetIsInvincible 無敵状態の取得
+	 * \return
+	 */
+	bool GetIsInvincible() const { return isInvincible_; }
+
+
 private:
 	//========================================
 	// 3Dオブジェクト
