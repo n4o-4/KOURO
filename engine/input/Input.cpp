@@ -44,8 +44,15 @@ void Input::Initialize(WinApp* winApp)
 	assert(SUCCEEDED(result));
 
 	result = mouse->Acquire();
-	assert(SUCCEEDED(result));
+	
+	if (FAILED(result)) {
+		// 必要ならループで再取得
+		while (result == DIERR_INPUTLOST || result == DIERR_NOTACQUIRED) {
+			result = mouse->Acquire();
+		}
+	}
 
+	assert(SUCCEEDED(result));
 
 	leftStick = { 0.0f,0.0f,0.0f };
 }

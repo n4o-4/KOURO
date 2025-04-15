@@ -43,11 +43,12 @@ void GameScene::Initialize() {
 	spotLight = std::make_unique<SpotLight>();
 	spotLight->Initialize();
 	spotLight->direction_ = { 0.0f,-1.0f,0.0f };
-	spotLight->position_ = { 0.0f,200.0f,0.0f };
+	spotLight->position_ = { 0.0f,3200.0f,0.0f };
 	spotLight->intensity_ = 11.0f;
 	spotLight->decay_ = 0.87f;
-	spotLight->distance_ = 280.0f;
-	spotLight->cosAngle_ = 0.5f;
+	spotLight->distance_ = 4800.0f;
+	spotLight->cosAngle_ = 0.2f;
+	spotLight->cosFalloffStart_;
 	//========================================
 	// 天球
 	skyDome_ = std::make_unique<SkyDome>();
@@ -103,7 +104,7 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect("dissolve",PostEffect::EffectType::Dissolve); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog); //完
-	//sceneManager_->GetPostEffect()->ApplyEffect("Blur",PostEffect::EffectType::MotionBlur);
+	sceneManager_->GetPostEffect()->ApplyEffect("Blur",PostEffect::EffectType::MotionBlur);
 	//sceneManager_->GetPostEffect()->ApplyEffect("Grtich",PostEffect::EffectType::Gritch); //完
 
     dissolve_ = dynamic_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
