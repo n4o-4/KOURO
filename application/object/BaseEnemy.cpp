@@ -27,6 +27,7 @@ void BaseEnemy::Initialize(Model* model) {
     std::random_device rd;
     rng_ = std::mt19937(rd());
 
+
     // スポーン位置の初期化
     spawnPosition_ = worldTransform_->transform.translate;
 
@@ -59,6 +60,12 @@ void BaseEnemy::Update() {
         //========================================
         // 当たり判定との同期
         BaseObject::Update(worldTransform_->transform.translate);
+        if (worldTransform_->transform.translate.y < minY_) {
+            worldTransform_->transform.translate.y = minY_;
+        }
+        if (worldTransform_->transform.translate.y > maxY_) {
+            worldTransform_->transform.translate.y = maxY_;
+        }
     }
 }
 
@@ -121,60 +128,85 @@ void BaseEnemy::Fire() {
 void BaseEnemy::MoveToTarget()
 {
     if (target_) {
-        // ターゲットに向かうベクトルを計算
+        // 目標方向の計算
         Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
-        float distance = Length(toTarget);
+        Vector3 desiredDir = Normalize(toTarget);
 
-        Vector3 direction = Normalize(toTarget);
-        velocity_ = direction * speed_;
+        // 目標回転角度の計算
+        float targetY = std::atan2(desiredDir.x, desiredDir.z);
+        float currentY = worldTransform_->transform.rotate.y;
 
-        // 位置を更新
-        worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
+        // ステアリング制限回転
+        float delta = targetY - currentY;
+        delta = std::fmod(delta + std::numbers::pi, 2.0f * std::numbers::pi) - std::numbers::pi;
 
-        // 敵の向きを進行方向に合わせる
-        float targetRotationY = std::atan2(direction.x, direction.z);
-        worldTransform_->transform.rotate.y = targetRotationY;
+        float maxSteeringAngle = 0.05f; // フレームあたりの最大回転角
+        delta = std::clamp(delta, -maxSteeringAngle, maxSteeringAngle);
+        worldTransform_->transform.rotate.y += delta;
+
+        //現在の回転方向に基づいて前進
+        Vector3 forward = {
+            sinf(worldTransform_->transform.rotate.y),
+            0.0f,
+            cosf(worldTransform_->transform.rotate.y)
+        };
+
+        // 速度補間(スムーズ)
+        Vector3 targetVelocity = forward * speed_;
+        velocity_ = Lerp(velocity_, targetVelocity, 0.1f);
+
+        //位置の移動
+        worldTransform_->transform.translate += velocity_;
     }
 }
 
 void BaseEnemy::RandomMove()
 {
-    // 方向変更タイマーの更新
     directionChangeTimer_ += 1.0f / 60.0f;
-
     SetModelColor(Vector4{ 1.0f, 1.0f, 1.0f, 1.0f });
 
-    // 定期的に方向を変更
+	float maxSteeringAngle = 0.05f; // 最大旋回角度
+
+    // 移動目標方向の決定
     if (directionChangeTimer_ >= directionChangeInterval_) {
-        // スポーン地点に戻る方向と、ランダムな方向を混ぜる
         Vector3 toSpawn = spawnPosition_ - worldTransform_->transform.translate;
         float distanceToSpawn = Length(toSpawn);
 
-        // スポーン地点から遠すぎる場合はスポーン地点に戻る傾向を強める
-        float spawnWeight = std::min(distanceToSpawn / wanderRadius_, 0.8f);
-
+        Vector3 newDir;
         if (distanceToSpawn > wanderRadius_) {
-            // スポーン地点に戻る方向を優先
-            velocity_ = Normalize(toSpawn) * speed_;
-        }
-        else {
-            // ランダムな方向を選択
+            newDir = Normalize(toSpawn);
+        } else {
             float angle = angleDist_(rng_);
-            Vector3 randomDir = { cosf(angle), 0.0f, sinf(angle) };
-            velocity_ = Normalize(randomDir) * speed_;
+            newDir = Vector3{ cosf(angle), 0.0f, sinf(angle) };
         }
+
+        // 眺める目標角度の更新
+        targetRotationY_ = std::atan2(newDir.x, newDir.z);
 
         directionChangeTimer_ = 0.0f;
     }
 
-    // 位置を更新
-    worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
+    // 回転加速度適用(自動車のようにスムーズに回転)
+    float currentY = worldTransform_->transform.rotate.y;
+    float delta = targetRotationY_ - currentY;
+    delta = std::fmod(delta + std::numbers::pi, 2.0f * std::numbers::pi) - std::numbers::pi;
+    delta = std::clamp(delta, -maxSteeringAngle, maxSteeringAngle);
+    worldTransform_->transform.rotate.y += delta;
 
-    // 敵の向きを進行方向に合わせる
-    if (Length(velocity_) > 0.01f) {
-        float targetRotationY = std::atan2(velocity_.x, velocity_.z);
-        worldTransform_->transform.rotate.y = targetRotationY;
-    }
+    float turnSpeed = 0.1f; // 回転感度
+    rotationVelocityY_ += delta * turnSpeed;
+    rotationVelocityY_ *= 0.85f; // 減速(摩擦)
+    worldTransform_->transform.rotate.y += rotationVelocityY_;
+
+    // 眺める方向を基準に移動(前進)
+    Vector3 forward = {
+        sinf(worldTransform_->transform.rotate.y),
+        0.0f,
+        cosf(worldTransform_->transform.rotate.y)
+    };
+    worldTransform_->transform.scale = { 1.0f, 1.0f, 1.0f };
+    velocity_ = forward * speed_;
+    worldTransform_->transform.translate += velocity_;
 }
 // コンテキストベースの方向選択
 Vector3 BaseEnemy::SelectDirection() {

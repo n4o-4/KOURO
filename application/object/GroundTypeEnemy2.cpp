@@ -12,6 +12,13 @@ void GroundTypeEnemy2::Initialize() {
 	particleEmitter_->SetParticleCount(20);
 	particleEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ 1.0f,1.0f }));
 	particleEmitter_->SetVelocityRange(ParticleManager::VelocityRange({ -3.0f,3.0f }, { -3.0f,3.0f }, { -3.0f,3.0f }));
+
+	explosionEmitter_ = std::make_unique<ParticleEmitter>();
+	explosionEmitter_->Initialize("ExplosionEffect");
+	explosionEmitter_->SetParticleCount(30);
+	explosionEmitter_->SetLifeTimeRange({ {0.5f, 1.5f} });
+	explosionEmitter_->SetVelocityRange({ {-5.0f, 5.0f}, {-5.0f, 5.0f}, {-5.0f, 5.0f} });
+
 }
 
 void GroundTypeEnemy2::Update() {
@@ -59,12 +66,13 @@ void GroundTypeEnemy2::Update() {
 		}
 	}
 
-
+	
 
 	BaseEnemy::Update();
 }
 
 void GroundTypeEnemy2::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
+	
 	BaseEnemy::Draw(viewProjection, directionalLight, pointLight, spotLight);
 }
 
@@ -74,16 +82,12 @@ void GroundTypeEnemy2::Attack() {
 }
 
 void GroundTypeEnemy2::OnCollisionEnter(BaseObject* other) {
-	if (dynamic_cast<PlayerMissile*>(other)) {
+	if (dynamic_cast<PlayerMissile*>(other) || dynamic_cast<PlayerMachineGun*>(other)) {
 		--hp_;
 		HitJump();
 		particleEmitter_->Emit();
 	}
-	if (dynamic_cast<PlayerMachineGun*>(other)) {
-		--hp_;
-		HitJump();
-		particleEmitter_->Emit();
-	}
+	explosionEmitter_->Emit();
 }
 
 void GroundTypeEnemy2::OnCollisionStay(BaseObject* other) {
@@ -119,7 +123,7 @@ void GroundTypeEnemy2::UpdateChaseState() {
 		//
 		float targetRotationY = std::atan2(direction.x, direction.z);
 		worldTransform_->transform.rotate.y = targetRotationY;
-
+		worldTransform_->transform.scale = { 1.0f, 1.0f, 1.0f };
 		SetModelColor(Vector4{ 1.0f, 1.0f, 1.0f, 1.0f });
 	}
 }
@@ -133,7 +137,7 @@ void GroundTypeEnemy2::UpdateCombatState() {
 		//
 		float dashSpeed = speed_ * 3.0f;
 		velocity_ = { direction.x * dashSpeed,0.0f,direction.z * dashSpeed };
-
+		velocity_ += avoidanceVelocity_;
 		//
 		worldTransform_->transform.translate += velocity_;
 
@@ -141,7 +145,35 @@ void GroundTypeEnemy2::UpdateCombatState() {
 		float targetRotationY = std::atan2(direction.x, direction.z);
 		worldTransform_->transform.rotate.y = targetRotationY;
 
-		SetModelColor(Vector4{ 1.0f, 0.0f, 0.0f, 1.0f });
+		if (!isBlinkEffect_) {
+			isBlinkEffect_ = true;
+			blinkEffectTimer_ = 0.0f;
+		}
+		if (isBlinkEffect_) {
+			blinkEffectTimer_ += 1.0f / 60.0f;
+
+			float t = blinkEffectTimer_;
+			float scale = 1.0f + 0.35f * sinf(t * 10.0f);
+			worldTransform_->transform.scale = { scale, scale, scale };
+
+			int blinkPhase = static_cast<int>(t * 5.0f) % 2;
+			if (blinkPhase == 0) {
+				SetModelColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+			} else {
+				SetModelColor({ 1.0f, 0.0f, 0.0f, 1.0f });
+			}
+
+			// 
+			if (blinkEffectTimer_ >= blinkEffectDuration_) {
+				isBlinkEffect_ = false;
+				blinkEffectTimer_ = 0.0f;
+
+				worldTransform_->transform.scale = { 1.0f, 1.0f, 1.0f };
+				SetModelColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+				
+			}
+		}
+		
 	}
 }
 

@@ -39,6 +39,8 @@ public:
 
     virtual bool IsAlive() const { return hp_ > 0; }
 
+    void AddAvoidance(const Vector3& offset) { avoidanceVelocity_ = offset; }
+    void SetVelocityY(float y) { velocity_.y = y;}
     /**----------------------------------------------------------------------------
    * \brief  GetHp HPを取得
    * \return HP
@@ -72,6 +74,10 @@ protected:
 
     void RandomMove();
 
+    Vector3 Lerp(const Vector3& a, const Vector3& b, float t) {
+        return a * (1.0f - t) + b * t;
+    };
+
     //ジャンプ 
 	void HitJump();
 
@@ -93,10 +99,14 @@ protected:
     int spawnHp_ = 1;
 
     // 移動関連
-    float speed_ = 0.15f;   // 移動速度
+    float speed_ = 0.6f;   // 移動速度
     float minX_ = -100.0f;  // 左の限界
     float maxX_ = 100.0f;   // 右の限界
+	float minY_ = 0.0f;     // 下の限界
+	float maxY_ = 100.0f;   // 上の限界
     int direction_ = 1;     // 移動方向 (1:右, -1:左)
+	float rotationVelocityY_ = 0.0f; // Y軸回転速度
+	float targetRotationY_ = 0.0f; // ターゲットのY軸回転
     Vector3 velocity_ = { 0.0f, 0.0f, 0.0f }; // 現在の速度ベクトル
     Vector3 spawnPosition_ = { 0.0f, 0.0f, 0.0f }; // スポーン位置
 
@@ -121,10 +131,7 @@ protected:
     const float kIntervalTiem = 5.0f;
     float intervalCounter_ = 0.0f;
 
-    ////Spawn model
-    //std::unique_ptr<Object3d> spawnModel_ = nullptr;
-    ////Spawn ワールド変換
-    //std::unique_ptr<WorldTransform> spawnWorldTransform_ = nullptr;
-
     std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
+
+    Vector3 avoidanceVelocity_ = { 0.0f, 0.0f, 0.0f };
 };

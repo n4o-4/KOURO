@@ -5,7 +5,7 @@
 #include <list>
 #include <memory>
 #include <random>
-
+#include "PostEffect.h"
 #include "EnemyBullet.h"
 
 #include "BaseEnemy.h"
@@ -40,7 +40,7 @@ public:
     void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
     void Attack();
-
+    
     ///--------------------------------------------------------------
     ///						
 private:
@@ -124,6 +124,13 @@ private:
     Vector3 startScale_;
     Vector3 targetScale_;
 
+    //
+    bool isDead_ = false;
+    bool isBlinkEffect_ = false;
+    float blinkEffectTimer_ = 0.0f;
+    const float blinkEffectDuration_ = 3.0f;
+    
+    std::unique_ptr<ParticleEmitter> explosionEmitter_ = nullptr;
 };
 
 
