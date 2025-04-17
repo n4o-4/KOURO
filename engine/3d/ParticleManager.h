@@ -27,6 +27,12 @@ public:
 		kCountOfBlendMode,
 	};
 
+	enum class ParticleType
+	{
+		Normal,
+		Ring,
+	};
+
 	struct VertexData {
 		Vector4 position;
 		Vector2 texcoord;
@@ -88,6 +94,7 @@ public:
 		Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource;
 		uint32_t kNumInstance;
 		ParticleForGPU* instancingData;
+		ParticleType type;
 	};
 
 	struct ColorRange
@@ -120,7 +127,7 @@ public:
 	void Draw(std::string filePath);
 	
 	// パーティクルグループの生成関数
-	void CreateParticleGroup(const std::string name, const std::string textureFilePath);
+	void CreateParticleGroup(const std::string name, const std::string textureFilePath,ParticleType type);
 
 	void Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange,VelocityRange velocityRange,LifeTimeRange lifeTimeRange);
 
@@ -215,12 +222,15 @@ private:
 
 	BlendMode blendMode = BlendMode::kAdd;
 
+	// 汎用Vertexリソース
 	ModelData modelData;
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;
-
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
-
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource = nullptr;
+
+	ModelData ringModelData;
+	Microsoft::WRL::ComPtr<ID3D12Resource> ringVertexResource = nullptr;
+	D3D12_VERTEX_BUFFER_VIEW ringVertexBufferView{};
 
 	std::unordered_map<std::string, ParticleGroup> particleGroups;
 

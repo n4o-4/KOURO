@@ -85,8 +85,7 @@ void GameScene::Initialize() {
 	transform_ = std::make_unique<WorldTransform>();
 	transform_->Initialize();
 
-	ParticleManager::GetInstance()->CreateParticleGroup("Particle_1", "Resources/circle.png");
-
+	ParticleManager::GetInstance()->CreateParticleGroup("Particle_1", "Resources/gradationLine.png",ParticleManager::ParticleType::Ring);
 
 	emitter_ = std::make_unique<ParticleEmitter>();
 	emitter_->Initialize("Particle_1");

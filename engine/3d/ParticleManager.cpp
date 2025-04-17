@@ -165,8 +165,7 @@ void ParticleManager::Draw(std::string filePath)
 	// PSOを設定
 	dxCommon_->GetCommandList()->SetPipelineState(sPipeLineStates_[static_cast<int>(blendMode)].Get());
 
-	// プリミティブトポロジーを設定
-	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
+	
 
 	// VBVを設定
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -174,7 +173,14 @@ void ParticleManager::Draw(std::string filePath)
 	// 
 	for (std::unordered_map<std::string, ParticleGroup>::iterator particleGroupIterator = particleGroups.begin(); particleGroupIterator != particleGroups.end();) {
 
-		//dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0,particleGroupIterator->second.)
+		if (particleGroupIterator->second.type == ParticleType::Normal) {
+			// プリミティブトポロジーを設定
+			dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
+		}
+		else if (particleGroupIterator->second.type == ParticleType::Ring)
+		{
+			dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &ringVertexBufferView);
+		}
 
 		materialResource =dxCommon_->CreateBufferResource(sizeof(Material));
 
@@ -195,7 +201,14 @@ void ParticleManager::Draw(std::string filePath)
 
 		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2,srvManager_->GetGPUDescriptorHandle(particleGroupIterator->second.materialData.textureIndex));
 
-		dxCommon_->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), particleGroupIterator->second.kNumInstance, 0, 0);
+		if (particleGroupIterator->second.type == ParticleType::Normal) {
+			// プリミティブトポロジーを設定
+			dxCommon_->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), particleGroupIterator->second.kNumInstance, 0, 0);
+		}
+		else if (particleGroupIterator->second.type == ParticleType::Ring)
+		{
+			dxCommon_->GetCommandList()->DrawInstanced(UINT(ringModelData.vertices.size()), particleGroupIterator->second.kNumInstance, 0, 0);
+		}
 
 		++particleGroupIterator;
 	}
@@ -531,7 +544,28 @@ void ParticleManager::InitializeVertexData()
 	modelData.vertices.push_back({ {-1.0f,1.0f,0.0f,1.0f},{1.0f,0.0f},{0.0f,0.0f,1.0f} });// 右上
 	modelData.vertices.push_back({ {-1.0f,-1.0f,0.0f,1.0f},{1.0f,1.0f},{0.0f,0.0f,1.0f} }); // 右下
 
+	const uint32_t kRingDivide = 32;
+	const float kOuterRadius = 1.0f;
+	const float kInnerRadius = 0.2f;
+	const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);
+
+	for (uint32_t index = 0; index < kRingDivide; ++index)
+	{
+		float sin = std::sin(index * radianPerDivide);
+		float cos = std::cos(index * radianPerDivide);
+		float sinNext = std::sin((index + 1) * radianPerDivide);
+		float cosNext = std::cos((index + 1) * radianPerDivide);
+		float u = float(index) / float(kRingDivide);
+		float uNext = float(index + 1) / float(kRingDivide);
+
+		ringModelData.vertices.push_back({ { -sin * kOuterRadius,cos * kOuterRadius, 0.0f,1.0f }, { u,0.0f }, {0.0f,0.0f,1.0} });
+		ringModelData.vertices.push_back({ { -sinNext * kOuterRadius,cosNext * kOuterRadius, 0.0f,1.0f }, { uNext,0.0f }, {0.0f,0.0f,1.0} });	
+		ringModelData.vertices.push_back({ { -sin * kInnerRadius,cosNext * kInnerRadius, 0.0f,1.0f }, { u,1.0f }, {0.0f,0.0f,1.0} });
+		ringModelData.vertices.push_back({ { -sinNext * kInnerRadius,cosNext * kInnerRadius, 0.0f,1.0f }, { uNext,1.0f }, {0.0f,0.0f,1.0} });
+	}
+
 	modelData.material.textureFilePath = "Reosurces/circle.png";
+	ringModelData.material.textureFilePath = "Resources/gradationLine.png";
 }
 
 void ParticleManager::CreateVertexResource()
@@ -539,10 +573,13 @@ void ParticleManager::CreateVertexResource()
 	// 頂点リソースを作る
 	vertexResource = dxCommon_->CreateBufferResource(sizeof(VertexData) * modelData.vertices.size());
 
+	ringVertexResource = dxCommon_->CreateBufferResource(sizeof(VertexData) * ringModelData.vertices.size());
+
 }
 
 void ParticleManager::CreateVertexBufferView()
 {
+	// 汎用
 	// リソースの先頭アドレス
 	vertexBufferView.BufferLocation = vertexResource.Get()->GetGPUVirtualAddress();
 
@@ -551,6 +588,11 @@ void ParticleManager::CreateVertexBufferView()
 
 	// 1頂点あたりのサイズ
 	vertexBufferView.StrideInBytes = sizeof(VertexData);
+
+	// ring
+	ringVertexBufferView.BufferLocation = ringVertexResource.Get()->GetGPUVirtualAddress();
+	ringVertexBufferView.SizeInBytes = UINT(sizeof(VertexData) * ringModelData.vertices.size());
+	ringVertexBufferView.StrideInBytes = sizeof(VertexData);
 }
 
 void ParticleManager::WriteDataInResource()
@@ -558,9 +600,13 @@ void ParticleManager::WriteDataInResource()
 	VertexData* vertexData;
 	vertexResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
+
+	VertexData* ringVertexData;
+	ringVertexResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&ringVertexData));
+	std::memcpy(ringVertexData, ringModelData.vertices.data(), sizeof(VertexData) * ringModelData.vertices.size());
 }
 
-void ParticleManager::CreateParticleGroup(const std::string name, const std::string textureFilePath)
+void ParticleManager::CreateParticleGroup(const std::string name, const std::string textureFilePath,ParticleType type)
 {
 	// パーティクルグループの名前を検索
 	// 無かった場合新しく作る
@@ -585,6 +631,8 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 		newParticleGroup.srvIndex = srvManager_->Allocate();
 
 		srvManager_->CreateSRVforStructuredBuffer(newParticleGroup.srvIndex, newParticleGroup.instancingResource.Get(), kNumMaxInstance, sizeof(ParticleForGPU));
+
+		newParticleGroup.type = type;
 
 		particleGroups[name] = newParticleGroup;
 	}

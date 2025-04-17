@@ -30,7 +30,7 @@ void TitleScene::Initialize()
 
 	object3d->SetCamera(camera.get());*/
 
-	ParticleManager::GetInstance()->CreateParticleGroup("Particle_1", "Resources/circle.png");
+	ParticleManager::GetInstance()->CreateParticleGroup("Particle_1", "Resources/circle.png",ParticleManager::ParticleType::Normal);
 
 
 	particleEmitter_1 = std::make_unique<ParticleEmitter>();
