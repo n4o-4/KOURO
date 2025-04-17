@@ -145,7 +145,7 @@ private:
 	Vector3 position_ = { 0.0f, 0.0f, 0.0f };     // 位置
 	Vector3 velocity_ = { 0.0f, 0.0f, 0.0f };     // 現在の速度ベクトル
 	Vector3 acceleration_ = { 0.0f, 0.0f, 0.0f }; // 加速度ベクトル
-	float maxSpeed_ = 0.35f;                      // 最大速度
+	float maxSpeed_ = 1.35f;                      // 最大速度
 	float accelerationRate_ = 0.03f;              // 加速度係数
 	float deceleration_ = 0.04f;                  // 減速度
 	float friction_ = 0.02f;                      // 摩擦

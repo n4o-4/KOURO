@@ -901,20 +901,27 @@ void GameScene::SpawnSet(const Vector3& position) {
 
 void GameScene::AvoidOverlap(std::vector<BaseEnemy*>& allEnemies, float avoidRadius) {
 	for (auto* self : allEnemies) {
-		Vector3 adjustment = { 0.0f, 0.0f, 0.0f };
+		Vector3 avoidance = { 0.0f, 0.0f, 0.0f };
+
 		for (auto* other : allEnemies) {
 			if (self == other) continue;
+
 			Vector3 diff = self->GetPosition() - other->GetPosition();
 			float dist = Length(diff);
+
 			if (dist < avoidRadius && dist > 0.001f) {
-				adjustment = adjustment + Normalize(diff) * (avoidRadius - dist);
+				float weight = (avoidRadius - dist) / avoidRadius;
+				avoidance += Normalize(diff) * weight;  // 近いほど強い反発
 			}
 		}
-		Vector3& selfPos = self->GetWorldTransform()->transform.translate;
-		float originalY = selfPos.y;
-		selfPos += adjustment * 0.1f;
+
+		// 自然に回避加速度を適用
+		avoidance *= 0.05f;  // 強度調整
+		self->AddAvoidance(avoidance);
+
+		// y軸固定（必要に応じて取り外し可能）
 		if (dynamic_cast<GroundTypeEnemy*>(self) || dynamic_cast<GroundTypeEnemy2*>(self)) {
-			selfPos.y = originalY;
+			self->SetVelocityY(0.0f);
 		}
 	}
 }

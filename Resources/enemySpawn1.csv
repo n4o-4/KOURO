@@ -1,4 +1,3 @@
 //ƒRƒ}ƒ“ƒh,x,y,z,number,type
-POP,0,30,25,10,CHAIR
-POP,30,0,0,5,CHAIR
-POP,10,0,-35,5,CHAIR
+POP,0,0,25,10,BOMB
+POP,0,30,-10,8,CHAIR

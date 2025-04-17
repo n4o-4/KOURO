@@ -97,7 +97,7 @@ void SkyTypeEnemy::MoveToRush() {
 }
 
 void SkyTypeEnemy::MoveToRise() {
-	if (!hasJustRushed_) return; // <- Rush한 이후가 아니면 실행 금지
+	if (!hasJustRushed_) return; // <- Rushした後でなければ実行禁止
 
 	velocity_.y = riseSpeed_;
 	worldTransform_->transform.translate.y += velocity_.y;
@@ -105,7 +105,7 @@ void SkyTypeEnemy::MoveToRise() {
 	riseTimer_ += 1.0f / 60.0f;
 	if (riseTimer_ >= riseDuration_) {
 		isRising_ = false;
-		hasJustRushed_ = false; // <- 상승 완료 후 초기화
+		hasJustRushed_ = false; // <- 上昇完了後の初期化
 		velocity_.y = 0.0f;
 	}
 
