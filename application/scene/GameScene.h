@@ -47,6 +47,8 @@ private:
 
 	std::unique_ptr<ParticleEmitter> emitter_ = nullptr;
 
+	ColorSpace* colorSpace_ = nullptr;
+
 private:
 
 	//std::unique_ptr<SkyDome> skyDome_ = nullptr;

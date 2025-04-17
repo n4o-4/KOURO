@@ -21,6 +21,10 @@
     <FxCompile Include="Resources\shaders\Random.PS.hlsl" />
     <FxCompile Include="Resources\shaders\LinearFog.PS.hlsl" />
     <FxCompile Include="Resources\shaders\MotionBlur.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\Ocean.VS.hlsl" />
+    <FxCompile Include="Resources\shaders\Ocean.HS.hlsl" />
+    <FxCompile Include="Resources\shaders\Ocean.DS.hlsl" />
+    <FxCompile Include="Resources\shaders\ColorSpace.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\collision\BaseObject.cpp" />
@@ -83,6 +87,7 @@
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="engine\effect\MotionBlur.cpp" />
     <ClCompile Include="ExplosionEmitter.cpp" />
+    <ClCompile Include="ColorSpace.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -152,6 +157,7 @@
     <ClInclude Include="engine\effect\LinearFog.h" />
     <ClInclude Include="engine\effect\MotionBlur.h" />
     <ClInclude Include="ExplosionEmitter.h" />
+    <ClInclude Include="ColorSpace.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

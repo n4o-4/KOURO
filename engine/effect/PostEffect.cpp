@@ -131,6 +131,15 @@ void PostEffect::ApplyEffect(std::string name, EffectType type)
 
 		newEffect->effect->SetCameraManager(cameraManager_);
 	}
+	else if (type == EffectType::ColorSpace)
+	{
+		newEffect->effect = std::make_unique<ColorSpace>();
+		newEffect->effect->Initialize(dxCommon_, srvManager_);
+	}
+	else
+	{
+		assert(0);
+	}
 
 	newEffect->type = type;
 

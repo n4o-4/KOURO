@@ -27,6 +27,10 @@
 
 #include "LeakChecker.h"
 
+#include <chrono>
+#include <string>
+#include <wrl.h>
+
 class Framework
 {
 public:
@@ -55,6 +59,12 @@ protected:
 
 	std::unique_ptr<PostEffect> postEffect_ = nullptr;
 
+	// フレームごとの時間計測用
+	uint64_t frameCount = 0;
+	double elapsedTime = 0.0;
+	double fps = 0.0;
+
+    std::chrono::high_resolution_clock::time_point startTime;
 public:
 
 	virtual~Framework() = default;
@@ -79,5 +89,7 @@ public:
 	// 実行
 	void Run();
 
-	
+private:
+
+	void UpdateFPS();
 };

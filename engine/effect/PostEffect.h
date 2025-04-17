@@ -19,6 +19,7 @@
 #include "Random.h"
 #include "LinearFog.h"
 #include "MotionBlur.h"
+#include "ColorSpace.h"
 
 class PostEffect
 {
@@ -59,6 +60,9 @@ public:
 
 		// MotionBlur
 		MotionBlur,
+
+		// ColorSpace
+		ColorSpace,
 
 		// ↑↑↑追加↑↑↑
 

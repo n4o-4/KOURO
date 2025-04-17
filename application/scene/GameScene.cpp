@@ -63,8 +63,10 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect("Blur",PostEffect::EffectType::MotionBlur);
+	sceneManager_->GetPostEffect()->ApplyEffect("colorSpace",PostEffect::EffectType::ColorSpace);
 
     //dissolve_ = dynamic_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
+	colorSpace_ = dynamic_cast<ColorSpace*>(sceneManager_->GetPostEffect()->GetEffectData("colorSpace"));
 
 	///========================================
 	///		ライン描画
@@ -188,6 +190,10 @@ void GameScene::Update() {
 
 	ImGui::Checkbox("useDebugCamera", &cameraManager_->useDebugCamera_);
 	ImGui::Checkbox("sceneConticue", &isContinue);
+
+	ImGui::DragFloat("colorSpace.hue", &colorSpace_->hue, 0.01f);
+	ImGui::DragFloat("colorSpace.saturation", &colorSpace_->saturation, 0.01f);
+	ImGui::DragFloat("colorSpace.value", &colorSpace_->value, 0.01f);
 
 	//ImGui::DragFloat("dissolve.threshold", &dissolve_->threshold, 0.01f);
 	//ImGui::DragFloat("dissolve.thresholdWidth", &dissolve_->thresholdWidth, 0.01f);

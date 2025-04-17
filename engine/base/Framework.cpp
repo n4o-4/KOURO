@@ -109,6 +109,8 @@ void Framework::Initialize()
 	postEffect_->Initialize(dxCommon_,srvManager.get());
 
 	SceneManager::GetInstance()->SetPostEffect(postEffect_.get());
+
+	startTime = std::chrono::high_resolution_clock::now();
 }
 
 void Framework::Finalize()
@@ -150,6 +152,11 @@ void Framework::Update()
 
 	SceneManager::GetInstance()->Update();
 
+#ifdef _DEBUG
+
+	UpdateFPS();
+
+#endif _DEBUG
 }
 
 void Framework::Draw()
@@ -188,4 +195,22 @@ void Framework::Run()
 
 	// ゲームの終了
 	Finalize();
+}
+
+void Framework::UpdateFPS()
+{
+		frameCount++;
+
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double> delta = currentTime - startTime;
+		elapsedTime += delta.count();
+		startTime = currentTime;
+
+		if (elapsedTime >= 1.0) {
+			fps = frameCount / elapsedTime;
+			frameCount = 0;
+			elapsedTime = 0.0;
+		}
+
+		ImGui::Text("FPS: %.1f", fps);
 }
