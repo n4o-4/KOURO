@@ -31,6 +31,7 @@ public:
 	{
 		Normal,
 		Ring,
+		Cylinder,
 	};
 
 	struct VertexData {
@@ -86,7 +87,7 @@ public:
 		Vector4 finishColor;
 	};
 
-	struct ParticleGroup 
+	struct ParticleGroup
 	{
 		MaterialData materialData;
 		std::list<Particle> particles;
@@ -95,6 +96,7 @@ public:
 		uint32_t kNumInstance;
 		ParticleForGPU* instancingData;
 		ParticleType type;
+		bool enableBillboard = false;
 	};
 
 	struct ColorRange
@@ -125,11 +127,11 @@ public:
 	void Update();
 
 	void Draw(std::string filePath);
-	
-	// パーティクルグループの生成関数
-	void CreateParticleGroup(const std::string name, const std::string textureFilePath,ParticleType type);
 
-	void Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange,VelocityRange velocityRange,LifeTimeRange lifeTimeRange);
+	// パーティクルグループの生成関数
+	void CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleType type);
+
+	void Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
 
 	void HitEmit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
 
@@ -197,7 +199,7 @@ private:
 	void WriteDataInResource();
 
 	void calculationBillboardMatrix();
-	
+
 	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
 
 	Particle MakeNewHitParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
@@ -231,6 +233,10 @@ private:
 	ModelData ringModelData;
 	Microsoft::WRL::ComPtr<ID3D12Resource> ringVertexResource = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW ringVertexBufferView{};
+
+	ModelData cylinderModelData;
+	Microsoft::WRL::ComPtr<ID3D12Resource> cylinderVertexResource = nullptr;
+	D3D12_VERTEX_BUFFER_VIEW cylinderVertexBufferView{};
 
 	std::unordered_map<std::string, ParticleGroup> particleGroups;
 

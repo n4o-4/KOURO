@@ -85,18 +85,20 @@ void GameScene::Initialize() {
 	transform_ = std::make_unique<WorldTransform>();
 	transform_->Initialize();
 
-	ParticleManager::GetInstance()->CreateParticleGroup("Particle_1", "Resources/gradationLine.png",ParticleManager::ParticleType::Ring);
+	ParticleManager::GetInstance()->CreateParticleGroup("Particle_1", "Resources/gradationLine.png",ParticleManager::ParticleType::Cylinder);
 
 	emitter_ = std::make_unique<ParticleEmitter>();
 	emitter_->Initialize("Particle_1");
 
 	emitter_->SetPosition({ 0.0f,5.0f,0.0f });
-	emitter_->SetParticleCount(3);
+	emitter_->SetParticleCount(1);
 	emitter_->SetVelocityRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} });
 	emitter_->SetStartColorRange({ {1.0f,1.0f},{1.0f,1.0f},{1.0f,1.0f},{1.0f,1.0f} });
 	emitter_->SetFinishColorRange({ {1.0f,1.0f},{1.0f,1.0f},{1.0f,1.0f},{1.0f,1.0f} });
-	emitter_->SetLifeTimeRange({ {1.0f,1.0f} });
-	emitter_->SetFrequency(1.1f);
+	emitter_->SetLifeTimeRange({ {1000.0f,1000.0f} });
+	emitter_->SetFrequency(1000.0f);
+
+	emitter_->Emit();
 
 	/*///========================================
 	/// アニメーションマネージャ
