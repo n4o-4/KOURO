@@ -96,7 +96,7 @@ public:
 		uint32_t kNumInstance;
 		ParticleForGPU* instancingData;
 		ParticleType type;
-		bool enableBillboard = false;
+		bool enableBillboard = true;
 	};
 
 	struct ColorRange

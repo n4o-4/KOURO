@@ -31,7 +31,7 @@ void ParticleEmitter::Initialize(std::string name)
 void ParticleEmitter::Emit()
 {
 
-	ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,lifeTimeRange);
+	ParticleManager::GetInstance()->HitEmit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,lifeTimeRange);
 
 }
 
@@ -78,12 +78,6 @@ void ParticleEmitter::Update()
 	if (emitter.frequency <= emitter.frequencyTime) {
 		
 		emitter.frequencyTime -= emitter.frequency;
-
-		Vector3 startColor;
-
-		std::uniform_real_distribution<float> colorR(0.56f, 1.0f); // min , max
-		std::uniform_real_distribution<float> colorG(0.0f, 0.37f);
-		std::uniform_real_distribution<float> colorB(0.0f, 0.19f);
 	
 		if (particleGroups.find(name) != particleGroups.end())
 		{

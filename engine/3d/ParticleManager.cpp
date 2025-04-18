@@ -594,26 +594,6 @@ void ParticleManager::InitializeVertexData()
 		cylinderModelData.vertices.push_back({ { -sinNext * kOuterRadius,kCylinderHeight,  cosNext * kOuterRadius, 1.0f }, { uNext, 1.0f }, {0.0f, 0.0f, 1.0f} });
 	}
 
-	//// 円柱
-	//for (uint32_t index = 0; index < kRingDivide; ++index) {
-	//	float sin = std::sin(index * radianPerDivide);
-	//	float cos = std::cos(index * radianPerDivide);
-	//	float sinNext = std::sin((index + 1) * radianPerDivide);
-	//	float cosNext = std::cos((index + 1) * radianPerDivide);
-
-	//	float u = float(index) / float(kRingDivide);
-	//	float uNext = float(index + 1) / float(kRingDivide);
-
-	//	// positionとuv。normalは必要ならz+方向で設定する
-	//	// 頂点①
-	//	cylinderModelData.vertices.push_back({ { -sin * kOuterRadius, cos * kOuterRadius, 0.0f, 1.0f }, { u, 0.0f } ,{0.0f,0.0f,1.0f} }); // 外周・現在
-	//	// 頂点②
-	//	cylinderModelData.vertices.push_back({ { -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext, 0.0f },{0.0f,0.0f,1.0f} });  // 外周・次
-	//	// 頂点③
-	//	cylinderModelData.vertices.push_back({ { -sin * kInnerRadius, cosNext * kInnerRadius, 0.0f, 1.0f }, { u, 1.0f },{0.0f,0.0f,1.0f} });  // 内周・現在
-	//	// 頂点④
-	//	cylinderModelData.vertices.push_back({ { -sinNext * kInnerRadius, cosNext * kInnerRadius, 0.0f, 1.0f }, { uNext, 1.0f },{0.0f,0.0f,1.0f} }); // 内周・次
-	//}
 }
 
 void ParticleManager::CreateVertexResource()
