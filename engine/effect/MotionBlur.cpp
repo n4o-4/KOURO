@@ -13,9 +13,9 @@ void MotionBlur::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 
 	data_->center = Vector2(0.5f, 0.5f);
 
-	data_->blurWidth = /*0.008*/0.08f;
+	blurWidth_ = /*0.008*/20.0f;
 
-	data_->numSamples = /*6*/20;
+	numSamples_ = /*6*/50;
 
 	data_->diff = { 0.0f,0.0f };
 }
@@ -24,29 +24,34 @@ void MotionBlur::Update()
 {
 	if (cameraManager_)
 	{
-		// 前の位置を記録
 		prePos_ = currentPos_;
 
-		// 現在のカメラの座標を取得
 		currentPos_ = cameraManager_->GetActiveCamera()->GetViewProjection().transform.translate;
 
-		// 座標の差分を計算
-		diffPos_ = currentPos_ - prePos_;
+		Vector3 worldDiff = prePos_ - currentPos_;
 
+		// Y成分はカット（XZ平面のみ）
+		worldDiff.y = 0.0f;
+
+		// カメラの Yaw 回転のみ抽出（Y軸周り）
 		Vector3 rotate = cameraManager_->GetActiveCamera()->GetViewProjection().transform.rotate;
-
 		rotate.x = 0.0f;
+		rotate.z = 0.0f;
 
+		// カメラ回転行列で worldDiff を正規化
 		Matrix4x4 rotateMatrix = MakeRotateMatrix(rotate);
+		Vector3 localDiff = TransformNormal(worldDiff, rotateMatrix);
 
-		diffPos_ = TransformNormal(diffPos_, rotateMatrix);
+		localDiff.x *= -1.0f;
 
-		data_->diff = diffPos_;
+		data_->diff = localDiff;
 	}
 
 	float blurWidth = Length(diffPos_);
 
-	data_->blurWidth = blurWidth * 0.0009f;
+	data_->blurWidth = blurWidth_ * 0.001f;
+
+	data_->numSamples = numSamples_;
 }
 
 void MotionBlur::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)

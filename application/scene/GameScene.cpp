@@ -108,6 +108,7 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect("Grtich",PostEffect::EffectType::Gritch); //完
 
     dissolve_ = dynamic_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
+	blur_ = dynamic_cast<MotionBlur*>(sceneManager_->GetPostEffect()->GetEffectData("Blur"));
 
 	///========================================
 	///		ライン描画
@@ -526,8 +527,8 @@ void GameScene::Update() {
 	ImGui::Checkbox("useDebugCamera", &cameraManager_->useDebugCamera_);
 	ImGui::Checkbox("sceneConticue", &isContinue);
 
-	ImGui::DragFloat("dissolve.threshold", &dissolve_->threshold, 0.01f);
-	ImGui::DragFloat("dissolve.thresholdWidth", &dissolve_->thresholdWidth, 0.01f);
+	ImGui::DragFloat("MotionBlur.BlurWidth", &blur_->blurWidth_, 0.01f);
+	ImGui::DragInt("MotionBlur.NumSapmles", &blur_->numSamples_);
 
 #endif
 
