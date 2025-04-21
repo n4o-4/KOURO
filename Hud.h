@@ -130,7 +130,7 @@ private:
 
     // レーダー表示関連（追加）
     bool showRadar_ = true;                       // レーダーを表示するか
-    bool rotateWithCamera_ = true;                // カメラの向きに合わせてレーダーを回転するか
+    bool rotateWithCamera_ = false;                // カメラの向きに合わせてレーダーを回転するか
     bool use3DSphereMap_ = true;                  // 3D球体ミニマップを使用するか
     bool useCircularRadar_ = true;                // 円形レーダーを使用するか
     
@@ -149,18 +149,18 @@ private:
     Vector4 radarGridColor_ = {0.0f, 1.0f, 0.3f, 0.4f};   // レーダーのグリッドの色
     Vector4 radarSweepColor_ = {0.0f, 1.0f, 0.3f, 0.9f};  // レーダーのスイープの色
     Vector4 radiationLineColor_ = {0.0f, 1.0f, 0.3f, 0.3f}; // 放射線の色
-    float enemyDotSize_ = 0.3f;                   // 敵のドットサイズ
-    float spawnBlockSize_ = 0.5f;                 // スポーンブロックのサイズ
+    float enemyDotSize_ = 32.8f;                   // 敵のドットサイズ
+    float spawnBlockSize_ = 2.5f;                 // スポーンブロックのサイズ
     
     // 3D球体ミニマップ関連
-    float sphereMapRadius_ = 128.0f;          // 球体の半径
+    float sphereMapRadius_ = 256.0f;          // 球体の半径
     float sphereMapPositionX_ = 0.0f;      // 球体の表示位置X
     float sphereMapPositionY_ = 0.0f;      // 球体の表示位置Y
     float sphereMapRange_ = 150.0f;         // 球体の検出範囲
-    int sphereLongitudeCount_ = 6;          // 経線の数
+    int sphereLongitudeCount_ = 0;          // 経線の数
     int sphereLatitudeCount_ = 3;           // 緯線の数
     float sphereRotationSpeed_ = 0.00f;     // 自動回転速度
     float sphereRotationY_ = 0.0f;          // Y軸周りの回転
-    float sphereObjectScale_ = 0.3f;        // 球体上のオブジェクトスケール
+    float sphereObjectScale_ = 0.9f;        // 球体上のオブジェクトスケール
     Vector4 sphereGridColor_ = {0.0f, 0.6f, 0.3f, 0.1f}; // グリッドの色
 };
