@@ -385,7 +385,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateRenderTextureResourc
 
 void DirectXCommon::CreateRenderTextureRTV()
 {
-	const Vector4 kRenderTargetClearValue{ 1.0f,0.0f,0.0f,1.0f };
+	const Vector4 kRenderTargetClearValue{ 0.015f,0.15f,1.0f,1.0f };
 	renderTextureResources[0] = CreateRenderTextureResource(
 		device,
 		WinApp::kClientWidth,
@@ -504,7 +504,7 @@ void DirectXCommon::RenderTexturePreDraw()
 	DirectXCommon::GetInstance()->GetCommandList()->OMSetRenderTargets(1, DirectXCommon::GetInstance()->GetRTVHandle(renderTargetIndex), false, &dsvHandle);
 
 	// 指定した色で画面全体をクリアする
-	float clearColor[] = { 1.0f,0.0f,0.0f,1.0f }; // 青っぽい色 RGBAの順
+	float clearColor[] = { 0.015f,0.15f,1.0f,1.0f }; // 青っぽい色 RGBAの順
 	DirectXCommon::GetInstance()->GetCommandList()->ClearRenderTargetView(*DirectXCommon::GetInstance()->GetRTVHandle(renderTargetIndex), clearColor, 0, nullptr);
 
 	// 画面全体の深度をクリア

@@ -3,10 +3,10 @@
 #include "Matrixs.h"
 #include "ModelCommon.h"
 #include <fstream>
-#include <string>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp\postprocess.h>
+//#include <string>
+//#include <assimp/Importer.hpp>
+//#include <assimp/scene.h>
+//#include <assimp\postprocess.h>
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 

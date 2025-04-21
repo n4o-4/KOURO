@@ -93,7 +93,7 @@ void GameScene::Initialize() {
 	emitter_->SetPosition({ 0.0f,5.0f,0.0f });
 	emitter_->SetParticleCount(1);
 	emitter_->SetVelocityRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} });
-	emitter_->SetStartColorRange({ {1.0f,1.0f},{1.0f,1.0f},{1.0f,1.0f},{1.0f,1.0f} });
+	emitter_->SetStartColorRange({ {1.0f,1.0f},{0.0f,0.0f},{0.0f,0.0f},{1.0f,1.0f} });
 	emitter_->SetFinishColorRange({ {1.0f,1.0f},{1.0f,1.0f},{1.0f,1.0f},{1.0f,1.0f} });
 	emitter_->SetLifeTimeRange({ {1000.0f,1000.0f} });
 	emitter_->SetFrequency(1000.0f);

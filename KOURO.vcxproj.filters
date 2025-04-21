@@ -88,6 +88,7 @@
     <ClCompile Include="engine\effect\MotionBlur.cpp" />
     <ClCompile Include="ExplosionEmitter.cpp" />
     <ClCompile Include="ColorSpace.cpp" />
+    <ClCompile Include="engine\3d\ModelDatas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />

@@ -210,6 +210,16 @@ void ParticleManager::Draw(std::string filePath)
 		}
 		else if (particleGroupIterator->second.type == ParticleType::Cylinder)
 		{
+
+			for (size_t i = 0; i < cylinderModelData.vertices.size(); ++i) {
+				VertexData& v = cylinderModelData.vertices[i]; // ← 参照で取得
+				v.texcoord.x -= 0.01f; // ← これで元のデータが更新される
+			}
+
+			VertexData* cylinderVertexData;
+			cylinderVertexResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&cylinderVertexData));
+			std::memcpy(cylinderVertexData, cylinderModelData.vertices.data(), sizeof(VertexData) * cylinderModelData.vertices.size());
+
 			// プリミティブトポロジーを設定
 			dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &cylinderVertexBufferView);
 			dxCommon_->GetCommandList()->DrawInstanced(UINT(cylinderModelData.vertices.size()), particleGroupIterator->second.kNumInstance, 0, 0);
@@ -302,8 +312,9 @@ void ParticleManager::CreateRootSignature()
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // バイナリフィルタ
 	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // 0~1の範囲外をリピート
-	//staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	//staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP; // X座標
+	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	//staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // Y座標
 	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // 比較しない
 	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX; // 多くのMipMapを使う
@@ -446,7 +457,7 @@ void ParticleManager::CreatePipeline()
 
 		case BlendMode::kAdd:
 
-			blendDesc.RenderTarget[0].BlendEnable = TRUE;
+			/*blendDesc.RenderTarget[0].BlendEnable = TRUE;
 
 
 			blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
@@ -455,7 +466,18 @@ void ParticleManager::CreatePipeline()
 
 			blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
 			blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-			blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+			blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;*/
+			blendDesc.RenderTarget[0].BlendEnable = TRUE;
+
+			// ソースとデスティネーションの設定
+			blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+			blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+			blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+
+			// アルファブレンドの設定
+			blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
+			blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;
+			blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 
 			break;
 
@@ -555,7 +577,7 @@ void ParticleManager::InitializeVertexData()
 
 	const uint32_t kRingDivide = 32;
 	const float kOuterRadius = 1.0f;
-	const float kInnerRadius = 0.2f;
+	const float kInnerRadius = 0.1f;
 	const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);
 
 	for (uint32_t index = 0; index < kRingDivide; ++index)
@@ -583,37 +605,82 @@ void ParticleManager::InitializeVertexData()
 		float u = float(index) / float(kRingDivide);
 		float uNext = float(index + 1) / float(kRingDivide);
 
-		// positionとuv。normalは必要ならz+方向で設定する
-		// 頂点① (外周・現在・下部)
-		cylinderModelData.vertices.push_back({ { -sin * kOuterRadius, 0.0f, cos * kOuterRadius, 1.0f }, { u, 0.0f }, {0.0f, 0.0f, 1.0f} });
-		// 頂点② (外周・次・下部)
-		cylinderModelData.vertices.push_back({ { -sinNext * kOuterRadius,0.0f , cosNext * kOuterRadius, 1.0f }, { uNext, 0.0f }, {0.0f, 0.0f, 1.0f} });
-		// 頂点③ (外周・現在・上部)
-		cylinderModelData.vertices.push_back({ { -sin * kOuterRadius, kCylinderHeight,cos * kOuterRadius , 1.0f }, { u, 1.0f }, {0.0f, 0.0f, 1.0f} });
-		// 頂点④ (外周・次・上部)
-		cylinderModelData.vertices.push_back({ { -sinNext * kOuterRadius,kCylinderHeight,  cosNext * kOuterRadius, 1.0f }, { uNext, 1.0f }, {0.0f, 0.0f, 1.0f} });
+		// 下部の2点
+		Vector4 bottomLeft = { -sin * kOuterRadius * 0.1f,      0.0f, cos * kOuterRadius * 0.1f,      1.0f };
+		Vector4 bottomRight = { -sinNext * kOuterRadius * 0.1f,  0.0f, cosNext * kOuterRadius * 0.1f,  1.0f };
+
+		// 上部の2点
+		Vector4 topLeft = { -sin * kOuterRadius * 0.1f,      kCylinderHeight, cos * kOuterRadius * 0.1f,      1.0f };
+		Vector4 topRight = { -sinNext * kOuterRadius * 0.1f,  kCylinderHeight, cosNext * kOuterRadius * 0.1f,  1.0f };
+
+		Vector3 normal = { 0.0f, 0.0f, 1.0f }; // 任意で調整
+
+		// --- 三角形① (下左 → 下右 → 上左)
+		cylinderModelData.vertices.push_back({ bottomLeft,  { u, 0.0f }, normal });
+		cylinderModelData.vertices.push_back({ bottomRight, { uNext, 0.0f }, normal });
+		cylinderModelData.vertices.push_back({ topLeft,     { u, 1.0f }, normal });
+
+		// --- 三角形② (上左 → 下右 → 上右)
+		cylinderModelData.vertices.push_back({ topLeft,     { u, 1.0f }, normal });
+		cylinderModelData.vertices.push_back({ bottomRight, { uNext, 0.0f }, normal });
+		cylinderModelData.vertices.push_back({ topRight,    { uNext, 1.0f }, normal });
 	}
 
-	//// 円柱
-	//for (uint32_t index = 0; index < kRingDivide; ++index) {
-	//	float sin = std::sin(index * radianPerDivide);
-	//	float cos = std::cos(index * radianPerDivide);
-	//	float sinNext = std::sin((index + 1) * radianPerDivide);
-	//	float cosNext = std::cos((index + 1) * radianPerDivide);
+	//const uint32_t kHeightSegments = 8;          // 高さ方向の分割数
+	//const float kCylinderHeight = 1.0f;          // モデルの高さ      // モデルデータ構造（任意で調整）
 
-	//	float u = float(index) / float(kRingDivide);
-	//	float uNext = float(index + 1) / float(kRingDivide);
+	//// 半径カーブ関数：下0.0 → 中央1.0 → 上0.0
+	//auto RadiusFunc = [](float yNorm) {
+	//	return std::sin(yNorm * std::numbers::pi); // 中央で最大（自然な噴射感）
+	//	};
 
-	//	// positionとuv。normalは必要ならz+方向で設定する
-	//	// 頂点①
-	//	cylinderModelData.vertices.push_back({ { -sin * kOuterRadius, cos * kOuterRadius, 0.0f, 1.0f }, { u, 0.0f } ,{0.0f,0.0f,1.0f} }); // 外周・現在
-	//	// 頂点②
-	//	cylinderModelData.vertices.push_back({ { -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext, 0.0f },{0.0f,0.0f,1.0f} });  // 外周・次
-	//	// 頂点③
-	//	cylinderModelData.vertices.push_back({ { -sin * kInnerRadius, cosNext * kInnerRadius, 0.0f, 1.0f }, { u, 1.0f },{0.0f,0.0f,1.0f} });  // 内周・現在
-	//	// 頂点④
-	//	cylinderModelData.vertices.push_back({ { -sinNext * kInnerRadius, cosNext * kInnerRadius, 0.0f, 1.0f }, { uNext, 1.0f },{0.0f,0.0f,1.0f} }); // 内周・次
+	//for (uint32_t yIndex = 0; yIndex < kHeightSegments; ++yIndex) {
+	//	float y0 = (float)yIndex / kHeightSegments * kCylinderHeight;
+	//	float y1 = (float)(yIndex + 1) / kHeightSegments * kCylinderHeight;
+
+	//	float yNorm0 = y0 / kCylinderHeight;
+	//	float yNorm1 = y1 / kCylinderHeight;
+
+	//	float r0 = RadiusFunc(yNorm0) * 0.1f;
+	//	float r1 = RadiusFunc(yNorm1) * 0.1f;
+
+	//	for (uint32_t i = 0; i < kRingDivide; ++i) {
+	//		float theta = i * (2.0f * std::numbers::pi / kRingDivide);
+	//		float thetaNext = (i + 1) * (2.0f * std::numbers::pi / kRingDivide);
+
+	//		float sin0 = std::sin(theta);
+	//		float cos0 = std::cos(theta);
+	//		float sin1 = std::sin(thetaNext);
+	//		float cos1 = std::cos(thetaNext);
+
+	//		// 4頂点（上下リング×2点ずつ）
+	//		Vector4 p0 = { -sin0 * r0, y0, cos0 * r0, 1.0f };
+	//		Vector4 p1 = { -sin1 * r0, y0, cos1 * r0, 1.0f };
+	//		Vector4 p2 = { -sin0 * r1, y1, cos0 * r1, 1.0f };
+	//		Vector4 p3 = { -sin1 * r1, y1, cos1 * r1, 1.0f };
+
+	//		// テクスチャ座標
+	//		float u = (float)i / kRingDivide;
+	//		float uNext = (float)(i + 1) / kRingDivide;
+	//		float v0 = yNorm0;
+	//		float v1 = yNorm1;
+
+	//		// 法線（必要なら後で計算）
+	//		Vector3 normal = { 0.0f, 1.0f, 0.0f };
+
+	//		// 三角形①
+	//		cylinderModelData.vertices.push_back({ p0, { u, v0 }, normal });
+	//		cylinderModelData.vertices.push_back({ p1, { uNext, v0 }, normal });
+	//		cylinderModelData.vertices.push_back({ p2, { u, v1 }, normal });
+
+	//		// 三角形②
+	//		cylinderModelData.vertices.push_back({ p2, { u, v1 }, normal });
+	//		cylinderModelData.vertices.push_back({ p1, { uNext, v0 }, normal });
+	//		cylinderModelData.vertices.push_back({ p3, { uNext, v1 }, normal });
+	//	}
 	//}
+
+
 }
 
 void ParticleManager::CreateVertexResource()

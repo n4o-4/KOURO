@@ -10,6 +10,7 @@
 #include <array>
 #include "CameraManager.h"
 
+#include "ModelManager.h"
 class ParticleManager
 {
 
@@ -32,12 +33,6 @@ public:
 		Normal,
 		Ring,
 		Cylinder,
-	};
-
-	struct VertexData {
-		Vector4 position;
-		Vector2 texcoord;
-		Vector3 normal;
 	};
 
 	struct ParticleForGPU {
@@ -67,10 +62,10 @@ public:
 		uint32_t textureIndex;
 	};
 
-	struct ModelData {
+	/*struct ModelData {
 		std::vector<VertexData> vertices;
 		MaterialData material;
-	};
+	};*/
 
 	struct AccelerationField {
 		Vector3 acceleration; // 加速度
@@ -225,16 +220,16 @@ private:
 	BlendMode blendMode = BlendMode::kAdd;
 
 	// 汎用Vertexリソース
-	ModelData modelData;
+	ParticleModel::ModelData modelData;
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource = nullptr;
 
-	ModelData ringModelData;
+	ParticleModel::ModelData ringModelData;
 	Microsoft::WRL::ComPtr<ID3D12Resource> ringVertexResource = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW ringVertexBufferView{};
 
-	ModelData cylinderModelData;
+	ParticleModel::ModelData cylinderModelData;
 	Microsoft::WRL::ComPtr<ID3D12Resource> cylinderVertexResource = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW cylinderVertexBufferView{};
 
