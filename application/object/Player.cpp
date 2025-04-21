@@ -205,10 +205,10 @@ void Player::DrawImGui() {
 Vector3 Player::GetMovementInput() {
 	Vector3 inputDirection = { 0.0f, 0.0f, 0.0f };
 	// 移動入力の取得
-	if (Input::GetInstance()->PushKey(DIK_W)) { inputDirection.z += 1.0f; }
-	if (Input::GetInstance()->PushKey(DIK_S)) { inputDirection.z -= 1.0f; }
-	if (Input::GetInstance()->PushKey(DIK_A)) { inputDirection.x -= 1.0f; }
-	if (Input::GetInstance()->PushKey(DIK_D)) { inputDirection.x += 1.0f; }
+	if (Input::GetInstance()->PushKey(DIK_W)) { inputDirection.z += 2.0f; }
+	if (Input::GetInstance()->PushKey(DIK_S)) { inputDirection.z -= 2.0f; }
+	if (Input::GetInstance()->PushKey(DIK_A)) { inputDirection.x -= 2.0f; }
+	if (Input::GetInstance()->PushKey(DIK_D)) { inputDirection.x += 2.0f; }
 	// アナログスティック入力を合成
 	Vector3 stickInput = Input::GetInstance()->GetLeftStick();
 	inputDirection.x += stickInput.x;
