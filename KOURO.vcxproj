@@ -64,6 +64,7 @@
     <ClCompile Include="externals\MagEngine\Line\LineSetup.cpp" />
     <ClCompile Include="GroundTypeEnemy3.cpp" />
     <ClCompile Include="Gritch.cpp" />
+    <ClCompile Include="GroundTypeEnemy4.cpp" />
     <ClCompile Include="Hud.cpp" />
     <ClCompile Include="ExplosionEmitter.cpp" />
     <ClCompile Include="main.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="externals\MagEngine\Line\LineSetup.h" />
     <ClInclude Include="GroundTypeEnemy3.h" />
     <ClInclude Include="Gritch.h" />
+    <ClInclude Include="GroundTypeEnemy4.h" />
     <ClInclude Include="Hud.h" />
     <ClInclude Include="ExplosionEmitter.h" />
   </ItemGroup>
