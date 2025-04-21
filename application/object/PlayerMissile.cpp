@@ -23,7 +23,7 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 
     //===================================================
     // パーティクルの初期化
-    ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png");
+    ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png", ParticleManager::ParticleType::Normal);
 	particleEmitterMissileSmoke_ = std::make_unique<ParticleEmitter>();
 	particleEmitterMissileSmoke_->Initialize("missileSmoke");
     // パーティクル設定の調整
@@ -32,7 +32,7 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 	
 	ParticleManager::GetInstance()->SetBlendMode("Add");
 
-    ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png");
+    ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png", ParticleManager::ParticleType::Normal);
 	explosionEmitter_ = std::make_unique<ExplosionEmitter>();
 	explosionEmitter_->Initialize("missileSmoke");
     // パーティクル設定の調整

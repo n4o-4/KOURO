@@ -3,7 +3,12 @@
 #include <vector>
 #include "Structs.h"
 #include <map>
-
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp\postprocess.h>
+#include <iostream>
+#include <cassert>
+#include <optional>
 struct Node
 {
 	QuaternionTransform transform;
@@ -59,3 +64,14 @@ struct Skeleton
 	std::map<std::string, int32_t> jointMap; // Joint名とIndexとの辞書
 	std::vector<Joint> joints; // 所属しているJoint
 };
+
+namespace ParticleModel
+{
+	struct ModelData
+	{
+		std::vector<VertexData> vertices;
+		MaterialData material;
+	};
+
+	ParticleModel::ModelData LoadModelFile(const std::string& directoryPath, const std::string& filename);
+}

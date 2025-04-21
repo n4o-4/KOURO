@@ -16,7 +16,7 @@ PlayerMachineGun::PlayerMachineGun(const Vector3& position, const Vector3& veloc
 
     BaseObject::Initialize(worldTransform_->transform.translate, 0.5f);  // 当たり判定のサイズ
 
-    ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png");
+    ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png",ParticleManager::ParticleType::Normal);
     particleEmitter_ = std::make_unique<ParticleEmitter>();
     particleEmitter_->Initialize("missileSmoke");
     particleEmitter_->SetParticleCount(10);  // デフォルト発生数
