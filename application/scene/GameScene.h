@@ -20,6 +20,7 @@
 #include "GroundTypeEnemy2.h"
 #include "Hud.h"
 #include "GroundTypeEnemy3.h"
+#include "GroundTypeEnemy4.h"
 
 class GameScene : public BaseScene
 {
@@ -115,6 +116,8 @@ private: //静的メンバ関数
 	void SpawnEnemyBomb(const Vector3& position);
 
 	void SpawnEnemyChair(const Vector3& position);
+
+	void SpawnEnemyWM(const Vector3& position);
 
 	void SpawnSet(const Vector3& position);
 
