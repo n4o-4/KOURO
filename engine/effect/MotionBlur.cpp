@@ -15,7 +15,7 @@ void MotionBlur::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 
 	blurWidth_ = /*0.008*/20.0f;
 
-	numSamples_ = /*6*/50;
+	numSamples_ = /*6*/20;
 
 	data_->diff = { 0.0f,0.0f };
 }

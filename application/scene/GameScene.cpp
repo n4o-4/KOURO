@@ -101,11 +101,11 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LuminanceBasedOutline); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::DepthBasedOutline); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::RadialBlur); //完
-	//sceneManager_->GetPostEffect()->ApplyEffect("dissolve",PostEffect::EffectType::Dissolve); //完
+	sceneManager_->GetPostEffect()->ApplyEffect("dissolve",PostEffect::EffectType::Dissolve); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog); //完
 	sceneManager_->GetPostEffect()->ApplyEffect("Blur",PostEffect::EffectType::MotionBlur);
-	//sceneManager_->GetPostEffect()->ApplyEffect("Grtich",PostEffect::EffectType::Gritch); //完
+	sceneManager_->GetPostEffect()->ApplyEffect("Grtich",PostEffect::EffectType::Gritch); //完
 
     dissolve_ = dynamic_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
 	blur_ = dynamic_cast<MotionBlur*>(sceneManager_->GetPostEffect()->GetEffectData("Blur"));
@@ -524,8 +524,12 @@ void GameScene::Update() {
 		ImGui::TreePop();
 	}
 
+
+
 	ImGui::Checkbox("useDebugCamera", &cameraManager_->useDebugCamera_);
 	ImGui::Checkbox("sceneConticue", &isContinue);
+
+	ImGui::DragFloat("dissolve.threshold", &dissolve_->threshold, 0.01f);
 
 	ImGui::DragFloat("MotionBlur.BlurWidth", &blur_->blurWidth_, 0.01f);
 	ImGui::DragInt("MotionBlur.NumSapmles", &blur_->numSamples_);
