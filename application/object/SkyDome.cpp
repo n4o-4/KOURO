@@ -44,7 +44,7 @@ void SkyDome::Initialize() {
 	// cube
 	worldTransformCube_ = std::make_unique<WorldTransform>();
 	worldTransformCube_->Initialize();
-	worldTransformCube_->transform.scale = { 1.0f,1.0f,1.0f };
+	worldTransformCube_->transform.scale = { 20.0f,20.0f,20.0f };
 	worldTransformCube_->transform.translate = { 0.0f,50.0f,0.0f };
 }
 ///=============================================================================

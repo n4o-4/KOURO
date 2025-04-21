@@ -63,5 +63,11 @@ private: // メンバ変数
 	Vector3 prePos_{};
 
 	Vector3 diffPos_{};
+
+public:
+
+	float blurWidth_;
+	int numSamples_;
+
 };
 

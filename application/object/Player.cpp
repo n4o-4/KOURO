@@ -308,9 +308,10 @@ void Player::UpdateMove(Vector3 direction) {
 	// 位置の更新（抜けてたやつ）
 	objectTransform_->transform.translate += velocity_;
 
-	// 移動制限
-	objectTransform_->transform.translate.x = std::clamp(objectTransform_->transform.translate.x, -99.0f, 99.0f);
-	objectTransform_->transform.translate.z = std::clamp(objectTransform_->transform.translate.z, -99.0f, 99.0f);
+	// ========================================
+	// 移動制限：座標の範囲を制限する
+	objectTransform_->transform.translate.x = std::clamp(objectTransform_->transform.translate.x, -495.0f, 495.0f);
+	objectTransform_->transform.translate.z = std::clamp(objectTransform_->transform.translate.z, -495.0f, 495.0f);
 
 }
 ///--------------------------------------------------------------

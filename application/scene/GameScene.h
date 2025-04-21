@@ -75,6 +75,8 @@ private:
 
 	Dissolve* dissolve_ = nullptr;
 
+	MotionBlur* blur_ = nullptr;
+
 private:
 
 	//std::unique_ptr<SkyDome> skyDome_ = nullptr;
