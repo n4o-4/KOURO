@@ -9,6 +9,7 @@
 #include "EnemyBullet.h"
 
 #include "BaseEnemy.h"
+#include "Player.h"
 
 class GroundTypeEnemy3 :public BaseEnemy {
 
@@ -94,6 +95,8 @@ public:
 	//弾の取得
 	std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
 
+	void SetPlayerTarget(Player* player) { playerTarget_ = player; }
+
 private:
 
 
@@ -123,5 +126,7 @@ private:
 	float hitReactionTimer_ = 0.0f;
 	Vector3 startScale_;
 	Vector3 targetScale_;
+
+	Player* playerTarget_ = nullptr;
 };
 

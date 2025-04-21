@@ -30,6 +30,10 @@ public:
 	// ImGui描画
 	void DrawImGui();
 
+public:
+	void AddVelocity(const Vector3& vec) { velocity_ += vec; }
+	void ForceKnockback(const Vector3& knockback);
+
 	///--------------------------------------------------------------
 	///							静的メンバ関数
 private:

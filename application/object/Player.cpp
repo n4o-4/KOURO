@@ -198,6 +198,13 @@ void Player::DrawImGui() {
 
 #endif
 }
+
+void Player::ForceKnockback(const Vector3& knockback)
+{
+	isJumping_ = false; // ジャンプ処理無効化
+	velocity_ += knockback;// 反動を加える
+}
+
 ///=============================================================================
 ///                        静的メンバ関数
 ///--------------------------------------------------------------

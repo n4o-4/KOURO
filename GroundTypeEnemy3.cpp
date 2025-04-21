@@ -70,29 +70,18 @@ void GroundTypeEnemy3::Draw(ViewProjection viewProjection, DirectionalLight dire
 }
 
 void GroundTypeEnemy3::PushTargetAway() {
-	if (!target_) return;
-	// 現在地を保存
+	if (!playerTarget_) return;
+
 	Vector3 enemyPos = worldTransform_->transform.translate;
-	Vector3 targetPos = target_->transform.translate;
+	Vector3 targetPos = playerTarget_->GetPosition();
 
-	// 敵→ターゲット方向
-	Vector3 direction = targetPos - enemyPos;
-	direction.y = 0.0f; // y軸の影響を取り除く
+	Vector3 direction = Normalize(targetPos - enemyPos);
 
-	// 方向ベクトルの正規化
-	direction = Normalize(direction);
+	// ノックバック（XZ方向 + 上方向）
+	Vector3 knockback = direction * 1.5f + Vector3{ 0.0f, 1.0f, 0.0f };
 
-	// 押し出す力
-	const float pushStrength = 30.5f;
+	playerTarget_->ForceKnockback(knockback); // ← これでジャンプ処理キャンセルして飛ばす
 
-	// y軸値の保存
-	float originalY = target_->transform.translate.y;
-
-	// 押し出す
-	target_->transform.translate += direction * pushStrength;
-
-	// y軸の復元
-	target_->transform.translate.y = originalY;
 }
 
 
