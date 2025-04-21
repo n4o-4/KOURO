@@ -51,7 +51,12 @@ public:
     const std::vector<BaseEnemy*>& GetLockedEnemies() const { return lockedEnemies_; }
     
     // 精密ロックオン移行時間の取得
-    float GetTimeToPreciseLock() const { return timeToPreciseLock_; }
+    float GetTimeToPreciseLock() const { return timeToPreciseLock_; }\
+    
+    // この敵はロックオンされているか
+    bool IsLocked(BaseEnemy* enemy) {
+        return std::find(lockedEnemies_.begin(), lockedEnemies_.end(), enemy) != lockedEnemies_.end();
+    }
 
 	// 特定の敵の追尾位置を取得（簡易ロックオンでは初期位置を返す）
 Vector3 GetLockedEnemyPosition(BaseEnemy* enemy) const;

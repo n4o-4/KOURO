@@ -40,18 +40,9 @@ private:
 
     // レーダーディスプレイの描画
     void DrawRadarDisplay(ViewProjection viewProjection);
-    
-    // レーダー上の点を計算する（ワールド座標からレーダー座標へ変換）
-    Vector2 CalculateRadarPosition(const Vector3& worldPosition);
-    
-    // レーダー上に敵を描画
-    void DrawEnemyOnRadar(const Vector3& enemyPosition, const Vector4& color);
-    
-    // レーダー上にスポーンブロックを描画
-    void DrawSpawnOnRadar(const Vector3& spawnPosition, const Vector4& color);
-    
-    // 自機から敵への放射線を描画
-    void DrawRadiationLine(const Vector3& enemyPosition, const Vector4& color);
+
+    // 3D球体ミニマップの描画 - このメソッドを追加
+    void DrawSphereMap(ViewProjection viewProjection);
 
     // カメラに正対する円を描画する補助関数
     void DrawFacingCircle(const Vector3& center, float radius, const Vector4& color, int segments, const Vector3& cameraForward);
@@ -63,12 +54,18 @@ private:
     void DrawFacingProgressArc(const Vector3& center, float radius, float startAngle, float endAngle, 
                                const Vector4& color, int segments, const Vector3& cameraRight, const Vector3& cameraUp);
 
-                               // カメラに正対する多角形を描画する補助関数
-void DrawFacingPolygon(const Vector3& center, float size, int segments, const Vector4& color, const Vector3& cameraForward);
+    // カメラに正対する多角形を描画する補助関数
+    void DrawFacingPolygon(const Vector3& center, float size, int segments, const Vector4& color, const Vector3& cameraForward);
 
-// カメラに正対する三角形を描画する補助関数
-void DrawFacingTriangle(const Vector3& center, float size, const Vector4& color, const Vector3& cameraForward);
-    
+    // カメラに正対する三角形を描画する補助関数
+    void DrawFacingTriangle(const Vector3& center, float size, const Vector4& color, const Vector3& cameraForward);
+
+    // 3D球体ミニマップ関連の関数
+    void DrawSphereGrid(const Vector3& center, float radius, const Vector4& color, const Vector3& cameraForward);
+    Vector3 WorldToSpherePosition(const Vector3& worldPos, const Vector3& sphereCenter, float radius, float maxRange);
+    void Draw3DTriangle(const Vector3& center, float size, const Vector4& color, const Vector3& direction);
+    void Draw3DHexagon(const Vector3& center, float size, const Vector4& color, const Vector3& direction);
+
     ///=============================================================================
     ///                        メンバ変数
     private:
@@ -92,7 +89,7 @@ void DrawFacingTriangle(const Vector3& center, float size, const Vector4& color,
     // 戦闘モード
     bool isCombatMode_ = false;
     
-    // HUDの基本色設定（エースコンバットスタイル）
+    // HUDの基本色設定
     Vector4 hudBaseColor_ = {0.0f, 1.0f, 0.4f, 0.9f};     // 基本色（緑）
     Vector4 hudAccentColor_ = {0.2f, 1.0f, 0.8f, 0.9f};   // アクセント色（シアン系）
     Vector4 hudEnemyColor_ = {1.0f, 0.3f, 0.0f, 0.9f};    // 敵標識色（赤橙）
@@ -102,7 +99,7 @@ void DrawFacingTriangle(const Vector3& center, float size, const Vector4& color,
     // 照準関連
     float crosshairSize_ = 2.5f;                         // 照準の基本サイズ
     Vector4 crosshairColor_ = hudBaseColor_;             // 照準色を基本色に統一
-    float crosshairDistance_ = 20.0f;                    // プレイヤーから照準までの距離
+    float crosshairDistance_ = 64.0f;                    // プレイヤーから照準までの距離
     float crosshairGap_ = 8.0f;                          // 中心からのギャップを拡大
     float crosshairCenterRadius_ = 0.8f;                 // 中央の円の半径を小さく
     int crosshairCircleSegments_ = 16;                   // 中央の円の分割数
@@ -126,35 +123,44 @@ void DrawFacingTriangle(const Vector3& center, float size, const Vector4& color,
     float lockOnRotation_ = 0.0f;          // 回転角度
     float lockOnRotationSpeed_ = 0.02f;    // 回転速度（少し遅く）
     
-    // 進行度インジケーター関連
-    int progressArcSegments_ = 32;           // 円弧の分割数
-    float progressRadiusRatio_ = 1.5f;       // 進行度インジケーターの半径倍率
-    float progressStartAngle_ = -kPi * 0.5f; // 進捗表示開始角度（上から）
+    // ミニマップ表示関連
+    bool showMiniMap_ = true;                       // ミニマップを表示するか
+    Vector4 enemyDotColor_ = hudEnemyColor_;        // 敵の色
+    Vector4 spawnBlockColor_ = hudAlertColor_;      // スポーンブロックの色
+
+    // レーダー表示関連（追加）
+    bool showRadar_ = true;                       // レーダーを表示するか
+    bool rotateWithCamera_ = true;                // カメラの向きに合わせてレーダーを回転するか
+    bool use3DSphereMap_ = true;                  // 3D球体ミニマップを使用するか
+    bool useCircularRadar_ = true;                // 円形レーダーを使用するか
     
-    // レーダーディスプレイ関連（エースコンバットスタイル）
-    bool showRadar_ = true;                           // レーダーを表示するか
-    float radarSize_ = 14.0f;                         // レーダーのサイズを拡大
-    float radarPositionX_ = 14.0f;                    // より右に配置
-    float radarPositionY_ = 9.0f;                     // より上に配置
-    float radarRange_ = 150.0f;                       // レーダーの検出範囲
-    Vector4 radarBorderColor_ = hudBaseColor_;        // レーダー枠の色
-    Vector4 radarBackgroundColor_ = {0.0f, 0.3f, 0.1f, 0.2f}; // 暗い緑の背景
-    Vector4 radarSweepColor_ = {0.0f, 0.8f, 0.4f, 0.6f};  // レーダースイープ色
-    Vector4 radarGridColor_ = {0.0f, 0.6f, 0.3f, 0.3f};   // レーダーグリッド色
-    Vector4 enemyDotColor_ = hudEnemyColor_;            // 敵の点の色
-    Vector4 spawnBlockColor_ = hudAlertColor_;          // スポーンブロックの色
-    Vector4 radiationLineColor_ = {0.0f, 0.9f, 0.5f, 0.3f}; // 放射線の色（薄く）
-    float enemyDotSize_ = 0.4f;                      // 敵の点のサイズ
-    float spawnBlockSize_ = 0.5f;                    // スポーンブロックのサイズ
-    float radiationLineWidth_ = 1.0f;                // 放射線の幅
-    float radarRotation_ = 0.0f;                     // レーダーの回転
-    bool rotateWithCamera_ = true;                   // カメラの向きに合わせてレーダーを回転させるか
+    // レーダーの表示設定（追加）
+    float radarSize_ = 10.0f;                     // レーダーのサイズ
+    float radarPositionX_ = -15.0f;               // レーダーのX座標位置
+    float radarPositionY_ = 10.0f;                // レーダーのY座標位置
+    float radarRange_ = 100.0f;                   // レーダーの検出範囲
+    float radarRotation_ = 0.0f;                  // レーダーの回転角
+    float radarInnerCircleRatio_ = 0.5f;          // 内側の円の比率
+    int radarCircleSegments_ = 32;                // 円の分割数
+    float radarSweepSpeed_ = 0.03f;               // スイープの速度
+    float radarSweepAngle_ = 0.0f;                // スイープの角度
+    bool showRadarSweep_ = true;                  // スイープを表示するか
+    Vector4 radarBorderColor_ = {0.0f, 1.0f, 0.3f, 0.7f}; // レーダーの枠線の色
+    Vector4 radarGridColor_ = {0.0f, 1.0f, 0.3f, 0.4f};   // レーダーのグリッドの色
+    Vector4 radarSweepColor_ = {0.0f, 1.0f, 0.3f, 0.9f};  // レーダーのスイープの色
+    Vector4 radiationLineColor_ = {0.0f, 1.0f, 0.3f, 0.3f}; // 放射線の色
+    float enemyDotSize_ = 0.3f;                   // 敵のドットサイズ
+    float spawnBlockSize_ = 0.5f;                 // スポーンブロックのサイズ
     
-    // レーダー円形表示用
-    bool useCircularRadar_ = true;               // 円形レーダーを使用
-    int radarCircleSegments_ = 32;               // レーダー円の分割数
-    float radarInnerCircleRatio_ = 0.6f;         // 内側の円の比率
-    float radarSweepSpeed_ = 0.03f;              // スイープ速度
-    float radarSweepAngle_ = 0.0f;               // スイープ角度
-    bool showRadarSweep_ = true;                 // レーダースイープを表示するか
+    // 3D球体ミニマップ関連
+    float sphereMapRadius_ = 128.0f;          // 球体の半径
+    float sphereMapPositionX_ = 0.0f;      // 球体の表示位置X
+    float sphereMapPositionY_ = 0.0f;      // 球体の表示位置Y
+    float sphereMapRange_ = 150.0f;         // 球体の検出範囲
+    int sphereLongitudeCount_ = 6;          // 経線の数
+    int sphereLatitudeCount_ = 3;           // 緯線の数
+    float sphereRotationSpeed_ = 0.00f;     // 自動回転速度
+    float sphereRotationY_ = 0.0f;          // Y軸周りの回転
+    float sphereObjectScale_ = 0.3f;        // 球体上のオブジェクトスケール
+    Vector4 sphereGridColor_ = {0.0f, 0.6f, 0.3f, 0.1f}; // グリッドの色
 };

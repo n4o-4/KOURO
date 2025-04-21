@@ -38,44 +38,46 @@ void Hud::SetEnemiesAndSpawns(const std::vector<std::unique_ptr<BaseEnemy>> *ene
 ///=============================================================================
 ///						更新
 void Hud::Update() {
-	// 戦闘モードでない場合は更新しない
-	if(!isCombatMode_) {
-		return;
-	}
+    // 戦闘モードでない場合は更新しない
+    if(!isCombatMode_) {
+        return;
+    }
 
-	// ロックオン表示の回転を更新
-	lockOnRotation_ += lockOnRotationSpeed_;
-	if(lockOnRotation_ > kTwoPi) {
-		lockOnRotation_ -= kTwoPi;
-	}
+    // ロックオン表示の回転を更新
+    lockOnRotation_ += lockOnRotationSpeed_;
+    if(lockOnRotation_ > kTwoPi) {
+        lockOnRotation_ -= kTwoPi;
+    }
 
-	// レーダーの回転をカメラの向きに合わせる
-	if(rotateWithCamera_ && followCamera_) {
-		// カメラの前方向ベクトルからY軸周りの回転角を計算
-		Vector3 forward = followCamera_->GetForwardDirection();
-		// Z軸を前として、X軸を右とした場合の角度を計算
-		radarRotation_ = atan2f(forward.x, forward.z);
-	}
+    // レーダーの回転をカメラの向きに合わせる
+    if(rotateWithCamera_ && followCamera_) {
+        // カメラの前方向ベクトルからY軸周りの回転角を計算
+        Vector3 forward = followCamera_->GetForwardDirection();
+        // Z軸を前として、X軸を右とした場合の角度を計算
+        radarRotation_ = atan2f(forward.x, forward.z);
+    }
+    
+
 }
 
 ///=============================================================================
 ///						描画
 void Hud::Draw(ViewProjection viewProjection) {
-	// 戦闘モードでない場合は描画しない
-	if(!isCombatMode_) {
-		return;
-	}
+    // 戦闘モードでない場合は描画しない
+    if(!isCombatMode_) {
+        return;
+    }
 
-	// 照準の描画
-	DrawCrosshair(viewProjection);
+    // 照準の描画
+    DrawCrosshair(viewProjection);
 
-	// ロックオンの描画
-	DrawLockOn(viewProjection);
+    // ロックオンの描画
+    DrawLockOn(viewProjection);
 
-	// レーダーディスプレイの描画
-	if(showRadar_) {
-		DrawRadarDisplay(viewProjection);
-	}
+    // 3D球体ミニマップの描画（2Dレーダーの代わりに使用）
+    if(use3DSphereMap_) {
+        DrawSphereMap(viewProjection);
+    }
 }
 
 ///=============================================================================
@@ -90,91 +92,116 @@ void Hud::CombatModeDeactive() {
 
 ///=============================================================================
 ///						照準の描画
-///=============================================================================
-///						照準の描画
 void Hud::DrawCrosshair(ViewProjection viewProjection) {
-	// プレイヤーの位置を取得
-	Vector3 playerPos = player_->GetPosition();
+    // プレイヤーの位置を取得
+    Vector3 playerPos = followCamera_->GetViewProjection().worldPosition_;
 
-	// カメラの前方向ベクトルを取得
-	Vector3 cameraForward = followCamera_->GetForwardDirection();
+    // カメラの前方向ベクトルを取得
+    Vector3 cameraForward = followCamera_->GetForwardDirection();
 
-	// 照準の位置を計算（プレイヤーの少し前方）
-	Vector3 crosshairPos = {
-		playerPos.x + cameraForward.x * crosshairDistance_,
-		playerPos.y + cameraForward.y * crosshairDistance_,
-		playerPos.z + cameraForward.z * crosshairDistance_
-	};
+    // 照準の位置を計算（プレイヤーの少し前方）
+    Vector3 crosshairPos = {
+        playerPos.x + cameraForward.x * crosshairDistance_,
+        playerPos.y + cameraForward.y * crosshairDistance_,
+        playerPos.z + cameraForward.z * crosshairDistance_
+    };
 
-	// 上下左右の線の位置計算用に、カメラの右方向と上方向を取得
-	Vector3 rightDir = followCamera_->GetRightDirection();
-	Vector3 upDir = followCamera_->GetUpDirection();
+    // 上下左右の線の位置計算用に、カメラの右方向と上方向を取得
+    Vector3 rightDir = followCamera_->GetRightDirection();
+    Vector3 upDir = followCamera_->GetUpDirection();
 
-	// 中心点
-	Vector3 center = crosshairPos;
-
-	// 右線
-	Vector3 rightStart = {
-		center.x + rightDir.x * crosshairGap_,
-		center.y + rightDir.y * crosshairGap_,
-		center.z + rightDir.z * crosshairGap_
-	};
-
-	Vector3 rightEnd = {
-		rightStart.x + rightDir.x * crosshairSize_,
-		rightStart.y + rightDir.y * crosshairSize_,
-		rightStart.z + rightDir.z * crosshairSize_
-	};
-
-	lineManager_->DrawLine(rightStart, rightEnd, crosshairColor_);
-
-	// 左線
-	Vector3 leftStart = {
-		center.x - rightDir.x * crosshairGap_,
-		center.y - rightDir.y * crosshairGap_,
-		center.z - rightDir.z * crosshairGap_
-	};
-
-	Vector3 leftEnd = {
-		leftStart.x - rightDir.x * crosshairSize_,
-		leftStart.y - rightDir.y * crosshairSize_,
-		leftStart.z - rightDir.z * crosshairSize_
-	};
-
-	lineManager_->DrawLine(leftStart, leftEnd, crosshairColor_);
-
-	// 上線
-	Vector3 upStart = {
-		center.x + upDir.x * crosshairGap_,
-		center.y + upDir.y * crosshairGap_,
-		center.z + upDir.z * crosshairGap_
-	};
-
-	Vector3 upEnd = {
-		upStart.x + upDir.x * crosshairSize_,
-		upStart.y + upDir.y * crosshairSize_,
-		upStart.z + upDir.z * crosshairSize_
-	};
-
-	lineManager_->DrawLine(upStart, upEnd, crosshairColor_);
-
-	// 下線
-	Vector3 downStart = {
-		center.x - upDir.x * crosshairGap_,
-		center.y - upDir.y * crosshairGap_,
-		center.z - upDir.z * crosshairGap_
-	};
-
-	Vector3 downEnd = {
-		downStart.x - upDir.x * crosshairSize_,
-		downStart.y - upDir.y * crosshairSize_,
-		downStart.z - upDir.z * crosshairSize_
-	};
-
-	lineManager_->DrawLine(downStart, downEnd, crosshairColor_);
-
-	// 中央の小さい円（カメラに正対するように変更）
-	DrawFacingCircle(center, crosshairCenterRadius_, crosshairColor_, crosshairCircleSegments_, cameraForward);
+    // 中心点
+    Vector3 center = crosshairPos;
+    
+    // 全天周囲モニター風の照準に更新
+    
+    // 内側の円を描画（サイト中心）
+    DrawFacingCircle(center, crosshairCenterRadius_ * 0.5f, 
+                     Vector4{1.0f, 1.0f, 1.0f, 0.9f}, crosshairCircleSegments_, cameraForward);
+                     
+    // 外側のリング
+    DrawFacingCircle(center, crosshairSize_ * 1.0f, crosshairColor_, crosshairCircleSegments_ * 2, cameraForward);
+    
+    // 方向指示マーク（十字線の代わり）
+    float markerSize = crosshairSize_ * 0.8f;
+    float gapSize = crosshairGap_ * 0.7f;
+    
+    // 上マーカー（三角形）
+    Vector3 topMarkerCenter = {
+        center.x + upDir.x * gapSize,
+        center.y + upDir.y * gapSize,
+        center.z + upDir.z * gapSize
+    };
+    DrawFacingTriangle(topMarkerCenter, markerSize * 0.3f, crosshairColor_, cameraForward);
+    
+    // 下マーカー（四角形）
+    Vector3 bottomMarkerCenter = {
+        center.x - upDir.x * gapSize,
+        center.y - upDir.y * gapSize,
+        center.z - upDir.z * gapSize
+    };
+    DrawFacingSquare(bottomMarkerCenter, markerSize * 0.25f, crosshairColor_, rightDir, upDir);
+    
+    // 左右マーカー（線）
+    float sideMarkerLength = markerSize * 0.4f;
+    
+    // 右マーカー
+    Vector3 rightStart = {
+        center.x + rightDir.x * gapSize,
+        center.y + rightDir.y * gapSize,
+        center.z + rightDir.z * gapSize
+    };
+    
+    Vector3 rightEnd = {
+        rightStart.x + rightDir.x * sideMarkerLength,
+        rightStart.y + rightDir.y * sideMarkerLength,
+        rightStart.z + rightDir.z * sideMarkerLength
+    };
+    
+    lineManager_->DrawLine(rightStart, rightEnd, crosshairColor_);
+    
+    // 左マーカー
+    Vector3 leftStart = {
+        center.x - rightDir.x * gapSize,
+        center.y - rightDir.y * gapSize,
+        center.z - rightDir.z * gapSize
+    };
+    
+    Vector3 leftEnd = {
+        leftStart.x - rightDir.x * sideMarkerLength,
+        leftStart.y - rightDir.y * sideMarkerLength,
+        leftStart.z - rightDir.z * sideMarkerLength
+    };
+    
+    lineManager_->DrawLine(leftStart, leftEnd, crosshairColor_);
+    
+    // ロックオンターゲットがある場合に照準に追加情報を表示
+    if(lockOnSystem_) {
+        const auto& lockedEnemies = lockOnSystem_->GetLockedEnemies();
+        if(!lockedEnemies.empty()) {
+            // 最初のロックオンターゲットの情報を照準に反映
+            BaseEnemy* target = lockedEnemies[0];
+            if(target) {
+                LockOn::LockLevel lockLevel = lockOnSystem_->GetLockLevel(target);
+                
+                // ロックレベルに応じた表示
+                if(lockLevel == LockOn::LockLevel::PreciseLock) {
+                    // 精密ロック時は照準を拡張
+                    float pulseSize = 1.0f + 0.2f * sinf(lockOnRotation_ * 5.0f);
+                    DrawFacingCircle(center, crosshairSize_ * 1.5f * pulseSize, 
+                                    hudLockColor_, crosshairCircleSegments_, cameraForward);
+                                    
+                    // 「ロック完了」を示す照準外枠
+                    DrawFacingPolygon(center, crosshairSize_ * 2.0f, 8, hudLockColor_, cameraForward);
+                }
+                else if(lockLevel == LockOn::LockLevel::SimpleLock) {
+                    // 簡易ロック時は照準に補助円を追加
+                    DrawFacingCircle(center, crosshairSize_ * 1.2f, 
+                                    hudAlertColor_, crosshairCircleSegments_, cameraForward);
+                }
+            }
+        }
+    }
 }
 
 void Hud::DrawLockOn(ViewProjection viewProjection) {
@@ -582,7 +609,7 @@ void Hud::DrawFacingTriangle(const Vector3 &center, float size, const Vector4 &c
 ///						レーダーディスプレイの描画
 void Hud::DrawRadarDisplay(ViewProjection viewProjection) {
 	// プレイヤーの位置を取得
-	Vector3 playerPos = player_->GetPosition();
+	Vector3 playerPos = followCamera_->GetViewProjection().worldPosition_;
 
 	// カメラの位置と向きからレーダーの表示位置を計算
 	Vector3 cameraForward = followCamera_->GetForwardDirection();
@@ -792,4 +819,374 @@ void Hud::DrawRadarDisplay(ViewProjection viewProjection) {
 			}
 		}
 	}
+}
+
+///=============================================================================
+///						3D球体ミニマップの描画
+void Hud::DrawSphereMap(ViewProjection viewProjection) {
+    // プレイヤーの位置を取得
+    Vector3 playerPos = followCamera_->GetViewProjection().worldPosition_;
+
+    // カメラの位置と向きを取得
+    Vector3 cameraForward = followCamera_->GetForwardDirection();
+    Vector3 cameraRight = followCamera_->GetRightDirection();
+    Vector3 cameraUp = followCamera_->GetUpDirection();
+
+    // 全天周囲モニター風の設定：プレイヤーの少し前方に配置
+    Vector3 sphereCenter = {
+        playerPos.x + cameraForward.x * 30.0f,
+        playerPos.y + cameraForward.y * 30.0f + 5.0f, // 少し上に
+        playerPos.z + cameraForward.z * 30.0f
+    };
+
+    // Y軸回りの回転を更新（自動回転）
+    sphereRotationY_ += sphereRotationSpeed_;
+    if(sphereRotationY_ > kTwoPi) {
+        sphereRotationY_ -= kTwoPi;
+    }
+
+    // 全天周囲モニター風のグリッドを描画（より詳細に）
+    DrawSphereGrid(sphereCenter, sphereMapRadius_, sphereGridColor_, cameraForward);
+
+    // プレイヤーの位置を中心に特別なマーカーで表示
+    DrawFacingPolygon(sphereCenter, 1.5f, 8, hudBaseColor_, cameraForward); // 八角形で表示
+
+    // 視線方向を示す三角形を表示
+    Vector3 viewDirection = {
+        sphereCenter.x + cameraForward.x * sphereMapRadius_,
+        sphereCenter.y + cameraForward.y * sphereMapRadius_,
+        sphereCenter.z + cameraForward.z * sphereMapRadius_
+    };
+    Draw3DTriangle(viewDirection, 2.0f, Vector4{1.0f, 1.0f, 1.0f, 0.9f}, cameraForward);
+
+    // 敵を球体上に表示（より目立つように）
+    if(enemies_ && !enemies_->empty()) {
+        for(const auto& enemy : *enemies_) {
+            if(enemy) {
+                // 敵の位置を取得
+                Vector3 enemyPos = enemy->GetPosition();
+                
+                // 敵の実世界座標を球体上の座標に変換
+                Vector3 sphereEnemyPos = WorldToSpherePosition(enemyPos, sphereCenter, sphereMapRadius_, sphereMapRange_);
+                
+                // 検出範囲内の場合のみ表示
+                if(sphereEnemyPos.x != 0.0f || sphereEnemyPos.y != 0.0f || sphereEnemyPos.z != 0.0f) {
+                    // 敵の方向ベクトル
+                    Vector3 enemyDirection = enemyPos - playerPos;
+                    
+                    // ロックオン状態の敵は特別な表示に
+                    if(lockOnSystem_ && lockOnSystem_->IsLocked(enemy.get())) {
+                        // パルス効果のためのサイズ変動
+                        float pulseScale = 1.0f + 0.3f * sinf(lockOnRotation_ * 5.0f);
+                        Draw3DTriangle(sphereEnemyPos, sphereObjectScale_ * 2.0f * pulseScale, hudLockColor_, enemyDirection);
+                        
+                        // ロックオン線を表示
+                        lineManager_->DrawLine(sphereCenter, sphereEnemyPos, 
+                            Vector4{hudLockColor_.x, hudLockColor_.y, hudLockColor_.z, 0.7f});
+                    } else {
+                        // 通常の敵表示（三角形）
+                        Draw3DTriangle(sphereEnemyPos, sphereObjectScale_ * 1.5f, enemyDotColor_, enemyDirection);
+                    }
+                    
+                    // 距離表示（数値の代わりに線の長さで表現）
+                    float dist = Length(enemyPos - playerPos);
+                    float lineLength = sphereMapRadius_ * 0.2f * (1.0f - std::min(dist / sphereMapRange_, 0.9f));
+                    Vector3 distLine = Normalize(sphereEnemyPos - sphereCenter);
+                    
+                    Vector3 lineEnd = {
+                        sphereEnemyPos.x + distLine.x * lineLength,
+                        sphereEnemyPos.y + distLine.y * lineLength,
+                        sphereEnemyPos.z + distLine.z * lineLength
+                    };
+                    
+                    lineManager_->DrawLine(sphereEnemyPos, lineEnd, enemyDotColor_);
+                }
+            }
+        }
+    }
+
+    // スポーンブロックを球体上に表示（より目立つように）
+    if(spawns_ && !spawns_->empty()) {
+        for(const auto& spawn : *spawns_) {
+            if(spawn) {
+                // スポーンの位置を取得
+                Vector3 spawnPos = spawn->GetPosition();
+                
+                // スポーンブロックの実世界座標を球体上の座標に変換
+                Vector3 sphereSpawnPos = WorldToSpherePosition(spawnPos, sphereCenter, sphereMapRadius_, sphereMapRange_);
+                
+                // 検出範囲内の場合のみ表示
+                if(sphereSpawnPos.x != 0.0f || sphereSpawnPos.y != 0.0f || sphereSpawnPos.z != 0.0f) {
+                    // 警告表示として点滅効果を追加
+                    float blinkFactor = 0.5f + 0.5f * sinf(lockOnRotation_ * 4.0f);
+                    Vector4 blinkColor = {
+                        spawnBlockColor_.x,
+                        spawnBlockColor_.y * blinkFactor,
+                        spawnBlockColor_.z,
+                        spawnBlockColor_.w
+                    };
+                    
+                    // スポーンブロックを六角形で表示
+                    Draw3DHexagon(sphereSpawnPos, sphereObjectScale_ * 1.8f, blinkColor, spawnPos - playerPos);
+                    
+                    // 警告リングを追加
+                    DrawFacingCircle(sphereSpawnPos, sphereObjectScale_ * 2.5f, blinkColor, 12, cameraForward);
+                }
+            }
+        }
+    }
+    
+    // 視点方向と水平方向の輪を描画（高度計のような役割）
+    float horizonRingRadius = sphereMapRadius_ * 0.7f;
+    Vector3 horizonRingCenter = sphereCenter;
+    Vector3 upVector = {0.0f, 1.0f, 0.0f};
+    
+    int segments = 36;
+    for(int i = 0; i < segments; i++) {
+        float angle1 = i * kTwoPi / segments;
+        float angle2 = (i + 1) * kTwoPi / segments;
+        
+        Vector3 p1 = {
+            horizonRingCenter.x + horizonRingRadius * cosf(angle1),
+            horizonRingCenter.y,
+            horizonRingCenter.z + horizonRingRadius * sinf(angle1)
+        };
+        
+        Vector3 p2 = {
+            horizonRingCenter.x + horizonRingRadius * cosf(angle2),
+            horizonRingCenter.y,
+            horizonRingCenter.z + horizonRingRadius * sinf(angle2)
+        };
+        
+        lineManager_->DrawLine(p1, p2, Vector4{0.5f, 0.8f, 1.0f, 0.7f});
+    }
+}
+
+// 球体のグリッドを描画する関数（全天周囲モニター風に強化）
+void Hud::DrawSphereGrid(const Vector3& center, float radius, const Vector4& color, const Vector3& cameraForward) {
+    // 経線（縦線）を描画
+    for(int i = 0; i < sphereLongitudeCount_; i++) {
+        float angle = i * kTwoPi / sphereLongitudeCount_;
+        
+        // Y軸回りの回転を適用
+        angle += sphereRotationY_;
+        
+        // 緯度に沿って線を引く（より細かく分割）
+        for(int j = 0; j < 24; j++) {
+            float phi1 = j * kPi / 24.0f;
+            float phi2 = (j + 1) * kPi / 24.0f;
+            
+            // 球面上の点を計算
+            Vector3 p1 = {
+                center.x + radius * sinf(phi1) * cosf(angle),
+                center.y + radius * cosf(phi1),
+                center.z + radius * sinf(phi1) * sinf(angle)
+            };
+            
+            Vector3 p2 = {
+                center.x + radius * sinf(phi2) * cosf(angle),
+                center.y + radius * cosf(phi2),
+                center.z + radius * sinf(phi2) * sinf(angle)
+            };
+            
+            // 経線の色を方位によって変える（北・南・東・西方向を強調）
+            Vector4 lineColor = color;
+            if(i % (sphereLongitudeCount_ / 4) == 0) {
+                lineColor = Vector4{0.9f, 0.9f, 0.3f, 0.8f}; // 主方位は黄色で強調
+            }
+            
+            lineManager_->DrawLine(p1, p2, lineColor);
+        }
+    }
+    
+    // 緯線（横線）を描画（より細かく）
+    for(int i = 1; i <= sphereLatitudeCount_ * 2; i++) {
+        float phi = i * kPi / (sphereLatitudeCount_ * 2 + 1);
+        
+        // 緯度の色を設定（赤道付近を強調）
+        Vector4 lineColor = color;
+        if(i == sphereLatitudeCount_) {
+            lineColor = Vector4{0.9f, 0.3f, 0.3f, 0.8f}; // 赤道は赤で強調
+        }
+        
+        for(int j = 0; j < 48; j++) {
+            float angle1 = j * kTwoPi / 48.0f;
+            float angle2 = (j + 1) * kTwoPi / 48.0f;
+            
+            // Y軸回りの回転を適用
+            angle1 += sphereRotationY_;
+            angle2 += sphereRotationY_;
+            
+            Vector3 p1 = {
+                center.x + radius * sinf(phi) * cosf(angle1),
+                center.y + radius * cosf(phi),
+                center.z + radius * sinf(phi) * sinf(angle1)
+            };
+            
+            Vector3 p2 = {
+                center.x + radius * sinf(phi) * cosf(angle2),
+                center.y + radius * cosf(phi),
+                center.z + radius * sinf(phi) * sinf(angle2)
+            };
+            
+            lineManager_->DrawLine(p1, p2, lineColor);
+        }
+    }
+    
+    // 球体の外側に方位マーカーを追加
+    const char* directions[4] = {"N", "E", "S", "W"};
+    for(int i = 0; i < 4; i++) {
+        float angle = i * kPi / 2.0f + sphereRotationY_;
+        Vector3 markerPos = {
+            center.x + radius * 1.1f * sinf(kPi/2) * cosf(angle),
+            center.y,
+            center.z + radius * 1.1f * sinf(kPi/2) * sinf(angle)
+        };
+        
+        // 方位マーカーとして円を描画（実際のテキスト描画はできないため）
+        if(i == 0) { // 北
+            DrawFacingCircle(markerPos, 1.5f, Vector4{0.9f, 0.9f, 0.3f, 0.8f}, 8, cameraForward);
+        } else if(i == 2) { // 南
+            DrawFacingTriangle(markerPos, 1.5f, Vector4{0.9f, 0.3f, 0.3f, 0.8f}, cameraForward);
+        } else { // 東西
+            DrawFacingSquare(markerPos, 1.2f, Vector4{0.3f, 0.9f, 0.9f, 0.8f}, 
+                              followCamera_->GetRightDirection(), followCamera_->GetUpDirection());
+        }
+    }
+}
+
+// 世界座標を球体マップ上の座標に変換する関数
+Vector3 Hud::WorldToSpherePosition(const Vector3& worldPos, const Vector3& sphereCenter, float radius, float maxRange) {
+    // プレイヤーの位置を取得
+    Vector3 playerPos = followCamera_->GetViewProjection().worldPosition_;
+    
+    // プレイヤーから対象への相対ベクトル
+    Vector3 relativePos = {
+        worldPos.x - playerPos.x,
+        worldPos.y - playerPos.y,
+        worldPos.z - playerPos.z
+    };
+    
+    // 距離を計算
+    float distance = sqrtf(relativePos.x * relativePos.x + relativePos.y * relativePos.y + relativePos.z * relativePos.z);
+    
+    // 検出範囲外なら原点を返す（表示しない）
+    if(distance > maxRange) {
+        return {0.0f, 0.0f, 0.0f};
+    }
+    
+    // 方向ベクトルを正規化
+    Vector3 direction = {
+        relativePos.x / distance,
+        relativePos.y / distance,
+        relativePos.z / distance
+    };
+    
+    // 球面上の位置を計算（方向ベクトルに半径を掛ける）
+    Vector3 spherePos = {
+        sphereCenter.x + direction.x * radius,
+        sphereCenter.y + direction.y * radius,
+        sphereCenter.z + direction.z * radius
+    };
+    
+    return spherePos;
+}
+
+// 3D空間に三角形を描画する関数（敵表示用）
+void Hud::Draw3DTriangle(const Vector3& center, float size, const Vector4& color, const Vector3& direction) {
+    // 方向ベクトルを正規化
+    Vector3 dir = direction;
+    float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+    if(length > 0.0f) {
+        dir.x /= length;
+        dir.y /= length;
+        dir.z /= length;
+    } else {
+        dir = {0.0f, 1.0f, 0.0f}; // デフォルト方向
+    }
+    
+    // 三角形の頂点を計算するための基底ベクトルを作成
+    Vector3 up = {0.0f, 1.0f, 0.0f};
+    
+    // dirとupがほぼ平行な場合は別の基準軸を使用
+    if(fabsf(dir.y) > 0.99f) {
+        up = {0.0f, 0.0f, 1.0f};
+    }
+    
+    Vector3 right = Cross(up, dir);
+    Normalize(right);
+    
+    up = Cross(dir, right);
+    Normalize(up);
+    
+    // 三角形の頂点を計算（上向き三角形）
+    Vector3 top = {
+        center.x + dir.x * size,
+        center.y + dir.y * size,
+        center.z + dir.z * size
+    };
+    
+    Vector3 bottomLeft = {
+        center.x - right.x * size * 0.5f - dir.x * size * 0.5f,
+        center.y - right.y * size * 0.5f - dir.y * size * 0.5f,
+        center.z - right.z * size * 0.5f - dir.z * size * 0.5f
+    };
+    
+    Vector3 bottomRight = {
+        center.x + right.x * size * 0.5f - dir.x * size * 0.5f,
+        center.y + right.y * size * 0.5f - dir.y * size * 0.5f,
+        center.z + right.z * size * 0.5f - dir.z * size * 0.5f
+    };
+    
+    // 三角形を描画
+    lineManager_->DrawLine(top, bottomLeft, color);
+    lineManager_->DrawLine(bottomLeft, bottomRight, color);
+    lineManager_->DrawLine(bottomRight, top, color);
+}
+
+// 3D空間に六角形を描画する関数（スポーンブロック表示用）
+void Hud::Draw3DHexagon(const Vector3& center, float size, const Vector4& color, const Vector3& direction) {
+    // 方向ベクトルを正規化
+    Vector3 dir = direction;
+    float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+    if(length > 0.0f) {
+        dir.x /= length;
+        dir.y /= length;
+        dir.z /= length;
+    } else {
+        dir = {0.0f, 1.0f, 0.0f}; // デフォルト方向
+    }
+    
+    // 六角形の頂点を計算するための基底ベクトルを作成
+    Vector3 up = {0.0f, 1.0f, 0.0f};
+    
+    // dirとupがほぼ平行な場合は別の基準軸を使用
+    if(fabsf(dir.y) > 0.99f) {
+        up = {0.0f, 0.0f, 1.0f};
+    }
+    
+    Vector3 right = Cross(up, dir);
+    Normalize(right);
+    
+    up = Cross(dir, right);
+    Normalize(up);
+    
+    // 六角形の各頂点を計算
+    const int segments = 6;
+    std::vector<Vector3> vertices;
+    
+    for(int i = 0; i < segments; i++) {
+        float angle = i * kTwoPi / segments;
+        Vector3 vertex = {
+            center.x + right.x * cosf(angle) * size + up.x * sinf(angle) * size,
+            center.y + right.y * cosf(angle) * size + up.y * sinf(angle) * size,
+            center.z + right.z * cosf(angle) * size + up.z * sinf(angle) * size
+        };
+        vertices.push_back(vertex);
+    }
+    
+    // 六角形を描画
+    for(int i = 0; i < segments; i++) {
+        lineManager_->DrawLine(vertices[i], vertices[(i + 1) % segments], color);
+    }
 }

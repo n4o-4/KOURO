@@ -25,6 +25,25 @@ public:
 	// 上方向ベクトルを取得
 	Vector3 GetUpDirection() const;
 
+	// カメラの位置を取得
+	Vector3 GetPosition() const { return currentPosition_; }
+
+	// カメラのビュープロジェクションを取得
+	ViewProjection& GetViewProjection() { return *viewProjection_; }
+
+	// カメラの回転を取得
+	Vector3 GetRotation() const { return destinationRotate; }
+
+	// カメラのオフセットを取得
+	Vector3 GetOffset() const { return offset_; }
+
+	// カメラのデフォルトオフセットを取得
+	Vector3 GetDefaultOffset() const { return defaultOffset_; }
+
+	// カメラのデフォルトオフセットを設定
+	void SetDefaultOffset(const Vector3& offset) { defaultOffset_ = offset; }
+
+
 private:
 
 	Vector3 CalculationOffset();
