@@ -18,8 +18,8 @@ void Player::Initialize() {
 	object3d_->Initialize(Object3dCommon::GetInstance());
 
 	// モデルを設定
-	ModelManager::GetInstance()->LoadModel("player.obj");
-	object3d_->SetModel("player.obj");
+	ModelManager::GetInstance()->LoadModel("player/Microwave.obj");
+	object3d_->SetModel("player/Microwave.obj");
 	// 初期位置を設定
 	objectTransform_ = std::make_unique<WorldTransform>();
 	objectTransform_->Initialize();
