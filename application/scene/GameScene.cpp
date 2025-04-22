@@ -1,7 +1,6 @@
 ﻿#include "GameScene.h"
 #include "imgui.h"
 #include "LineManager.h"
-
 ///=============================================================================
 ///						マトリックス表示
 void ShowMatrix4x4(const Matrix4x4 &matrix, const char *label) {
@@ -69,11 +68,26 @@ void GameScene::Initialize() {
 	player_->SetLockOnSystem(lockOnSystem_.get());  // 🔹 `std::move()` を使わず `get()` でポインタを渡す
 	//========================================
 
-	waveCsvPaths_ = {
+	EwaveCsvPaths_ = {
 	"./Resources/enemySpawn1.csv",
 	"./Resources/enemySpawn2.csv",
 	"./Resources/enemySpawn3.csv"
 	};
+	NwaveCsvPaths_ = {
+	"./Resources/enemySpawn4.csv",
+	"./Resources/enemySpawn5.csv",
+	"./Resources/enemySpawn6.csv"
+	};
+	HwaveCsvPaths_ = {
+	"./Resources/enemySpawn7.csv",
+	"./Resources/enemySpawn8.csv",
+	"./Resources/enemySpawn9.csv"
+	};
+
+	SceneTransitionData& transitionData = SceneManager::GetInstance()->GetTransitionData();
+	easy_ = transitionData.easy;
+	nomal_ = transitionData.nomal;
+	hard_ = transitionData.hard;
 
 	// 敵出現
 	//========================================
@@ -279,22 +293,59 @@ void GameScene::Update() {
 			enemies_.clear();
 
 			waveIndex_++;
+			if (easy_) {
+				if (waveIndex_ < EwaveCsvPaths_.size()) {
 
-			if (waveIndex_ < waveCsvPaths_.size()) {
+					currentWaveImageIndex_ = waveIndex_ + 1;
+					waveDisplayTimer_ = waveDisplayDuration_;
 
-				currentWaveImageIndex_ = waveIndex_+1;  
-				waveDisplayTimer_ = waveDisplayDuration_;
+					player_->GetBullets().clear();
+					player_->GetMachineGunBullets().clear();
 
-				player_->GetBullets().clear();
-				player_->GetMachineGunBullets().clear();
+					LoadEnemyPopData(waveIndex_);
+					waveReady_ = false;
+				} else {
+					player_->GetBullets().clear();
+					player_->GetMachineGunBullets().clear();
+					isGameClear_ = true;
 
-				LoadEnemyPopData(waveIndex_);
-				waveReady_ = false; 
-			} else {
-				player_->GetBullets().clear();
-				player_->GetMachineGunBullets().clear();
-				isGameClear_ = true; 
+				}
+			} 
+			else if (nomal_) {
+				if (waveIndex_ < NwaveCsvPaths_.size()) {
 
+					currentWaveImageIndex_ = waveIndex_ + 1;
+					waveDisplayTimer_ = waveDisplayDuration_;
+
+					player_->GetBullets().clear();
+					player_->GetMachineGunBullets().clear();
+
+					LoadEnemyPopData(waveIndex_);
+					waveReady_ = false;
+				} else {
+					player_->GetBullets().clear();
+					player_->GetMachineGunBullets().clear();
+					isGameClear_ = true;
+
+				}
+			}
+			else if (hard_) {
+				if (waveIndex_ < HwaveCsvPaths_.size()) {
+
+					currentWaveImageIndex_ = waveIndex_ + 1;
+					waveDisplayTimer_ = waveDisplayDuration_;
+
+					player_->GetBullets().clear();
+					player_->GetMachineGunBullets().clear();
+
+					LoadEnemyPopData(waveIndex_);
+					waveReady_ = false;
+				} else {
+					player_->GetBullets().clear();
+					player_->GetMachineGunBullets().clear();
+					isGameClear_ = true;
+
+				}
 			}
 		}
 		// 敵リスト
@@ -482,6 +533,9 @@ void GameScene::Update() {
 	// スポットライト
 	spotLight->Update();
 
+	//
+	
+
 #ifdef _DEBUG
 
 	if(ImGui::TreeNode("directionalLight")) {
@@ -520,10 +574,30 @@ void GameScene::Update() {
 		ImGui::TextWrapped("waveDisplayTimer_ : %d", waveDisplayTimer_);
 		ImGui::TextWrapped("currentWaveImageIndex_ : %d", currentWaveImageIndex_);
 		ImGui::TextWrapped("waveIndex_ : %d", waveIndex_);
-		ImGui::TextWrapped("waveCsvPaths_ : %d", waveCsvPaths_.size());
+		ImGui::TextWrapped("waveCsvPaths_ : %d", EwaveCsvPaths_.size());
 		ImGui::TreePop();
 	}
+	if (ImGui::TreeNode("Difficulty")) {
+		ImGui::Text("easy_  : %s", easy_ ? "true" : "false");
+		ImGui::Text("nomal_ : %s", nomal_ ? "true" : "false");
+		ImGui::Text("hard_  : %s", hard_ ? "true" : "false");
 
+		
+		std::string currentCSV;
+		if (easy_ && waveIndex_ < EwaveCsvPaths_.size()) {
+			currentCSV = EwaveCsvPaths_[waveIndex_];
+		} else if (nomal_ && waveIndex_ < NwaveCsvPaths_.size()) {
+			currentCSV = NwaveCsvPaths_[waveIndex_];
+		} else if (hard_ && waveIndex_ < HwaveCsvPaths_.size()) {
+			currentCSV = HwaveCsvPaths_[waveIndex_];
+		} else {
+			currentCSV = "Out of range";
+		}
+
+		ImGui::Text("Current CSV: %s", currentCSV.c_str());
+
+		ImGui::TreePop();
+	}
 
 
 	ImGui::Checkbox("useDebugCamera", &cameraManager_->useDebugCamera_);
@@ -731,17 +805,34 @@ void GameScene::Draw() {
 void GameScene::LoadEnemyPopData(int index) {
 	enemyPopCommands.str("");
 	enemyPopCommands.clear();
-
-	if (index < 0 || index >= waveCsvPaths_.size()) {
-		return;
+	if (easy_) {
+		if (index < 0 || index >= EwaveCsvPaths_.size()) {
+			return;
+		}
+		std::ifstream file(EwaveCsvPaths_[index]);
+		assert(file.is_open());
+		enemyPopCommands << file.rdbuf();
+		file.close();
 	}
-
-	std::ifstream file(waveCsvPaths_[index]);
-	assert(file.is_open());
-
-	enemyPopCommands << file.rdbuf();
-
-	file.close();
+	else if (nomal_) {
+		if (index < 0 || index >= NwaveCsvPaths_.size()) {
+			return;
+		}
+		std::ifstream file(NwaveCsvPaths_[index]);
+		assert(file.is_open());
+		enemyPopCommands << file.rdbuf();
+		file.close();
+	}
+	else if (hard_) {
+		if (index < 0 || index >= HwaveCsvPaths_.size()) {
+			return;
+		}
+		std::ifstream file(HwaveCsvPaths_[index]);
+		assert(file.is_open());
+		enemyPopCommands << file.rdbuf();
+		file.close();
+	}
+	
 }
 ///--------------------------------------------------------------
 ///                        敵の出現データの更新
@@ -945,3 +1036,5 @@ void GameScene::AvoidOverlap(std::vector<BaseEnemy*>& allEnemies, float avoidRad
 		}
 	}
 }
+
+

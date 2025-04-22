@@ -146,11 +146,19 @@ private:
 	// wave
 	int waveIndex_ = 0;
 	bool waveReady_ = true;
-	std::vector<std::string> waveCsvPaths_;
+	std::vector<std::string> EwaveCsvPaths_;
+	std::vector<std::string> NwaveCsvPaths_;
+	std::vector<std::string> HwaveCsvPaths_;
 	int waveDisplayTimer_ = 120;
 	const int waveDisplayDuration_ = 120;
 	int currentWaveImageIndex_ = 1;
 	std::unique_ptr<Sprite> wave1_ = nullptr;
 	std::unique_ptr<Sprite> wave2_ = nullptr;
 	std::unique_ptr<Sprite> wave3_ = nullptr;
+
+	bool easy_ = false;
+	bool nomal_ = false;
+	bool hard_ = false;
+
+
 };

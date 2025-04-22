@@ -5,6 +5,13 @@
 #include "Camera.h"
 #include "SrvManager.h"
 #include "PostEffect.h"
+
+struct SceneTransitionData {
+	bool easy = false;
+	bool nomal = false;
+	bool hard = false;
+};
+
 // シーン管理
 class SceneManager
 {
@@ -37,6 +44,10 @@ public:
 
 	PostEffect* GetPostEffect() { return postEffect_; }
 
+	// データ配信用の構造体アクセサ
+	SceneTransitionData& GetTransitionData() { return transitionData_; }
+
+
 private:
 
 	static std::unique_ptr<SceneManager> instance;
@@ -65,4 +76,6 @@ private:
 	Camera* camera_ = nullptr;
 
 	PostEffect* postEffect_ = nullptr;
+	
+	SceneTransitionData transitionData_;
 };

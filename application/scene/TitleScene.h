@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BaseScene.h"
-
+#include "Kouro.h"
 #include "audio.h"
 #include "Input.h"
 #include "Sprite.h"
@@ -14,6 +14,7 @@
 #include "ParticleEmitter.h"
 #include "SceneManager.h"
 #include "Audio.h"
+#include "SkyDome.h" 
 
 class TitleScene : public BaseScene
 {
@@ -27,8 +28,36 @@ private:
 
 	std::unique_ptr<Audio> audio = nullptr;
 
+	
 
+	// 天球
+	std::unique_ptr<SkyDome> skyDome_ = nullptr;
+
+	// ライトクラス
+	std::unique_ptr<DirectionalLight> directionalLight = nullptr;
+	std::unique_ptr<PointLight> pointLight = nullptr;
+	std::unique_ptr<SpotLight> spotLight = nullptr;
+
+	//model
+	std::unique_ptr<Object3d> player_ = nullptr;
+	std::unique_ptr<WorldTransform> playerWorldTransform_ = nullptr;
+
+	//
 	std::unique_ptr<Sprite> title_ = nullptr;
+	std::unique_ptr<Sprite> start1_ = nullptr;
+	std::unique_ptr<Sprite> start2_ = nullptr;
+	std::unique_ptr<Sprite> select1_ = nullptr;
+	std::unique_ptr<Sprite> select2_ = nullptr;
+	std::unique_ptr<Sprite> select3_ = nullptr;
+	std::unique_ptr<Sprite> selectE_ = nullptr;
+
+	bool start = false;
+	bool easy = false;
+	bool nomal = false;
+	bool hard = false;
+
+	int stsrtTime = 120;
+	int selectNum = 0;
 
 private:
 public: // メンバ関数
@@ -44,4 +73,10 @@ public: // メンバ関数
 
 	// 描画
 	void Draw() override;
+
+	void select();
+
+	bool GetEasy() const { return easy; }
+	bool GetNomal() const { return nomal; }
+	bool GetHard() const { return hard; }
 };
