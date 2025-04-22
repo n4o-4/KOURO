@@ -22,6 +22,8 @@
 #include "GroundTypeEnemy3.h"
 #include "GroundTypeEnemy4.h"
 
+#include <algorithm>
+
 class GameScene : public BaseScene
 {
 private:

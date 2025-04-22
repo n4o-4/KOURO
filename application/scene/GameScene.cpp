@@ -17,6 +17,17 @@ void ShowMatrix4x4(const Matrix4x4 &matrix, const char *label) {
 		ImGui::EndTable();
 	}
 }
+
+ImVec2 Add(const ImVec2& a, const ImVec2& b)
+{
+	return ImVec2(a.x + b.x, a.y + b.y);
+};
+
+ImVec2 Subtract(const ImVec2& a, const ImVec2& b)
+{
+	return ImVec2(a.x - b.x, a.y - b.y);
+};
+
 ///=============================================================================
 ///						初期化
 void GameScene::Initialize() {
@@ -608,10 +619,92 @@ void GameScene::Update() {
 	ImGui::DragFloat("MotionBlur.BlurWidth", &blur_->blurWidth_, 0.01f);
 	ImGui::DragInt("MotionBlur.NumSapmles", &blur_->numSamples_);
 
+	ImGui::Begin("SceneConticue");
+
+
+	if (ImGui::BeginChild("GraphArea", ImVec2(300, 200), true)) {
+
+		static std::vector<ImVec2> controlPoints = {
+			{0.01f, 0.01f},
+			{1.0f, 1.0f},
+			{2.0f, 3.0f},
+			{3.0f, 5.0f}
+		};
+
+		ImVec2 graphSize = ImVec2(300, 200);
+		ImVec2 graphPos = ImGui::GetCursorScreenPos();
+		ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+		float tMin = 0.01f;
+		float tMax = 5.0f;
+		float xMax = tMax * tMax;
+
+		drawList->AddRect(graphPos, Add(graphPos, graphSize), IM_COL32_WHITE);
+
+		// 線を描画（制御点をつないで表示）
+		for (size_t i = 0; i + 1 < controlPoints.size(); ++i) {
+			ImVec2 p0 = controlPoints[i];
+			ImVec2 p1 = controlPoints[i + 1];
+
+			float t0Norm = (log(p0.x) - log(tMin)) / (log(tMax) - log(tMin));
+			float t1Norm = (log(p1.x) - log(tMin)) / (log(tMax) - log(tMin));
+
+			float x0Norm = 1.0f - (p0.y / xMax);
+			float x1Norm = 1.0f - (p1.y / xMax);
+
+			ImVec2 gp0 = ImVec2(graphPos.x + t0Norm * graphSize.x, graphPos.y + x0Norm * graphSize.y);
+			ImVec2 gp1 = ImVec2(graphPos.x + t1Norm * graphSize.x, graphPos.y + x1Norm * graphSize.y);
+
+			drawList->AddLine(gp0, gp1, IM_COL32(100, 200, 255, 255), 2.0f);
+		}
+
+		// 点を描画 & ドラッグ操作
+		for (size_t i = 0; i < controlPoints.size(); ++i) {
+			ImVec2& p = controlPoints[i];
+
+			float tNorm = (log(p.x) - log(tMin)) / (log(tMax) - log(tMin));
+			float xNorm = 1.0f - (p.y / xMax);
+			ImVec2 screenPos = ImVec2(graphPos.x + tNorm * graphSize.x, graphPos.y + xNorm * graphSize.y);
+
+			ImGui::SetCursorScreenPos(Subtract(screenPos, ImVec2(5, 5)));
+			ImGui::InvisibleButton(("pt" + std::to_string(i)).c_str(), ImVec2(10, 10));
+
+			if (ImGui::IsItemActive() && ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
+				ImVec2 delta = ImGui::GetIO().MouseDelta;
+
+				// X: log空間での操作を t空間に戻す（スライド量に応じて倍率変更）
+				float deltaTNorm = delta.x / graphSize.x;
+				float newLogT = log(p.x) + deltaTNorm * (log(tMax) - log(tMin));
+				p.x = std::clamp(std::exp(newLogT), tMin, tMax);
+
+				// Y: 上がマイナス方向なので逆符号
+				float deltaY = -delta.y / graphSize.y;
+				p.y += deltaY * xMax;
+				p.y = std::clamp(p.y, 0.0f, xMax);
+
+				// Yの範囲を制限
+				p.y = std::clamp(p.y, 0.0f, xMax);
+
+				// X: グラフ内に収める（t範囲に収める）
+				float minT = tMin;
+				float maxT = tMax;
+				p.x = std::clamp(p.x, minT, maxT);
+			}
+
+			// 点を描画
+			drawList->AddCircleFilled(screenPos,4.0f, IM_COL32(255, 100, 100, 255));
+		}
+	}
+	ImGui::EndChild();
+
+	ImGui::End();
+
 #endif
 
 	lineDrawer_->Update();
 }
+
+
 
 ///=============================================================================
 ///						描画
