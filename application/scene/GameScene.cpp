@@ -154,6 +154,22 @@ void GameScene::Initialize() {
 	// 敵とスポーンの情報を最新に保つ
 	hud_->SetEnemiesAndSpawns(&enemies_, &spawns_);
 	hud_->Initialize( cameraManager_->GetFollowCamera(), player_.get(), lockOnSystem_.get() );
+
+	transform0 = std::make_unique<WorldTransform>();
+	transform1 = std::make_unique<WorldTransform>();
+	transform2 = std::make_unique<WorldTransform>();
+	transform3 = std::make_unique<WorldTransform>();
+	transform4 = std::make_unique<WorldTransform>();
+	transform5 = std::make_unique<WorldTransform>();
+
+	transform0->Initialize();
+	transform1->Initialize();
+	transform2->Initialize();
+	transform3->Initialize();
+	transform4->Initialize();
+	transform5->Initialize();
+
+
 }
 ///=============================================================================
 ///						終了処理

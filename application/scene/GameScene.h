@@ -73,6 +73,13 @@ private:
 
 	std::unique_ptr<Object3d> human_ = nullptr;	
 
+	std::unique_ptr<WorldTransform> transform0;
+	std::unique_ptr<WorldTransform> transform1;
+	std::unique_ptr<WorldTransform> transform2;
+	std::unique_ptr<WorldTransform> transform3;
+	std::unique_ptr<WorldTransform> transform4;
+	std::unique_ptr<WorldTransform> transform5;
+
 private:
 
 	//std::unique_ptr<SkyDome> skyDome_ = nullptr;
