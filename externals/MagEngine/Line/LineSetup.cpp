@@ -152,7 +152,7 @@ void LineSetup::CreateGraphicsPipeline() {
 	//========================================
     // DepthStencilStateの設定を行う
     D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
-	depthStencilDesc.DepthEnable = true;  // デプスステンシルを有効
+	depthStencilDesc.DepthEnable = false;  // デプスステンシルを有効
     depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
     depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL; 
     graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
