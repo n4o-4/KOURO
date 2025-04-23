@@ -146,11 +146,31 @@ void ParticleManager::Update()
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].World = worldMatrix;
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].WVP = worldViewProjectionMatrix;
 
-				float lifeRatio = (*particleIterator).currentTime / (*particleIterator).lifeTime;
+				/*float lifeRatio = (*particleIterator).currentTime / (*particleIterator).lifeTime;
 
 				(*particleIterator).color = Vect4::Lerp((*particleIterator).startColor, (*particleIterator).finishColor, lifeRatio);
 					
-				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color = (*particleIterator).color;
+				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color = (*particleIterator).color;*/
+
+				float lifeRatio = (*particleIterator).currentTime / (*particleIterator).lifeTime;
+
+				// デフォルト色（補間できない場合に使う）
+				Vector4 color = particleGroup->gradationPoints.front().color;
+
+				for (size_t i = 0; i + 1 < particleGroup->gradationPoints.size(); ++i) {
+					const auto& p0 = particleGroup->gradationPoints[i];
+					const auto& p1 = particleGroup->gradationPoints[i + 1];
+
+					if (lifeRatio >= p0.ration && lifeRatio <= p1.ration) {
+						// ratio の間に lifeRatio があるので、線形補間する
+						float t = (lifeRatio - p0.ration) / (p1.ration - p0.ration);
+						color = Vect4::Lerp(p0.color, p1.color, t);
+						break;
+					}
+				}
+
+				(*particleIterator).color = color;
+				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color = color;
 
 				++particleGroupIterator->second.kNumInstance;
 			}
@@ -759,6 +779,16 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 		srvManager_->CreateSRVforStructuredBuffer(newParticleGroup.srvIndex, newParticleGroup.instancingResource.Get(), kNumMaxInstance, sizeof(ParticleForGPU));
 
 		newParticleGroup.type = type;
+
+		GradationPoint gradationPoint;
+
+		gradationPoint.ration = 0.0f;
+		gradationPoint.color = { 1.0f,1.0f,1.0f,1.0f };
+		newParticleGroup.gradationPoints.push_back(gradationPoint);
+
+		gradationPoint.ration = 1.0f;
+		gradationPoint.color = { 1.0f,1.0f,1.0f,1.0f };
+		newParticleGroup.gradationPoints.push_back(gradationPoint);
 
 		particleGroups[name] = newParticleGroup;
 	}

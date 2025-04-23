@@ -72,6 +72,12 @@ public:
 		AABB area; // 範囲
 	};
 
+	struct GradationPoint
+	{
+		float ration;
+		Vector4 color;
+	};
+
 	struct Particle {
 		Transform transform;
 		Vector3 velocity;
@@ -92,6 +98,7 @@ public:
 		ParticleForGPU* instancingData;
 		ParticleType type;
 		bool enableBillboard = false;
+		std::vector<GradationPoint> gradationPoints;
 	};
 
 	struct ColorRange
@@ -164,6 +171,21 @@ public:
 
 	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
 
+	ParticleGroup* GetParticleGroup(const std::string& name) {
+		auto it = particleGroups.find(name);
+		if (it != particleGroups.end()) {
+			return &it->second;
+		}
+		return nullptr;
+	}
+
+
+	void SetParticleGropGradationPoints(const std::string& name, const std::vector<GradationPoint> gradationPoints) {
+		auto it = particleGroups.find(name);
+		if (it != particleGroups.end()) {
+			it->second.gradationPoints = gradationPoints;
+		}
+	}
 private:
 	static std::unique_ptr<ParticleManager> instance;
 
@@ -198,6 +220,8 @@ private:
 	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
 
 	Particle MakeNewHitParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
+
+
 
 private:
 
@@ -243,6 +267,5 @@ private:
 	std::unique_ptr<uint32_t> indexData;
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource = nullptr;
 
-
+	
 };
-
