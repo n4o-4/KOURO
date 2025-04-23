@@ -42,10 +42,10 @@ void GameScene::Initialize() {
 	spotLight = std::make_unique<SpotLight>();
 	spotLight->Initialize();
 	spotLight->direction_ = { 0.0f,-1.0f,0.0f };
-	spotLight->position_ = { 0.0f,3200.0f,0.0f };
-	spotLight->intensity_ = 11.0f;
-	spotLight->decay_ = 0.87f;
-	spotLight->distance_ = 4800.0f;
+	spotLight->position_ = { 0.0f,2000.0f,0.0f };
+	spotLight->intensity_ = 3.0f;
+	spotLight->decay_ = 1.6f;
+	spotLight->distance_ = 3200.0f;
 	spotLight->cosAngle_ = 0.2f;
 	spotLight->cosFalloffStart_;
 	//========================================
