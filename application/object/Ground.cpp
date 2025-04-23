@@ -5,7 +5,10 @@ void Ground::Initialize() {
 	model_->Initialize(Object3dCommon::GetInstance());
 
 	ModelManager::GetInstance()->LoadModel("ground/ground.obj");
-	model_->SetModel("ground/ground.obj");
+	ModelManager::GetInstance()->LoadModel("ground/Ground_01.obj");
+	model_->SetModel("ground/Ground_01.obj");
+
+	model_->SetLocalMatrix(MakeIdentity4x4());
 
 	worldTransform_ = std::make_unique<WorldTransform>();
 	worldTransform_->Initialize();
