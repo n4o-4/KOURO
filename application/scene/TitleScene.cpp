@@ -12,16 +12,6 @@ void TitleScene::Initialize()
 
 	ModelManager::GetInstance()->LoadModel("axis.obj");
 
-	
-
-	ParticleManager::GetInstance()->CreateParticleGroup("Particle_1", "Resources/circle.png", ParticleManager::ParticleType::Normal);
-
-
-	particleEmitter_1 = std::make_unique<ParticleEmitter>();
-	particleEmitter_1->Initialize("Particle_1");
-
-	ParticleManager::GetInstance()->SetBlendMode("Add");
-
 	//audio = std::make_unique<Audio>();
 	//audio->Initialize();
 	//audio->SoundPlay("Resources/Spinning_World.mp3",999);
@@ -230,9 +220,6 @@ void TitleScene::Update() {
 	}
 #endif
 
-	ParticleManager::GetInstance()->Update();
-	particleEmitter_1->Update();
-
 	skyDome_->Update();
 
 	playerWorldTransform_->UpdateMatrix();
@@ -305,7 +292,6 @@ void TitleScene::Draw()
 	
 	
 	fade_->Draw();
-	ParticleManager::GetInstance()->Draw("Resources/circle.png");
 
 }
 
