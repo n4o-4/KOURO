@@ -1,2 +1,5 @@
-//ƒRƒ}ƒ“ƒh,x,y,z,number,type
-POP,40,0,15,2,WM
+//ï¿½Rï¿½}ï¿½ï¿½ï¿½h,x,y,z,number,type
+// Wave3
+POP,90,5,-90,5,CHAIR
+POP,-30,10,80,6,KUMO
+POP,30,15,-50,4,BOMB

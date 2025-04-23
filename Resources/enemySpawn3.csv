@@ -1,2 +1,5 @@
-//ƒRƒ}ƒ“ƒh,x,y,z,number,type
-POP,40,0,15,1,KUMO
+//ï¿½Rï¿½}ï¿½ï¿½ï¿½h,x,y,z,number,type
+// Wave3
+POP,0,10,0,4,KUMO
+POP,80,15,-10,3,BOMB
+POP,-60,5,50,3,BAT
