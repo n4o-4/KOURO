@@ -115,6 +115,12 @@ void TitleScene::Initialize()
 	hard = false;
 	stsrtTime = 50;
 
+	AudioManager::GetInstance()->Initialize();
+	AudioManager::GetInstance()->SoundLoadFile("Resources/Spinning_World.mp3");
+
+	audio = std::make_unique<Audio>();
+	audio->Initialize();
+	audio->SoundPlay("Resources/Spinning_World.mp3", 1);
 }
 
 void TitleScene::Finalize() {
@@ -214,6 +220,13 @@ void TitleScene::Update() {
 			select3_->SetPosition(Vector2(posArr3[0], posArr3[1]));
 		}
 		ImGui::TreePop();
+
+		if (ImGui::Checkbox("flag", &music))
+		{
+			music = false;
+
+			audio->SoundPlay("Resources/Spinning_World.mp3", 1);
+		}
 	}
 #endif
 

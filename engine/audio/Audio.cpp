@@ -18,44 +18,44 @@ void Audio::Finalize()
 	pSourceVoice->Stop();
 }
 
-void Audio::SoundPlay(const char* filename,int loopCount)
+void Audio::SoundPlay(const char* filename, int loopCount)
 {
-	HRESULT result;
+    HRESULT result;
 
-	// 波系フォーマットを元にSourceVoiceの生成
-	
-	auto soundDatas = AudioManager::GetInstance()->GetSoundData();
+    auto soundDatas = AudioManager::GetInstance()->GetSoundData();
 
-	if (soundDatas.find(filename) != soundDatas.end())
-	{
+    if (soundDatas.find(filename) != soundDatas.end())
+    {
+        result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundDatas.find(filename)->second.wfex);
+        assert(SUCCEEDED(result));
 
-		result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundDatas.find(filename)->second.wfex);
-		assert(SUCCEEDED(result));
+        XAUDIO2_BUFFER buf{};
+        buf.pAudioData = soundDatas.find(filename)->second.pBuffer;
+        buf.AudioBytes = soundDatas.find(filename)->second.bufferSize;
+        buf.Flags = XAUDIO2_END_OF_STREAM;
 
-		// 再生する波形データの設定
-		XAUDIO2_BUFFER buf{};
-		buf.pAudioData = soundDatas.find(filename)->second.pBuffer;
-		buf.AudioBytes = soundDatas.find(filename)->second.bufferSize;
-		buf.Flags = XAUDIO2_END_OF_STREAM;
+        if (loopCount >= 9999) {
+            buf.LoopCount = XAUDIO2_LOOP_INFINITE;
+        }
+        else if (loopCount > 0) {
+            buf.LoopCount = loopCount;
+        }
+        else {
+            buf.LoopCount = 0; // 0でも一度再生される（XAUDIO2仕様上）
+        }
 
-		if (loopCount != 0)
-		{
-			buf.LoopCount = loopCount;
-		}
+        result = pSourceVoice->SubmitSourceBuffer(&buf);
+        assert(SUCCEEDED(result));
 
-		if (loopCount >= 9999)
-		{
-			buf.LoopCount = XAUDIO2_LOOP_INFINITE;
-		}
+		result = pSourceVoice->SetVolume(0.1f);
 
-		// 波形データの再生
-		result = pSourceVoice->SubmitSourceBuffer(&buf);
-		result = pSourceVoice->Start();
+        result = pSourceVoice->Start();
+        assert(SUCCEEDED(result));
 
-		return;
-	}
+        return;
+    }
 
-	assert(0);
+    assert(0);
 }
 
 void Audio::SoundStop(const char* filename)

@@ -59,6 +59,8 @@ private:
 	int stsrtTime = 120;
 	int selectNum = 0;
 
+	bool music = false;
+
 private:
 public: // メンバ関数
 
