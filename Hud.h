@@ -153,12 +153,12 @@ private:
     float spawnBlockSize_ = 2.5f;                 // スポーンブロックのサイズ
     
     // 3D球体ミニマップ関連
-    float sphereMapRadius_ = 256.0f;          // 球体の半径
+    float sphereMapRadius_ = 128.0f;          // 球体の半径
     float sphereMapPositionX_ = 0.0f;      // 球体の表示位置X
     float sphereMapPositionY_ = 0.0f;      // 球体の表示位置Y
-    float sphereMapRange_ = 150.0f;         // 球体の検出範囲
+    float sphereMapRange_ = 512.0f;         // 球体の検出範囲
     int sphereLongitudeCount_ = 0;          // 経線の数
-    int sphereLatitudeCount_ = 3;           // 緯線の数
+    int sphereLatitudeCount_ = 1;           // 緯線の数
     float sphereRotationSpeed_ = 0.00f;     // 自動回転速度
     float sphereRotationY_ = 0.0f;          // Y軸周りの回転
     float sphereObjectScale_ = 0.9f;        // 球体上のオブジェクトスケール

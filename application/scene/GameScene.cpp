@@ -560,10 +560,10 @@ void GameScene::Draw() {
 			*spotLight.get());
 		//========================================
 		// 地面
-		/*ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+		ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 			*directionalLight.get(),
 			*pointLight.get(),
-			*spotLight.get());*/
+			*spotLight.get());
 		//========================================
 		// プレイヤーの描画
 		player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
@@ -596,10 +596,10 @@ void GameScene::Draw() {
 			*spotLight.get());
 		//========================================
 		// 地面
-		/*ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+		ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 			*directionalLight.get(),
 			*pointLight.get(),
-			*spotLight.get());*/
+			*spotLight.get());
 		//========================================
 		// spawnの描画
 		for (const auto& Spawn : spawns_) {
@@ -667,10 +667,10 @@ void GameScene::Draw() {
 			*spotLight.get());
 		//========================================
 		// 地面
-		/*ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+		ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 			*directionalLight.get(),
 			*pointLight.get(),
-			*spotLight.get());*/
+			*spotLight.get());
 		//========================================
 		// 敵
 		for(const auto &enemy : enemies_) {
