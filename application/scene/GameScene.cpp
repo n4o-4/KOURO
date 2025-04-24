@@ -608,6 +608,8 @@ void GameScene::Update() {
 	ImGui::DragFloat("MotionBlur.BlurWidth", &blur_->blurWidth_, 0.01f);
 	ImGui::DragInt("MotionBlur.NumSapmles", &blur_->numSamples_);
 
+
+	hud_->DrawImGui();
 #endif
 
 	lineDrawer_->Update();
