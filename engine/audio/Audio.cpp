@@ -12,6 +12,8 @@ void Audio::Initialize()
 	// マスターボイスを生成
 	result = xAudio2->CreateMasteringVoice(&masterVoice);
 
+	masterVoice->SetVolume(1.0f);
+
 }
 void Audio::Finalize()
 {
@@ -50,6 +52,11 @@ void Audio::SoundPlay(const char* filename,int loopCount)
 
 		// 波形データの再生
 		result = pSourceVoice->SubmitSourceBuffer(&buf);
+
+		if (pSourceVoice == nullptr) {
+			assert(0);
+		}
+
 		result = pSourceVoice->Start();
 
 		return;
@@ -77,8 +84,6 @@ void Audio::SoundStop(const char* filename)
 
 		return;
 	}
-
-
 }
 
 void Audio::SetVolume(float volume)

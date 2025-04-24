@@ -38,9 +38,14 @@ void TitleScene::Initialize()
 
 	ParticleManager::GetInstance()->SetBlendMode("Add");
 
-	//audio = std::make_unique<Audio>();
-	//audio->Initialize();
-	//audio->SoundPlay("Resources/Spinning_World.mp3",999);
+	AudioManager::GetInstance()->Initialize();
+	AudioManager::GetInstance()->SoundLoadFile("Resources/Alarm01.wav");
+
+    audio = std::make_unique<Audio>();
+	audio->Initialize();
+	audio->SoundPlay("Resources/Alarm01.wav",999);
+
+	audio->SetVolume(0.5f);
 
 	//title
 	TextureManager::GetInstance()->LoadTexture("Resources/scene/title.png");

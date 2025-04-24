@@ -154,8 +154,8 @@ void ParticleManager::Update()
 
 				float lifeRatio = (*particleIterator).currentTime / (*particleIterator).lifeTime;
 
-				// デフォルト色（補間できない場合に使う）
-				Vector4 color = particleGroup->gradationPoints.front().color;
+				// デフォルト色（初期値を使うのは避けたいので、最初に最後の色を使うようにする）
+				Vector4 color = particleGroup->gradationPoints.back().color;
 
 				for (size_t i = 0; i + 1 < particleGroup->gradationPoints.size(); ++i) {
 					const auto& p0 = particleGroup->gradationPoints[i];
@@ -170,7 +170,7 @@ void ParticleManager::Update()
 				}
 
 				(*particleIterator).color = color;
-				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color = color;
+				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color = (*particleIterator).color;
 
 				++particleGroupIterator->second.kNumInstance;
 			}
@@ -472,12 +472,12 @@ void ParticleManager::CreatePipeline()
 			blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 			blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 
-		
+
 			break;
 
 		case BlendMode::kAdd:
 
-			/*blendDesc.RenderTarget[0].BlendEnable = TRUE;
+			blendDesc.RenderTarget[0].BlendEnable = TRUE;
 
 
 			blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
@@ -486,18 +486,7 @@ void ParticleManager::CreatePipeline()
 
 			blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
 			blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-			blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;*/
-			blendDesc.RenderTarget[0].BlendEnable = TRUE;
-
-			// ソースとデスティネーションの設定
-			blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-			blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-			blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-
-			// アルファブレンドの設定
-			blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
-			blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;
-			blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+			blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
 
 			break;
 
