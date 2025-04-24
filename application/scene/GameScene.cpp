@@ -152,7 +152,7 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::BoxFilter); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::GaussianFilter); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LuminanceBasedOutline); //完
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::DepthBasedOutline); //完
+	sceneManager_->GetPostEffect()->ApplyEffect("Outline",PostEffect::EffectType::DepthBasedOutline); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::RadialBlur); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect("dissolve",PostEffect::EffectType::Dissolve); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random); //完
