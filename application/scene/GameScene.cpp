@@ -649,6 +649,8 @@ void GameScene::Update() {
 
 	ShowGradientEditor();
 
+
+	hud_->DrawImGui();
 #endif
 
 	lineDrawer_->Update();

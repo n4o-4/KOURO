@@ -832,32 +832,36 @@ void Hud::DrawSphereMap(ViewProjection viewProjection) {
     Vector3 cameraRight = followCamera_->GetRightDirection();
     Vector3 cameraUp = followCamera_->GetUpDirection();
 
-    // 全天周囲モニター風の設定：プレイヤーの少し前方に配置
-    Vector3 sphereCenter = {
-        playerPos.x + cameraForward.x * 30.0f,
-        playerPos.y + cameraForward.y * 30.0f + 5.0f, // 少し上に
-        playerPos.z + cameraForward.z * 30.0f
+     // 右上に配置するように変更、Z座標も反映
+	 Vector3 sphereCenter = {
+        playerPos.x + cameraRight.x * sphereMapPositionX_ + cameraUp.x * sphereMapPositionY_ + cameraForward.x * sphereMapPositionZ_,
+        playerPos.y + cameraRight.y * sphereMapPositionX_ + cameraUp.y * sphereMapPositionY_ + cameraForward.y * sphereMapPositionZ_,
+        playerPos.z + cameraRight.z * sphereMapPositionX_ + cameraUp.z * sphereMapPositionY_ + cameraForward.z * sphereMapPositionZ_
     };
-
+    
+    // 背景の半透明円を描画（視認性向上）
+    //DrawFacingCircle(sphereCenter, sphereMapRadius_ * 1.1f, 
+    //                Vector4{0.0f, 0.1f, 0.0f, 0.3f}, 24, cameraForward);
+    
     // Y軸回りの回転を更新（自動回転）
     sphereRotationY_ += sphereRotationSpeed_;
     if(sphereRotationY_ > kTwoPi) {
         sphereRotationY_ -= kTwoPi;
     }
 
-    // 全天周囲モニター風のグリッドを描画（より詳細に）
-    DrawSphereGrid(sphereCenter, sphereMapRadius_, sphereGridColor_, cameraForward);
+    // TODO:グリッドを描画
+    //DrawSphereGrid(sphereCenter, sphereMapRadius_, sphereMapColor_, cameraForward);
 
-    // プレイヤーの位置を中心に特別なマーカーで表示
-    DrawFacingPolygon(sphereCenter, 1.5f, 8, hudBaseColor_, cameraForward); // 八角形で表示
+    // TODO:プレイヤーの位置を中心に特別なマーカーで表示
+    //DrawFacingPolygon(sphereCenter, 1.0f, 8, hudBaseColor_, cameraForward);
 
-    // 視線方向を示す三角形を表示
-    Vector3 viewDirection = {
-        sphereCenter.x + cameraForward.x * sphereMapRadius_,
-        sphereCenter.y + cameraForward.y * sphereMapRadius_,
-        sphereCenter.z + cameraForward.z * sphereMapRadius_
-    };
-    Draw3DTriangle(viewDirection, 2.0f, Vector4{1.0f, 1.0f, 1.0f, 0.9f}, cameraForward);
+    // TODO:視線方向を示す三角形を表示
+    //Vector3 viewDirection = {
+    //    sphereCenter.x + cameraForward.x * sphereMapRadius_,
+    //    sphereCenter.y + cameraForward.y * sphereMapRadius_,
+    //    sphereCenter.z + cameraForward.z * sphereMapRadius_
+    //};
+    //Draw3DTriangle(viewDirection, 2.0f, Vector4{1.0f, 1.0f, 1.0f, 0.9f}, cameraForward);
 
     // 敵を球体上に表示（より目立つように）
     if(enemies_ && !enemies_->empty()) {
@@ -1034,25 +1038,25 @@ void Hud::DrawSphereGrid(const Vector3& center, float radius, const Vector4& col
     }
     
     // 球体の外側に方位マーカーを追加
-    const char* directions[4] = {"N", "E", "S", "W"};
-    for(int i = 0; i < 4; i++) {
-        float angle = i * kPi / 2.0f + sphereRotationY_;
-        Vector3 markerPos = {
-            center.x + radius * 1.1f * sinf(kPi/2) * cosf(angle),
-            center.y,
-            center.z + radius * 1.1f * sinf(kPi/2) * sinf(angle)
-        };
-        
-        // 方位マーカーとして円を描画（実際のテキスト描画はできないため）
-        if(i == 0) { // 北
-            DrawFacingCircle(markerPos, 1.5f, Vector4{0.9f, 0.9f, 0.3f, 0.8f}, 8, cameraForward);
-        } else if(i == 2) { // 南
-            DrawFacingTriangle(markerPos, 1.5f, Vector4{0.9f, 0.3f, 0.3f, 0.8f}, cameraForward);
-        } else { // 東西
-            DrawFacingSquare(markerPos, 1.2f, Vector4{0.3f, 0.9f, 0.9f, 0.8f}, 
-                              followCamera_->GetRightDirection(), followCamera_->GetUpDirection());
-        }
-    }
+    //const char* directions[4] = {"N", "E", "S", "W"};
+    //for(int i = 0; i < 4; i++) {
+    //    float angle = i * kPi / 2.0f + sphereRotationY_;
+    //    Vector3 markerPos = {
+    //        center.x + radius * 1.1f * sinf(kPi/2) * cosf(angle),
+    //        center.y,
+    //        center.z + radius * 1.1f * sinf(kPi/2) * sinf(angle)
+    //    };
+    //    
+    //    // 方位マーカーとして円を描画（実際のテキスト描画はできないため）
+    //    if(i == 0) { // 北
+    //        DrawFacingCircle(markerPos, 1.5f, Vector4{0.9f, 0.9f, 0.3f, 0.8f}, 8, cameraForward);
+    //    } else if(i == 2) { // 南
+    //        DrawFacingTriangle(markerPos, 1.5f, Vector4{0.9f, 0.3f, 0.3f, 0.8f}, cameraForward);
+    //    } else { // 東西
+    //        DrawFacingSquare(markerPos, 1.2f, Vector4{0.3f, 0.9f, 0.9f, 0.8f}, 
+    //                          followCamera_->GetRightDirection(), followCamera_->GetUpDirection());
+    //    }
+    //}
 }
 
 // 世界座標を球体マップ上の座標に変換する関数
@@ -1190,3 +1194,71 @@ void Hud::Draw3DHexagon(const Vector3& center, float size, const Vector4& color,
         lineManager_->DrawLine(vertices[i], vertices[(i + 1) % segments], color);
     }
 }
+
+// ...existing code...
+
+void Hud::DrawImGui() {
+    // ImGuiウィンドウを開始
+    ImGui::Begin("HUD Settings");
+    
+    // 戦闘モード設定
+    ImGui::Checkbox("Combat Mode", &isCombatMode_);
+    ImGui::Checkbox("Use 3D Sphere Map", &use3DSphereMap_);
+    
+    // 球体ミニマップ設定
+    if (ImGui::CollapsingHeader("Sphere Map Settings")) {
+        ImGui::SliderFloat("Radius", &sphereMapRadius_, 1.0f, 30.0f);
+        ImGui::SliderFloat("Position X", &sphereMapPositionX_, -30.0f, 30.0f);
+        ImGui::SliderFloat("Position Y", &sphereMapPositionY_, -30.0f, 30.0f);
+		ImGui::SliderFloat("Position Z", &sphereMapPositionZ_, -30.0f, 30.0f);
+        ImGui::SliderFloat("Range", &sphereMapRange_, 50.0f, 1000.0f);
+        ImGui::SliderInt("Longitude Count", &sphereLongitudeCount_, 4, 20);
+        ImGui::SliderInt("Latitude Count", &sphereLatitudeCount_, 2, 10);
+        //ImGui::SliderFloat("Rotation Speed", &sphereRotationSpeed_, 0.0f, 0.05f);
+        ImGui::SliderFloat("Object Scale", &sphereObjectScale_, 0.5f, 3.0f);
+        //ImGui::ColorEdit4("Grid Color", &sphereGridColor_.x);
+        ImGui::ColorEdit4("Map Color", &sphereMapColor_.x);
+        ImGui::ColorEdit4("Lock Color", &sphereMapLockColor_.x);
+    }
+    
+    // 照準設定
+    if (ImGui::CollapsingHeader("Crosshair Settings")) {
+        ImGui::SliderFloat("Size", &crosshairSize_, 1.0f, 10.0f);
+        ImGui::SliderFloat("Distance", &crosshairDistance_, 10.0f, 200.0f);
+        ImGui::SliderFloat("Gap", &crosshairGap_, 1.0f, 20.0f);
+        ImGui::SliderFloat("Center Radius", &crosshairCenterRadius_, 0.1f, 5.0f);
+        ImGui::SliderInt("Circle Segments", &crosshairCircleSegments_, 4, 32);
+        ImGui::ColorEdit4("Color", &crosshairColor_.x);
+    }
+    
+    // ロックオン設定
+    if (ImGui::CollapsingHeader("Lock-on Settings")) {
+        ImGui::SliderFloat("Size", &lockOnSize_, 1.0f, 15.0f);
+        ImGui::SliderFloat("Rotation Speed", &lockOnRotationSpeed_, 0.001f, 0.1f);
+        ImGui::ColorEdit4("Base Color", &lockOnColor_.x);
+        ImGui::ColorEdit4("Precise Lock Color", &preciseLockonColor_.x);
+        ImGui::ColorEdit4("Simple Lock Color", &simpleLockonColor_.x);
+        ImGui::ColorEdit4("No Lock Color", &noLockonColor_.x);
+        ImGui::ColorEdit4("Progress Color", &progressColor_.x);
+    }
+    
+    // 全体カラー設定
+    if (ImGui::CollapsingHeader("HUD Colors")) {
+        ImGui::ColorEdit4("Base Color", &hudBaseColor_.x);
+        ImGui::ColorEdit4("Accent Color", &hudAccentColor_.x);
+        ImGui::ColorEdit4("Enemy Color", &hudEnemyColor_.x);
+        ImGui::ColorEdit4("Alert Color", &hudAlertColor_.x);
+        ImGui::ColorEdit4("Lock Color", &hudLockColor_.x);
+        ImGui::ColorEdit4("Enemy Dot Color", &enemyDotColor_.x);
+        ImGui::ColorEdit4("Spawn Block Color", &spawnBlockColor_.x);
+    }
+    
+    // 敵とスポーン設定
+    if (ImGui::CollapsingHeader("Enemy & Spawn Settings")) {
+        ImGui::SliderFloat("Enemy Dot Size", &enemyDotSize_, 0.1f, 3.0f);
+        ImGui::SliderFloat("Spawn Block Size", &spawnBlockSize_, 0.1f, 3.0f);
+        ImGui::ColorEdit4("Radiation Line", &radiationLineColor_.x);
+    }
+    
+    ImGui::End();
+};
