@@ -118,9 +118,9 @@ void TitleScene::Initialize()
 	AudioManager::GetInstance()->Initialize();
 	AudioManager::GetInstance()->SoundLoadFile("Resources/Spinning_World.mp3");
 
-	audio = std::make_unique<Audio>();
-	audio->Initialize();
-	audio->SoundPlay("Resources/Spinning_World.mp3", 1);
+	//audio = std::make_unique<Audio>();
+	//audio->Initialize();
+	//audio->SoundPlay("Resources/Spinning_World.mp3", 1);
 }
 
 void TitleScene::Finalize() {
@@ -228,7 +228,7 @@ void TitleScene::Update() {
 		{
 			music = false;
 
-			audio->SoundPlay("Resources/Spinning_World.mp3", 1);
+			//audio->SoundPlay("Resources/Spinning_World.mp3", 1);
 		}
 	}
 #endif

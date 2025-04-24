@@ -119,7 +119,7 @@ void ParticleManager::Update()
 				if (particleGroup->enableBillboard)
 				{
 
-					/*Matrix4x4 rotationZ = MakeRotateZMatrix(particleIterator->transform.rotate.z);
+					Matrix4x4 rotationZ = MakeRotateZMatrix(particleIterator->transform.rotate.z);
 					billboardMatrix = Multiply(worldMatrix, rotationZ);
 
 					worldMatrix.m[0][0] = scaleMatrix.m[0][0] * billboardMatrix.m[0][0];
@@ -132,8 +132,7 @@ void ParticleManager::Update()
 
 					worldMatrix.m[2][0] = scaleMatrix.m[2][2] * billboardMatrix.m[2][0];
 					worldMatrix.m[2][1] = scaleMatrix.m[2][2] * billboardMatrix.m[2][1];
-					worldMatrix.m[2][2] = scaleMatrix.m[2][2] * billboardMatrix.m[2][2];*/
-		
+					worldMatrix.m[2][2] = scaleMatrix.m[2][2] * billboardMatrix.m[2][2];
 					
 				}
 
