@@ -22,11 +22,9 @@ private:
 
 	std::unique_ptr<Sprite> sprite = nullptr;
 
-	//std::unique_ptr<Object3d> object3d = nullptr;
-
 	std::unique_ptr<ParticleEmitter> particleEmitter_1 = nullptr;
 
-	std::unique_ptr<Audio> audio = nullptr;
+
 
 	
 
@@ -49,9 +47,12 @@ private:
 	std::unique_ptr<Sprite> select1_ = nullptr;
 	std::unique_ptr<Sprite> select2_ = nullptr;
 	std::unique_ptr<Sprite> select3_ = nullptr;
-	std::unique_ptr<Sprite> selectE_ = nullptr;
+	std::unique_ptr<Sprite> select4_ = nullptr;
+
+	std::unique_ptr<Sprite> operation_ = nullptr;
 
 	bool start = false;
+	bool operation = false;
 	bool easy = false;
 	bool nomal = false;
 	bool hard = false;

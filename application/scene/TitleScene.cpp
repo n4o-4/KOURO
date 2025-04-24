@@ -16,7 +16,6 @@ void TitleScene::Initialize()
 	//audio->Initialize();
 	//audio->SoundPlay("Resources/Spinning_World.mp3",999);
 
-
 	// ライト
 	// 指向性
 	directionalLight = std::make_unique<DirectionalLight>();
@@ -62,27 +61,37 @@ void TitleScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture("Resources/scene/select1.png");
 	select1_ = std::make_unique<Sprite>();
 	select1_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/select1.png");
-	select1_->SetTexSize({ 280.0f,120.0f });
-	select1_->SetSize({ 310.0f,140.0f });
-	select1_->SetPosition({ 728.0f,140.0f });
+	select1_->SetTexSize({ 240.0f,90.0f });
+	select1_->SetSize({ 270.0f,120.0f });
+	select1_->SetPosition({ 728.0f,90.0f });
+
 	TextureManager::GetInstance()->LoadTexture("Resources/scene/select2.png");
 	select2_ = std::make_unique<Sprite>();
 	select2_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/select2.png");
-	select2_->SetTexSize({ 280.0f,120.0f });
-	select2_->SetSize({ 280.0f,120.0f });
-	select2_->SetPosition({ 728.0f,330.0f });
+	select2_->SetTexSize({ 240.0f,90.0f });
+	select2_->SetSize({ 240.0f,90.0f });
+	select2_->SetPosition({ 728.0f,240.0f });
+
 	TextureManager::GetInstance()->LoadTexture("Resources/scene/select3.png");
 	select3_ = std::make_unique<Sprite>();
 	select3_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/select3.png");
-	select3_->SetTexSize({ 280.0f,120.0f });
-	select3_->SetSize({ 280.0f,120.0f });
-	select3_->SetPosition({ 728.0f,520.0f });
-	TextureManager::GetInstance()->LoadTexture("Resources/scene/selectE2.png");
-	selectE_ = std::make_unique<Sprite>();
-	selectE_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/selectE2.png");
-	selectE_->SetTexSize({ 400.0f,120.0f });
-	selectE_->SetSize({ 400.0f,120.0f });
-	selectE_->SetPosition({ 728.0f,520.0f });
+	select3_->SetTexSize({ 240.0f,90.0f });
+	select3_->SetSize({ 240.0f,90.0f });
+	select3_->SetPosition({ 728.0f,390.0f });
+
+	TextureManager::GetInstance()->LoadTexture("Resources/scene/select4.png");
+	select4_ = std::make_unique<Sprite>();
+	select4_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/select4.png");
+	select4_->SetTexSize({ 240.0f,90.0f });
+	select4_->SetSize({ 240.0f,90.0f });
+	select4_->SetPosition({ 728.0f,540.0f });
+
+	TextureManager::GetInstance()->LoadTexture("Resources/scene/operation.png");
+	operation_ = std::make_unique<Sprite>();
+	operation_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/operation.png");
+	operation_->SetTexSize({ 1280.0f,720.0f });
+	operation_->SetSize({ 1280.0f,720.0f });
+	operation_->SetPosition({ 0.0f,0.0f });
 	// 天球
 	skyDome_ = std::make_unique<SkyDome>();
 	skyDome_->Initialize();
@@ -100,6 +109,7 @@ void TitleScene::Initialize()
 
 	//
 	start = false;
+	operation = false;
 	easy = false;
 	nomal = false;
 	hard = false;
@@ -130,13 +140,16 @@ void TitleScene::Update() {
 
 		break;
 	case Phase::kMain:
+		
+			if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
+				if ((easy || nomal || hard) && selectNum != 3) {
 
-		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-			if (easy || nomal || hard) {
-			fade_->Start(Fade::Status::FadeOut, fadeTime_);
-			phase_ = Phase::kFadeOut;
+					fade_->Start(Fade::Status::FadeOut, fadeTime_);
+					phase_ = Phase::kFadeOut;
+				}
 			}
-		}
+		
+		
 
 		break;
 	case Phase::kFadeOut:
@@ -234,7 +247,8 @@ void TitleScene::Update() {
 	select1_->Update();
 	select2_->Update();
 	select3_->Update();
-	selectE_->Update();
+	select4_->Update();
+	operation_->Update();
 	if (!start) {
 		if(Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)){
 			start = true;
@@ -254,8 +268,6 @@ void TitleScene::Draw()
 	DrawBackgroundSprite();
 	/// 背景スプライト描画
 
-	//title
-	
 
 	DrawObject();
 	/// オブジェクト描画	
@@ -287,9 +299,11 @@ void TitleScene::Draw()
 		select1_->Draw();
 		select2_->Draw();
 		select3_->Draw();
-		
+		select4_->Draw();
 	}
-	
+	if (operation) {
+		operation_->Draw();
+	}
 	
 	fade_->Draw();
 
@@ -307,16 +321,17 @@ void TitleScene::select() {
 	if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::DPAD_UP)) {
 		selectNum--;
 	}
-	if (selectNum > 3) {
-		selectNum = 2;
+	if (selectNum > 4) {
+		selectNum = 3;
 	}
 	if (selectNum < -1) {
 		selectNum = 0;
 	}
 	if (selectNum == 0) {
-		select1_->SetSize({ 310.0f,140.0f });
-		select2_->SetSize({ 280.0f,120.0f });
-		select3_->SetSize({ 280.0f,120.0f });
+		select1_->SetSize({ 270.0f,120.0f });
+		select2_->SetSize({ 240.0f,90.0f });
+		select3_->SetSize({ 240.0f,90.0f });
+		select4_->SetSize({ 240.0f,90.0f });
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 			easy = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = true;
@@ -325,9 +340,10 @@ void TitleScene::select() {
 		}
 	}
 	if (selectNum == 1) {
-		select2_->SetSize({ 310.0f,140.0f });
-		select1_->SetSize({ 280.0f,120.0f });
-		select3_->SetSize({ 280.0f,120.0f });
+		select2_->SetSize({ 270.0f,120.0f });
+		select3_->SetSize({ 240.0f,90.0f });
+		select4_->SetSize({ 240.0f,90.0f });
+		select1_->SetSize({ 240.0f,90.0f });
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 			nomal = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = false;
@@ -336,14 +352,31 @@ void TitleScene::select() {
 		}
 	}
 	if (selectNum == 2) {
-		select3_->SetSize({ 310.0f,140.0f });
-		select1_->SetSize({ 280.0f,120.0f });
-		select2_->SetSize({ 280.0f,120.0f });
+		select3_->SetSize({ 270.0f,120.0f });
+		select4_->SetSize({ 240.0f,90.0f });
+		select1_->SetSize({ 240.0f,90.0f });
+		select2_->SetSize({ 240.0f,90.0f });
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 			hard = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = false;
 			SceneManager::GetInstance()->GetTransitionData().nomal = false;
 			SceneManager::GetInstance()->GetTransitionData().hard = true;
 		}
+	}
+	if (selectNum == 3) {
+		select4_->SetSize({ 270.0f,120.0f });
+		select1_->SetSize({ 240.0f,90.0f });
+		select2_->SetSize({ 240.0f,90.0f });
+		select3_->SetSize({ 240.0f,90.0f });
+		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
+			operation = !operation;
+			easy = false;
+			nomal = false;
+			hard = false;
+			SceneManager::GetInstance()->GetTransitionData().easy = false;
+			SceneManager::GetInstance()->GetTransitionData().nomal = false;
+			SceneManager::GetInstance()->GetTransitionData().hard = false;
+		}
+		
 	}
 }
