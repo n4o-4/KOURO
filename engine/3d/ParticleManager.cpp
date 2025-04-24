@@ -133,8 +133,18 @@ void ParticleManager::Update()
 					worldMatrix.m[2][0] = scaleMatrix.m[2][2] * billboardMatrix.m[2][0];
 					worldMatrix.m[2][1] = scaleMatrix.m[2][2] * billboardMatrix.m[2][1];
 					worldMatrix.m[2][2] = scaleMatrix.m[2][2] * billboardMatrix.m[2][2];*/
-		
-					
+
+					worldMatrix.m[0][0] = scaleMatrix.m[0][0] * billboardMatrix.m[0][0];
+					worldMatrix.m[0][1] = scaleMatrix.m[0][0] * billboardMatrix.m[0][1];
+					worldMatrix.m[0][2] = scaleMatrix.m[0][0] * billboardMatrix.m[0][2];
+
+					worldMatrix.m[1][0] = scaleMatrix.m[1][1] * billboardMatrix.m[1][0];
+					worldMatrix.m[1][1] = scaleMatrix.m[1][1] * billboardMatrix.m[1][1];
+					worldMatrix.m[1][2] = scaleMatrix.m[1][1] * billboardMatrix.m[1][2];
+
+					worldMatrix.m[2][0] = scaleMatrix.m[2][2] * billboardMatrix.m[2][0];
+					worldMatrix.m[2][1] = scaleMatrix.m[2][2] * billboardMatrix.m[2][1];
+					worldMatrix.m[2][2] = scaleMatrix.m[2][2] * billboardMatrix.m[2][2];
 				}
 
 				worldMatrix.m[3][0] = (*particleIterator).transform.translate.x;
