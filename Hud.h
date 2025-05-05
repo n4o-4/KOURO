@@ -68,6 +68,8 @@ private:
 	void Draw3DTriangle(const Vector3 &center, float size, const Vector4 &color, const Vector3 &direction);
 	void Draw3DHexagon(const Vector3 &center, float size, const Vector4 &color, const Vector3 &direction);
 
+	
+
 	///=============================================================================
 	///                        メンバ変数
 private:

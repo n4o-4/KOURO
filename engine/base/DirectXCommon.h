@@ -212,7 +212,7 @@ private:
 	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
 
 	Microsoft::WRL::ComPtr<IDXGISwapChain4>  swapChain = nullptr;
-
+		
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource = nullptr;
