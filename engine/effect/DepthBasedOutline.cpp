@@ -19,6 +19,12 @@ void DepthBasedOutline::Update()
 {
 	// アクティブなカメラかプロジェクション行列を取得して反転させてデータに代入
 	data_->projectionInverse = Inverse(cameraManager_->GetActiveCamera()->GetViewProjection().matProjection_);
+
+#ifdef _DEBUG
+
+	DrawImGui();
+
+#endif
 }
 
 void DepthBasedOutline::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
@@ -257,4 +263,16 @@ void DepthBasedOutline::CreateMaterial()
 
 	// データをマップ
 	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));
+}
+
+void DepthBasedOutline::DrawImGui()
+{
+	if (ImGui::TreeNode("depthBasedOutline")) {
+
+		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
+
+		ImGui::DragFloat("edgeStrength", &data_->edgeStrength, 0.01f);
+
+		ImGui::TreePop();
+	}
 }

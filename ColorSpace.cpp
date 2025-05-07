@@ -21,6 +21,12 @@ void ColorSpace::Update()
 	data_->hue = hue;
 	data_->saturation = saturation;	
 	data_->value = value;
+
+#ifdef _DEBUG
+
+	DrawImGui();
+
+#endif
 }
 
 void ColorSpace::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
@@ -201,4 +207,18 @@ void ColorSpace::CreateMaterial()
 
 	// データをマップ
 	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));
+}
+
+void ColorSpace::DrawImGui()
+{
+	if (ImGui::TreeNode("colorSpace")) {
+
+		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
+
+    ImGui::DragFloat("hue", &hue,0.01f);
+	ImGui::DragFloat("saturation", &saturation, 0.01f);
+	ImGui::DragFloat("value", &value, 0.01f);
+	
+		ImGui::TreePop();
+	}
 }

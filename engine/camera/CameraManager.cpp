@@ -16,7 +16,11 @@ void CameraManager::Initialize()
 
 void CameraManager::Update()
 {
-	ChangeActiveCamera();
+
+	if (useDebugCamera_ || useFollowCamera_ || useDefaultCamera_)
+	{
+		ChangeActiveCamera();
+	}
 
 	activeCamera_->Update();
 }

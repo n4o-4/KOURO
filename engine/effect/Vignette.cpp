@@ -11,6 +11,11 @@ void Vignette::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 
 void Vignette::Update()
 {
+#ifdef _DEBUG
+
+	DrawImGui();
+
+#endif
 }
 
 void Vignette::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
@@ -176,4 +181,15 @@ void Vignette::CreatePipeLineState(Pipeline* pipeline)
 	// 実際に生成
 	pipeline->pipelineState = nullptr;
 	dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&pipeline->pipelineState));
+}
+
+void Vignette::DrawImGui()
+{
+	if (ImGui::TreeNode("vignette")) {
+
+		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
+
+
+		ImGui::TreePop();
+	}
 }

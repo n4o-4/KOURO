@@ -16,6 +16,11 @@ void LuminanceBasedOutline::Initialize(DirectXCommon* dxCommon, SrvManager* srvM
 
 void LuminanceBasedOutline::Update()
 {
+#ifdef _DEBUG
+
+	DrawImGui();
+
+#endif
 }
 
 void LuminanceBasedOutline::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
@@ -197,4 +202,16 @@ void LuminanceBasedOutline::CreateMaterial()
 
 	// データをマップ
 	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));
+}
+
+void LuminanceBasedOutline::DrawImGui()
+{
+	if (ImGui::TreeNode("luminanceBasedOutline")) {
+
+		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
+
+		ImGui::DragFloat("edgeStrength", &data_->edgeStrength, 0.01f);
+
+		ImGui::TreePop();
+	}
 }

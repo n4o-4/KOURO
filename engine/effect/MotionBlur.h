@@ -48,6 +48,8 @@ private:
 	// マテリアルの生成
 	void CreateMaterial();
 
+	void DrawImGui() override;
+
 private: // メンバ変数
 	
 	CameraManager* cameraManager_ = nullptr;

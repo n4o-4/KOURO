@@ -20,6 +20,11 @@ void RadialBlur::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 
 void RadialBlur::Update()
 {
+#ifdef _DEBUG
+
+	DrawImGui();
+
+#endif
 }
 
 void RadialBlur::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
@@ -200,4 +205,18 @@ void RadialBlur::CreateMaterial()
 
 	// データをマップ
 	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));
+}
+
+void RadialBlur::DrawImGui()
+{
+	if (ImGui::TreeNode("radialBlur")) {
+
+		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
+
+		ImGui::DragFloat("blurWidth", &data_->blurWidth, 0.01f);
+	    ImGui::DragFloat2("center", &data_->center.x, 0.01f);
+	    ImGui::DragInt("numSamples", &data_->numSamples);
+
+		ImGui::TreePop();
+	}
 }

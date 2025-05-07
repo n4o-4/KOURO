@@ -43,6 +43,8 @@ private:
 	// マテリアルの生成
 	void CreateMaterial();
 
+	void DrawImGui() override;
+
 public:
 
 	Vector3 edgeColor;

@@ -18,6 +18,12 @@ void LinearFog::Update()
 {
 	// アクティブなカメラかプロジェクション行列を取得して反転させてデータに代入
 	data_->projectionInverse = Inverse(cameraManager_->GetActiveCamera()->GetViewProjection().matProjection_);
+
+#ifdef _DEBUG
+
+	DrawImGui();
+
+#endif
 }
 
 void LinearFog::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
@@ -255,4 +261,14 @@ void LinearFog::CreateMaterial()
 
 	// データをマップ
 	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));
+}
+
+void LinearFog::DrawImGui()
+{
+	if (ImGui::TreeNode("linerFog")) {
+
+		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
+
+		ImGui::TreePop();
+	}
 }

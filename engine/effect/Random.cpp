@@ -22,6 +22,12 @@ void Random::Update()
 
 	// データの設定
 	data_->time = distribution(randomEngine);
+
+#ifdef _DEBUG
+
+	DrawImGui();
+
+#endif
 }
 
 void Random::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
@@ -176,4 +182,16 @@ void Random::CreateMaterial()
 
 	// データをマップ
 	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));
+}
+
+void Random::DrawImGui()
+{
+	if (ImGui::TreeNode("random")) {
+
+		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
+
+		
+
+		ImGui::TreePop();
+	}
 }

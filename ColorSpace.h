@@ -41,6 +41,8 @@ private:
 	// ƒ}ƒeƒŠƒAƒ‹‚Ì¶¬
 	void CreateMaterial();
 
+	void DrawImGui() override;
+
 public:
 
 	float hue = 0.0f;

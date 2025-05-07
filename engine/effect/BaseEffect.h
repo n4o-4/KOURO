@@ -30,6 +30,10 @@ public:
 
 	virtual void Reset();
 
+private:
+
+	virtual void DrawImGui() = 0;  // 追加
+
 protected:
 
 	DirectXCommon* dxCommon_ = nullptr;

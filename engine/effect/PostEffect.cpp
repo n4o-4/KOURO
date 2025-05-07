@@ -23,6 +23,8 @@ void PostEffect::Update()
 		(*it).second->effect->Update();
 
 	}
+
+	DrawImGui();
 }
 
 void PostEffect::Draw()
@@ -154,4 +156,47 @@ void PostEffect::ResetActiveEffect()
 	}
 
 	activeEffects_.clear();
+}
+
+void PostEffect::DrawImGui()
+{
+	// 追加したいエフェクトの名前入力用
+	static char effectNameBuffer[128] = "NewEffect";
+
+	// 選択中のエフェクトタイプ
+	static int selectedEffect = 0;
+
+	const char* effectTypeNames[] = {
+		"Grayscale", "Vignette", "BoxFilter", "GaussianFilter",
+		"LuminanceBasedOutline", "DepthBasedOutline", "RadialBlur",
+		"Dissolve", "Random", "LinearFog", "MotionBlur", "ColorSpace"
+	};
+
+	// UI: 新しいエフェクトの追加
+	ImGui::InputText("Effect Name", effectNameBuffer, IM_ARRAYSIZE(effectNameBuffer));
+	ImGui::Combo("Effect Type", &selectedEffect, effectTypeNames, static_cast<int>(EffectType::EffectCount));
+
+	if (ImGui::Button("Add Effect")) {
+		std::string name = effectNameBuffer;
+		if (!name.empty() && activeEffects_.find(name) == activeEffects_.end()) {
+			ApplyEffect(name, static_cast<EffectType>(selectedEffect));
+		}
+	}
+
+	ImGui::Separator();
+
+	// UI: 現在のエフェクト一覧
+	ImGui::Text("Active Effects:");
+	for (auto it = activeEffects_.begin(); it != activeEffects_.end();) {
+		ImGui::PushID(it->first.c_str());
+		ImGui::Text("%s", it->first.c_str());
+		ImGui::SameLine();
+		if (ImGui::Button("Remove")) {
+			it = activeEffects_.erase(it);  // 削除して次の要素へ
+			ImGui::PopID();
+			continue;
+		}
+		ImGui::PopID();
+		++it;
+	}
 }

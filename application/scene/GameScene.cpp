@@ -337,6 +337,8 @@ void GameScene::Initialize() {
 	human_ = std::make_unique<Object3d>();
 	human_->Initialize(Object3dCommon::GetInstance());
 	human_->SetModel(ModelManager::GetInstance()->FindModel("human/wlak.gltf"));*/
+
+	Input::GetInstance()->SetIsReception(true);
 }
 ///=============================================================================
 ///						終了処理
@@ -354,6 +356,7 @@ void GameScene::Update() {
 	//human_->Update();
 	
 	//lineDrawer_->Update();
+
 
 	BaseScene::Update();
 
@@ -414,10 +417,6 @@ void GameScene::Update() {
 
 	ImGui::Checkbox("useDebugCamera", &cameraManager_->useDebugCamera_);
 	ImGui::Checkbox("sceneConticue", &isContinue);
-
-	ImGui::DragFloat("colorSpace.hue", &colorSpace_->hue, 0.01f);
-	ImGui::DragFloat("colorSpace.saturation", &colorSpace_->saturation, 0.01f);
-	ImGui::DragFloat("colorSpace.value", &colorSpace_->value, 0.01f);
 
 	//ImGui::DragFloat("dissolve.threshold", &dissolve_->threshold, 0.01f);
 	//ImGui::DragFloat("dissolve.thresholdWidth", &dissolve_->thresholdWidth, 0.01f);

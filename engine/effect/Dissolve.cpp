@@ -33,6 +33,11 @@ void Dissolve::Update()
 	data_->thresholdWidth = thresholdWidth;
 	data_->edgeColor = edgeColor;
 
+#ifdef _DEBUG
+
+	DrawImGui();
+
+#endif 
 }
 
 void Dissolve::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
@@ -238,4 +243,19 @@ void Dissolve::CreateMaterial()
 
 	// データをマップ
 	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));
+}
+
+void Dissolve::DrawImGui()
+{
+	if (ImGui::TreeNode("dissolve")) {
+
+		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
+
+		ImGui::ColorEdit3("edgeColor", &data_->edgeColor.x, 0.01f);
+	    ImGui::DragFloat("threshold", &data_->threshold, 0.01f);
+	    ImGui::DragFloat("thresholdWidth", &data_->thresholdWidth, 0.01f);
+	    ImGui::DragFloat("mask", &data_->mask, 0.01f);
+
+		ImGui::TreePop();
+	}
 }

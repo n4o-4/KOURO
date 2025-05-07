@@ -23,5 +23,7 @@ private:
 
 	void CreatePipeLineState(Pipeline* pipeline);
 
+
+	void DrawImGui() override;
 };
 
