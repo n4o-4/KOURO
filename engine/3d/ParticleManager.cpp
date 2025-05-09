@@ -118,28 +118,20 @@ void ParticleManager::Update()
 
 				if (particleGroup->enableBillboard)
 				{
-
-					Matrix4x4 rotationZ = MakeRotateZMatrix(particleIterator->transform.rotate.z);
-					billboardMatrix = Multiply(worldMatrix, rotationZ);
-
-					worldMatrix.m[0][0] = scaleMatrix.m[0][0] * billboardMatrix.m[0][0];
-					worldMatrix.m[0][1] = scaleMatrix.m[0][0] * billboardMatrix.m[0][1];
-					worldMatrix.m[0][2] = scaleMatrix.m[0][0] * billboardMatrix.m[0][2];
-
-					worldMatrix.m[1][0] = scaleMatrix.m[1][1] * billboardMatrix.m[1][0];
-					worldMatrix.m[1][1] = scaleMatrix.m[1][1] * billboardMatrix.m[1][1];
-					worldMatrix.m[1][2] = scaleMatrix.m[1][1] * billboardMatrix.m[1][2];
-
-					worldMatrix.m[2][0] = scaleMatrix.m[2][2] * billboardMatrix.m[2][0];
-					worldMatrix.m[2][1] = scaleMatrix.m[2][2] * billboardMatrix.m[2][1];
-					worldMatrix.m[2][2] = scaleMatrix.m[2][2] * billboardMatrix.m[2][2];
+					// スケーリング行列
+					Matrix4x4 scaleMatrix = MakeScaleMatrix(particleIterator->transform.scale);
 					
-				}
+					//
+					Matrix4x4 translateMatrix = MakeTranslateMatrix(particleIterator->transform.translate);
 
-				worldMatrix.m[3][0] = (*particleIterator).transform.translate.x;
-				worldMatrix.m[3][1] = (*particleIterator).transform.translate.y;
-				worldMatrix.m[3][2] = (*particleIterator).transform.translate.z;
-				worldMatrix.m[3][3] = 1;
+					// 合成
+					worldMatrix = Multiply(Multiply(scaleMatrix,billboardMatrix),translateMatrix);
+				}
+				else
+				{
+					worldMatrix = MakeAffineMatrix((*particleIterator).transform.scale, (*particleIterator).transform.rotate, (*particleIterator).transform.translate);
+
+				}
 
 				Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
 
@@ -197,21 +189,13 @@ void ParticleManager::Draw(std::string filePath)
 
 	// 
 	for (std::unordered_map<std::string, ParticleGroup>::iterator particleGroupIterator = particleGroups.begin(); particleGroupIterator != particleGroups.end();) {
-
-		materialResource =dxCommon_->CreateBufferResource(sizeof(Material));
-
-		// マテリアルにデータを書き込む
-		Material * materialData = nullptr;
-
-		// 書き込むためのアドレスを取得
-		materialResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-
+		
 		// 三角色
-		materialData->color = { 1.0f, 1.0f, 1.0f, 1.0f, };
-		materialData->enableLighting = false;
-		materialData->uvTransform = MakeIdentity4x4();
+		particleGroupIterator->second.material->color = { 1.0f, 1.0f, 1.0f, 1.0f, };
+		particleGroupIterator->second.material->enableLighting = false;
+		particleGroupIterator->second.material->uvTransform = MakeIdentity4x4();
 
-		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, particleGroupIterator->second.materialResource.Get()->GetGPUVirtualAddress());
 
 		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(particleGroupIterator->second.srvIndex));
 
@@ -277,7 +261,10 @@ void ParticleManager::SetBlendMode(std::string sBlendMode)
 	{
 		blendMode = BlendMode::kScreen;
 	}
-
+	else if (sBlendMode == "Alpha")
+	{
+		blendMode = BlendMode::kAlpla;
+	}
 }
 
 void ParticleManager::CreateRootSignature()
@@ -536,6 +523,20 @@ void ParticleManager::CreatePipeline()
 			blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
 
 			break;
+
+		case BlendMode::kAlpla:
+
+			blendDesc.RenderTarget[0].BlendEnable = TRUE;
+
+			blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+			blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+			blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+
+			blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+			blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+			blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+
+			break;
 		}
 
 		/*----------------------------------------------------------
@@ -589,19 +590,27 @@ void ParticleManager::InitializeVertexData()
 	const float kInnerRadius = 0.1f;
 	const float radianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);
 
-	for (uint32_t index = 0; index < kRingDivide; ++index)
-	{
-		float sin = std::sin(index * radianPerDivide);
-		float cos = std::cos(index * radianPerDivide);
-		float sinNext = std::sin((index + 1) * radianPerDivide);
-		float cosNext = std::cos((index + 1) * radianPerDivide);
+	for (uint32_t index = 0; index < kRingDivide; ++index) {
+		float angle = index * radianPerDivide;
+		float angleNext = (index + 1) * radianPerDivide;
+
+		float sin = std::sin(angle);
+		float cos = std::cos(angle);
+		float sinNext = std::sin(angleNext);
+		float cosNext = std::cos(angleNext);
+
 		float u = float(index) / float(kRingDivide);
 		float uNext = float(index + 1) / float(kRingDivide);
 
-		ringModelData.vertices.push_back({ { -sin * kOuterRadius,cos * kOuterRadius, 0.0f,1.0f }, { u,0.0f }, {0.0f,0.0f,1.0} });
-		ringModelData.vertices.push_back({ { -sinNext * kOuterRadius,cosNext * kOuterRadius, 0.0f,1.0f }, { uNext,0.0f }, {0.0f,0.0f,1.0} });	
-		ringModelData.vertices.push_back({ { -sin * kInnerRadius,cosNext * kInnerRadius, 0.0f,1.0f }, { u,1.0f }, {0.0f,0.0f,1.0} });
-		ringModelData.vertices.push_back({ { -sinNext * kInnerRadius,cosNext * kInnerRadius, 0.0f,1.0f }, { uNext,1.0f }, {0.0f,0.0f,1.0} });
+		// 三角形1
+		ringModelData.vertices.push_back({ { -sin * kOuterRadius, cos * kOuterRadius, 0.0f, 1.0f }, { u, 0.0f }, { 0.0f, 0.0f, 1.0f } });
+		ringModelData.vertices.push_back({ { -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext, 0.0f }, { 0.0f, 0.0f, 1.0f } });
+		ringModelData.vertices.push_back({ { -sin * kInnerRadius, cos * kInnerRadius, 0.0f, 1.0f }, { u, 1.0f }, { 0.0f, 0.0f, 1.0f } });
+
+		// 三角形2
+		ringModelData.vertices.push_back({ { -sin * kInnerRadius, cos * kInnerRadius, 0.0f, 1.0f }, { u, 1.0f }, { 0.0f, 0.0f, 1.0f } });
+		ringModelData.vertices.push_back({ { -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext, 0.0f }, { 0.0f, 0.0f, 1.0f } });
+		ringModelData.vertices.push_back({ { -sinNext * kInnerRadius, cosNext * kInnerRadius, 0.0f, 1.0f }, { uNext, 1.0f }, { 0.0f, 0.0f, 1.0f } });
 	}
 
 	const float kCylinderHeight = 1.0f; // 円柱の高さ
@@ -634,62 +643,6 @@ void ParticleManager::InitializeVertexData()
 		cylinderModelData.vertices.push_back({ bottomRight, { uNext, 0.0f }, normal });
 		cylinderModelData.vertices.push_back({ topRight,    { uNext, 1.0f }, normal });
 	}
-
-	//const uint32_t kHeightSegments = 8;          // 高さ方向の分割数
-	//const float kCylinderHeight = 1.0f;          // モデルの高さ      // モデルデータ構造（任意で調整）
-
-	//// 半径カーブ関数：下0.0 → 中央1.0 → 上0.0
-	//auto RadiusFunc = [](float yNorm) {
-	//	return std::sin(yNorm * std::numbers::pi); // 中央で最大（自然な噴射感）
-	//	};
-
-	//for (uint32_t yIndex = 0; yIndex < kHeightSegments; ++yIndex) {
-	//	float y0 = (float)yIndex / kHeightSegments * kCylinderHeight;
-	//	float y1 = (float)(yIndex + 1) / kHeightSegments * kCylinderHeight;
-
-	//	float yNorm0 = y0 / kCylinderHeight;
-	//	float yNorm1 = y1 / kCylinderHeight;
-
-	//	float r0 = RadiusFunc(yNorm0) * 0.1f;
-	//	float r1 = RadiusFunc(yNorm1) * 0.1f;
-
-	//	for (uint32_t i = 0; i < kRingDivide; ++i) {
-	//		float theta = i * (2.0f * std::numbers::pi / kRingDivide);
-	//		float thetaNext = (i + 1) * (2.0f * std::numbers::pi / kRingDivide);
-
-	//		float sin0 = std::sin(theta);
-	//		float cos0 = std::cos(theta);
-	//		float sin1 = std::sin(thetaNext);
-	//		float cos1 = std::cos(thetaNext);
-
-	//		// 4頂点（上下リング×2点ずつ）
-	//		Vector4 p0 = { -sin0 * r0, y0, cos0 * r0, 1.0f };
-	//		Vector4 p1 = { -sin1 * r0, y0, cos1 * r0, 1.0f };
-	//		Vector4 p2 = { -sin0 * r1, y1, cos0 * r1, 1.0f };
-	//		Vector4 p3 = { -sin1 * r1, y1, cos1 * r1, 1.0f };
-
-	//		// テクスチャ座標
-	//		float u = (float)i / kRingDivide;
-	//		float uNext = (float)(i + 1) / kRingDivide;
-	//		float v0 = yNorm0;
-	//		float v1 = yNorm1;
-
-	//		// 法線（必要なら後で計算）
-	//		Vector3 normal = { 0.0f, 1.0f, 0.0f };
-
-	//		// 三角形①
-	//		cylinderModelData.vertices.push_back({ p0, { u, v0 }, normal });
-	//		cylinderModelData.vertices.push_back({ p1, { uNext, v0 }, normal });
-	//		cylinderModelData.vertices.push_back({ p2, { u, v1 }, normal });
-
-	//		// 三角形②
-	//		cylinderModelData.vertices.push_back({ p2, { u, v1 }, normal });
-	//		cylinderModelData.vertices.push_back({ p1, { uNext, v0 }, normal });
-	//		cylinderModelData.vertices.push_back({ p3, { uNext, v1 }, normal });
-	//	}
-	//}
-
-
 }
 
 void ParticleManager::CreateVertexResource()
@@ -767,6 +720,10 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 
 		srvManager_->CreateSRVforStructuredBuffer(newParticleGroup.srvIndex, newParticleGroup.instancingResource.Get(), kNumMaxInstance, sizeof(ParticleForGPU));
 
+		newParticleGroup.materialResource = dxCommon_->CreateBufferResource(sizeof(Material));
+
+		newParticleGroup.materialResource->Map(0, nullptr, reinterpret_cast<void**>(&newParticleGroup.material));
+
 		newParticleGroup.type = type;
 
 		GradationPoint gradationPoint;
@@ -803,8 +760,13 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		newParticle = std::make_unique<Particle>();
 
 		// positionの設定
-		std::uniform_real_distribution<float> distribution(-1.0f, 1.0f);
+		std::uniform_real_distribution<float> distribution(0.0f,0.0f);
 		Vector3 randomTranslate = { distribution(randomEngine),distribution(randomEngine) ,distribution(randomEngine) };
+
+		// rotateの設定
+		std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
+
+		float rotate = distRotate(randomEngine);
 
 		// transformの設定
 		newParticle->transform.scale = { 0.9f,0.9f,0.9f };

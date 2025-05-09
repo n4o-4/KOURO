@@ -24,6 +24,7 @@ public:
 		kSubtract,
 		kMultiply,
 		kScreen,
+		kAlpla,
 
 		kCountOfBlendMode,
 	};
@@ -96,9 +97,13 @@ public:
 		Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource;
 		uint32_t kNumInstance;
 		ParticleForGPU* instancingData;
+		Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
+		Material* material;
+
 		ParticleType type;
 		bool enableBillboard = false;
 		std::vector<GradationPoint> gradationPoints;
+
 	};
 
 	struct ColorRange

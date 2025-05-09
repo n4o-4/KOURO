@@ -45,7 +45,11 @@ private:
 
 	std::unique_ptr<WorldTransform> transform_ = nullptr;
 
-	std::unique_ptr<ParticleEmitter> emitter_ = nullptr;
+	std::unique_ptr<ParticleEmitter> emitter1_ = nullptr;
+
+	std::unique_ptr<ParticleEmitter> emitter2_ = nullptr;
+
+	std::unique_ptr<ParticleEmitter> emitter3_ = nullptr;
 
 	ColorSpace* colorSpace_ = nullptr;
 

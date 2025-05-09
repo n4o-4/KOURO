@@ -192,6 +192,7 @@ void PostEffect::DrawImGui()
 		ImGui::Text("%s", it->first.c_str());
 		ImGui::SameLine();
 		if (ImGui::Button("Remove")) {
+			it->second.get()->effect->Reset();
 			it = activeEffects_.erase(it);  // 削除して次の要素へ
 			ImGui::PopID();
 			continue;
