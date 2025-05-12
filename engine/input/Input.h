@@ -4,6 +4,7 @@
 #include <vector>
 #include <wrl.h>
 
+
 #include <XInput.h>
 #define DIRECTINPUT_VERSION 0x0800 // DirectInputのバージョン指定
 #include <dinput.h>
@@ -11,7 +12,7 @@
 
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
-#pragma comment(lib, "Xinput9_1_0.lib")
+#pragma comment(lib, "Xinput.lib")
 #include <memory>
 #include "WinApp.h"
 #include "MyMath.h"	
@@ -99,8 +100,8 @@ public: // メンバ変数
 	bool TriggerGamePadButton(GamePadButton button);
 
 	// ゲームパッドのスティックの成分を取得
-	Vector3 GetLeftStick() { return leftStick; }	
-	Vector3 GetRightStick() { return rightStick; }
+	Vector2 GetLeftStick() { return leftStick; }	
+	Vector2 GetRightStick() { return rightStick; }
 
 private:
 
@@ -147,9 +148,11 @@ private:
 
 	XINPUT_STATE gamePadStatePre = {};
 
-	Vector3 leftStick = {};
+	Vector2 leftStick = {};
 
-	Vector3 rightStick = {};
+	Vector2 rightStick = {};
+
+	float deadZone = 0.4f; // デッドゾーン
 
 	//　入力受付フラグ
 	bool isReception_ = true;

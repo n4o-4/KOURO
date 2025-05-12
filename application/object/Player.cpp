@@ -181,6 +181,21 @@ void Player::DrawImGui() {
 		ImGui::TextColored(ImVec4(1, 0, 0, 1), "OVERHEATED!");
 	}
 
+	static Vector3 prevPos;
+
+	Vector3 diff = objectTransform_->transform.translate - prevPos;
+
+	float length = Length(diff);
+
+	ImGui::Text("Distance Moved: %.2f", length);
+
+	// アナログスティック入力を合成
+	Vector2 stickInput = Input::GetInstance()->GetLeftStick();
+
+	
+	ImGui::Text("X : %.2f :: Y : %.2f", stickInput.x, stickInput.y);
+
+	prevPos = objectTransform_->transform.translate;
 
 	ImGui::End();
 
@@ -210,9 +225,14 @@ Vector3 Player::GetMovementInput() {
 	if (Input::GetInstance()->PushKey(DIK_A)) { inputDirection.x -= 1.0f; }
 	if (Input::GetInstance()->PushKey(DIK_D)) { inputDirection.x += 1.0f; }
 	// アナログスティック入力を合成
-	Vector3 stickInput = Input::GetInstance()->GetLeftStick();
+	Vector2 stickInput = Input::GetInstance()->GetLeftStick();
+
+	ImGui::Begin("leftStick");
+	ImGui::Text("X : %.2f :: Y : %.2f", stickInput.x,stickInput.y);
+	ImGui::End();
+
 	inputDirection.x += stickInput.x;
-	inputDirection.z += stickInput.z;
+	inputDirection.z += stickInput.y;
 
 	Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate);
 
@@ -227,7 +247,7 @@ Vector3 Player::GetMovementInput() {
 void Player::UpdateMove(Vector3 direction) {
 	// 入力方向の正規化
 	if (Length(direction) > 0.0f) {
-		direction = Normalize(direction);
+		//direction = Normalize(direction);
 
 		// 空中と地上で操作感度を変える
 		float controlFactor = isJumping_ ? airControlFactor_ : 1.0f;
@@ -582,9 +602,9 @@ bool Player::HandleBoost() {
 		Vector3 boostDirection;
 		Vector3 inputDirection = { 0.0f, 0.0f, 0.0f };
 
-		Vector3 stickInput = Input::GetInstance()->GetLeftStick();
+		Vector2 stickInput = Input::GetInstance()->GetLeftStick();
 		inputDirection.x += stickInput.x;
-		inputDirection.z += stickInput.z;
+		inputDirection.z += stickInput.y;
 
 		Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate);
 		inputDirection = TransformNormal(inputDirection, rotateMatrix);

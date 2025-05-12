@@ -54,7 +54,8 @@ void Input::Initialize(WinApp* winApp)
 
 	assert(SUCCEEDED(result));
 
-	leftStick = { 0.0f,0.0f,0.0f };
+	leftStick = { 0.0f,0.0f };
+	rightStick = { 0.0f,0.0f };
 }
 
 void Input::Finalize()
@@ -173,11 +174,11 @@ void Input::KeyBoardUpdate()
 
 void Input::GamePadUpdate()
 {
-	// スティックの入力情報を取得
-	float deadZone = 8000.0f;  // デッドゾーン（反応しない範囲）
+	const float MAX_STICK_VALUE = 32767.0f; // スティックの最大値
 
-	leftStick = { 0.0f,0.0f,0.0f };
-
+	// 成分の初期化
+	leftStick = { 0.0f,0.0f };
+	rightStick = { 0.0f,0.0f };
 
 	// 前回の入力情報を保存
 	gamePadStatePre = gamePadState;
@@ -189,33 +190,41 @@ void Input::GamePadUpdate()
 	if (XInputGetState(0, &gamePadState) == ERROR_SUCCESS)
 	{
 		// 左スティックの入力情報を取得	
-		leftStick = { static_cast<float>(gamePadState.Gamepad.sThumbLX), 0.0f, static_cast<float>(gamePadState.Gamepad.sThumbLY) };
+		leftStick = { static_cast<float>(gamePadState.Gamepad.sThumbLX), static_cast<float>(gamePadState.Gamepad.sThumbLY) };
 
-		// スティックの位置がデッドゾーン内であれば、反応しない
-		if (abs(leftStick.x) < deadZone && abs(leftStick.z) < deadZone)
+		// スティックの位置を正規化
+		leftStick.x /= MAX_STICK_VALUE;
+		leftStick.y /= MAX_STICK_VALUE;
+
+		if (std::abs(leftStick.x) < deadZone) 
 		{
 			// デッドゾーン内なので、入力なしとして処理する
-			leftStick = { 0.0f, 0.0f, 0.0f };
-		}
-		else
-		{
-			// 入力がデッドゾーンを超えているので、正規化処理
-			leftStick = Normalize(leftStick);
+			leftStick.x = 0.0f;
 		}
 
+		if (std::abs(leftStick.y) < deadZone)
+		{
+			// デッドゾーン内なので、入力なしとして処理する
+			leftStick.y = 0.0f;
+		}
+		
 		// 右スティックの入力情報を取得
-		rightStick = { static_cast<float>(gamePadState.Gamepad.sThumbRX), static_cast<float>(gamePadState.Gamepad.sThumbRY),0.0f };
+		rightStick = { static_cast<float>(gamePadState.Gamepad.sThumbRX), static_cast<float>(gamePadState.Gamepad.sThumbRY) };
 
-		// スティックの位置がデッドゾーン内であれば、反応しない
-		if (abs(rightStick.x) < deadZone && abs(rightStick.y) < deadZone * 1.5f)
+		// スティックの位置を正規化
+		rightStick.x /= MAX_STICK_VALUE;
+		rightStick.y /= MAX_STICK_VALUE;
+
+		if (std::abs(rightStick.x) < deadZone)
 		{
 			// デッドゾーン内なので、入力なしとして処理する
-			rightStick = { 0.0f, 0.0f, 0.0f };
+			rightStick.x = 0.0f;
 		}
-		else
+
+		if (std::abs(rightStick.y) < deadZone)
 		{
-			// 入力がデッドゾーンを超えているので、正規化処理
-			rightStick = Normalize(rightStick);
+			// デッドゾーン内なので、入力なしとして処理する
+			rightStick.y = 0.0f;
 		}
 	}
 }
