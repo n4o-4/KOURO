@@ -309,41 +309,36 @@ void Player::UpdateMove(Vector3 direction) { // direction は正規化された�
 ///--------------------------------------------------------------
 ///                        ジャンプ
 void Player::UpdateJump() {
-	if (!isJumping_) {
-		// スペースキーが押されたらジャンプ開始
-		if (Input::GetInstance()->Triggerkey(DIK_SPACE) ||
-			Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-			isJumping_ = true;
-			jumpVelocity_ = kJumpInitialVelocity_; // 初速を設定
-			fallSpeed_ = 0.0f;     // 降下速度リセット
-		}
-	}
+    if (!isJumping_) {
+        // Aボタンまたはスペースキーでジャンプ開始
+        if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A) || // ゲームパッド Aボタン
+            Input::GetInstance()->Triggerkey(DIK_SPACE)) {                         // キーボード スペースキー
+            isJumping_ = true;
+            jumpVelocity_ = kJumpInitialVelocity_;
+            fallSpeed_ = 0.0f;
+        }
+    }
 
-	if (isJumping_) {
-		// 上昇処理（ふわっと浮く）
-		objectTransform_->transform.translate.y += jumpVelocity_;
+    if (isJumping_) {
+        objectTransform_->transform.translate.y += jumpVelocity_;
+        jumpVelocity_ -= kJumpVelocityDecay_;
 
-		// 上昇速度をゆっくり減衰
-		jumpVelocity_ -= kJumpVelocityDecay_;  // これ以上減衰を強くすると上がらない可能性がある
+        if (jumpVelocity_ <= 0.0f) {
+            jumpVelocity_ = 0.0f;
+            fallSpeed_ += gravity_;
+            if (fallSpeed_ > maxFallSpeed_) {
+                fallSpeed_ = maxFallSpeed_;
+            }
+            objectTransform_->transform.translate.y -= fallSpeed_;
+        }
 
-		// 上昇が終了したら降下開始
-		if (jumpVelocity_ <= 0.0f) {
-			jumpVelocity_ = 0.0f;
-			fallSpeed_ += gravity_;
-			if (fallSpeed_ > maxFallSpeed_) {
-				fallSpeed_ = maxFallSpeed_;
-			}
-			objectTransform_->transform.translate.y -= fallSpeed_;
-		}
-
-		// 着地判定
-		if (objectTransform_->transform.translate.y <= initialY_) {
-			objectTransform_->transform.translate.y = initialY_;
-			isJumping_ = false;
-			jumpVelocity_ = 0.0f;
-			fallSpeed_ = 0.0f;
-		}
-	}
+        if (objectTransform_->transform.translate.y <= initialY_) {
+            objectTransform_->transform.translate.y = initialY_;
+            isJumping_ = false;
+            jumpVelocity_ = 0.0f;
+            fallSpeed_ = 0.0f;
+        }
+    }
 }
 ///--------------------------------------------------------------
 ///						 弾の処理と更新
@@ -485,37 +480,39 @@ void Player::Shoot() {
 bool Player::HandleBoost() {
     UpdateQuickBoostCooldowns();
 
-    if (ProcessActiveQuickBoost()) { // クイックブースト中なら他の処理はスキップ
-        isBoosting_ = false; // クイックブースト中は通常ブーストをオフ
-        RecoverBoostEnergy(); // クイックブースト中でもエネルギーは回復試行（ただしProcessActiveQuickBoost内で消費される）
-        return true;
+    // クイックブーストの入力判定と実行試行
+    bool quickBoostTriggered = Input::GetInstance()->Triggerkey(DIK_LSHIFT) ||
+                               Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::X);
+    bool quickBoostActivatedThisFrame = false;
+
+    if (quickBoostTriggered) {
+        quickBoostActivatedThisFrame = HandleQuickBoostActivation();
     }
 
-    // 通常ブーストの処理 (クイックブースト入力がない場合)
-    // 例としてスペースキー長押しを通常ブーストとする (クイックブーストはLSHIFT)
-    // ゲームパッドのボタンも適宜割り当てる
-    bool normalBoostInput = Input::GetInstance()->PushKey(DIK_SPACE) || Input::GetInstance()->PushGamePadButton(Input::GamePadButton::A); // Aボタン長押しで通常ブースト
+    if (ProcessActiveQuickBoost() || quickBoostActivatedThisFrame) {
+        // クイックブーストが実行中、またはこのフレームで起動した場合
+        isBoosting_ = false; // 通常ブーストはオフ
+        RecoverBoostEnergy(); // エネルギー回復は試行
+        return true; // クイックブーストが処理された
+    }
 
-    if (normalBoostInput && currentBoostTime_ > 0.0f && !isQuickBoosting_) {
+    // 通常ブーストの処理 (クイックブーストが実行されなかった場合)
+    bool normalBoostHoldInput = Input::GetInstance()->PushKey(DIK_LSHIFT) ||
+                                Input::GetInstance()->PushGamePadButton(Input::GamePadButton::X);
+
+    if (normalBoostHoldInput && currentBoostTime_ > 0.0f && !isQuickBoosting_) {
         isBoosting_ = true;
-        currentBoostTime_ -= boostEnergyConsumptionRate_; // フレーム毎に消費
+        currentBoostTime_ -= boostEnergyConsumptionRate_;
         if (currentBoostTime_ < 0.0f) {
             currentBoostTime_ = 0.0f;
-            isBoosting_ = false; // エネルギー切れ
+            isBoosting_ = false;
         }
     } else {
         isBoosting_ = false;
     }
-
-    // クイックブーストの起動試行 (通常ブースト入力がない、または通常ブーストがエネルギー切れの場合に試行される)
-    // ただし、クイックブーストの入力は独立して判定するべき
-    bool quickBoostActivatedThisFrame = HandleQuickBoostActivation();
-    if (quickBoostActivatedThisFrame) {
-        isBoosting_ = false; // クイックブーストが起動したら通常ブーストはキャンセル
-    }
     
-    RecoverBoostEnergy(); // 通常ブースト非使用時やクイックブースト非使用時に回復
-    return quickBoostActivatedThisFrame; // クイックブーストがこのフレームで起動したか
+    RecoverBoostEnergy();
+    return false; // クイックブーストはこの関数呼び出しでは起動しなかった
 }
 
 void Player::UpdateQuickBoostCooldowns() {
@@ -570,57 +567,46 @@ bool Player::ProcessActiveQuickBoost() {
 }
 
 bool Player::HandleQuickBoostActivation() {
-    bool boostInput = Input::GetInstance()->Triggerkey(DIK_LSHIFT) ||
-                      Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::X);
+    // この関数は HandleBoost から quickBoostTriggered が true の場合に呼び出される想定
+    // なので、ここでの入力再チェックは不要だが、安全のために残しても良い
+    // bool boostInput = Input::GetInstance()->Triggerkey(DIK_LSHIFT) ||
+    //                   Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::X);
 
-    if (boostInput &&
-        quickBoostCooldown_ <= 0.0f &&
+    if (quickBoostCooldown_ <= 0.0f &&
         currentBoostTime_ >= quickBoostConsumption_ &&
         quickBoostUsedCount_ < maxQuickBoostUses_ &&
-        !isQuickBoosting_) {
+        !isQuickBoosting_) { // isQuickBoosting_ のチェックは ProcessActiveQuickBoost で行われるため、ここでは不要かもしれないが念のため
 
         Vector3 rawBoostDirection = {0.0f, 0.0f, 0.0f};
-        // キーボード入力
+        // ... (rawBoostDirection と worldBoostDirection の決定ロジックは変更なし) ...
         if (Input::GetInstance()->PushKey(DIK_W)) { rawBoostDirection.z += 1.0f; }
         if (Input::GetInstance()->PushKey(DIK_S)) { rawBoostDirection.z -= 1.0f; }
         if (Input::GetInstance()->PushKey(DIK_A)) { rawBoostDirection.x -= 1.0f; }
         if (Input::GetInstance()->PushKey(DIK_D)) { rawBoostDirection.x += 1.0f; }
-
-        // アナログスティック入力 (キーボード入力と合成、または優先)
         Vector2 stickInput = Input::GetInstance()->GetLeftStick();
-        // スティック入力があればそれを優先、なければキーボード入力を使うか、両方合成するかは設計次第
-        // ここでは単純に合成
         rawBoostDirection.x += stickInput.x;
         rawBoostDirection.z += stickInput.y;
 
         Vector3 worldBoostDirection = {0.0f, 0.0f, 0.0f};
-
         if (Length(rawBoostDirection) > kVelocityStopThreshold_) {
             worldBoostDirection = Normalize(rawBoostDirection);
             if (followCamera_) {
-                // カメラの向きではなく、プレイヤーの現在の向きを基準にしたい場合は
-                // objectTransform_->transform.rotate.y を使う
-                Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate); // カメラ基準
-                // Matrix4x4 rotateMatrix = MakeRotateYMatrix(objectTransform_->transform.rotate.y); // 機体基準
+                Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate);
                 worldBoostDirection = TransformNormal(worldBoostDirection, rotateMatrix);
             }
         } else {
-            // 入力がない場合は、現在の機体の前方にブースト
-            // (または、入力がない場合はクイックブーストしないという選択もアリ)
-            if (followCamera_){ // カメラがないと前方がわからない
+            if (followCamera_){
                  Matrix4x4 rotateMatrix = MakeRotateYMatrix(objectTransform_->transform.rotate.y);
-                 worldBoostDirection = TransformNormal({0.0f,0.0f,1.0f},rotateMatrix); // 機体の前方向
+                 worldBoostDirection = TransformNormal({0.0f,0.0f,1.0f},rotateMatrix);
             } else {
-                 return false; // 方向が取れない
+                 return false;
             }
         }
-        
-        worldBoostDirection.y = 0.0f; // 上下方向は無視
+        worldBoostDirection.y = 0.0f;
         if (Length(worldBoostDirection) < kVelocityStopThreshold_){
-            return false; // 最終的なブースト方向がほぼゼロなら失敗
+            return false;
         }
         worldBoostDirection = Normalize(worldBoostDirection);
-
 
         isQuickBoosting_ = true;
         quickBoostFrames_ = maxQuickBoostFrames_;
@@ -632,13 +618,10 @@ bool Player::HandleQuickBoostActivation() {
             quickBoostChargeCooldown_ = quickBoostChargeTime_;
         }
         
-        // クイックブーストの初速と方向をvelocityに直接設定
-        // ProcessActiveQuickBoostでも速度設定が行われるが、ここで初速を与えることで即時性を出す
-        velocity_ = worldBoostDirection * (maxSpeed_ * kQuickBoostSpeedMultiplier_ * 0.8f); // 初速は最大より少し抑えめでも良い
-
-        return true;
+        velocity_ = worldBoostDirection * (maxSpeed_ * kQuickBoostSpeedMultiplier_ * 0.8f);
+        return true; // クイックブースト起動成功
     }
-    return false;
+    return false; // クイックブースト起動せず (条件不足)
 }
 
 void Player::RecoverBoostEnergy() {
