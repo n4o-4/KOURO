@@ -39,21 +39,25 @@ private:
 	// 移動処理を更新
 	void UpdateMove(Vector3 direction);
 	//========================================
-	// ジャンプ入力の取得
-	void IsJump();
 	// ジャンプ処理を更新
 	void UpdateJump();
 	//========================================
 	// 弾の処理と更新
 	void UpdateBullets();
+	void UpdateMissiles(); // ミサイル専用の更新処理
+	void UpdateMachineGunAndHeat(); // マシンガンと熱量専用の更新処理
 	// 射撃
 	void Shoot();
+	// マシンガンの射撃処理
+	void ShootMachineGun();
 	//========================================
 	// ブースト処理
 	bool HandleBoost();
+	void UpdateQuickBoostCooldowns();   // クイックブーストのクールダウンやリチャージ管理
+	bool ProcessActiveQuickBoost();     // クイックブースト中の処理
+	bool HandleQuickBoostActivation();  // クイックブーストの入力判定と起動処理
+	void RecoverBoostEnergy();          // ブーストエネルギーの回復処理
 	//========================================
-	// マシンガンの射撃処理
-	void ShootMachineGun();
 	//反動処理
 	void ApplyRecoil();
 	//playerの揺れ処理
@@ -70,6 +74,8 @@ private:
 
 	/// \brief 衝突終了時の処理
 	void OnCollisionExit(BaseObject* other) override;
+
+	void HandleDamageAndInvincibility(); // ダメージ処理と無敵化の共通処理
 
 	///--------------------------------------------------------------
 	///							入出力関数
@@ -149,23 +155,25 @@ private:
 	int hp_ = 10;
 	//========================================
 	// 移動関連
-	Vector3 position_ = { 0.0f, 0.0f, 0.0f };     // 位置
 	Vector3 velocity_ = { 0.0f, 0.0f, 0.0f };     // 現在の速度ベクトル
 	Vector3 acceleration_ = { 0.0f, 0.0f, 0.0f }; // 加速度ベクトル
+	float currentInputMagnitude_ = 0.0f;          // 現在の入力の大きさ (0.0 ~ 1.0)
 	float maxSpeed_ = 1.35f;                      // 最大速度
 	float accelerationRate_ = 0.03f;              // 加速度係数
-	float deceleration_ = 0.04f;                  // 減速度
 	float friction_ = 0.02f;                      // 摩擦
 	float boostSpin_ = 0.0f;                      // 回転量
 	bool isBoostSpinning_ = false;                // 回転中フラグ
 	int boostSpinFrame_ = 0;                      // 回転フレーム数
 	// ブースト関連
-	bool isBoosting_ = false;                     // ブースト中かどうか
-	float boostFactor_ = 2.2f + 8.0f;             // ブースト時の速度倍率
+	bool isBoosting_ = false;                     // 通常ブースト中かどうか (クイックブーストとは別)
+	float boostFactor_ = 1.8f;                    // 通常ブースト時の基本速度倍率
+	float boostAccelerationFactor_ = 2.0f;        // 通常ブースト時の加速度倍率
+	float boostMaxSpeedFactor_ = 2.2f;            // 通常ブースト時の最大速度倍率 (限界突破用)
+	float boostEnergyConsumptionRate_ = 0.5f;     // 通常ブーストのエネルギー消費率 (フレーム毎)
 	float boostCooldown_ = 0.0f;                  // ブーストのクールダウン
-	float maxBoostTime_ = 30.0f;                  // 最大ブースト時間
+	float maxBoostTime_ = 60.0f;                  // 最大ブースト時間 (エネルギー総量)
 	float currentBoostTime_ = 30.0f;              // 現在のブースト残量
-	float boostRecoveryRate_ = 0.15f + 8.0f;      // ブースト回復速度
+	float boostRecoveryRate_ = 0.15f;             // ブースト回復速度
 	int quickBoostUsedCount_ = 0;        // 使用した回数
 	int quickBoostChargeCooldown_ = 0;   // クールタイム用カウント（フレーム単位）
 	const int maxQuickBoostUses_ = 3;    // 最大使用回数
@@ -204,7 +212,7 @@ private:
 	float heatLevel_ = 0.0f;            // 現在の熱量
 	float maxHeat_ = 150.0f;            // オーバーヒートライン
 	float heatPerShot_ = 5.0f;          // 1発ごとの加熱量
-	float heatCooldownRate_ = 0.2f;     // 自然冷却速度（毎フレーム）
+	float heatCooldownRate_ = 0.8f;     // 自然冷却速度（毎フレーム）
 	bool isOverheated_ = false;        // オーバーヒート中か
 	int overheatRecoveryTime_ = 300;   // オーバーヒート時のクールダウン（フレーム）
 	int overheatTimer_ = 0;            // クールダウン用カウント
@@ -242,7 +250,7 @@ private:
     const float kBoostSpinSpeed_ = 0.4f;
     const float kTwoPI_ = 2.0f * 3.14159265f;
     const int kBoostSpinMaxFrames_ = 16;
-    const float kRotationLerpFactor_ = 0.1f;
+    const float kRotationLerpFactor_ = 0.35f; // さらに旋回速度を向上 (例: 0.25f から 0.35f へ)
 
     // 無敵時間関連
     const int kInvincibleBlinkInterval_ = 10;
@@ -270,4 +278,17 @@ private:
 
 	const float kRecoilThreshold_ = 0.001f;
 	const float kShakeDecayRate_ = 0.92f;
+
+    // Player.cppから移動した定数
+    static constexpr float kMovementFrictionThreshold_ = 0.1f;
+    static constexpr float kMovementTiltFactor_ = -0.1f;
+    static constexpr float kMovementMaxTilt_ = 0.5f;
+    static constexpr float kMovementTiltLerpFactor_ = 0.2f;
+    static constexpr int kMachineGunFireInterval_ = 5;
+    static constexpr float kShakeBaseIntensityFactor_ = 0.1f;
+    static constexpr float kShakeOffsetXFactor_ = 0.02f;
+    static constexpr float kShakeOffsetRotFactor_ = 0.002f;
+    static constexpr int kShakeRandRangeX_ = 80;
+    static constexpr int kShakeRandRangeRot_ = 200;
+
 };

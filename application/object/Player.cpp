@@ -27,49 +27,38 @@ void Player::Initialize() {
 
 	explosionEmitter_ = std::make_unique<ExplosionEmitter>();
 	explosionEmitter_->Initialize("missileSmoke");
-	// パーティクル設定の調整
-
 	explosionEmitter_->SetParticleCount(kExplosionParticleCount_);
 	explosionEmitter_->SetFrequency(kExplosionFrequency_);
 	explosionEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ kExplosionLifeTime_,kExplosionLifeTime_ }));
 
-	// 煙のエミッターを初期化
-	//ParticleManager::GetInstance()->CreateParticleGroup("overheatSmoke", "Resources/circle.png");
 	smokeEmitter_ = std::make_unique<ParticleEmitter>();
-	smokeEmitter_->Initialize("missileSmoke");  // パーティクル名は適宜変更
+	smokeEmitter_->Initialize("missileSmoke");
 	smokeEmitter_->SetParticleCount(4);
 	smokeEmitter_->SetFrequency(0.1f);
-	smokeEmitter_->SetLifeTimeRange({ {0.3f, 0.5f} });  // ちょっと長めの煙
-	//色変更
-	// 最初は濃いめグレー
+	smokeEmitter_->SetLifeTimeRange({ {0.3f, 0.5f} });
 	smokeEmitter_->SetStartColorRange(
 		ParticleManager::ColorRange(
-			{ 0.3f, 0.5f },  // R：ちょい暗い
-			{ 0.3f, 0.5f },  // G：ちょい暗い
-			{ 0.3f, 0.5f },  // B：ちょい暗い
-			{ 0.8f, 1.0f }   // A：はっきり
+			{ 0.3f, 0.5f },
+			{ 0.3f, 0.5f },
+			{ 0.3f, 0.5f },
+			{ 0.8f, 1.0f }
 		)
 	);
-
-	// 終わりは透明・薄めグレー
 	smokeEmitter_->SetFinishColorRange(
 		ParticleManager::ColorRange(
-			{ 0.6f, 0.8f },  // R：ちょい明るめ
-			{ 0.6f, 0.8f },  // G
-			{ 0.6f, 0.8f },  // B
-			{ 0.0f, 0.3f }   // A：透明に近づく
+			{ 0.6f, 0.8f },
+			{ 0.6f, 0.8f },
+			{ 0.6f, 0.8f },
+			{ 0.0f, 0.3f }
 		)
 	);
-	//煙の様に上に向かう
 	smokeEmitter_->SetVelocityRange(
 		ParticleManager::VelocityRange(
-			{ 0.0f, 0.0f },  // X：横移動なし
-			{ 0.0f, 6.0f },  // Y：上昇
-			{ -1.0f, 1.0f }   // Z：前後移動
+			{ 0.0f, 0.0f },
+			{ 0.0f, 6.0f },
+			{ -1.0f, 1.0f }
 		)
 	);
-	//========================================
-	// 当たり判定との同期
 	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);
 }
 ///=============================================================================
@@ -112,7 +101,6 @@ void Player::Update() {
 		}
 	}
 
-
 	objectTransform_->UpdateMatrix();// 行列更新
 	object3d_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 	object3d_->Update();// 更新
@@ -131,7 +119,6 @@ void Player::Draw(ViewProjection viewProjection, DirectionalLight directionalLig
 	if (!isInvincible_ || isVisible_) {
 		object3d_->Draw(*objectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
 	}
-
 
 	// 弾の描画
 	for (auto& bullet : bullets_) {
@@ -218,121 +205,106 @@ void Player::DrawImGui() {
 ///--------------------------------------------------------------
 ///                        移動入力の取得
 Vector3 Player::GetMovementInput() {
-	Vector3 inputDirection = { 0.0f, 0.0f, 0.0f };
-	// 移動入力の取得
-	if (Input::GetInstance()->PushKey(DIK_W)) { inputDirection.z += 1.0f; }
-	if (Input::GetInstance()->PushKey(DIK_S)) { inputDirection.z -= 1.0f; }
-	if (Input::GetInstance()->PushKey(DIK_A)) { inputDirection.x -= 1.0f; }
-	if (Input::GetInstance()->PushKey(DIK_D)) { inputDirection.x += 1.0f; }
-	// アナログスティック入力を合成
-	Vector2 stickInput = Input::GetInstance()->GetLeftStick();
+    Vector3 rawInputDirection = { 0.0f, 0.0f, 0.0f };
+    // キーボード入力
+    if (Input::GetInstance()->PushKey(DIK_W)) { rawInputDirection.z += 1.0f; }
+    if (Input::GetInstance()->PushKey(DIK_S)) { rawInputDirection.z -= 1.0f; }
+    if (Input::GetInstance()->PushKey(DIK_A)) { rawInputDirection.x -= 1.0f; }
+    if (Input::GetInstance()->PushKey(DIK_D)) { rawInputDirection.x += 1.0f; }
 
-	ImGui::Begin("leftStick");
-	ImGui::Text("X : %.2f :: Y : %.2f", stickInput.x,stickInput.y);
-	ImGui::End();
+    // アナログスティック入力を合成
+    Vector2 stickInput = Input::GetInstance()->GetLeftStick();
+    rawInputDirection.x += stickInput.x;
+    rawInputDirection.z += stickInput.y; // スティックのY軸をZ軸移動にマッピング
 
-	inputDirection.x += stickInput.x;
-	inputDirection.z += stickInput.y;
+    // 入力の大きさを計算し、メンバ変数に保存 (0.0 ~ 1.0 にクランプ)
+    currentInputMagnitude_ = Length(rawInputDirection);
+    if (currentInputMagnitude_ > 1.0f) {
+        currentInputMagnitude_ = 1.0f;
+    } else if (currentInputMagnitude_ < kVelocityStopThreshold_) { // ごくわずかな入力は0として扱う
+        currentInputMagnitude_ = 0.0f;
+    }
+    
+    Vector3 worldDirection = { 0.0f, 0.0f, 0.0f };
+    if (currentInputMagnitude_ > 0.0f) { // 入力がある場合のみ方向を正規化
+        worldDirection = Normalize(rawInputDirection);
+    }
 
-	Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate);
+    // カメラの向きに合わせて入力方向を回転
+    if (followCamera_) {
+        Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate);
+        worldDirection = TransformNormal(worldDirection, rotateMatrix);
+    }
+    worldDirection.y = 0.0f; // 上下方向の移動は無効化
 
-	inputDirection = TransformNormal(inputDirection, rotateMatrix);
-
-	inputDirection.y = 0.0f;
-
-	return inputDirection;
+    return worldDirection; // 正規化されたワールド空間での目標移動方向
 }
 ///--------------------------------------------------------------
 ///                        移動
-void Player::UpdateMove(Vector3 direction) {
-	// 入力方向の正規化
-	if (Length(direction) > 0.0f) {
-		//direction = Normalize(direction);
+void Player::UpdateMove(Vector3 direction) { // direction は正規化された目標移動方向
+    // 入力方向と大きさに応じて加速度を決定
+    float currentAccelerationRate = accelerationRate_;
+    if (isBoosting_ && !isQuickBoosting_) { // 通常ブースト中は加速度もアップ
+        currentAccelerationRate *= boostAccelerationFactor_;
+    }
 
-		// 空中と地上で操作感度を変える
-		float controlFactor = isJumping_ ? airControlFactor_ : 1.0f;
+    if (currentInputMagnitude_ > kVelocityStopThreshold_) {
+        float controlFactor = isJumping_ ? airControlFactor_ : 1.0f;
+        acceleration_ = direction * (currentAccelerationRate * controlFactor * currentInputMagnitude_);
+    } else {
+        acceleration_ = { 0.0f, 0.0f, 0.0f };
+    }
 
-		// 入力方向に加速
-		acceleration_ = direction * (accelerationRate_ * controlFactor);
-	} else {
-		// 入力がない場合は加速度をゼロに
-		acceleration_ = { 0.0f, 0.0f, 0.0f };
-	}
+    velocity_ = velocity_ + acceleration_;
 
-	// 加速度を速度に適用
-	velocity_ = (velocity_ + acceleration_);
+    float targetSpeedLimit;
+    if (isQuickBoosting_) {
+        targetSpeedLimit = maxSpeed_ * kQuickBoostSpeedMultiplier_;
+    } else if (isBoosting_) {
+        // 通常ブースト時は、基本のブースト速度と、入力の大きさを考慮した速度の大きい方を採用し、
+        // さらに限界突破用の最大速度を設定
+        float baseBoostSpeed = maxSpeed_ * boostFactor_;
+        float inputScaledBoostSpeed = maxSpeed_ * currentInputMagnitude_ * boostFactor_; // スティック入力も少し影響
+        targetSpeedLimit = std::max(baseBoostSpeed, inputScaledBoostSpeed);
+        targetSpeedLimit = std::min(targetSpeedLimit, maxSpeed_ * boostMaxSpeedFactor_); // 限界突破上限
+    } else {
+        targetSpeedLimit = maxSpeed_ * currentInputMagnitude_;
+    }
 
-	// 最大速度を制限
-	float speedLimit = isBoosting_ ? maxSpeed_ * boostFactor_ : maxSpeed_;
-	float currentSpeed = Length(velocity_);
+    float currentSpeed = Length(velocity_);
 
-	// ブースト終了時に急減速しないようにする
-	// 現在の速度が制限を超えていて、かつブースト中でない場合は徐々に減速
-	if (currentSpeed > speedLimit) {
-		if (isBoosting_) {
-			// ブースト中は即座に最大速度まで加速
-			velocity_ = (Normalize(velocity_) * speedLimit);
-		} else {
-			// ブースト終了後は徐々に減速（減速率はフレームごとに95%に）
-			float slowDownRate = 0.95f;
-			float targetSpeed = std::max(speedLimit, currentSpeed * slowDownRate);
-			velocity_ = (Normalize(velocity_) * targetSpeed);
-		}
-	}
+    if (currentSpeed > targetSpeedLimit) {
+        if (isQuickBoosting_ || isBoosting_) {
+            velocity_ = Normalize(velocity_) * targetSpeedLimit;
+        } else {
+            float slowedSpeed = currentSpeed * kPostBoostSlowdownRate_;
+            velocity_ = Normalize(velocity_) * std::max(targetSpeedLimit, slowedSpeed);
+        }
+    }
 
-	// 摩擦による減速（入力がない場合のみ）
-	if (Length(direction) < 0.1f) {
-		// 現在の速度方向を記録
-		Vector3 velocityDirection = { 0.0f, 0.0f, 0.0f };
-		if (currentSpeed > 0.0f) {
-			velocityDirection = Normalize(velocity_);
-		}
+    // 移動が入力されているときだけ向きを変更
+    if (Length(velocity_) > kVelocityStopThreshold_) {
+        distinationRotateY_ = std::atan2(velocity_.x, velocity_.z);
+    }
 
-		// 摩擦を適用
-		if (currentSpeed > 0.0f) {
-			Vector3 frictionForce = velocityDirection * -friction_;
-			velocity_ = velocity_ + frictionForce;
-		}
+    objectTransform_->transform.rotate.y = LerpShortAngle(objectTransform_->transform.rotate.y, distinationRotateY_, kRotationLerpFactor_);
 
-		// 摩擦適用後の速度が非常に小さい場合は停止
-		// 閾値を0.001から0.01に上げて、より確実に停止するようにする
-		if (Length(velocity_) < 0.01f) {
-			velocity_ = { 0.0f, 0.0f, 0.0f };
-		}
+    // 高速移動中は進行方向に傾ける
+    float targetTilt = 0.0f;
+    if (isQuickBoosting_ || isBoosting_) {
+        // 機体のローカルX軸（横移動）成分で傾ける
+        Matrix4x4 invRotateMatrix = Inverse(MakeRotateYMatrix(objectTransform_->transform.rotate.y));
+        Vector3 localVelocity = TransformNormal(velocity_, invRotateMatrix);
+        targetTilt = localVelocity.x * kMovementTiltFactor_;
+        targetTilt = std::clamp(targetTilt, -kMovementMaxTilt_, kMovementMaxTilt_);
+    }
+    objectTransform_->transform.rotate.z = fLerp(objectTransform_->transform.rotate.z, targetTilt, kMovementTiltLerpFactor_);
 
-		// 摩擦で速度が反転してしまった場合も停止させる
-		// Dotが使えない場合は、X軸とZ軸それぞれで方向が逆転したかチェック
-		if (currentSpeed > 0.0f) {
-			if ((velocityDirection.x * velocity_.x < 0 && fabsf(velocityDirection.x) > 0.01f) ||
-				(velocityDirection.z * velocity_.z < 0 && fabsf(velocityDirection.z) > 0.01f)) {
-				velocity_ = { 0.0f, 0.0f, 0.0f };
-			}
-		}
-	}
+    objectTransform_->transform.translate += velocity_;
 
-	// 移動が入力されているときだけ
-	if (std::abs(Length(velocity_)) > 0) {
-		distinationRotateY_ = std::atan2(velocity_.x, velocity_.z);
-	}
-
-	// Y軸回転（向き）は今まで通り
-	objectTransform_->transform.rotate.y = LerpShortAngle(objectTransform_->transform.rotate.y, distinationRotateY_, 0.1f);
-
-	// 高速移動中は進行方向に傾ける
-	float targetTilt = 0.0f;
-	if (isQuickBoosting_ || isBoosting_) {
-		targetTilt = velocity_.x * -1.0f;// 進行方向に傾ける
-	}
-	objectTransform_->transform.rotate.z = fLerp(objectTransform_->transform.rotate.z, targetTilt, 0.2f);
-
-	// 位置の更新（抜けてたやつ）
-	objectTransform_->transform.translate += velocity_;
-
-	// ========================================
-	// 移動制限：座標の範囲を制限する
-	objectTransform_->transform.translate.x = std::clamp(objectTransform_->transform.translate.x, -495.0f, 495.0f);
-	objectTransform_->transform.translate.z = std::clamp(objectTransform_->transform.translate.z, -495.0f, 495.0f);
-
+    // 移動制限
+    objectTransform_->transform.translate.x = std::clamp(objectTransform_->transform.translate.x, -495.0f, 495.0f);
+    objectTransform_->transform.translate.z = std::clamp(objectTransform_->transform.translate.z, -495.0f, 495.0f);
 }
 ///--------------------------------------------------------------
 ///                        ジャンプ
@@ -342,7 +314,7 @@ void Player::UpdateJump() {
 		if (Input::GetInstance()->Triggerkey(DIK_SPACE) ||
 			Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 			isJumping_ = true;
-			jumpVelocity_ = 0.6f;  // 初速を設定
+			jumpVelocity_ = kJumpInitialVelocity_; // 初速を設定
 			fallSpeed_ = 0.0f;     // 降下速度リセット
 		}
 	}
@@ -352,7 +324,7 @@ void Player::UpdateJump() {
 		objectTransform_->transform.translate.y += jumpVelocity_;
 
 		// 上昇速度をゆっくり減衰
-		jumpVelocity_ -= 0.005f;  // これ以上減衰を強くすると上がらない可能性がある
+		jumpVelocity_ -= kJumpVelocityDecay_;  // これ以上減衰を強くすると上がらない可能性がある
 
 		// 上昇が終了したら降下開始
 		if (jumpVelocity_ <= 0.0f) {
@@ -373,18 +345,14 @@ void Player::UpdateJump() {
 		}
 	}
 }
-
-///                        ジャンプしているか
-void Player::IsJump() {
-	if (!isJumping_) {
-		isJumping_ = true;
-		jumpVelocity_ = 0.2f; // 初速度
-	}
-}
 ///--------------------------------------------------------------
 ///						 弾の処理と更新
 void Player::UpdateBullets() {
-	// ミサイルのクールタイム減少
+	UpdateMissiles();
+	UpdateMachineGunAndHeat();
+}
+
+void Player::UpdateMissiles() {
 	if (missileCooldown_ > 0) {
 		missileCooldown_--;
 	}
@@ -405,7 +373,9 @@ void Player::UpdateBullets() {
 	bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(),
 		[](const std::unique_ptr<PlayerMissile>& bullet) { return !bullet->IsActive(); }),
 		bullets_.end());
+}
 
+void Player::UpdateMachineGunAndHeat() {
 	//マシンガンの弾の更新
 	 // マシンガンの発射
 	if (Input::GetInstance()->PushKey(DIK_J) ||
@@ -437,7 +407,7 @@ void Player::UpdateBullets() {
 			isOverheated_ = true;
 			overheatTimer_ = overheatRecoveryTime_;
 		}
-		machineGunCooldown_ = 5;
+		machineGunCooldown_ = kMachineGunFireInterval_;
 	}
 
 	// 自然冷却 or クールダウン処理
@@ -455,7 +425,6 @@ void Player::UpdateBullets() {
 	} else {
 		heatLevel_ = std::max(0.0f, heatLevel_ - heatCooldownRate_);
 	}
-
 }
 ///                        射撃
 void Player::Shoot() {
@@ -514,27 +483,53 @@ void Player::Shoot() {
 ///--------------------------------------------------------------
 ///                        ブースト処理
 bool Player::HandleBoost() {
-	bool stateChanged = false;
+    UpdateQuickBoostCooldowns();
 
-	// ================================
-	// クールダウンやリチャージの管理
-	// ================================
+    if (ProcessActiveQuickBoost()) { // クイックブースト中なら他の処理はスキップ
+        isBoosting_ = false; // クイックブースト中は通常ブーストをオフ
+        RecoverBoostEnergy(); // クイックブースト中でもエネルギーは回復試行（ただしProcessActiveQuickBoost内で消費される）
+        return true;
+    }
 
-	// 内部クールタイム（連打防止用）
+    // 通常ブーストの処理 (クイックブースト入力がない場合)
+    // 例としてスペースキー長押しを通常ブーストとする (クイックブーストはLSHIFT)
+    // ゲームパッドのボタンも適宜割り当てる
+    bool normalBoostInput = Input::GetInstance()->PushKey(DIK_SPACE) || Input::GetInstance()->PushGamePadButton(Input::GamePadButton::A); // Aボタン長押しで通常ブースト
+
+    if (normalBoostInput && currentBoostTime_ > 0.0f && !isQuickBoosting_) {
+        isBoosting_ = true;
+        currentBoostTime_ -= boostEnergyConsumptionRate_; // フレーム毎に消費
+        if (currentBoostTime_ < 0.0f) {
+            currentBoostTime_ = 0.0f;
+            isBoosting_ = false; // エネルギー切れ
+        }
+    } else {
+        isBoosting_ = false;
+    }
+
+    // クイックブーストの起動試行 (通常ブースト入力がない、または通常ブーストがエネルギー切れの場合に試行される)
+    // ただし、クイックブーストの入力は独立して判定するべき
+    bool quickBoostActivatedThisFrame = HandleQuickBoostActivation();
+    if (quickBoostActivatedThisFrame) {
+        isBoosting_ = false; // クイックブーストが起動したら通常ブーストはキャンセル
+    }
+    
+    RecoverBoostEnergy(); // 通常ブースト非使用時やクイックブースト非使用時に回復
+    return quickBoostActivatedThisFrame; // クイックブーストがこのフレームで起動したか
+}
+
+void Player::UpdateQuickBoostCooldowns() {
 	if (quickBoostCooldown_ > 0.0f) {
-		quickBoostCooldown_ -= 1.0f;
+		quickBoostCooldown_ -= 1.0f; // フレームベースのクールダウン
 	}
 
-	// クールタイム中の処理（3回使った直後の3秒間）
 	if (quickBoostChargeCooldown_ > 0) {
 		quickBoostChargeCooldown_--;
 		if (quickBoostChargeCooldown_ == 0) {
-			quickBoostUsedCount_ = 0; // 全回復
+			quickBoostUsedCount_ = 0;
 		}
-		quickBoostRegenTimer_ = 0; // クールタイム中は自然回復停止
-	}
-	// クールタイムではないけど、回数が減ってる場合は自然回復
-	else if (quickBoostUsedCount_ > 0) {
+		quickBoostRegenTimer_ = 0;
+	} else if (quickBoostUsedCount_ > 0) {
 		quickBoostRegenTimer_++;
 		if (quickBoostRegenTimer_ >= quickBoostRegenInterval_) {
 			quickBoostUsedCount_--;
@@ -542,102 +537,120 @@ bool Player::HandleBoost() {
 			quickBoostRegenTimer_ = 0;
 		}
 	} else {
-		quickBoostRegenTimer_ = 0; // 回数が満タンならタイマーリセット
+		quickBoostRegenTimer_ = 0;
 	}
-
-	// ================================
-	// クイックブースト中の処理
-	// ================================
-
-	if (isQuickBoosting_) {
-		quickBoostFrames_--;
-
-		if (Length(velocity_) > 0.01f) {
-			Vector3 boostDirection = Normalize(velocity_);
-			boostDirection.y = 0.0f; // ✅ Y方向カット！
-
-			float boostSpeed = maxSpeed_ * 4.0f;
-
-			if (quickBoostFrames_ < maxQuickBoostFrames_ / 2) {
-				float ratio = static_cast<float>(quickBoostFrames_) / (maxQuickBoostFrames_ / 2);
-				boostSpeed *= (0.7f + 0.3f * ratio);
-			}
-
-			velocity_ = boostDirection * boostSpeed;
-		}
-
-		if (quickBoostFrames_ <= 0) {
-			isQuickBoosting_ = false;
-			velocity_ *= 0.8f;
-			stateChanged = true;
-		}
-		return stateChanged;
-	}
-
-	// ================================
-	// ブースト入力判定と処理
-	// ================================
-
-	bool boostInput = Input::GetInstance()->Triggerkey(DIK_LSHIFT) ||
-		Input::GetInstance()->PushGamePadButton(Input::GamePadButton::X);
-
-	if (boostInput &&
-		quickBoostCooldown_ <= 0.0f &&
-		currentBoostTime_ >= quickBoostConsumption_ &&
-		quickBoostUsedCount_ < maxQuickBoostUses_) {
-
-		// 使用開始！
-		isQuickBoosting_ = true;
-		quickBoostFrames_ = maxQuickBoostFrames_;
-		currentBoostTime_ -= quickBoostConsumption_;
-		quickBoostCooldown_ = maxQuickBoostCooldown_;
-		quickBoostUsedCount_++;
-
-		// 3回目だったらクールタイム突入
-		if (quickBoostUsedCount_ >= maxQuickBoostUses_) {
-			quickBoostChargeCooldown_ = quickBoostChargeTime_;
-		}
-
-		// 入力方向でブーストベクトルを作成
-		Vector3 boostDirection;
-		Vector3 inputDirection = { 0.0f, 0.0f, 0.0f };
-
-		Vector2 stickInput = Input::GetInstance()->GetLeftStick();
-		inputDirection.x += stickInput.x;
-		inputDirection.z += stickInput.y;
-
-		Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate);
-		inputDirection = TransformNormal(inputDirection, rotateMatrix);
-
-		if (Length(inputDirection) > 0.0f) {
-			boostDirection = Normalize(inputDirection);
-		} else if (Length(velocity_) > 0.01f) {
-			boostDirection = Normalize(velocity_);
-		} else {
-			return stateChanged;
-		}
-
-		boostDirection.y = 0.0f; // ✅ Y方向を削除！
-
-		boostSpin_ = 0.0f;
-		isBoostSpinning_ = true;
-		velocity_ = boostDirection * (accelerationRate_ * 8.0f);
-		stateChanged = true;
-	}
-
-	// ================================
-	// ブーストエネルギー回復処理
-	// ================================
-
-	if (currentBoostTime_ < maxBoostTime_) {
-		float recoveryMultiplier = (Length(velocity_) < 0.05f) ? 2.0f : 1.0f;
-		currentBoostTime_ += boostRecoveryRate_ * recoveryMultiplier;
-		if (currentBoostTime_ > maxBoostTime_) currentBoostTime_ = maxBoostTime_;
-	}
-
-	return stateChanged;
 }
 
+bool Player::ProcessActiveQuickBoost() {
+	if (!isQuickBoosting_) {
+		return false;
+	}
+
+	quickBoostFrames_--;
+
+	if (Length(velocity_) > kVelocityStopThreshold_) { // わずかでも速度があれば方向を取る
+		Vector3 boostDirection = Normalize(velocity_);
+		boostDirection.y = 0.0f;
+
+		float boostSpeed = maxSpeed_ * kQuickBoostSpeedMultiplier_; // 定数使用
+
+		// ブースト後半で速度減衰
+		if (quickBoostFrames_ < maxQuickBoostFrames_ / 2) {
+			float ratio = static_cast<float>(quickBoostFrames_) / (maxQuickBoostFrames_ / 2.0f); // 2.0fで浮動小数点除算
+			boostSpeed *= (0.7f + 0.3f * ratio); // この係数も定数化可能
+		}
+		velocity_ = boostDirection * boostSpeed;
+	}
+
+	if (quickBoostFrames_ <= 0) {
+		isQuickBoosting_ = false;
+		velocity_ *= kQuickBoostSpeedRetainFactor_; // 定数使用
+	}
+	return true; // クイックブースト処理を行った
+}
+
+bool Player::HandleQuickBoostActivation() {
+    bool boostInput = Input::GetInstance()->Triggerkey(DIK_LSHIFT) ||
+                      Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::X);
+
+    if (boostInput &&
+        quickBoostCooldown_ <= 0.0f &&
+        currentBoostTime_ >= quickBoostConsumption_ &&
+        quickBoostUsedCount_ < maxQuickBoostUses_ &&
+        !isQuickBoosting_) {
+
+        Vector3 rawBoostDirection = {0.0f, 0.0f, 0.0f};
+        // キーボード入力
+        if (Input::GetInstance()->PushKey(DIK_W)) { rawBoostDirection.z += 1.0f; }
+        if (Input::GetInstance()->PushKey(DIK_S)) { rawBoostDirection.z -= 1.0f; }
+        if (Input::GetInstance()->PushKey(DIK_A)) { rawBoostDirection.x -= 1.0f; }
+        if (Input::GetInstance()->PushKey(DIK_D)) { rawBoostDirection.x += 1.0f; }
+
+        // アナログスティック入力 (キーボード入力と合成、または優先)
+        Vector2 stickInput = Input::GetInstance()->GetLeftStick();
+        // スティック入力があればそれを優先、なければキーボード入力を使うか、両方合成するかは設計次第
+        // ここでは単純に合成
+        rawBoostDirection.x += stickInput.x;
+        rawBoostDirection.z += stickInput.y;
+
+        Vector3 worldBoostDirection = {0.0f, 0.0f, 0.0f};
+
+        if (Length(rawBoostDirection) > kVelocityStopThreshold_) {
+            worldBoostDirection = Normalize(rawBoostDirection);
+            if (followCamera_) {
+                // カメラの向きではなく、プレイヤーの現在の向きを基準にしたい場合は
+                // objectTransform_->transform.rotate.y を使う
+                Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate); // カメラ基準
+                // Matrix4x4 rotateMatrix = MakeRotateYMatrix(objectTransform_->transform.rotate.y); // 機体基準
+                worldBoostDirection = TransformNormal(worldBoostDirection, rotateMatrix);
+            }
+        } else {
+            // 入力がない場合は、現在の機体の前方にブースト
+            // (または、入力がない場合はクイックブーストしないという選択もアリ)
+            if (followCamera_){ // カメラがないと前方がわからない
+                 Matrix4x4 rotateMatrix = MakeRotateYMatrix(objectTransform_->transform.rotate.y);
+                 worldBoostDirection = TransformNormal({0.0f,0.0f,1.0f},rotateMatrix); // 機体の前方向
+            } else {
+                 return false; // 方向が取れない
+            }
+        }
+        
+        worldBoostDirection.y = 0.0f; // 上下方向は無視
+        if (Length(worldBoostDirection) < kVelocityStopThreshold_){
+            return false; // 最終的なブースト方向がほぼゼロなら失敗
+        }
+        worldBoostDirection = Normalize(worldBoostDirection);
+
+
+        isQuickBoosting_ = true;
+        quickBoostFrames_ = maxQuickBoostFrames_;
+        currentBoostTime_ -= quickBoostConsumption_;
+        quickBoostCooldown_ = maxQuickBoostCooldown_;
+        quickBoostUsedCount_++;
+
+        if (quickBoostUsedCount_ >= maxQuickBoostUses_) {
+            quickBoostChargeCooldown_ = quickBoostChargeTime_;
+        }
+        
+        // クイックブーストの初速と方向をvelocityに直接設定
+        // ProcessActiveQuickBoostでも速度設定が行われるが、ここで初速を与えることで即時性を出す
+        velocity_ = worldBoostDirection * (maxSpeed_ * kQuickBoostSpeedMultiplier_ * 0.8f); // 初速は最大より少し抑えめでも良い
+
+        return true;
+    }
+    return false;
+}
+
+void Player::RecoverBoostEnergy() {
+    // 通常ブーストもクイックブーストも使用していない時にエネルギー回復
+    if (!isBoosting_ && !isQuickBoosting_ && currentBoostTime_ < maxBoostTime_) {
+        float recoveryMultiplier = (Length(velocity_) < kVelocityStopThreshold_ * 5.0f) ? kStationaryBoostRecoveryMultiplier_ : 1.0f;
+        currentBoostTime_ += boostRecoveryRate_ * recoveryMultiplier;
+        if (currentBoostTime_ > maxBoostTime_) {
+            currentBoostTime_ = maxBoostTime_;
+        }
+    }
+}
 
 void Player::ShootMachineGun() {
 	// マシンガン弾の発射処理をPlayerMachineGunクラスに委譲
@@ -676,19 +689,15 @@ void Player::ApplyRecoil() {
 }
 void Player::ApplyShake() {
 	if (shakeIntensity_ > 0.01f) {  // ある程度の揺れが残っているとき
-		float shakeAmount = shakeIntensity_ * 0.1f;  // **揺れの強さを 2 倍に！**
+		float shakeAmount = shakeIntensity_ * kShakeBaseIntensityFactor_;
 
-		// ランダムな揺れを適用（-1.0f ~ 1.0f の範囲）
-		float offsetX = (rand() % 80 - 40) * shakeAmount * 0.02f;  // **横揺れ強化**
-		//float offsetY = (rand() % 100 - 50) * shakeAmount * 0.015f; // **縦揺れ強化**
-		float offsetRot = (rand() % 200 - 100) * shakeAmount * 0.002f; // **回転揺れ強化**
+		// rand() の代わりにC++の<random>を使うことを推奨
+		float offsetX = (static_cast<float>(rand() % kShakeRandRangeX_ - (kShakeRandRangeX_/2)) ) * shakeAmount * kShakeOffsetXFactor_;
+		float offsetRot = (static_cast<float>(rand() % kShakeRandRangeRot_ - (kShakeRandRangeRot_/2)) ) * shakeAmount * kShakeOffsetRotFactor_;
 
-		// **揺れを適用**
 		objectTransform_->transform.translate.x += offsetX;
-		//objectTransform_->transform.translate.y = newY;  // 修正後のY座標
-		objectTransform_->transform.rotate.y += offsetRot;  // **回転も強めに揺らす！**
+		objectTransform_->transform.rotate.y += offsetRot;
 
-		// 徐々に揺れを減衰（減衰を遅くして揺れを長くする）
 		shakeIntensity_ *= kShakeDecayRate_;
 	} else {
 		shakeIntensity_ = 0.0f;
@@ -699,39 +708,28 @@ void Player::ApplyShake() {
 ///--------------------------------------------------------------
 ///						接触開始処理
 void Player::OnCollisionEnter(BaseObject* other) {
-	//========================================
-	// 敵
-	if (dynamic_cast<BaseEnemy*>(other)) {
-		if (!isInvincible_) {
-			hp_--;
-			isJumping_ = true;
-			isInvincible_ = true;
-			invincibleTimer_ = 60 * 4; // 4秒間（60FPS換算）
-		}
-
+	if (dynamic_cast<BaseEnemy*>(other) || dynamic_cast<EnemyBullet*>(other)) {
+		HandleDamageAndInvincibility();
 	}
-	//========================================
-	// 敵の弾
-	if (dynamic_cast<EnemyBullet*>(other)) {
-		if (!isInvincible_) {
-			hp_--;
-			isJumping_ = true;
-			isInvincible_ = true;
-			invincibleTimer_ = 60 * 4; // 4秒間（60FPS換算）
-		}
-
-	}
-	//========================================
 }
 ///--------------------------------------------------------------
 ///						接触継続処理
 void Player::OnCollisionStay(BaseObject* other) {
 	if (dynamic_cast<BaseEnemy*>(other)) {
-		isJumping_ = true;
+		// isJumping_ = true; // 継続接触でジャンプし続けるかは検討
 	}
 }
 ///--------------------------------------------------------------
 ///						接触終了処理
 void Player::OnCollisionExit(BaseObject* other) {
 
+}
+
+void Player::HandleDamageAndInvincibility() {
+	if (!isInvincible_) {
+		hp_--;
+		isInvincible_ = true;
+		invincibleTimer_ = kInvincibleDuration_; // 定数使用
+		isVisible_ = true; // 無敵開始時は必ず表示
+	}
 }
