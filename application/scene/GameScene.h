@@ -9,8 +9,6 @@
 #include <random>
 #include "LineDrawerBase.h"
 
-
-
 class GameScene : public BaseScene
 {
 private:

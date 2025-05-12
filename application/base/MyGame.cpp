@@ -52,7 +52,7 @@ void MyGame::Update()
 
 #ifdef _DEBUG
 
-	imGuiManager->End();
+	//imGuiManager->End();
 
 #endif
 
@@ -64,8 +64,7 @@ void MyGame::Draw()
 
     srvManager->PreDraw();
 
-	
-
+	// シーンの描画
 	Framework::Draw();
 
 	DirectXCommon::GetInstance()->RenderTexturePostDraw();
@@ -77,8 +76,10 @@ void MyGame::Draw()
 
 #ifdef _DEBUG
 
-	imGuiManager->Draw(DirectXCommon::GetInstance());
+	
 
+	imGuiManager->Draw(DirectXCommon::GetInstance());
+	
 	//========================================
 	// LineのImGui描画
 	//LineManager::GetInstance()->DrawImGui();
@@ -86,5 +87,4 @@ void MyGame::Draw()
 #endif
 
 	DirectXCommon::GetInstance()->PostDraw();
-
 }

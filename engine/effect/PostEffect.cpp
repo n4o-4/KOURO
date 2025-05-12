@@ -24,7 +24,11 @@ void PostEffect::Update()
 
 	}
 
+#ifdef _DEBUG
+
 	DrawImGui();
+
+#endif
 }
 
 void PostEffect::Draw()

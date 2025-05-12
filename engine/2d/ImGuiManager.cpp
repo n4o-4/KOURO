@@ -1,4 +1,5 @@
 #include "ImGuiManager.h"
+#include "imgui.h" 
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx12.h>
 
@@ -10,7 +11,7 @@ ImGuiManager::~ImGuiManager()
 
 }
 
-#include "imgui.h" // 追加
+
 
 void ImGuiManager::Initialize(WinApp* winApp, DirectXCommon* dxCommon)
 {
@@ -60,6 +61,10 @@ void ImGuiManager::End()
 
 void ImGuiManager::Draw(DirectXCommon* dxCommon)
 {
+	DirectXCommon::GetInstance()->GetRenderTextureResources();
+
+	End();
+
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList = dxCommon->GetCommandList().Get();
 
 	// デスクリプタヒープの配列をセットするコマンド
