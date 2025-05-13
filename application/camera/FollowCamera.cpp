@@ -98,7 +98,7 @@ Vector3 FollowCamera::CalculationOffset()
 ///                        回転の計算
 void FollowCamera::CalculationRotate()
 {
-    Vector2 rightStickVector = Input::GetInstance()->GetRightStick();
+   /* Vector2 rightStickVector = Input::GetInstance()->GetRightStick();
 
     Vector3 rotate = { -rightStickVector.y * rotateSpeed_, rightStickVector.x * rotateSpeed_ ,0.0f };
 
@@ -111,7 +111,23 @@ void FollowCamera::CalculationRotate()
         destinationRotate.x = viewProjection_->transform.rotate.x;
     }
 
-    viewProjection_->transform.rotate.x = std::clamp(viewProjection_->transform.rotate.x, -1.5f, 1.5f);
+    viewProjection_->transform.rotate.x = std::clamp(viewProjection_->transform.rotate.x, -1.5f, 1.5f);*/
+
+    /// 右スティック傾きを取得
+    Vector2 rightStickVector = Input::GetInstance()->GetRightStick();
+
+    Vector2 rotate = { -rightStickVector.y * rotateSpeed_, rightStickVector.x * rotateSpeed_ };
+
+	destinationRotate = { destinationRotate.x + rotate.x, destinationRotate.y + rotate.y,destinationRotate.z };
+
+    viewProjection_->transform.rotate = Lerp(viewProjection_->transform.rotate, destinationRotate, easingFactor_);
+
+    // 回転Xを範囲制限
+    float clampedX = std::clamp(viewProjection_->transform.rotate.x, -0.8f, 1.5f);
+    if (clampedX != viewProjection_->transform.rotate.x) {
+        destinationRotate.x = clampedX;
+    }
+    viewProjection_->transform.rotate.x = clampedX;
 }
 
 ///=============================================================================
@@ -123,6 +139,29 @@ void FollowCamera::CalculationTranslate()
     Vector3 offset = CalculationOffset();
 
     viewProjection_->transform.translate = interTarget_ + offset;
+
+    /// カメラの角度の修正が必要無ければ
+    if (viewProjection_->transform.translate.y >= 0.1f)
+    {
+        return;
+    }
+
+    // カメラの高さが0.1以下なら、下方向（上向き）への回転を制限
+    while(viewProjection_->transform.translate.y <= 0.1f) {
+        // 下向きすぎないように制限（上を向かせすぎない）
+        //destinationRotate.x = std::max(destinationRotate.x, 0.1f);
+
+        viewProjection_->transform.rotate.x += 0.001f;
+
+        interTarget_ = Lerp(interTarget_, target_->transform.translate, easingFactor_);
+
+        Vector3 offset = CalculationOffset();
+
+        viewProjection_->transform.translate = interTarget_ + offset;
+    }
+
+    // 目標角度を修正
+    destinationRotate.x = viewProjection_->transform.rotate.x;
 }
 
 ///=============================================================================
