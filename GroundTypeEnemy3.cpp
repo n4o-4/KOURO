@@ -9,8 +9,7 @@ void GroundTypeEnemy3::Initialize() {
 	ModelManager::GetInstance()->LoadModel("enemy/chair/chair.obj");
 	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/chair/chair.obj"));
 
-	startScale_.x = startScale_.y = startScale_.z = 1.0f;
-	targetScale_.x = targetScale_.y = targetScale_.z = 1.0f;
+	worldTransform_->transform.scale = (Vector3(modelScale_, modelScale_, modelScale_));
 
 	particleEmitter_->SetParticleCount(20);
 	particleEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ 1.0f,1.0f }));
@@ -48,7 +47,7 @@ void GroundTypeEnemy3::Update() {
 		if (t > 1.0f) t = 1.0f;
 
 		// イージング（バウンド風：t=0で1.0、t=0.5で1.7、t=1.0で1.0）
-		float scaleFactor = 1.0f + 0.7f * sinf(t * 3.141592f); // πで1周期 → 1→1.7→1
+		float scaleFactor = modelScale_ + 0.7f * sinf(t * 3.141592f); // πで1周期 → 1→1.7→1
 
 		worldTransform_->transform.scale.x = scaleFactor;
 		worldTransform_->transform.scale.y = scaleFactor;
@@ -57,9 +56,9 @@ void GroundTypeEnemy3::Update() {
 		if (t >= 1.0f) {
 			isHitReacting_ = false;
 			hitReactionTimer_ = 0.0f;
-			worldTransform_->transform.scale.x = 1.0f;
-			worldTransform_->transform.scale.y = 1.0f;
-			worldTransform_->transform.scale.z = 1.0f;
+			worldTransform_->transform.scale.x = modelScale_;
+			worldTransform_->transform.scale.y = modelScale_;
+			worldTransform_->transform.scale.z = modelScale_;
 		}
 	}
 	BaseEnemy::Update();
@@ -119,13 +118,12 @@ void GroundTypeEnemy3::OnCollisionExit(BaseObject* other) {
 void GroundTypeEnemy3::HitJump() {
 	isHitReacting_ = true;
 	hitReactionTimer_ = 0.0f;
-	startScale_ = worldTransform_->transform.scale;
-	targetScale_ = { 1.7f, 1.7f, 1.7f };   // 一時的に大きくする
+	modelScale_ = modelScale_ / 2.0f;
 }
 
 
 void GroundTypeEnemy3::UpdateWanderState() {
-	BaseEnemy::RandomMove();
+	BaseEnemy::RandomMove(modelScale_);
 }
 
 void GroundTypeEnemy3::UpdateChaseState() {

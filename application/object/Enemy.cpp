@@ -135,7 +135,7 @@ void Enemy::UpdateActionState() {
 
 // 徘徊状態の更新
 void Enemy::UpdateWanderState() {
-	BaseEnemy::RandomMove();
+	BaseEnemy::RandomMove(modelScale_);
 }
 
 // 追跡状態の更新

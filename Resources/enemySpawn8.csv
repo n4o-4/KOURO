@@ -1,6 +1,6 @@
-//�R�}���h,x,y,z,number,type
-// Wave2
-POP,0,50,0,5,BOMB
-POP,-70,25,-70,5,CHAIR
-POP,60,15,60,5,BAT
-POP,-90,20,90,6,BOMB
+//?R?}???h,x,y,z,hp,number,type
+// Wave2,,,,,,
+POP,0,50,0,3,5,BOMB
+POP,-70,25,-70,3,5,CHAIR
+POP,60,15,60,3,5,BAT
+POP,-90,20,90,3,6,BOMB

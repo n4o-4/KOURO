@@ -112,6 +112,6 @@ private:
     //ジャンプ関連
 	float jumpVelocity_ = 0.0f; // ジャンプ速度
 
-    
+    float modelScale_ = 5.0f;
 };
 

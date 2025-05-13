@@ -1,4 +1,4 @@
-//�R�}���h,x,y,z,number,type
-// Wave2
-POP,-80,25,10,6,BAT
-POP,0,30,0,4,WM
+//?R?}???h,x,y,z,hp,number,type
+// Wave2,,,,,,
+POP,-80,25,10,2,6,BAT
+POP,0,30,0,2,4,WM

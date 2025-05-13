@@ -59,6 +59,8 @@ void Object3d::Update()
 
 #endif
 
+	
+
 	if (camera) {
 		
 

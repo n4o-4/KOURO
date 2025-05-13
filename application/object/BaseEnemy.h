@@ -72,7 +72,7 @@ protected:
 
     void MoveToTarget();
 
-    void RandomMove();
+    void RandomMove(float scale);
 
     Vector3 Lerp(const Vector3& a, const Vector3& b, float t) {
         return a * (1.0f - t) + b * t;
@@ -83,6 +83,8 @@ protected:
 
     ////
     void SetModelColor(const Vector4& color) { model_->SetColor(color); }
+
+	void SetModelScale(const Vector3& scale) { model_->SetScale(scale); }
     
     ///--------------------------------------------------------------
     /// メンバ変数
@@ -99,7 +101,7 @@ protected:
     int spawnHp_ = 1;
 
     // 移動関連
-    float speed_ = 0.6f;   // 移動速度
+    float speed_ = 0.2f;   // 移動速度
     float minX_ = -100.0f;  // 左の限界
     float maxX_ = 100.0f;   // 右の限界
 	float minY_ = 0.0f;     // 下の限界

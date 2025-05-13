@@ -160,7 +160,7 @@ void BaseEnemy::MoveToTarget()
     }
 }
 
-void BaseEnemy::RandomMove()
+void BaseEnemy::RandomMove(float scale)
 {
     directionChangeTimer_ += 1.0f / 60.0f;
     SetModelColor(Vector4{ 1.0f, 1.0f, 1.0f, 1.0f });
@@ -204,7 +204,7 @@ void BaseEnemy::RandomMove()
         0.0f,
         cosf(worldTransform_->transform.rotate.y)
     };
-    worldTransform_->transform.scale = { 1.0f, 1.0f, 1.0f };
+    worldTransform_->transform.scale = { scale, scale, scale };
     velocity_ = forward * speed_;
     worldTransform_->transform.translate += velocity_;
 }
