@@ -204,5 +204,11 @@ void Object3dCommon::CreateGraphicsPipeline()
 	// 実際に生成
 	graphicsPipelineState = nullptr;
 	hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
+
+	// depthtestを無効にしたPipelineStateの作成
+	graphicsPipelineStateDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO; // 書き込みしない
+	disableDepthTestPipelineState = nullptr;
+	hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&disableDepthTestPipelineState));
+
 	assert(SUCCEEDED(hr));
 }

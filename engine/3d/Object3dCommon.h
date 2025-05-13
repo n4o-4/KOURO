@@ -23,6 +23,9 @@ public: // メンバ関数
 
 	Camera* GetDefaultCamera() const { return defaultCamera_.get(); }
 
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> GetGraphicsPipelineState() { return graphicsPipelineState; }
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> GetDisableDepthTestPipelineState() { return disableDepthTestPipelineState; }
+
 private:
 
 	static std::unique_ptr<Object3dCommon> instance;
@@ -47,6 +50,8 @@ private: // メンバ変数
     Microsoft::WRL::ComPtr< ID3D12RootSignature> rootSignature;
 
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState;
+
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> disableDepthTestPipelineState;
 
 	//ID3DBlob* signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr< ID3DBlob> signatureBlob = nullptr;

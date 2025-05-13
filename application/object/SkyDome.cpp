@@ -27,6 +27,10 @@ void SkyDome::Initialize() {
 	cube_ = std::make_unique<Object3d>();
 	cube_->Initialize(Object3dCommon::GetInstance());
 	cube_->SetModel("skyDome/cube.obj");
+	// depthの書き込みを無効化
+	cube_->SetWriteDepthTest(false);
+
+
 	//========================================
 	// ワールド変換の初期化
 	// 基本スカイドーム

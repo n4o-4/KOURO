@@ -78,6 +78,14 @@ void Object3d::Draw(WorldTransform worldTransform,ViewProjection viewProjection,
 
 	worldTransform.TransferMatrix();
 
+	// depthtest書き込みする場合
+	if (writeDepthTest_) {
+		object3dCommon->GetDxCommon()->GetCommandList()->SetPipelineState(object3dCommon->GetGraphicsPipelineState().Get());
+	}
+	else {
+		object3dCommon->GetDxCommon()->GetCommandList()->SetPipelineState(object3dCommon->GetDisableDepthTestPipelineState().Get());
+	}
+
 	object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_.Get()->GetGPUVirtualAddress());
 
 	object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, viewProjection.GetViewProjectionResource()->GetGPUVirtualAddress());

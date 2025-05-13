@@ -60,6 +60,8 @@ public: // メンバ関数
 
 	void SetColor(Vector4 color) { materialData_->color = color; }
 
+	void SetWriteDepthTest(bool flag) { this->writeDepthTest_ = flag; }
+
 private:
 
 	
@@ -95,5 +97,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
 
 	Material* materialData_ = nullptr;
+
+	bool writeDepthTest_ = true;
 };
 

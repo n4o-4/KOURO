@@ -10,6 +10,9 @@ void Ground::Initialize() {
 
 	model_->SetLocalMatrix(MakeIdentity4x4());
 
+	// depthの書き込みを無効化
+	model_->SetWriteDepthTest(false);
+
 	worldTransform_ = std::make_unique<WorldTransform>();
 	worldTransform_->Initialize();
 	worldTransform_->transform.scale = { 10.0f,10.0f,10.0f };
