@@ -11,10 +11,10 @@ PlayerMachineGun::PlayerMachineGun(const Vector3& position, const Vector3& veloc
     worldTransform_ = std::make_unique<WorldTransform>();
     worldTransform_->Initialize();
     worldTransform_->transform.translate = position;
-    worldTransform_->transform.scale = { 0.2f, 0.2f, 0.2f };  // マシンガンの弾は小さめ
+    worldTransform_->transform.scale = { 0.8f, 0.8f, 0.8f };  // マシンガンの弾は小さめ
     velocity_ = velocity;
 
-    BaseObject::Initialize(worldTransform_->transform.translate, 0.5f);  // 当たり判定のサイズ
+    BaseObject::Initialize(worldTransform_->transform.translate, 1.2f);  // 当たり判定のサイズ
 
     ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png",ParticleManager::ParticleType::Normal);
     particleEmitter_ = std::make_unique<ParticleEmitter>();
