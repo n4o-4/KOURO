@@ -1,5 +1,5 @@
-//�R�}���h,x,y,z,number,type
-// Wave3
-POP,0,10,0,4,KUMO
-POP,80,15,-10,3,BOMB
-POP,-60,5,50,3,BAT
+//?R?}???h,x,y,z,hp,number,type
+// Wave3,,,,,,
+POP,0,10,0,2,4,KUMO
+POP,80,15,-10,2,3,BOMB
+POP,-60,5,50,2,3,BAT

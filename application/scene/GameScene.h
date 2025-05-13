@@ -111,15 +111,15 @@ private: //静的メンバ関数
 	// 敵の出現  
 	void SpawnEnemy(const Vector3& position);
 
-	void SpawnEnemyKumo(const Vector3& position);
+	void SpawnEnemyKumo(const Vector3& position, int hp);
 
-	void SpawnEnemyBat(const Vector3& position);
+	void SpawnEnemyBat(const Vector3& position, int hp);
 
-	void SpawnEnemyBomb(const Vector3& position);
+	void SpawnEnemyBomb(const Vector3& position, int hp);
 
-	void SpawnEnemyChair(const Vector3& position);
+	void SpawnEnemyChair(const Vector3& position, int hp);
 
-	void SpawnEnemyWM(const Vector3& position);
+	void SpawnEnemyWM(const Vector3& position, int hp);
 
 	void SpawnSet(const Vector3& position);
 
@@ -162,5 +162,5 @@ private:
 	bool nomal_ = false;
 	bool hard_ = false;
 
-
+	
 };

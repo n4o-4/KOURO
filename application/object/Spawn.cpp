@@ -6,6 +6,8 @@ void Spawn::Initialize() {
 	ModelManager::GetInstance()->LoadModel("Spawn/Spawn.obj");
 	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("Spawn/Spawn.obj"));
 
+	worldTransform_->transform.scale = Vector3(2.5f, 2.5f, 2.5f);
+
 	//spawnModel_ = std::make_unique<Object3d>();
 	//spawnModel_->Initialize(Object3dCommon::GetInstance());
 	//// 

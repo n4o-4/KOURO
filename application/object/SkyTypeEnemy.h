@@ -131,8 +131,7 @@ private:
 	// クラス内の private: の下に追加
 	bool isHitReacting_ = false;
 	float hitReactionTimer_ = 0.0f;
-	Vector3 startScale_;
-	Vector3 targetScale_;
+	float modelScale_ = 5.0f;
 
 	bool isBlinking_ = false;
 	float blinkTimer_ = 0.0f;

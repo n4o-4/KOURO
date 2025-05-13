@@ -914,6 +914,9 @@ void GameScene::UpdateEnemyPopCommands() {
 			SpawnSet(Vector3(x, y, z));
 
 			getline(line_stream, word, ',');
+			int hp = std::stoi(word);
+
+			getline(line_stream, word, ',');
 			int num = std::stoi(word);
 
 			getline(line_stream, word, ',');
@@ -930,19 +933,19 @@ void GameScene::UpdateEnemyPopCommands() {
 			for (int i = 0; i < num; i++) {
 				if (currentSpawnType_ == "KUMO") {
 					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
-					SpawnEnemyKumo(randomPosition);
+					SpawnEnemyKumo(randomPosition, hp);
 				} else if (currentSpawnType_ == "BAT") {
 					Vector3 randomPosition(randomX(gen), randomY(gen), randomZ(gen));
-					SpawnEnemyBat(randomPosition);
+					SpawnEnemyBat(randomPosition, hp);
 				} else if (currentSpawnType_ == "BOMB") {
 					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
-					SpawnEnemyBomb(randomPosition);
+					SpawnEnemyBomb(randomPosition, hp);
 				} else if (currentSpawnType_ == "CHAIR") {
 					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
-					SpawnEnemyChair(randomPosition);
+					SpawnEnemyChair(randomPosition, hp);
 				} else if (currentSpawnType_ == "WM") {
 					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
-					SpawnEnemyWM(randomPosition);
+					SpawnEnemyWM(randomPosition, hp);
 				} else {
 					SpawnEnemy(Vector3(x, y, z));
 				}
@@ -982,56 +985,61 @@ void GameScene::SpawnEnemy(const Vector3 &position) {
 
 }
 
-void GameScene::SpawnEnemyKumo(const Vector3& position) {
+void GameScene::SpawnEnemyKumo(const Vector3& position,int hp) {
 	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<GroundTypeEnemy>();
 	if (auto* enemyNormal = dynamic_cast<GroundTypeEnemy*>(newEnemy.get())) {
 		enemyNormal->Initialize();
 		enemyNormal->SetPosition(position);
 		enemyNormal->SetTarget(player_->GetWorldTransform());
+		enemyNormal->SetHp(hp);
 	}
 
 	enemies_.push_back(std::move(newEnemy));
 }
 
-void GameScene::SpawnEnemyBat(const Vector3& position) {
+void GameScene::SpawnEnemyBat(const Vector3& position, int hp) {
 	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<SkyTypeEnemy>();
 	if (auto* enemyNormal = dynamic_cast<SkyTypeEnemy*>(newEnemy.get())) {
 		enemyNormal->Initialize();
 		enemyNormal->SetPosition(position);
 		enemyNormal->SetTarget(player_->GetWorldTransform());
+		enemyNormal->SetHp(hp);
 	}
 
 	enemies_.push_back(std::move(newEnemy));
 }
 
-void GameScene::SpawnEnemyBomb(const Vector3& position) {
+void GameScene::SpawnEnemyBomb(const Vector3& position, int hp) {
 	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<GroundTypeEnemy2>();
 	if (auto* enemyNormal = dynamic_cast<GroundTypeEnemy2*>(newEnemy.get())) {
 		enemyNormal->Initialize();
 		enemyNormal->SetPosition(position);
 		enemyNormal->SetTarget(player_->GetWorldTransform());
+		enemyNormal->SetHp(hp);
 	}
 
 	enemies_.push_back(std::move(newEnemy));
 }
 
-void GameScene::SpawnEnemyChair(const Vector3& position) {
+void GameScene::SpawnEnemyChair(const Vector3& position, int hp) {
 	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<GroundTypeEnemy3>();
 	if (auto* enemyNormal = dynamic_cast<GroundTypeEnemy3*>(newEnemy.get())) {
 		enemyNormal->Initialize();
 		enemyNormal->SetPosition(position);
 		enemyNormal->SetTarget(player_->GetWorldTransform());
+		enemyNormal->SetHp(hp);
 	}
 
 	enemies_.push_back(std::move(newEnemy));
 }
 
-void GameScene::SpawnEnemyWM(const Vector3& position) {
+void GameScene::SpawnEnemyWM(const Vector3& position, int hp) {
 	std::unique_ptr<BaseEnemy> newEnemy = std::make_unique<GroundTypeEnemy4>();
 	if (auto* enemyNormal = dynamic_cast<GroundTypeEnemy4*>(newEnemy.get())) {
 		enemyNormal->Initialize();
 		enemyNormal->SetPosition(position);
 		enemyNormal->SetTarget(player_->GetWorldTransform());
+		enemyNormal->SetHp(hp);
 	}
 
 	enemies_.push_back(std::move(newEnemy));
@@ -1046,12 +1054,6 @@ void GameScene::SpawnSet(const Vector3& position) {
 	}
 
 	spawns_.push_back(std::move(newSpawn));
-
-
-	/*std::unique_ptr<Spawn> newSpawn = std::make_unique<Spawn>();
-	newSpawn->Initialize();
-	newSpawn->SetPosition(position);
-	spawns_.push_back(std::move(newSpawn));*/
 	
 }
 

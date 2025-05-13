@@ -6,8 +6,7 @@ void GroundTypeEnemy2::Initialize() {
 	ModelManager::GetInstance()->LoadModel("enemy/bomb/bomb.obj");
 	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/bomb/bomb.obj"));
 
-	startScale_.x = startScale_.y = startScale_.z = 1.0f;
-	targetScale_.x = targetScale_.y = targetScale_.z = 1.0f;
+	worldTransform_->transform.scale = (Vector3(modelScale_, modelScale_, modelScale_));
 
 	particleEmitter_->SetParticleCount(20);
 	particleEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ 1.0f,1.0f }));
@@ -51,7 +50,7 @@ void GroundTypeEnemy2::Update() {
 		if (t > 1.0f) t = 1.0f;
 
 		// イージング（バウンド風：t=0で1.0、t=0.5で1.7、t=1.0で1.0）
-		float scaleFactor = 1.0f + 0.7f * sinf(t * 3.141592f); // πで1周期 → 1→1.7→1
+		float scaleFactor = modelScale_ + 0.7f * sinf(t * 3.141592f); // πで1周期 → 1→1.7→1
 
 		worldTransform_->transform.scale.x = scaleFactor;
 		worldTransform_->transform.scale.y = scaleFactor;
@@ -60,9 +59,9 @@ void GroundTypeEnemy2::Update() {
 		if (t >= 1.0f) {
 			isHitReacting_ = false;
 			hitReactionTimer_ = 0.0f;
-			worldTransform_->transform.scale.x = 1.0f;
-			worldTransform_->transform.scale.y = 1.0f;
-			worldTransform_->transform.scale.z = 1.0f;
+			worldTransform_->transform.scale.x = modelScale_;
+			worldTransform_->transform.scale.y = modelScale_;
+			worldTransform_->transform.scale.z = modelScale_;
 		}
 	}
 
@@ -100,12 +99,12 @@ void GroundTypeEnemy2::HitJump()
 {
 	isHitReacting_ = true;
 	hitReactionTimer_ = 0.0f;
-	startScale_ = worldTransform_->transform.scale;
-	targetScale_ = { 1.7f, 1.7f, 1.7f };   // 一時的に大きくする
+	modelScale_ = modelScale_ / 2.0f;
 }
 
 void GroundTypeEnemy2::UpdateWanderState() {
-	BaseEnemy::RandomMove();
+	
+	BaseEnemy::RandomMove(modelScale_);
 }
 
 void GroundTypeEnemy2::UpdateChaseState() {
@@ -123,7 +122,7 @@ void GroundTypeEnemy2::UpdateChaseState() {
 		//
 		float targetRotationY = std::atan2(direction.x, direction.z);
 		worldTransform_->transform.rotate.y = targetRotationY;
-		worldTransform_->transform.scale = { 1.0f, 1.0f, 1.0f };
+		worldTransform_->transform.scale = { modelScale_, modelScale_, modelScale_ };
 		SetModelColor(Vector4{ 1.0f, 1.0f, 1.0f, 1.0f });
 	}
 }
@@ -153,7 +152,7 @@ void GroundTypeEnemy2::UpdateCombatState() {
 			blinkEffectTimer_ += 1.0f / 60.0f;
 
 			float t = blinkEffectTimer_;
-			float scale = 1.0f + 0.35f * sinf(t * 10.0f);
+			float scale = modelScale_ + 0.35f * sinf(t * 10.0f);
 			worldTransform_->transform.scale = { scale, scale, scale };
 
 			int blinkPhase = static_cast<int>(t * 5.0f) % 2;
@@ -168,7 +167,7 @@ void GroundTypeEnemy2::UpdateCombatState() {
 				isBlinkEffect_ = false;
 				blinkEffectTimer_ = 0.0f;
 
-				worldTransform_->transform.scale = { 1.0f, 1.0f, 1.0f };
+				worldTransform_->transform.scale = { modelScale_, modelScale_, modelScale_ };
 				SetModelColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 				
 			}
