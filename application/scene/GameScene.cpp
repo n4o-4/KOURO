@@ -204,16 +204,16 @@ void GameScene::Initialize() {
 	ParticleManager::GetInstance()->SetBlendMode("Add");
 
 	// plane
-	ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+	ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/gradationLine.png", ParticleManager::ParticleType::Cylinder);
 
 	emitter1_ = std::make_unique<ParticleEmitter>();
 	emitter1_->Initialize("plane_Particle");
 	emitter1_->SetPosition({ 0.0f,2.0f,0.0f });
-	emitter1_->SetParticleCount(3);
+	emitter1_->SetParticleCount(1);
 	emitter1_->SetVelocityRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} });
 	emitter1_->SetStartColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{1.0f,1.0f} });
 	emitter1_->SetFinishColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} });
-	emitter1_->SetLifeTimeRange({ {1.0f,1.0f} });
+	emitter1_->SetLifeTimeRange({ {10000.0f,10000.0f} });
 	emitter1_->SetFrequency(1.5f);
 
 	// ring1
@@ -333,8 +333,8 @@ void GameScene::Update() {
 
 	if (ImGui::Button("Add Particle plane and ring"))
 	{
-		emitter1_->HitEmit();
-		emitter2_->Emit();
+		emitter1_->Emit();
+		//emitter2_->Emit();
 	}
 
 	if (ImGui::Button("Add Particle plane"))
