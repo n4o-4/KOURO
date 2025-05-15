@@ -16,14 +16,25 @@ void Player::Initialize() {
 	// Object3d を初期化
 	object3d_ = std::make_unique<Object3d>();
 	object3d_->Initialize(Object3dCommon::GetInstance());
+	
+	door_ = std::make_unique<Object3d>();
+	door_->Initialize(Object3dCommon::GetInstance());
 
 	// モデルを設定
-	ModelManager::GetInstance()->LoadModel("player/Microwave.obj");
-	object3d_->SetModel("player/Microwave.obj");
+	ModelManager::GetInstance()->LoadModel("player/Microwave_body.obj");
+	object3d_->SetModel("player/Microwave_body.obj");
+	// モデルのスケールを設定
+	ModelManager::GetInstance()->LoadModel("player/Microwave_door.obj");
+	door_->SetModel("player/Microwave_door.obj");
+
 	// 初期位置を設定
 	objectTransform_ = std::make_unique<WorldTransform>();
 	objectTransform_->Initialize();
 	objectTransform_->transform.translate = { 0.0f, initialY_ , kInitialZ_ };
+
+	doorObjectTransform_ = std::make_unique<WorldTransform>();
+	doorObjectTransform_->Initialize();
+	doorObjectTransform_->transform.translate = { 0.0f, initialY_ , kInitialZ_ };
 
 	explosionEmitter_ = std::make_unique<ExplosionEmitter>();
 	explosionEmitter_->Initialize("missileSmoke");
@@ -105,6 +116,11 @@ void Player::Update() {
 	object3d_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 	object3d_->Update();// 更新
 
+	//ドア
+	doorObjectTransform_->UpdateMatrix();// 行列更新
+	door_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
+	door_->Update();
+
 	//========================================
 	// 当たり判定との同期
 	BaseObject::Update(objectTransform_->transform.translate);
@@ -118,6 +134,7 @@ void Player::Draw(ViewProjection viewProjection, DirectionalLight directionalLig
 	// 無敵時間中は点滅
 	if (!isInvincible_ || isVisible_) {
 		object3d_->Draw(*objectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
+		door_->Draw(*doorObjectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
 	}
 
 	// 弾の描画

@@ -141,8 +141,14 @@ private:
 	//========================================
 	// 3Dオブジェクト
 	std::unique_ptr<Object3d> object3d_;
+	// ドア
+	std::unique_ptr<Object3d> door_;
+
 	// ワールド変換
 	std::unique_ptr<WorldTransform> objectTransform_;
+	//ドア
+	std::unique_ptr<WorldTransform> doorObjectTransform_;
+
 	//========================================
 	// 弾
 	std::vector<std::unique_ptr<PlayerMissile>> bullets_;// 弾のリスト
