@@ -18,8 +18,14 @@ void WorldTransform::Initialize()
 
 void WorldTransform::UpdateMatrix()
 {
-
-	matWorld_ = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+	if (parent_)
+	{
+		matWorld_ = Multiply(parent_->matWorld_, MakeAffineMatrix(transform.scale, transform.rotate, transform.translate));
+	}
+	else
+	{
+		matWorld_ = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+	}
 
 	matWorldInverse_ = Inverse(matWorld_);
 

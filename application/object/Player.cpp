@@ -127,6 +127,8 @@ void Player::Update() {
 	// ImGui描画
 
 	DrawImGui();
+
+	CameraShake();
 }
 ///=============================================================================
 ///                        描画
@@ -703,6 +705,39 @@ void Player::ApplyShake() {
 		shakeIntensity_ = 0.0f;
 	}
 }
+void Player::ApplyCameraShake()
+{
+	// カメラの揺れを適用
+	if (!isCameraShaking_)
+	{
+		isCameraShaking_ = true;
+		shakeCurrentTime_ = 0.0f;
+	}
+}
+
+void Player::CameraShake()
+{
+	if (!isCameraShaking_)
+	{
+		return;
+	}
+
+	if (shakeCurrentTime_ >= kShakeTime_)
+	{
+		isCameraShaking_ = false;
+		return;
+	}
+
+	// positionの設定
+	std::uniform_real_distribution<float> distribution(-kShakeMagnitude_, kShakeMagnitude_);
+	Vector3 randomTranslate = { distribution(randomEngine),distribution(randomEngine) ,distribution(randomEngine) };
+
+	followCamera_->GetViewProjection().transform.translate += randomTranslate;
+
+	followCamera_->GetViewProjection().Update();
+
+	shakeCurrentTime_ += 1.0f / 60.0f;
+}
 ///=============================================================================
 ///						当たり判定
 ///--------------------------------------------------------------
@@ -711,6 +746,8 @@ void Player::OnCollisionEnter(BaseObject* other) {
 	if (dynamic_cast<BaseEnemy*>(other) || dynamic_cast<EnemyBullet*>(other)) {
 		HandleDamageAndInvincibility();
 	}
+
+	ApplyCameraShake();
 }
 ///--------------------------------------------------------------
 ///						接触継続処理

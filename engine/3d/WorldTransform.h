@@ -28,6 +28,8 @@ public:
 
 	const Microsoft::WRL::ComPtr<ID3D12Resource>& GetTransformResource() { return transformResource_; }
 
+	void SetParent(WorldTransform* parent) { parent_ = parent; }
+
 public:
 
 	Transform transform;
@@ -45,7 +47,7 @@ private:
 
 	ConstBufferDataWorldTransform* transformData_ = nullptr;
 
-	const WorldTransform* parent_ = nullptr;
+	WorldTransform* parent_ = nullptr;
 
 public:
 

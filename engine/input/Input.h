@@ -152,7 +152,7 @@ private:
 
 	Vector2 rightStick = {};
 
-	float deadZone = 0.4f; // デッドゾーン
+	float deadZone = 0.25f; // デッドゾーン
 
 	//　入力受付フラグ
 	bool isReception_ = true;

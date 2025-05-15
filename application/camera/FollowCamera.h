@@ -28,6 +28,8 @@ public:
 	// カメラの位置を取得
 	Vector3 GetPosition() const { return currentPosition_; }
 
+	void SetPosition(const Vector3& position) { currentPosition_ = position; }
+
 	// カメラのビュープロジェクションを取得
 	ViewProjection& GetViewProjection() { return *viewProjection_; }
 

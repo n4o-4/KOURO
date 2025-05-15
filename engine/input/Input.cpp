@@ -215,6 +215,8 @@ void Input::GamePadUpdate()
 		rightStick.x /= MAX_STICK_VALUE;
 		rightStick.y /= MAX_STICK_VALUE;
 
+
+
 		if (std::abs(rightStick.x) < deadZone)
 		{
 			// デッドゾーン内なので、入力なしとして処理する
@@ -226,5 +228,8 @@ void Input::GamePadUpdate()
 			// デッドゾーン内なので、入力なしとして処理する
 			rightStick.y = 0.0f;
 		}
+
+		rightStick.x /= 3.0f;
+		rightStick.y /= 3.0f;
 	}
 }
