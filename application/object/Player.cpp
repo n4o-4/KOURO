@@ -381,6 +381,11 @@ void Player::UpdateMissiles() {
 			Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::RIGHT_SHOULDER))) {
 		Shoot();
 		missileCooldown_ = missileCooldownMax_; // クールタイム開始
+
+		isDoorOpen_--;
+		// ドアを開く 補間
+
+	
 	}
 
 	// 弾の更新

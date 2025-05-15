@@ -253,6 +253,10 @@ private:
 	int missileCooldown_ = 0; // ミサイルのクールダウンタイマー
 	const int missileCooldownMax_ = 300; // 5秒（60FPS換算）
 
+	//========================================
+	// door 関連
+	int isDoorOpen_ = 180; // ドアが開いているかどうか
+
     // 初期化関連
     const float kInitialZ_ = 3.0f;
     const int kExplosionParticleCount_ = 10;
