@@ -229,6 +229,8 @@ void GameScene::Update() {
 	/*animationManager->Update();
 	lineDrawer_->SkeletonUpdate(animationManager->GetActiveAnimation("walk.gltf").skeleton);*/
 	//human_->Update();
+
+	BaseScene::Update();
 	//========================================
 	// フェーズ切り替え
 	switch(phase_) {
@@ -558,7 +560,6 @@ void GameScene::Update() {
 
 	//lineDrawer_->Update();
 
-	BaseScene::Update();
 	//========================================
 	// ライト
 	// 

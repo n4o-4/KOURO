@@ -62,6 +62,8 @@ private:
 
 	bool music = false;
 
+	std::unique_ptr<Audio> audio = nullptr;
+
 private:
 public: // メンバ関数
 

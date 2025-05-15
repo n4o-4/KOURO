@@ -63,6 +63,12 @@ private:
 	//playerの揺れ処理
 	void ApplyShake();
 	//========================================
+	// カメラの揺れ処理
+
+	void ApplyCameraShake();
+
+	void CameraShake();
+
 
 	///--------------------------------------------------------------
 	///						 当たり判定
@@ -76,6 +82,7 @@ private:
 	void OnCollisionExit(BaseObject* other) override;
 
 	void HandleDamageAndInvincibility(); // ダメージ処理と無敵化の共通処理
+
 
 	///--------------------------------------------------------------
 	///							入出力関数
@@ -291,4 +298,12 @@ private:
     static constexpr int kShakeRandRangeX_ = 80;
     static constexpr int kShakeRandRangeRot_ = 200;
 
+
+	// カメラシェイク用変数
+    static constexpr float kShakeTime_ = 0.1f; // シェイクの時間
+	float shakeCurrentTime_ = 0.0f; // シェイクの経過時間
+	static constexpr float kShakeMagnitude_ = 0.3f; // シェイクの大きさ
+	bool isCameraShaking_ = false; // カメラシェイク中かどうか
+
+	std::mt19937 randomEngine;
 };
