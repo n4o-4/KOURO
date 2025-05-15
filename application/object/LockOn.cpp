@@ -179,6 +179,14 @@ void LockOn::Draw(ViewProjection viewProjection, DirectionalLight directionalLig
 ///=============================================================================
 ///                        ロックオン範囲内の敵を検知する関数
 void LockOn::DetectEnemies(const std::vector<std::unique_ptr<BaseEnemy>>& enemies) {
+
+    for (const auto& enemy : enemies) {
+        // スポナーはロックオン対象外とする
+        if (dynamic_cast<Spawn*>(enemy.get())) {
+            continue;
+        }
+	}
+
     Vector3 lockOnPos = lockOnWorldTransform_->transform.translate;
     if (Length(viewDirection_) < 0.001f) {
         viewDirection_ = {0.0f, 0.0f, 1.0f};
@@ -193,28 +201,29 @@ void LockOn::DetectEnemies(const std::vector<std::unique_ptr<BaseEnemy>>& enemie
     
     // 各敵について優先度を計算
     for (const auto& enemy : enemies) {
+        // スポナーはロックオン対象外とする
+        if (dynamic_cast<Spawn*>(enemy.get())) {
+            continue;
+        }
+
         Vector3 enemyPos = enemy->GetPosition();
         Vector3 toEnemy = enemyPos - lockOnPos;
         float distanceToEnemy = Length(toEnemy);
-        
+
         if (distanceToEnemy > 0.001f && distanceToEnemy < detectionRange_) {
-            Vector3 normalizedToEnemy = {
-                toEnemy.x / distanceToEnemy,
-                toEnemy.y / distanceToEnemy,
-                toEnemy.z / distanceToEnemy
-            };
-            
+            Vector3 normalizedToEnemy = Normalize(toEnemy);
             float dotProduct = Dot(viewDirection_, normalizedToEnemy);
-            
+
             if (dotProduct > viewAngleThreshold_) {
                 prioritizedEnemies.push_back({
-                    enemy.get(), 
+                    enemy.get(),
                     dotProduct,
                     distanceToEnemy
-                });
+                    });
             }
         }
     }
+
     
     // 視点との一致度でソート
     std::sort(prioritizedEnemies.begin(), prioritizedEnemies.end(), 
