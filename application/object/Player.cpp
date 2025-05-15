@@ -34,7 +34,9 @@ void Player::Initialize() {
 
 	doorObjectTransform_ = std::make_unique<WorldTransform>();
 	doorObjectTransform_->Initialize();
-	doorObjectTransform_->transform.translate = { 0.0f, initialY_ , kInitialZ_ };
+	doorObjectTransform_->transform.translate = { 1.36f, -0.01f , 0.94f };
+
+	doorObjectTransform_->SetParent(objectTransform_.get());
 
 	explosionEmitter_ = std::make_unique<ExplosionEmitter>();
 	explosionEmitter_->Initialize("missileSmoke");
@@ -186,6 +188,8 @@ void Player::DrawImGui() {
 	if (isOverheated_) {
 		ImGui::TextColored(ImVec4(1, 0, 0, 1), "OVERHEATED!");
 	}
+
+	ImGui::DragFloat3("door Translate", &doorObjectTransform_->transform.translate.x, 0.01f);
 
 	static Vector3 prevPos;
 

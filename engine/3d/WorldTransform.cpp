@@ -20,7 +20,9 @@ void WorldTransform::UpdateMatrix()
 {
 	if (parent_)
 	{
-		matWorld_ = Multiply(parent_->matWorld_, MakeAffineMatrix(transform.scale, transform.rotate, transform.translate));
+		parent_->UpdateMatrix();
+
+		matWorld_ = Multiply(MakeAffineMatrix(transform.scale, transform.rotate, transform.translate), parent_->matWorld_);
 	}
 	else
 	{
