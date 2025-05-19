@@ -147,6 +147,16 @@ void Player::Update() {
 	door_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 	door_->Update();
 
+	// マシンガンの更新
+	// Body
+	mgBodyObjectTransform_->UpdateMatrix();
+	mgBodyObject3d_->SetLocalMatrix(MakeIdentity4x4());
+	mgBodyObject3d_->Update();
+	// Head
+	mgHeadObjectTransform_->UpdateMatrix();
+	mgHeadObject3d_->SetLocalMatrix(MakeIdentity4x4());
+	mgHeadObject3d_->Update();
+
 	//========================================
 	// 当たり判定との同期
 	BaseObject::Update(objectTransform_->transform.translate);
@@ -163,6 +173,8 @@ void Player::Draw(ViewProjection viewProjection, DirectionalLight directionalLig
 	if (!isInvincible_ || isVisible_) {
 		object3d_->Draw(*objectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
 		door_->Draw(*doorObjectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
+		mgBodyObject3d_->Draw(*mgBodyObjectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
+		mgHeadObject3d_->Draw(*mgHeadObjectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
 	}
 
 	// 弾の描画
