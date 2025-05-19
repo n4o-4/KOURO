@@ -37,7 +37,7 @@ private:
 
 	std::unique_ptr<Sprite> over_ = nullptr;
 
-
+	std::unique_ptr<Audio> overBGM_ = nullptr;
 
 };
 

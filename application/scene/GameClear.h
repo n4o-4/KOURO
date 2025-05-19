@@ -39,7 +39,7 @@ private:
 	std::unique_ptr<Sprite> clear_ = nullptr;
 
 
-
+	std::unique_ptr<Audio> clearBGM_ = nullptr;
 
 
 };

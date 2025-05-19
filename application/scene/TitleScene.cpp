@@ -116,7 +116,7 @@ void TitleScene::Initialize()
 	stsrtTime = 50;
 
 	AudioManager::GetInstance()->Initialize();
-	AudioManager::GetInstance()->SoundLoadFile("Resources/Spinning_World.mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/title.mp3");
 	AudioManager::GetInstance()->SoundLoadFile("Resources/se/47.mp3");
 
 	bgm_ = std::make_unique<Audio>();
@@ -125,13 +125,13 @@ void TitleScene::Initialize()
 	bgm_->Initialize();
 	se1_->Initialize();
 
-	bgm_->SoundPlay("Resources/Spinning_World.mp3", 10000);
+	bgm_->SoundPlay("Resources/bgm/title.mp3", 10000);
 }
 
 void TitleScene::Finalize() {
 	BaseScene::Finalize();
 
-	bgm_->SoundStop("Resources/Spinning_World.mp3");
+	bgm_->SoundStop("Resources/bgm/title.mp3");
 }
 
 void TitleScene::Update() {

@@ -185,6 +185,28 @@ void GameScene::Initialize() {
 	human_->Initialize(Object3dCommon::GetInstance());
 	human_->SetModel(ModelManager::GetInstance()->FindModel("human/wlak.gltf"));*/
 
+	//BGM
+	AudioManager::GetInstance()->Initialize();
+	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/easy.mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/nomal.mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/hard.mp3");
+
+	easyBGM_ = std::make_unique<Audio>();
+	nomalBGM_ = std::make_unique<Audio>();
+	hardBGM_ = std::make_unique<Audio>();
+
+	easyBGM_->Initialize();
+	nomalBGM_->Initialize();
+	hardBGM_->Initialize();
+
+	if (easy_) {
+		easyBGM_->SoundPlay("Resources/bgm/easy.mp3", 9999);
+	} else if (nomal_) {
+		nomalBGM_->SoundPlay("Resources/bgm/nomal.mp3", 9999);
+	} else if (hard_) {
+		hardBGM_->SoundPlay("Resources/bgm/hard.mp3", 9999);
+	}
+
 	//wave sprite
 	TextureManager::GetInstance()->LoadTexture("Resources/text/wave1.png");
 	wave1_ = std::make_unique<Sprite>();
@@ -217,6 +239,14 @@ void GameScene::Initialize() {
 ///						終了処理
 void GameScene::Finalize() {
 	BaseScene::Finalize();
+
+	if (easy_) {
+		easyBGM_->SoundStop("Resources/bgm/easy.mp3");
+	} else if (nomal_) {
+		nomalBGM_->SoundStop("Resources/bgm/nomal.mp3");
+	} else if (hard_) {
+		hardBGM_->SoundStop("Resources/bgm/hard.mp3");
+	}
 
 	skyDome_.reset();
 	ground_.reset();
@@ -335,6 +365,7 @@ void GameScene::Update() {
 
 			waveIndex_++;
 			if (easy_) {
+				
 				if (waveIndex_ < EwaveCsvPaths_.size()) {
 
 					currentWaveImageIndex_ = waveIndex_ + 1;
@@ -353,6 +384,7 @@ void GameScene::Update() {
 				}
 			} 
 			else if (nomal_) {
+				
 				if (waveIndex_ < NwaveCsvPaths_.size()) {
 
 					currentWaveImageIndex_ = waveIndex_ + 1;
@@ -371,6 +403,7 @@ void GameScene::Update() {
 				}
 			}
 			else if (hard_) {
+				
 				if (waveIndex_ < HwaveCsvPaths_.size()) {
 
 					currentWaveImageIndex_ = waveIndex_ + 1;
@@ -500,6 +533,8 @@ void GameScene::Update() {
 		// パーティクル
 		ParticleManager::GetInstance()->Update();
 		
+		
+
 		// wave sprite
 		wave1_->Update();
 		wave2_->Update();

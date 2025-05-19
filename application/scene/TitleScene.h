@@ -36,7 +36,6 @@ private:
 	std::unique_ptr<PointLight> pointLight = nullptr;
 	std::unique_ptr<SpotLight> spotLight = nullptr;
 
-	std::unique_ptr<Audio> bgm_ = nullptr;
 	//model
 	std::unique_ptr<Object3d> player_ = nullptr;
 	std::unique_ptr<WorldTransform> playerWorldTransform_ = nullptr;
@@ -63,6 +62,7 @@ private:
 
 	bool music = false;
 	std::unique_ptr<Audio> se1_ = nullptr;
+	std::unique_ptr<Audio> bgm_ = nullptr;
 
 	std::unique_ptr<Audio> audio = nullptr;
 

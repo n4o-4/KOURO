@@ -162,5 +162,9 @@ private:
 	bool nomal_ = false;
 	bool hard_ = false;
 
-	
+	std::unique_ptr<Audio> easyBGM_ = nullptr;
+	std::unique_ptr<Audio> nomalBGM_ = nullptr;
+	std::unique_ptr<Audio> hardBGM_ = nullptr;
+
+
 };
