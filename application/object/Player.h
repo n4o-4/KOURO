@@ -153,8 +153,6 @@ private:
 	std::unique_ptr<Object3d> object3d_;
 	// ドア
 	std::unique_ptr<Object3d> door_;
-	// マシンガンBody...3Dオブジェクト
-	std::unique_ptr<Object3d> mgBodyObject3d_;
 	// マシンガンHead...3Dオブジェクト
 	std::unique_ptr<Object3d> mgHeadObject3d_;
 
@@ -162,8 +160,6 @@ private:
 	std::unique_ptr<WorldTransform> objectTransform_;
 	//ドア
 	std::unique_ptr<WorldTransform> doorObjectTransform_;
-	// マシンガンBody...ワールド変換
-	std::unique_ptr<WorldTransform> mgBodyObjectTransform_;
 	// マシンガンHead...ワールド変換
 	std::unique_ptr<WorldTransform> mgHeadObjectTransform_;
 
