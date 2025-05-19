@@ -5,6 +5,7 @@
 #include "MyMath.h"
 #include "FollowCamera.h"
 #include "Input.h"
+#include "BaseEnemy.h"
 
 ///=============================================================================
 ///                        初期化
