@@ -100,7 +100,7 @@ void TitleScene::Initialize()
 	player_ = std::make_unique<Object3d>();
 	player_->Initialize(Object3dCommon::GetInstance());
 	player_->SetModel("player/Microwave.obj");
-	
+
 	playerWorldTransform_ = std::make_unique<WorldTransform>();
 	playerWorldTransform_->Initialize();
 	playerWorldTransform_->transform.scale = { 2.0f,2.0f,2.0f };
@@ -140,16 +140,23 @@ void TitleScene::Update() {
 
 		break;
 	case Phase::kMain:
-		
-			if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-				if ((easy || nomal || hard) && selectNum != 3) {
 
-					fade_->Start(Fade::Status::FadeOut, fadeTime_);
-					phase_ = Phase::kFadeOut;
-				}
+		// STARTボタンが押されたらチュートリアルへ遷移
+		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::START)) {
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+			phase_ = Phase::kPose; // 一時的に遷移中フェーズにしておく
+			return;
+		}
+
+		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
+			if ((easy || nomal || hard) && selectNum != 3) {
+
+				fade_->Start(Fade::Status::FadeOut, fadeTime_);
+				phase_ = Phase::kFadeOut;
 			}
-		
-		
+		}
+
+
 
 		break;
 	case Phase::kFadeOut:
@@ -165,6 +172,12 @@ void TitleScene::Update() {
 	case Phase::kPlay:
 		break;
 	case Phase::kPose:
+
+		if (fade_->IsFinished()) {
+			SceneManager::GetInstance()->ChangeScene("TUTORIAL");
+			return;
+		}
+
 		break;
 	}
 
@@ -207,7 +220,7 @@ void TitleScene::Update() {
 	}
 	if (ImGui::TreeNode("condition")) {
 		ImGui::TextWrapped("stsrtTime : %d", stsrtTime);
-		Vector2 pos1 = select1_->GetPosition(); 
+		Vector2 pos1 = select1_->GetPosition();
 		Vector2 pos2 = select2_->GetPosition();
 		Vector2 pos3 = select3_->GetPosition();
 		float posArr1[2] = { pos1.x, pos1.y };
@@ -250,13 +263,13 @@ void TitleScene::Update() {
 	select4_->Update();
 	operation_->Update();
 	if (!start) {
-		if(Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)){
+		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 			start = true;
 		}
 	}
 	if (start) {
-	select();
-	
+		select();
+
 	}
 
 }
@@ -277,10 +290,10 @@ void TitleScene::Draw()
 		*pointLight.get(),
 		*spotLight.get());
 
-	player_->Draw(*playerWorldTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), 
+	player_->Draw(*playerWorldTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(),
 		*directionalLight, *pointLight, *spotLight);
 
-	DrawForegroundSprite();	
+	DrawForegroundSprite();
 	/// 前景スプライト描画	
 	title_->Draw();
 	if (!start) {
@@ -304,7 +317,7 @@ void TitleScene::Draw()
 	if (operation) {
 		operation_->Draw();
 	}
-	
+
 	fade_->Draw();
 
 }
@@ -377,6 +390,6 @@ void TitleScene::select() {
 			SceneManager::GetInstance()->GetTransitionData().nomal = false;
 			SceneManager::GetInstance()->GetTransitionData().hard = false;
 		}
-		
+
 	}
 }

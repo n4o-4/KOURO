@@ -2,6 +2,7 @@
 
 #include "AbstractSceneFactory.h"
 #include "TitleScene.h"
+#include "TutorialScene.h"
 #include "GameScene.h"
 
 #include "OkaScene.h"	

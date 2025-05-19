@@ -8,6 +8,10 @@ std::unique_ptr<BaseScene> SceneFactory::CreateScene(const std::string& sceneNam
     {
         newScene = std::make_unique<TitleScene>();
     }
+	else if (sceneName == "TUTORIAL")
+	{
+		newScene = std::make_unique<TutorialScene>();
+	}
     else if (sceneName == "GAME")
     {
         newScene = std::make_unique<GameScene>();

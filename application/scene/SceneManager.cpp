@@ -7,13 +7,13 @@ SceneManager* SceneManager::GetInstance()
 {
 	if (instance == nullptr)
 	{
-		instance =  std::make_unique<SceneManager>();
+		instance = std::make_unique<SceneManager>();
 	}
 
 	return instance.get();
 }
 
-void SceneManager::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager, Camera* camera)
+void SceneManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, Camera* camera)
 {
 	dxCommon_ = dxCommon;
 
@@ -30,7 +30,7 @@ void SceneManager::Finalize()
 void SceneManager::Update()
 {
 	// シーンを追加した場合はここに追加
-	const std::vector<std::string> sceneNames = { "TITLE", "GAME", "OKA","PAKU","MARU","MIYA","CLEAR","OVER"};
+	const std::vector<std::string> sceneNames = { "TITLE","TUTORIAL", "GAME", "OKA","PAKU","MARU","MIYA","CLEAR","OVER" };
 
 	static int currentSceneIndex = 0;
 
@@ -66,14 +66,14 @@ void SceneManager::Update()
 		// 
 		if (scene_)
 		{
-			scene_->Finalize();	
+			scene_->Finalize();
 			scene_.reset();
 			scene_ = nullptr;
 		}
 
 		scene_ = std::move(nextScene_);
 		nextScene_ = nullptr;
-		
+
 		postEffect_->ResetActiveEffect();
 
 		scene_->SetSceneManager(this);
