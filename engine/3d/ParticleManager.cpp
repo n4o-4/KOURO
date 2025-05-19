@@ -164,6 +164,11 @@ void ParticleManager::Update()
 				(*particleIterator).color = color;
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color = (*particleIterator).color;
 
+				if (particleGroup->enableDeceleration)
+				{
+					DecelerationUpdate(*particleIterator);
+				}
+
 				++particleGroupIterator->second.kNumInstance;
 			}
 
@@ -880,6 +885,25 @@ ParticleManager::Particle ParticleManager::MakeNewHitParticle(const Vector3& tra
 	newParticle->finishColor = finishColor;
 
 	return *newParticle;
+}
+
+void ParticleManager::DecelerationUpdate(Particle& particle)
+{
+	float t = particle.currentTime / particle.lifeTime - 0.1f;
+	t = std::clamp(t, 0.0f, 1.0f);
+
+	// easeInCirc
+	float ease = 1.0f - sqrtf(1.0f - t * t);
+
+	// 減速の最大割合（たとえば0.9なら最小で10%は残る）
+	float maxDeceleration = 0.6f;
+
+	// イージングで変化する減速率（0.0〜0.9）
+	float decelerationFactor = ease * maxDeceleration;
+
+	// 減速分の速度を差し引く
+	Vector3 deceleratedVelocity = particle.velocity * decelerationFactor;
+	particle.velocity -= deceleratedVelocity;
 }
 
 void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange, Range lifeTimeRange)

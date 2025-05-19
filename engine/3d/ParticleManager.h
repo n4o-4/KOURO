@@ -104,6 +104,7 @@ public:
 		bool enableBillboard = false;
 		std::vector<GradationPoint> gradationPoints;
 		bool sameScale = true;
+		bool enableDeceleration = false; // 減速を有効にするかどうか
 	};
 
 	struct Range
@@ -227,7 +228,9 @@ private:
 
 	Particle MakeNewHitParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Range lifeTimeRange);
 
+	private:
 
+		void DecelerationUpdate(Particle& particle);
 
 private:
 

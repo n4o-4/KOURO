@@ -207,6 +207,7 @@ void GameScene::Initialize() {
 	ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", ParticleManager::ParticleType::Normal);
 
 	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableBillboard = true;
+	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableDeceleration = true;
 
 	emitter1_ = std::make_unique<ParticleEmitter>();
 	emitter1_->Initialize("plane_Particle");
@@ -218,7 +219,7 @@ void GameScene::Initialize() {
 
 	emitter1_->SetStartColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{1.0f,1.0f} });
 	emitter1_->SetFinishColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} });
-	emitter1_->SetLifeTimeRange({ 1.0f,1.0f });
+	emitter1_->SetLifeTimeRange({ 0.5f,0.8f });
 	emitter1_->SetFrequency(1.0f);
 
 
@@ -228,6 +229,7 @@ void GameScene::Initialize() {
 	ParticleManager::GetInstance()->CreateParticleGroup("ring1_Particle", "Resources/gradationLine.png",ParticleManager::ParticleType::Ring);
 
 	ParticleManager::GetInstance()->GetParticleGroup("ring1_Particle")->enableBillboard = true;
+	
 
 	emitter2_ = std::make_unique<ParticleEmitter>();
 	emitter2_->Initialize("ring1_Particle");
