@@ -122,5 +122,7 @@ private:
 	bool isHitReacting_ = false;
 	float hitReactionTimer_ = 0.0f;
 	float modelScale_ = 5.0f;
+
+	std::unique_ptr<Audio> se1_ = nullptr;
 };
 

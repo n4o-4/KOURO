@@ -36,6 +36,7 @@ void BaseEnemy::Initialize(Model* model) {
     particleEmitter_->SetParticleCount(80);
     particleEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ 1.0f,1.5f }));
     particleEmitter_->SetVelocityRange(ParticleManager::VelocityRange({ -10.0f,10.0f }, { -10.0f,10.0f }, { -10.0f,10.0f }));
+
 }
 
 ///=============================================================================
@@ -86,6 +87,9 @@ void BaseEnemy::Draw(ViewProjection viewProjection, DirectionalLight directional
 ///--------------------------------------------------------------
 ///						接触開始処理
 void BaseEnemy::OnCollisionEnter(BaseObject* other) {
+  
+      
+    
 }
 
 ///--------------------------------------------------------------

@@ -8,7 +8,7 @@
 #include "LockOn.h" 
 #include "PlayerMachineGun.h"// プレイヤーのマシンガン
 #include "memory"
-
+#
 class Player : public BaseObject {
 public:
 	///--------------------------------------------------------------
@@ -208,6 +208,7 @@ private:
 	std::vector<std::unique_ptr<PlayerMachineGun>> machineGunBullets_;// マシンガンの弾のリスト
 	bool isShootingMachineGun_ = false;// マシンガンを撃っているか
 	int machineGunCooldown_ = 0;// マシンガンのクールダウン
+	bool machineGunSoundPlayed_ = false;
 	//オーバーヒート関連
 	float heatLevel_ = 0.0f;            // 現在の熱量
 	float maxHeat_ = 150.0f;            // オーバーヒートライン
@@ -291,4 +292,8 @@ private:
     static constexpr int kShakeRandRangeX_ = 80;
     static constexpr int kShakeRandRangeRot_ = 200;
 
+	//Audio関連
+	std::unique_ptr<Audio> se1_ = nullptr;
+	std::unique_ptr<Audio> se2_ = nullptr;
+	std::unique_ptr<Audio> se3_ = nullptr;
 };

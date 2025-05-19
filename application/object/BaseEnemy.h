@@ -136,4 +136,6 @@ protected:
     std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
     Vector3 avoidanceVelocity_ = { 0.0f, 0.0f, 0.0f };
+
+   
 };

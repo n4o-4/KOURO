@@ -13,6 +13,11 @@ void GroundTypeEnemy::Initialize() {
 	particleEmitter_->SetParticleCount(20);
 	particleEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ 1.0f,1.0f }));
 	particleEmitter_->SetVelocityRange(ParticleManager::VelocityRange({ -3.0f,3.0f }, { -3.0f,3.0f }, { -3.0f,3.0f }));
+
+
+	AudioManager::GetInstance()->SoundLoadFile("Resources/se/爆発1.mp3");
+	se1_ = std::make_unique<Audio>();
+	se1_->Initialize();
 }
 
 void GroundTypeEnemy::Update() {
@@ -130,6 +135,7 @@ void GroundTypeEnemy::Attack() {
 
 void GroundTypeEnemy::OnCollisionEnter(BaseObject* other) {
 	if (dynamic_cast<PlayerMissile*>(other)) {
+		se1_->SoundPlay("Resources/se/爆発1.mp3", 0);
 		--hp_;
 		HitJump();
 		particleEmitter_->Emit();

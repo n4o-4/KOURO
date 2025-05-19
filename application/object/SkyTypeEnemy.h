@@ -137,5 +137,6 @@ private:
 	float blinkTimer_ = 0.0f;
 	const float kBlinkDuration_ = 0.3f; // 点滅時間（秒）
 
+	std::unique_ptr<Audio> se1_ = nullptr;
 };
 

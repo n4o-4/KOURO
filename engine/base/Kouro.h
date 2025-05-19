@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "audio.h"
+#include "AudioManager.h"
 #include "Input.h"
 #include "Sprite.h"
 #include "SpriteCommon.h"
