@@ -16,16 +16,28 @@ void Player::Initialize() {
 	// Object3d を初期化
 	object3d_ = std::make_unique<Object3d>();
 	object3d_->Initialize(Object3dCommon::GetInstance());
-	
+	// ドアの Object3d を初期化
 	door_ = std::make_unique<Object3d>();
 	door_->Initialize(Object3dCommon::GetInstance());
+	// マシンガンBodyの Object3d を初期化
+	mgBodyObject3d_ = std::make_unique<Object3d>();
+	mgBodyObject3d_->Initialize(Object3dCommon::GetInstance());
+	// マシンガンHeadの Object3d を初期化
+	mgHeadObject3d_ = std::make_unique<Object3d>();
+	mgHeadObject3d_->Initialize(Object3dCommon::GetInstance());
 
 	// モデルを設定
 	ModelManager::GetInstance()->LoadModel("player/Microwave_body.obj");
 	object3d_->SetModel("player/Microwave_body.obj");
-	// モデルのスケールを設定
+	// ドア...モデルを設定
 	ModelManager::GetInstance()->LoadModel("player/Microwave_door.obj");
 	door_->SetModel("player/Microwave_door.obj");
+	// マシンガンBody...モデルを設定
+	ModelManager::GetInstance()->LoadModel("mg_body.obj");
+	mgBodyObject3d_->SetModel("mg_body.obj");
+	// マシンガンHead...モデルを設定
+	ModelManager::GetInstance()->LoadModel("mg_head.obj");
+	mgHeadObject3d_->SetModel("mg_head.obj");
 
 	// 初期位置を設定
 	objectTransform_ = std::make_unique<WorldTransform>();
@@ -35,6 +47,15 @@ void Player::Initialize() {
 	doorObjectTransform_ = std::make_unique<WorldTransform>();
 	doorObjectTransform_->Initialize();
 	doorObjectTransform_->transform.translate = { 1.36f, -0.01f , 0.94f };
+
+	// マシンガン...初期位置を設定
+	mgBodyObjectTransform_ = std::make_unique<WorldTransform>();
+	mgBodyObjectTransform_->Initialize();
+	mgBodyObjectTransform_->transform.translate = { 1.0f, 1.0f, 0.0f };
+	// マシンガン...ワールド変換を設定
+	mgHeadObjectTransform_ = std::make_unique<WorldTransform>();
+	mgHeadObjectTransform_->Initialize();
+	mgHeadObjectTransform_->transform.translate = { 1.0f, 1.0f, 0.0f };
 
 	doorObjectTransform_->SetParent(objectTransform_.get());
 
