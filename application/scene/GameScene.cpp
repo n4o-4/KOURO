@@ -215,7 +215,7 @@ void GameScene::Initialize() {
 	emitter1_->SetParticleCount(100);
 	emitter1_->SetVelocityRange({ {-10.0f,10.0f},{-10.0f,10.0f},{-10.0f,10.0f} });
 
-	emitter1_->SetScaleRange({ {0.5f,1.0f},{0.5f,1.0f},{0.5f,1.0f} });
+	emitter1_->SetScaleRange({ {0.3f,0.3f},{0.3f,0.3f},{0.3f,0.3f} });
 
 	emitter1_->SetStartColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{1.0f,1.0f} });
 	emitter1_->SetFinishColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} });

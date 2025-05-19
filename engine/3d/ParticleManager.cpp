@@ -169,6 +169,32 @@ void ParticleManager::Update()
 					DecelerationUpdate(*particleIterator);
 				}
 
+				float t = (*particleIterator).currentTime / (*particleIterator).lifeTime;
+				t = std::clamp(t, 0.0f, 1.0f);
+
+				// 拡大縮小を始めるのは寿命の80%を超えたあたりから
+				float expandStartT = 0.8f;
+
+				if (t >= expandStartT) {
+					float localT = (t - expandStartT) / (1.0f - expandStartT);  // [0,1]
+
+					// チカチカ感をsin波で作る
+					float frequency = 10.0f;     // 何回チカチカさせるか
+					float amplitude = 0.3f;      // スケールの変動幅（±30%）
+
+					// 時間経過と共に scale を変動（中心は1.0）
+					float scaleOffset = sinf(localT * frequency * 2.0f * 3.14159f) * amplitude;
+
+					// 最終スケール = 初期スケール ± 揺れ
+					(*particleIterator).transform.scale = (*particleIterator).baseScale * (0.5f + scaleOffset);
+				}
+				else {
+					// 通常スケール
+					(*particleIterator).transform.scale = (*particleIterator).baseScale;
+				}
+
+				//(*particleIterator).transform.scale = (*particleIterator).baseScale;
+
 				++particleGroupIterator->second.kNumInstance;
 			}
 
@@ -782,7 +808,7 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 
 			float scale = distScale(randomEngine);
 
-			newParticle->transform.scale = { scale,scale,scale };
+			newParticle->baseScale = { scale,scale,scale };
 		}
 		else
 		{
@@ -790,7 +816,7 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 			std::uniform_real_distribution<float> distScaleY(scaleRange.y.min, scaleRange.y.max);
 			std::uniform_real_distribution<float> distScaleZ(scaleRange.z.min, scaleRange.z.max);
 
-			newParticle->transform.scale = { distScaleX(randomEngine),distScaleY(randomEngine),distScaleZ(randomEngine) };
+			newParticle->baseScale = { distScaleX(randomEngine),distScaleY(randomEngine),distScaleZ(randomEngine) };
 		}
 
 		
