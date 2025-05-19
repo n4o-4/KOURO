@@ -103,27 +103,28 @@ public:
 		ParticleType type;
 		bool enableBillboard = false;
 		std::vector<GradationPoint> gradationPoints;
+		bool sameScale = true;
+	};
 
+	struct Range
+	{
+		float min;
+		float max;
 	};
 
 	struct ColorRange
 	{
-		Vector2 R;
-		Vector2 G;
-		Vector2 B;
-		Vector2 A;
+		Range R;
+		Range G;
+		Range B;
+		Range A;
 	};
 
-	struct LifeTimeRange
+	struct Vec3Range
 	{
-		Vector2 range;
-	};
-
-	struct VelocityRange
-	{
-		Vector2 x;
-		Vector2 y;
-		Vector2 z;
+		Range x;
+		Range y;
+		Range z;
 	};
 
 public:
@@ -138,9 +139,9 @@ public:
 	// パーティクルグループの生成関数
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleType type);
 
-	void Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
+	void Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange, Range lifeTimeRange);
 
-	void HitEmit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
+	void HitEmit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Range lifeTimeRange);
 
 	std::unordered_map<std::string, ParticleGroup> GetParticleGroups() { return particleGroups; }
 
@@ -222,9 +223,9 @@ private:
 
 	void calculationBillboardMatrix();
 
-	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
+	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange,Range lifeTimeRange,bool sameScale);
 
-	Particle MakeNewHitParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
+	Particle MakeNewHitParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Range lifeTimeRange);
 
 
 

@@ -204,17 +204,24 @@ void GameScene::Initialize() {
 	ParticleManager::GetInstance()->SetBlendMode("Add");
 
 	// plane
-	ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/gradationLine.png", ParticleManager::ParticleType::Cylinder);
+	ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+
+	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableBillboard = true;
 
 	emitter1_ = std::make_unique<ParticleEmitter>();
 	emitter1_->Initialize("plane_Particle");
 	emitter1_->SetPosition({ 0.0f,2.0f,0.0f });
-	emitter1_->SetParticleCount(1);
-	emitter1_->SetVelocityRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} });
+	emitter1_->SetParticleCount(100);
+	emitter1_->SetVelocityRange({ {-10.0f,10.0f},{-10.0f,10.0f},{-10.0f,10.0f} });
+
+	emitter1_->SetScaleRange({ {0.5f,1.0f},{0.5f,1.0f},{0.5f,1.0f} });
+
 	emitter1_->SetStartColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{1.0f,1.0f} });
 	emitter1_->SetFinishColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} });
-	emitter1_->SetLifeTimeRange({ {10000.0f,10000.0f} });
-	emitter1_->SetFrequency(1.5f);
+	emitter1_->SetLifeTimeRange({ 1.0f,1.0f });
+	emitter1_->SetFrequency(1.0f);
+
+
 
 	// ring1
 
@@ -229,7 +236,7 @@ void GameScene::Initialize() {
 	emitter2_->SetVelocityRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} });
 	emitter2_->SetStartColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{1.0f,1.0f} });
 	emitter2_->SetFinishColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} });
-	emitter2_->SetLifeTimeRange({ {1.0f,1.0f} });
+	emitter2_->SetLifeTimeRange({ 1.0f,1.0f });
 	emitter2_->SetFrequency(1.5f);
 	
 	// ring2
@@ -243,7 +250,7 @@ void GameScene::Initialize() {
 	emitter3_->SetVelocityRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} });
 	emitter3_->SetStartColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{1.0f,1.0f} });
 	emitter3_->SetFinishColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} });
-	emitter3_->SetLifeTimeRange({ {1.0f,1.0f} });
+	emitter3_->SetLifeTimeRange({ 1.0f,1.0f });
 	emitter3_->SetFrequency(1.5f);
 
 	///========================================

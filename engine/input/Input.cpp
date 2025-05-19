@@ -44,7 +44,11 @@ void Input::Initialize(WinApp* winApp)
 	assert(SUCCEEDED(result));
 
 	result = mouse->Acquire();
-	assert(SUCCEEDED(result));
+	if (FAILED(result)) {
+		// エラー内容をログ出力
+		printf("mouse->Acquire() failed: 0x%08X\n", result);
+		return;
+	}
 
 
 	leftStick = { 0.0f,0.0f,0.0f };

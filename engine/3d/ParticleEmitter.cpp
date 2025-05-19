@@ -25,13 +25,15 @@ void ParticleEmitter::Initialize(std::string name)
 
 	velocityRange = { {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} };
 
-	lifeTimeRange = { {0.2f,0.5f} };
+	scaleRange = { {1.0f,1.0f},{1.0f,1.0f},{1.0f,1.0f} };
+
+	lifeTimeRange = { 1.0f,1.0f };
 }
 
 void ParticleEmitter::Emit()
 {
 
-	ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,lifeTimeRange);
+	ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,scaleRange,lifeTimeRange);
 
 }
 

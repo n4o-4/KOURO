@@ -25,8 +25,8 @@ public:
     void SetStartColorRange(ParticleManager::ColorRange colorRange) { startColorRange = colorRange; }
     void SetFinishColorRange(ParticleManager::ColorRange colorRange) { finishColorRange = colorRange; }
 
-    void SetVelocityRange(ParticleManager::VelocityRange velocityRange) { this->velocityRange = velocityRange; }
-    void SetLifeTimeRange(ParticleManager::LifeTimeRange lifeTimeRange) { this->lifeTimeRange = lifeTimeRange; }
+    void SetVelocityRange(ParticleManager::Vec3Range velocityRange) { this->velocityRange = velocityRange; }
+    void SetLifeTimeRange(ParticleManager::Range lifeTimeRange) { this->lifeTimeRange = lifeTimeRange; }
 
 private:
 
@@ -48,6 +48,6 @@ private:
 	ParticleManager::ColorRange startColorRange;
 	ParticleManager::ColorRange finishColorRange;
 
-    ParticleManager::VelocityRange velocityRange;
-    ParticleManager::LifeTimeRange lifeTimeRange;
+    ParticleManager::Vec3Range velocityRange;
+    ParticleManager::Range lifeTimeRange;
 };

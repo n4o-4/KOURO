@@ -26,12 +26,12 @@ void ExplosionEmitter::Initialize(std::string name)
 
 	velocityRange = { {-8.0f,8.0f},{-8.0f,8.0f},{-8.0f,8.0f} };
 
-	lifeTimeRange = { {0.2f,0.5f} };
+	lifeTimeRange = { 0.2f,0.5f };
 }
 
 void ExplosionEmitter::Emit()
 {
-	ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count, startColorRange,finishColorRange,velocityRange,lifeTimeRange);
+	//ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count, startColorRange,finishColorRange,velocityRange,lifeTimeRange);
 }
 
 void ExplosionEmitter::SetPosition(const Vector3& position)
