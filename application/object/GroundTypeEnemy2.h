@@ -128,8 +128,8 @@ private:
     bool isBlinkEffect_ = false;
     float blinkEffectTimer_ = 0.0f;
     const float blinkEffectDuration_ = 3.0f;
-    
-    std::unique_ptr<ParticleEmitter> explosionEmitter_ = nullptr;
+
+    std::unique_ptr<Audio> se1_ = nullptr;
 };
 
 

@@ -12,11 +12,9 @@ void GroundTypeEnemy2::Initialize() {
 	particleEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ 1.0f,1.0f }));
 	particleEmitter_->SetVelocityRange(ParticleManager::VelocityRange({ -3.0f,3.0f }, { -3.0f,3.0f }, { -3.0f,3.0f }));
 
-	explosionEmitter_ = std::make_unique<ParticleEmitter>();
-	explosionEmitter_->Initialize("ExplosionEffect");
-	explosionEmitter_->SetParticleCount(30);
-	explosionEmitter_->SetLifeTimeRange({ {0.5f, 1.5f} });
-	explosionEmitter_->SetVelocityRange({ {-5.0f, 5.0f}, {-5.0f, 5.0f}, {-5.0f, 5.0f} });
+	AudioManager::GetInstance()->SoundLoadFile("Resources/se/爆発1.mp3");
+	se1_ = std::make_unique<Audio>();
+	se1_->Initialize();
 
 }
 
@@ -81,12 +79,17 @@ void GroundTypeEnemy2::Attack() {
 }
 
 void GroundTypeEnemy2::OnCollisionEnter(BaseObject* other) {
-	if (dynamic_cast<PlayerMissile*>(other) || dynamic_cast<PlayerMachineGun*>(other)) {
+	if (dynamic_cast<PlayerMissile*>(other)) {
+		se1_->SoundPlay("Resources/se/爆発1.mp3", 0);
 		--hp_;
 		HitJump();
 		particleEmitter_->Emit();
 	}
-	explosionEmitter_->Emit();
+	if (dynamic_cast<PlayerMachineGun*>(other)) {
+		--hp_;
+		HitJump();
+		particleEmitter_->Emit();
+	}
 }
 
 void GroundTypeEnemy2::OnCollisionStay(BaseObject* other) {

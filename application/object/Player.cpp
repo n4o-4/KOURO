@@ -73,6 +73,17 @@ void Player::Initialize() {
 		)
 	);
 	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);
+
+	AudioManager::GetInstance()->SoundLoadFile("Resources/se/missile.mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/se/高速移動.mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/se/999DCD4E5D2A205C05.mp3");
+
+	se1_ = std::make_unique<Audio>();
+	se2_ = std::make_unique<Audio>();
+	se3_ = std::make_unique<Audio>();
+	se1_->Initialize();
+	se2_->Initialize();
+	se3_->Initialize();
 }
 ///=============================================================================
 ///                        更新処理
@@ -382,6 +393,7 @@ void Player::UpdateMissiles() {
 	if (missileCooldown_ <= 0 &&
 		(Input::GetInstance()->Triggerkey(DIK_RETURN) ||
 			Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::RIGHT_SHOULDER))) {
+		se1_->SoundPlay("Resources/se/missile.mp3", 0);
 		Shoot();
 		missileCooldown_ = missileCooldownMax_; // クールタイム開始
 
@@ -406,6 +418,7 @@ void Player::UpdateMachineGunAndHeat() {
 	 // マシンガンの発射
 	if (Input::GetInstance()->PushKey(DIK_J) ||
 		Input::GetInstance()->PushGamePadButton(Input::GamePadButton::LEFT_SHOULDER)) {
+		
 		isShootingMachineGun_ = true;
 	} else {
 		isShootingMachineGun_ = false;
@@ -427,7 +440,12 @@ void Player::UpdateMachineGunAndHeat() {
 
 	// 発射入力
 	if (isShootingMachineGun_ && !isOverheated_ && machineGunCooldown_ <= 0) {
+		
 		ShootMachineGun();
+		if (!machineGunSoundPlayed_) {
+			se3_->SoundPlay("Resources/se/999DCD4E5D2A205C05.mp3", 9999);
+			machineGunSoundPlayed_ = true;
+		}
 		heatLevel_ += heatPerShot_;
 		if (heatLevel_ >= maxHeat_) {
 			isOverheated_ = true;
@@ -436,8 +454,14 @@ void Player::UpdateMachineGunAndHeat() {
 		machineGunCooldown_ = kMachineGunFireInterval_;
 	}
 
+	if (!isShootingMachineGun_) {
+		machineGunSoundPlayed_ = false;
+		se3_->SoundStop("Resources/se/999DCD4E5D2A205C05.mp3");
+	}
+	
 	// 自然冷却 or クールダウン処理
 	if (isOverheated_) {
+		se3_->SoundStop("Resources/se/999DCD4E5D2A205C05.mp3");
 		overheatTimer_--;
 		if (overheatTimer_ <= 0) {
 			isOverheated_ = false;
@@ -518,6 +542,9 @@ bool Player::HandleBoost() {
 
     if (quickBoostTriggered) {
         quickBoostActivatedThisFrame = HandleQuickBoostActivation();
+		if (quickBoostActivatedThisFrame) {
+			se2_->SoundPlay("Resources/se/高速移動.mp3", 0);  
+		}
     }
 
     if (ProcessActiveQuickBoost() || quickBoostActivatedThisFrame) {

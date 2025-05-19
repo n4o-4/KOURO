@@ -63,6 +63,11 @@ void Audio::SoundStop(const char* filename)
 
 	auto soundDatas = AudioManager::GetInstance()->GetSoundData();
 
+	// 音声データが見つからない場合は何もしない
+    if (!pSourceVoice) {
+        return;  
+    }
+
 	if (soundDatas.find(filename) != soundDatas.end())
 	{
 
@@ -72,8 +77,8 @@ void Audio::SoundStop(const char* filename)
 		buf.Flags = XAUDIO2_END_OF_STREAM;
 
 		// 波形データの再生
-		pSourceVoice->SubmitSourceBuffer(&buf);
 		pSourceVoice->Stop();
+		pSourceVoice->SubmitSourceBuffer(&buf);
 
 		return;
 	}

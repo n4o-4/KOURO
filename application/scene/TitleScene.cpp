@@ -117,16 +117,21 @@ void TitleScene::Initialize()
 
 	AudioManager::GetInstance()->Initialize();
 	AudioManager::GetInstance()->SoundLoadFile("Resources/Spinning_World.mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/se/47.mp3");
 
-	audio = std::make_unique<Audio>();
-	audio->Initialize();
-	audio->SoundPlay("Resources/Spinning_World.mp3", 1);
+	bgm_ = std::make_unique<Audio>();
+	se1_ = std::make_unique<Audio>();
+
+	bgm_->Initialize();
+	se1_->Initialize();
+
+	bgm_->SoundPlay("Resources/Spinning_World.mp3", 10000);
 }
 
 void TitleScene::Finalize() {
 	BaseScene::Finalize();
 
-	//audio->SoundStop("Resources/Spinning_World.mp3");
+	bgm_->SoundStop("Resources/Spinning_World.mp3");
 }
 
 void TitleScene::Update() {
@@ -333,6 +338,7 @@ void TitleScene::select() {
 		select3_->SetSize({ 240.0f,90.0f });
 		select4_->SetSize({ 240.0f,90.0f });
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
+			se1_->SoundPlay("Resources/se/47.mp3", 0);
 			easy = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = true;
 			SceneManager::GetInstance()->GetTransitionData().nomal = false;
@@ -345,6 +351,7 @@ void TitleScene::select() {
 		select4_->SetSize({ 240.0f,90.0f });
 		select1_->SetSize({ 240.0f,90.0f });
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
+			se1_->SoundPlay("Resources/se/47.mp3", 0);
 			nomal = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = false;
 			SceneManager::GetInstance()->GetTransitionData().nomal = true;
@@ -357,6 +364,7 @@ void TitleScene::select() {
 		select1_->SetSize({ 240.0f,90.0f });
 		select2_->SetSize({ 240.0f,90.0f });
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
+			se1_->SoundPlay("Resources/se/47.mp3", 0);
 			hard = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = false;
 			SceneManager::GetInstance()->GetTransitionData().nomal = false;
@@ -369,6 +377,7 @@ void TitleScene::select() {
 		select2_->SetSize({ 240.0f,90.0f });
 		select3_->SetSize({ 240.0f,90.0f });
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
+			se1_->SoundPlay("Resources/se/47.mp3", 0);
 			operation = !operation;
 			easy = false;
 			nomal = false;
