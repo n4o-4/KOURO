@@ -98,6 +98,9 @@ void Player::Update() {
 	// ジャンプ処理
 	UpdateJump();
 
+	// ドア
+	OpenDoor();
+
 	// 無敵時間の処理
 	if (isInvincible_) {
 		invincibleTimer_--;
@@ -382,9 +385,9 @@ void Player::UpdateMissiles() {
 		Shoot();
 		missileCooldown_ = missileCooldownMax_; // クールタイム開始
 
-		isDoorOpen_--;
-		// ドアを開く 補間
-
+		// ドア開くフラグをオンにする
+		isDoorOpening_ = true;
+		isDoorClosing_ = false; // 強制開き直しにも対応
 	
 	}
 
@@ -746,6 +749,31 @@ void Player::CameraShake()
 	followCamera_->GetViewProjection().Update();
 
 	shakeCurrentTime_ += 1.0f / 60.0f;
+}
+void Player::OpenDoor()
+{
+	if (isDoorOpening_) {
+		doorAngle_ += kDoorOpenCloseSpeed_;
+		if (doorAngle_ >= kDoorOpenAngle_) {
+			doorAngle_ = kDoorOpenAngle_;
+			isDoorOpening_ = false;
+			doorOpenTimer_ = kDoorStayOpenFrames_;
+		}
+	} else if (doorOpenTimer_ > 0) {
+		doorOpenTimer_--;
+		if (doorOpenTimer_ <= 0) {
+			isDoorClosing_ = true;
+		}
+	} else if (isDoorClosing_) {
+		doorAngle_ -= kDoorOpenCloseSpeed_;
+		if (doorAngle_ <= kDoorCloseAngle_) {
+			doorAngle_ = kDoorCloseAngle_;
+			isDoorClosing_ = false;
+		}
+	}
+
+	// ドアの回転適用
+	doorObjectTransform_->transform.rotate.y = doorAngle_;
 }
 ///=============================================================================
 ///						当たり判定

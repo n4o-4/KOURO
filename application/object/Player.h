@@ -68,6 +68,9 @@ private:
 	void ApplyCameraShake();
 
 	void CameraShake();
+	//========================================
+	// ドア
+	void OpenDoor();
 
 
 	///--------------------------------------------------------------
@@ -254,8 +257,16 @@ private:
 	const int missileCooldownMax_ = 300; // 5秒（60FPS換算）
 
 	//========================================
-	// door 関連
-	int isDoorOpen_ = 180; // ドアが開いているかどうか
+	// ドア開閉制御用
+	bool isDoorOpening_ = false;
+	bool isDoorClosing_ = false;
+	float doorAngle_ = 0.0f;
+	const float kDoorOpenAngle_ = 3.0f;
+	const float kDoorCloseAngle_ = 0.0f;
+	const float kDoorOpenCloseSpeed_ = 0.2f; // 補間速度
+	int doorOpenTimer_ = 0;
+	const int kDoorStayOpenFrames_ = 60; // 開いてから閉じるまでの時間
+
 
     // 初期化関連
     const float kInitialZ_ = 3.0f;
