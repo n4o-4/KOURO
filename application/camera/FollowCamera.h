@@ -60,7 +60,7 @@ public:
 
 	// エネミーのリストを取得
 	void SetEnemiesAndSpawns(const std::vector<std::unique_ptr<BaseEnemy>> *enemies,
-		const std::vector<std::unique_ptr<BaseEnemy>> *spawns) {
+							 const std::vector<std::unique_ptr<BaseEnemy>> *spawns) {
 		enemies_ = enemies;
 		spawns_ = spawns;
 	}
@@ -81,6 +81,18 @@ private:
 	// ミサイル発射時のカメラ演出を更新
 	void UpdateMissileFiringCameraEffect();
 
+	// エイムアシスト処理
+	void UpdateAimAssist();
+
+	// 最も近い敵を見つける
+	BaseEnemy *FindNearestEnemyInSight();
+
+	// 敵がエイムアシスト対象となる角度内かチェック
+	bool IsEnemyInAssistRange(const Vector3 &enemyPos);
+
+	// エイムアシストの減衰（プレイヤー入力時）
+	void DecayAimAssist();
+
 private:
 	//========================================
 	// ターゲット
@@ -94,7 +106,7 @@ private:
 	// オフセット
 	Vector3 offset_ = {};
 	// デフォルトのオフセット（元の値を保持）
-	Vector3 defaultOffset_ = {0.0f, 3.0f, -30.0f};
+	Vector3 defaultOffset_ = {0.0f, 3.0f, -15.0f};
 
 	//========================================
 	// 現在のカメラ位置
@@ -108,9 +120,9 @@ private:
 
 	//========================================
 	// FOV関連パラメータ
-	float baseFOV_ = 45.0f;			  // 基本FOV値（地上での視野角）
-	float currentFOV_ = 45.0f;		  // 現在のFOV
-	float targetFOV_ = 45.0f;		  // 目標FOV
+	float baseFOV_ = 40.0f;			  // 基本FOV値（地上での視野角）
+	float currentFOV_ = 40.0f;		  // 現在のFOV
+	float targetFOV_ = 40.0f;		  // 目標FOV
 	float fovLerpSpeed_ = 0.4f;		  // FOV補間速度
 	float heightFOVIncrease_ = 15.0f; // 最大高度での追加FOV量
 	float maxHeightForFOV_ = 30.0f;	  // 最大効果を得るための高度
@@ -138,10 +150,17 @@ private:
 	const std::vector<std::unique_ptr<BaseEnemy>> *enemies_ = nullptr;
 	// スポーンのリスト
 	const std::vector<std::unique_ptr<BaseEnemy>> *spawns_ = nullptr;
-	// エイムアシストの調整
-	float aimAssistFactor_ = 0.5f; // エイムアシストの強さ（0.0fから1.0f）
-	// エイムアシストの範囲
-	float aimAssistRange_ = 10.0f; // エイムアシストの範囲（メートル）
-	// エイムアシストの有効範囲
-	float aimAssistAngle_ = 30.0f; // エイムアシストの角度（度）
+
+	// エイムアシスト関連パラメータ
+	float aimAssistFactor_ = 0.8f;				// エイムアシストの強さ（0.0fから1.0f）
+	float aimAssistRange_ = 1024.0f;			// エイムアシスト検知の距離範囲（メートル）
+	float aimAssistAngle_ = 20.0f;				// エイムアシスト検知の角度範囲（度）
+	float aimAssistSpeed_ = 0.25f;				// エイムアシスト回転速度
+	float aimAssistDecayRate_ = 0.95f;			// プレイヤー入力時の減衰率
+	float currentAimAssistStrength_ = 0.0f;		// 現在のアシスト強度（0.0f〜1.0f）
+	BaseEnemy *currentAimTarget_ = nullptr;		// 現在のアシスト対象
+	float assistInputTriggerThreshold_ = 0.05f; // プレイヤー入力検出閾値
+	float assistInnerAngle_ = 15.0f;			// 強いアシストを適用する内側の角度範囲
+	float timeSinceLastInput_ = 0.0f;			// 最後の入力からの経過時間
+	float assistRampUpTime_ = 0.2f;				// アシスト強度が上がるまでの時間
 };

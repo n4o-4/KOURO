@@ -33,7 +33,7 @@ void ShowGradientEditor() {
 
 	// 制御点の編集
 	for (size_t i = 0; i < gradientPoints.size(); ++i) {
-		ImGui::PushID(i);
+		ImGui::PushID(static_cast<int>(i));
 		ImGui::DragFloat("Position", &gradientPoints[i].position, 0.01f, 0.0f, 1.0f);
 		ImGui::ColorEdit4("Color", (float *)&gradientPoints[i].color);
 		ImGui::PopID();
@@ -634,6 +634,7 @@ void GameScene::Update() {
 	ShowGradientEditor();
 
 	hud_->DrawImGui();
+
 #endif
 
 	lineDrawer_->Update();
