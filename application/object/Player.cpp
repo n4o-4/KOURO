@@ -130,6 +130,9 @@ void Player::Update() {
 	// ジャンプ処理
 	UpdateJump();
 
+	// playerの揺れ処理
+	ApplyFloating();
+
 	// ドア
 	OpenDoor();
 
@@ -850,6 +853,15 @@ void Player::OpenDoor()
 
 	// ドアの回転適用
 	doorObjectTransform_->transform.rotate.y = doorAngle_;
+}
+void Player::ApplyFloating()
+{
+	if (!isJumping_) {
+		floatTimer_ += 1.0f / 60.0f; // フレーム時間を進める（60FPS前提）
+		// フロートのオフセットを計算
+		float floatOffset = std::sin(floatTimer_ * floatFrequency_ * 1.5f * 3.14159265f) * floatAmplitude_;
+		objectTransform_->transform.translate.y = initialY_ + floatOffset;
+	}
 }
 ///=============================================================================
 ///						当たり判定
