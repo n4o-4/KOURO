@@ -71,6 +71,9 @@ private:
 	//========================================
 	// ドア
 	void OpenDoor();
+	//=========================================
+	// playerぷかぷか
+	void ApplyFloating(); // 浮遊演出の適用用関数
 
 
 	///--------------------------------------------------------------
@@ -188,6 +191,9 @@ private:
 	float boostSpin_ = 0.0f;                      // 回転量
 	bool isBoostSpinning_ = false;                // 回転中フラグ
 	int boostSpinFrame_ = 0;                      // 回転フレーム数
+	float floatTimer_ = 0.0f;// 浮遊時間
+	const float floatAmplitude_ = 0.1f; // 上下の振れ幅
+	const float floatFrequency_ = 2.0f; // 1秒あたりの揺れ回数（Hz）
 	// ブースト関連
 	bool isBoosting_ = false;                     // 通常ブースト中かどうか (クイックブーストとは別)
 	float boostFactor_ = 1.8f;                    // 通常ブースト時の基本速度倍率
