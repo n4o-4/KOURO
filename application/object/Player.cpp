@@ -56,7 +56,7 @@ void Player::Initialize() {
 	// マシンガンHead
 	machineGunHeadTransform_ = std::make_unique<WorldTransform>();
 	machineGunHeadTransform_->Initialize();
-	machineGunHeadTransform_->transform.translate = { 0.0f, 0.0f , 0.0f };
+	machineGunHeadTransform_->transform.translate = { -2.2f, 1.31f , 4.49f };
 
 	doorObjectTransform_->SetParent(objectTransform_.get());
 	machineGunBodyTransform_->SetParent(objectTransform_.get());
@@ -236,8 +236,11 @@ void Player::DrawImGui() {
 	if (isOverheated_) {
 		ImGui::TextColored(ImVec4(1, 0, 0, 1), "OVERHEATED!");
 	}
+	//マシンガンの情報
+
 
 	ImGui::DragFloat3("door Translate", &doorObjectTransform_->transform.translate.x, 0.01f);
+	ImGui::DragFloat3("MG_BODY Translate", &machineGunHeadTransform_->transform.translate.x, 0.01f);
 
 	static Vector3 prevPos;
 
@@ -453,6 +456,8 @@ void Player::UpdateMachineGunAndHeat() {
 	if (Input::GetInstance()->PushKey(DIK_J) ||
 		Input::GetInstance()->PushGamePadButton(Input::GamePadButton::LEFT_SHOULDER)) {
 		
+		machineGunHeadTransform_->transform.rotate.z++;
+
 		isShootingMachineGun_ = true;
 	} else {
 		isShootingMachineGun_ = false;
