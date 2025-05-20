@@ -153,11 +153,19 @@ private:
 	std::unique_ptr<Object3d> object3d_;
 	// ドア
 	std::unique_ptr<Object3d> door_;
+	// マシンガンBody
+	std::unique_ptr<Object3d> machineGunBody_;
+	// マシンガンHead
+	std::unique_ptr<Object3d> machineGunHead_;
 
 	// ワールド変換
 	std::unique_ptr<WorldTransform> objectTransform_;
 	//ドア
 	std::unique_ptr<WorldTransform> doorObjectTransform_;
+	// マシンガンBody
+	std::unique_ptr<WorldTransform> machineGunBodyTransform_;
+	// マシンガンHead
+	std::unique_ptr<WorldTransform> machineGunHeadTransform_;
 
 	//========================================
 	// 弾

@@ -20,12 +20,25 @@ void Player::Initialize() {
 	door_ = std::make_unique<Object3d>();
 	door_->Initialize(Object3dCommon::GetInstance());
 
+	// マシンガンBody
+	machineGunBody_ = std::make_unique<Object3d>();
+	machineGunBody_->Initialize(Object3dCommon::GetInstance());
+	// マシンガンHead
+	machineGunHead_ = std::make_unique<Object3d>();
+	machineGunHead_->Initialize(Object3dCommon::GetInstance());
+
 	// モデルを設定
 	ModelManager::GetInstance()->LoadModel("player/Microwave_body.obj");
 	object3d_->SetModel("player/Microwave_body.obj");
 	// モデルのスケールを設定
 	ModelManager::GetInstance()->LoadModel("player/Microwave_door.obj");
 	door_->SetModel("player/Microwave_door.obj");
+	// モデルのスケールを設定
+	ModelManager::GetInstance()->LoadModel("mg_body.obj");
+	machineGunBody_->SetModel("mg_body.obj");
+	// モデルのスケールを設定
+	ModelManager::GetInstance()->LoadModel("mg_head.obj");
+	machineGunHead_->SetModel("mg_head.obj");
 
 	// 初期位置を設定
 	objectTransform_ = std::make_unique<WorldTransform>();
@@ -36,7 +49,18 @@ void Player::Initialize() {
 	doorObjectTransform_->Initialize();
 	doorObjectTransform_->transform.translate = { 1.36f, -0.01f , 0.94f };
 
+	// マシンガンBody
+	machineGunBodyTransform_ = std::make_unique<WorldTransform>();
+	machineGunBodyTransform_->Initialize();
+	machineGunBodyTransform_->transform.translate = { 0.0f, 0.0f , 0.0f };
+	// マシンガンHead
+	machineGunHeadTransform_ = std::make_unique<WorldTransform>();
+	machineGunHeadTransform_->Initialize();
+	machineGunHeadTransform_->transform.translate = { 0.0f, 0.0f , 0.0f };
+
 	doorObjectTransform_->SetParent(objectTransform_.get());
+	machineGunBodyTransform_->SetParent(objectTransform_.get());
+	machineGunHeadTransform_->SetParent(machineGunBodyTransform_.get());
 
 	explosionEmitter_ = std::make_unique<ExplosionEmitter>();
 	explosionEmitter_->Initialize("missileSmoke");
@@ -137,6 +161,14 @@ void Player::Update() {
 	door_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 	door_->Update();
 
+	// マシンガンの更新
+	machineGunBodyTransform_->UpdateMatrix();// 行列更新
+	machineGunBody_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
+	machineGunBody_->Update();// 更新
+	machineGunHeadTransform_->UpdateMatrix();// 行列更新
+	machineGunHead_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
+	machineGunHead_->Update();// 更新
+
 	//========================================
 	// 当たり判定との同期
 	BaseObject::Update(objectTransform_->transform.translate);
@@ -153,6 +185,8 @@ void Player::Draw(ViewProjection viewProjection, DirectionalLight directionalLig
 	if (!isInvincible_ || isVisible_) {
 		object3d_->Draw(*objectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
 		door_->Draw(*doorObjectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
+		machineGunBody_->Draw(*machineGunBodyTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
+		machineGunHead_->Draw(*machineGunHeadTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
 	}
 
 	// 弾の描画
