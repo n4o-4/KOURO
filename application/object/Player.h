@@ -153,11 +153,19 @@ private:
 	std::unique_ptr<Object3d> object3d_;
 	// ドア
 	std::unique_ptr<Object3d> door_;
+	// マシンガンBody
+	std::unique_ptr<Object3d> machineGunBody_;
+	// マシンガンHead
+	std::unique_ptr<Object3d> machineGunHead_;
 
 	// ワールド変換
 	std::unique_ptr<WorldTransform> objectTransform_;
 	//ドア
 	std::unique_ptr<WorldTransform> doorObjectTransform_;
+	// マシンガンBody
+	std::unique_ptr<WorldTransform> machineGunBodyTransform_;
+	// マシンガンHead
+	std::unique_ptr<WorldTransform> machineGunHeadTransform_;
 
 	//========================================
 	// 弾
@@ -227,7 +235,7 @@ private:
 	bool machineGunSoundPlayed_ = false;
 	//オーバーヒート関連
 	float heatLevel_ = 0.0f;            // 現在の熱量
-	float maxHeat_ = 150.0f;            // オーバーヒートライン
+	float maxHeat_ = 100.0f;            // オーバーヒートライン
 	float heatPerShot_ = 5.0f;          // 1発ごとの加熱量
 	float heatCooldownRate_ = 0.8f;     // 自然冷却速度（毎フレーム）
 	bool isOverheated_ = false;        // オーバーヒート中か

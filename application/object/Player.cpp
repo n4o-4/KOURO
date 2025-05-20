@@ -20,12 +20,25 @@ void Player::Initialize() {
 	door_ = std::make_unique<Object3d>();
 	door_->Initialize(Object3dCommon::GetInstance());
 
+	// マシンガンBody
+	machineGunBody_ = std::make_unique<Object3d>();
+	machineGunBody_->Initialize(Object3dCommon::GetInstance());
+	// マシンガンHead
+	machineGunHead_ = std::make_unique<Object3d>();
+	machineGunHead_->Initialize(Object3dCommon::GetInstance());
+
 	// モデルを設定
 	ModelManager::GetInstance()->LoadModel("player/Microwave_body.obj");
 	object3d_->SetModel("player/Microwave_body.obj");
 	// モデルのスケールを設定
 	ModelManager::GetInstance()->LoadModel("player/Microwave_door.obj");
 	door_->SetModel("player/Microwave_door.obj");
+	// モデルのスケールを設定
+	ModelManager::GetInstance()->LoadModel("mg_body.obj");
+	machineGunBody_->SetModel("mg_body.obj");
+	// モデルのスケールを設定
+	ModelManager::GetInstance()->LoadModel("mg_head.obj");
+	machineGunHead_->SetModel("mg_head.obj");
 
 	// 初期位置を設定
 	objectTransform_ = std::make_unique<WorldTransform>();
@@ -38,7 +51,18 @@ void Player::Initialize() {
 	doorObjectTransform_->transform.translate = { 1.36f, -0.01f , 0.94f };
 	//doorObjectTransform_->transform.scale = Vector3(2.0f, 2.0f, 2.0f);
 
+	// マシンガンBody
+	machineGunBodyTransform_ = std::make_unique<WorldTransform>();
+	machineGunBodyTransform_->Initialize();
+	machineGunBodyTransform_->transform.translate = { 0.0f, 0.0f , 0.0f };
+	// マシンガンHead
+	machineGunHeadTransform_ = std::make_unique<WorldTransform>();
+	machineGunHeadTransform_->Initialize();
+	machineGunHeadTransform_->transform.translate = { -2.2f, 1.31f , 4.49f };
+
 	doorObjectTransform_->SetParent(objectTransform_.get());
+	machineGunBodyTransform_->SetParent(objectTransform_.get());
+	machineGunHeadTransform_->SetParent(machineGunBodyTransform_.get());
 
 	explosionEmitter_ = std::make_unique<ExplosionEmitter>();
 	explosionEmitter_->Initialize("missileSmoke");
@@ -139,6 +163,14 @@ void Player::Update() {
 	door_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 	door_->Update();
 
+	// マシンガンの更新
+	machineGunBodyTransform_->UpdateMatrix();// 行列更新
+	machineGunBody_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
+	machineGunBody_->Update();// 更新
+	machineGunHeadTransform_->UpdateMatrix();// 行列更新
+	machineGunHead_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
+	machineGunHead_->Update();// 更新
+
 	//========================================
 	// 当たり判定との同期
 	BaseObject::Update(objectTransform_->transform.translate);
@@ -155,6 +187,8 @@ void Player::Draw(ViewProjection viewProjection, DirectionalLight directionalLig
 	if (!isInvincible_ || isVisible_) {
 		object3d_->Draw(*objectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
 		door_->Draw(*doorObjectTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
+		machineGunBody_->Draw(*machineGunBodyTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
+		machineGunHead_->Draw(*machineGunHeadTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
 	}
 
 	// 弾の描画
@@ -204,8 +238,11 @@ void Player::DrawImGui() {
 	if (isOverheated_) {
 		ImGui::TextColored(ImVec4(1, 0, 0, 1), "OVERHEATED!");
 	}
+	//マシンガンの情報
+
 
 	ImGui::DragFloat3("door Translate", &doorObjectTransform_->transform.translate.x, 0.01f);
+	ImGui::DragFloat3("MG_BODY Translate", &machineGunHeadTransform_->transform.translate.x, 0.01f);
 
 	static Vector3 prevPos;
 
@@ -416,11 +453,21 @@ void Player::UpdateMissiles() {
 }
 
 void Player::UpdateMachineGunAndHeat() {
+
+	// マシンガンの回転速度（通常時とオーバーヒート時）
+	const float kMachineGunRotateSpeed_Normal = 0.25f;
+	const float kMachineGunRotateSpeed_Overheat = 0.05f;
+
 	//マシンガンの弾の更新
 	 // マシンガンの発射
 	if (Input::GetInstance()->PushKey(DIK_J) ||
 		Input::GetInstance()->PushGamePadButton(Input::GamePadButton::LEFT_SHOULDER)) {
 		
+
+		// 状態に応じて回転速度を変更
+		float rotateSpeed = isOverheated_ ? kMachineGunRotateSpeed_Overheat : kMachineGunRotateSpeed_Normal;
+		machineGunHeadTransform_->transform.rotate.z += rotateSpeed;
+
 		isShootingMachineGun_ = true;
 	} else {
 		isShootingMachineGun_ = false;
@@ -471,7 +518,7 @@ void Player::UpdateMachineGunAndHeat() {
 		}
 		// 煙を出す
 		if (smokeEmitter_) {
-			smokeEmitter_->SetPosition(objectTransform_->transform.translate);
+			smokeEmitter_->SetPosition(machineGunHeadTransform_->GetWorldPosition());
 			smokeEmitter_->Update();  // 一定間隔でEmitしてくれる
 		}
 	} else {
@@ -696,12 +743,16 @@ void Player::RecoverBoostEnergy() {
 }
 
 void Player::ShootMachineGun() {
-	// マシンガン弾の発射処理をPlayerMachineGunクラスに委譲
+	// 反動と揺れ用の出力変数
 	Vector3 recoilVelocity;
 	float shakeIntensity;
 
+	// 【変更】machineGunHeadTransform_のワールド位置を取得
+	Vector3 bulletPosition = machineGunHeadTransform_->GetWorldPosition();
+
+	// Shoot関数に位置を渡す
 	auto bullet = PlayerMachineGun::Shoot(
-		objectTransform_->transform.translate,
+		bulletPosition,
 		followCamera_,
 		recoilVelocity,
 		shakeIntensity
@@ -714,10 +765,11 @@ void Player::ShootMachineGun() {
 	// 弾を追加
 	machineGunBullets_.push_back(std::move(bullet));
 
-	// エフェクト
-	explosionEmitter_->SetPosition(objectTransform_.get()->transform.translate);
+	// 発射エフェクトもマシンガンヘッドに出すように変更（任意）
+	explosionEmitter_->SetPosition(bulletPosition);
 	explosionEmitter_->Emit();
 }
+
 
 void Player::ApplyRecoil() {
 	if (Length(recoilVelocity_) > kRecoilThreshold_) {
