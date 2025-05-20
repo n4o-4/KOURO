@@ -51,13 +51,13 @@ void TutorialScene::Update() {
 	if (phase_ == Phase::kFadeIn && fade_->IsFinished()) {
 		Input::GetInstance()->SetIsReception(true);
 		phase_ = Phase::kMain;
-	} else if (phase_ == Phase::kMain &&
-		Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-		fade_->Start(Fade::Status::FadeOut, fadeTime_);
-		phase_ = Phase::kFadeOut;
-	} else if (phase_ == Phase::kFadeOut && fade_->IsFinished()) {
-		SceneManager::GetInstance()->ChangeScene("GAME");
-	}
+	} //else if (phase_ == Phase::kMain &&
+	//	Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
+	//	fade_->Start(Fade::Status::FadeOut, fadeTime_);
+	//	phase_ = Phase::kFadeOut;
+	//} else if (phase_ == Phase::kFadeOut && fade_->IsFinished()) {
+	//	SceneManager::GetInstance()->ChangeScene("GAME");
+	//}
 
 	if (tutorialImage_) {
 		tutorialImage_->Update();
