@@ -138,28 +138,9 @@ void ParticleManager::Update()
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].World = worldMatrix;
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].WVP = worldViewProjectionMatrix;
 
-				/*float lifeRatio = (*particleIterator).currentTime / (*particleIterator).lifeTime;
-
-				(*particleIterator).color = Vect4::Lerp((*particleIterator).startColor, (*particleIterator).finishColor, lifeRatio);
-					
-				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color = (*particleIterator).color;*/
-
 				float lifeRatio = (*particleIterator).currentTime / (*particleIterator).lifeTime;
 
-				// デフォルト色（初期値を使うのは避けたいので、最初に最後の色を使うようにする）
-				Vector4 color = particleGroup->gradationPoints.back().color;
-
-				for (size_t i = 0; i + 1 < particleGroup->gradationPoints.size(); ++i) {
-					const auto& p0 = particleGroup->gradationPoints[i];
-					const auto& p1 = particleGroup->gradationPoints[i + 1];
-
-					if (lifeRatio >= p0.ration && lifeRatio <= p1.ration) {
-						// ratio の間に lifeRatio があるので、線形補間する
-						float t = (lifeRatio - p0.ration) / (p1.ration - p0.ration);
-						color = Vect4::Lerp(p0.color, p1.color, t);
-						break;
-					}
-				}
+				Vector4 color = Vect4::Lerp((*particleIterator).startColor, (*particleIterator).finishColor, lifeRatio);
 
 				(*particleIterator).color = color;
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color = (*particleIterator).color;
@@ -172,21 +153,23 @@ void ParticleManager::Update()
 				float t = (*particleIterator).currentTime / (*particleIterator).lifeTime;
 				t = std::clamp(t, 0.0f, 1.0f);
 
-				// 拡大縮小を始めるのは寿命の80%を超えたあたりから
+				// 揺れを始めるのは寿命の80%以降
 				float expandStartT = 0.8f;
 
 				if (t >= expandStartT) {
-					float localT = (t - expandStartT) / (1.0f - expandStartT);  // [0,1]
+					float localT = (t - expandStartT) / (1.0f - expandStartT);  // 0〜1
 
-					// チカチカ感をsin波で作る
-					float frequency = 10.0f;     // 何回チカチカさせるか
-					float amplitude = 0.3f;      // スケールの変動幅（±30%）
+					float frequency = 6.0f;  // 揺れの回数
+					float amplitude = 1.0f;  // 最大振幅（scaleが0まで下がる）
 
-					// 時間経過と共に scale を変動（中心は1.0）
-					float scaleOffset = sinf(localT * frequency * 2.0f * 3.14159f) * amplitude;
+					// sin波（0〜±1）で揺れ
+					float wave = sinf(localT * frequency * 2.0f * 3.14159f);  // -1〜1
 
-					// 最終スケール = 初期スケール ± 揺れ
-					(*particleIterator).transform.scale = (*particleIterator).baseScale * (0.5f + scaleOffset);
+					// 0〜1で上下するようにする（絶対値を取る）
+					float scaleFactor = 1.0f - fabsf(wave) * amplitude;
+
+					// baseScale に掛ける
+					(*particleIterator).transform.scale = (*particleIterator).baseScale * scaleFactor;
 				}
 				else {
 					// 通常スケール
@@ -502,7 +485,7 @@ void ParticleManager::CreatePipeline()
 			blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 			blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ONE;
 
-			blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+			blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
 			blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 			blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
 
@@ -757,15 +740,6 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 
 		newParticleGroup.type = type;
 
-		GradationPoint gradationPoint;
-
-		gradationPoint.ration = 0.0f;
-		gradationPoint.color = { 1.0f,1.0f,1.0f,1.0f };
-		newParticleGroup.gradationPoints.push_back(gradationPoint);
-
-		gradationPoint.ration = 1.0f;
-		gradationPoint.color = { 1.0f,1.0f,1.0f,1.0f };
-		newParticleGroup.gradationPoints.push_back(gradationPoint);
 
 		particleGroups[name] = newParticleGroup;
 	}

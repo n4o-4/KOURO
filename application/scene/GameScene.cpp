@@ -19,116 +19,41 @@ void ShowMatrix4x4(const Matrix4x4 &matrix, const char *label) {
 	}
 }
 
-std::vector<ParticleManager::GradationPoint> ConvertToGradationPoints(const std::vector<ParticleManager::GradationPoint>& gradientPoints) {
-	std::vector<ParticleManager::GradationPoint> gradationPoints;
-	gradationPoints.reserve(gradientPoints.size());
-	for (const auto& point : gradientPoints) {
-		ParticleManager::GradationPoint gradationPoint;
-		gradationPoint.ration = point.ration;
-		gradationPoint.color = { point.color.x, point.color.y, point.color.z, point.color.w };
-		gradationPoints.push_back(gradationPoint);
-	}
-	return gradationPoints;
-}
-
-ImVec4 ConvertToImVec4(const Vector4& vec) {
-	return ImVec4(vec.x, vec.y, vec.z, vec.w);
-}
-
-void ShowGradientEditor(std::string name) {
-	// 複数のグラデーションエディタに対応するため、ドラッグインデックスを名前で管理
-	static std::unordered_map<std::string, int> draggingIndexMap;
-	int& draggingIndex = draggingIndexMap[name];
-
-	std::vector<ParticleManager::GradationPoint>* gradationPoints =
-		&ParticleManager::GetInstance()->GetParticleGroup(name)->gradationPoints;
-
-	ImGui::PushID(name.c_str()); // 名前をベースにID空間を分離
-
-	ImGui::Text(name.c_str());
-
-	for (size_t i = 0; i < gradationPoints->size(); ++i) {
-		ImGui::PushID(static_cast<int>(i));
-
-		ImGui::DragFloat("Position", &(*gradationPoints)[i].ration, 0.01f, 0.0f, 1.0f);
-		ImGui::ColorEdit4("Color", (float*)&(*gradationPoints)[i].color);
-
-		if (ImGui::Button("Remove")) {
-			ImGui::PopID();
-			gradationPoints->erase(gradationPoints->begin() + i);
-			break;
-		}
-
-		ImGui::PopID();
-	}
-
-	// グラデーションのプレビュー
-	ImDrawList* drawList = ImGui::GetWindowDrawList();
-	ImVec2 canvasPos = ImGui::GetCursorScreenPos();
-	ImVec2 canvasSize = ImVec2(300, 50);
-	drawList->AddRectFilled(canvasPos, ImVec2(canvasPos.x + canvasSize.x, canvasPos.y + canvasSize.y),
-		IM_COL32(50, 50, 50, 255));
-
-	for (size_t i = 0; i + 1 < gradationPoints->size(); ++i) {
-		ImVec2 start = ImVec2(canvasPos.x + (*gradationPoints)[i].ration * canvasSize.x, canvasPos.y);
-		ImVec2 end = ImVec2(canvasPos.x + (*gradationPoints)[i + 1].ration * canvasSize.x, canvasPos.y + canvasSize.y);
-		ImU32 colStart = ImGui::ColorConvertFloat4ToU32(ConvertToImVec4((*gradationPoints)[i].color));
-		ImU32 colEnd = ImGui::ColorConvertFloat4ToU32(ConvertToImVec4((*gradationPoints)[i + 1].color));
-		drawList->AddRectFilledMultiColor(start, end, colStart, colEnd, colEnd, colStart);
-	}
-
-	ImGui::Dummy(canvasSize);
-
-	if (ImGui::Button("Add Control Point")) {
-		ParticleManager::GradationPoint newPoint;
-		newPoint.ration = 0.5f;
-		newPoint.color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-		gradationPoints->push_back(newPoint);
-		std::sort(gradationPoints->begin(), gradationPoints->end(),
-			[](const ParticleManager::GradationPoint& a, const ParticleManager::GradationPoint& b) {
-				return a.ration < b.ration;
-			});
-	}
-
-	// コントロールポイントのドラッグ処理
-	const float knobRadius = 5.0f;
-
-	for (size_t i = 0; i < gradationPoints->size(); ++i) {
-		ImGui::PushID(static_cast<int>(i));
-
-		float x = canvasPos.x + (*gradationPoints)[i].ration * canvasSize.x;
-		float y = canvasPos.y + canvasSize.y + 10.0f;
-		ImVec2 knobCenter = ImVec2(x, y);
-		drawList->AddCircleFilled(knobCenter, knobRadius,
-			ImGui::ColorConvertFloat4ToU32(ConvertToImVec4((*gradationPoints)[i].color)));
-
-		ImRect knobRect(ImVec2(x - knobRadius, y - knobRadius), ImVec2(x + knobRadius, y + knobRadius));
-		if (draggingIndex == -1 && ImGui::IsMouseHoveringRect(knobRect.Min, knobRect.Max) &&
-			ImGui::IsMouseClicked(0)) {
-			draggingIndex = static_cast<int>(i);
-		}
-
-		ImGui::PopID();
-	}
-
-	if (draggingIndex != -1 && ImGui::IsMouseDown(0)) {
-		float mouseX = ImGui::GetIO().MousePos.x;
-		float newPos = (mouseX - canvasPos.x) / canvasSize.x;
-		newPos = std::clamp(newPos, 0.0f, 1.0f);
-		(*gradationPoints)[draggingIndex].ration = newPos;
-
-		std::sort(gradationPoints->begin(), gradationPoints->end(),
-			[](const ParticleManager::GradationPoint& a, const ParticleManager::GradationPoint& b) {
-				return a.ration < b.ration;
-			});
-	}
-	else if (draggingIndex != -1 && !ImGui::IsMouseDown(0)) {
-		draggingIndex = -1;
-	}
-
-	ImGui::PopID(); // ID空間の終了
-}
-
+//void ShowColorRangeEditor(const char* label) {
+//
+//	ParticleManager::ParticleGroup* group = ParticleManager::GetInstance()->GetParticleGroup(label);
+//
+//	if (ImGui::TreeNode(label)) {
+//
+//		ImGui::Text("startColor Range");
+//
+//		Vector4 startColor
+//
+//		ImGui::ColorEdit4("Min", (float*)&group->startColorRange.R.min, ImGuiColorEditFlags_Float);
+//
+//		// グラデーションの可視化：左=Min、右=Max
+//		ImVec4 colorMin = ImVec4(colorRange.R.min, colorRange.G.min, colorRange.B.min, colorRange.A.min);
+//		ImVec4 colorMax = ImVec4(colorRange.R.max, colorRange.G.max, colorRange.B.max, colorRange.A.max);
+//
+//
+//
+//		ImGui::Text("Gradient Preview:");
+//		ImDrawList* drawList = ImGui::GetWindowDrawList();
+//		ImVec2 p = ImGui::GetCursorScreenPos();
+//		float width = ImGui::GetContentRegionAvail().x;
+//		float height = 20.0f;
+//		ImVec2 p1 = ImVec2(p.x + width, p.y + height);
+//
+//		// グラデーション矩形を描画
+//		drawList->AddRectFilledMultiColor(p, p1,
+//			ImColor(colorMin), ImColor(colorMax),
+//			ImColor(colorMax), ImColor(colorMin));
+//
+//		ImGui::Dummy(ImVec2(width, height)); // スペースを確保
+//
+//		ImGui::TreePop();
+//	}
+//}
 
 ///=============================================================================
 ///						初期化
@@ -206,7 +131,10 @@ void GameScene::Initialize() {
 	// plane
 	ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", ParticleManager::ParticleType::Normal);
 
+	// billboardを有効
 	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableBillboard = true;
+
+	// 減速を有効
 	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableDeceleration = true;
 
 	emitter1_ = std::make_unique<ParticleEmitter>();
@@ -216,9 +144,10 @@ void GameScene::Initialize() {
 	emitter1_->SetVelocityRange({ {-10.0f,10.0f},{-10.0f,10.0f},{-10.0f,10.0f} });
 
 	emitter1_->SetScaleRange({ {0.3f,0.3f},{0.3f,0.3f},{0.3f,0.3f} });
-
-	emitter1_->SetStartColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{1.0f,1.0f} });
-	emitter1_->SetFinishColorRange({ {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} });
+	
+	emitter1_->SetStartColorRange({  {0.56f,1.0f},{0.0f,0.37f},{0.0f,0.19f},{1.0f,1.0f} });
+	emitter1_->SetFinishColorRange({ {0.56f,1.0f},{0.0f,0.37f},{0.0f,0.19f},{1.0f,1.0f} });
+	
 	emitter1_->SetLifeTimeRange({ 0.5f,0.8f });
 	emitter1_->SetFrequency(1.0f);
 
@@ -280,6 +209,7 @@ void GameScene::Update() {
 	
 	//lineDrawer_->Update();
 
+	emitter1_->Update();
 
 	BaseScene::Update();
 
@@ -336,10 +266,7 @@ void GameScene::Update() {
 		ImGui::TreePop();
 	}
 
-	ShowGradientEditor("plane_Particle");
-	ShowGradientEditor("ring1_Particle");
-	ShowGradientEditor("ring2_Particle");
-
+	
 	if (ImGui::Button("Add Particle plane and ring"))
 	{
 		emitter1_->Emit();

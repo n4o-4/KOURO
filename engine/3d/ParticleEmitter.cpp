@@ -89,7 +89,7 @@ void ParticleEmitter::Update()
 	
 		if (particleGroups.find(name) != particleGroups.end())
 		{
-			ParticleManager::GetInstance()->HitEmit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,lifeTimeRange);
+			ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count, startColorRange, finishColorRange, velocityRange, scaleRange, lifeTimeRange);
 		}
 	}
 }
