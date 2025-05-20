@@ -778,7 +778,7 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		// 同じスケールにするかどうか
 		if (sameScale)
 		{
-			std::uniform_real_distribution<float> distScale(scaleRange.x.min, scaleRange.x.max);
+			std::uniform_real_distribution<float> distScale(scaleRange.min.x, scaleRange.max.x);
 
 			float scale = distScale(randomEngine);
 
@@ -786,9 +786,9 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		}
 		else
 		{
-			std::uniform_real_distribution<float> distScaleX(scaleRange.x.min, scaleRange.x.max);
-			std::uniform_real_distribution<float> distScaleY(scaleRange.y.min, scaleRange.y.max);
-			std::uniform_real_distribution<float> distScaleZ(scaleRange.z.min, scaleRange.z.max);
+			std::uniform_real_distribution<float> distScaleX(scaleRange.min.x, scaleRange.max.x);
+			std::uniform_real_distribution<float> distScaleY(scaleRange.min.y, scaleRange.max.y);
+			std::uniform_real_distribution<float> distScaleZ(scaleRange.min.z, scaleRange.max.z);
 
 			newParticle->baseScale = { distScaleX(randomEngine),distScaleY(randomEngine),distScaleZ(randomEngine) };
 		}
@@ -801,9 +801,9 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		newParticle->transform.translate = translate + randomTranslate;
 
 
-		std::uniform_real_distribution<float> distVelocityX(velocityRange.x.min, velocityRange.x.max);
-		std::uniform_real_distribution<float> distVelocityY(velocityRange.y.min, velocityRange.y.max);
-		std::uniform_real_distribution<float> distVelocityZ(velocityRange.z.min, velocityRange.z.max);
+		std::uniform_real_distribution<float> distVelocityX(velocityRange.min.x, velocityRange.max.x);
+		std::uniform_real_distribution<float> distVelocityY(velocityRange.min.y, velocityRange.max.y);
+		std::uniform_real_distribution<float> distVelocityZ(velocityRange.min.z, velocityRange.max.z);
 
 		// velocityの設定
 		newParticle->velocity = { distVelocityX(randomEngine),distVelocityY(randomEngine),distVelocityZ(randomEngine) };
@@ -815,18 +815,18 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		newParticle->currentTime = 0.0f;
 
 		// 発生時の色の設定
-		std::uniform_real_distribution<float> startColorR(startColorRange.R.min, startColorRange.R.max);
-		std::uniform_real_distribution<float> startColorG(startColorRange.G.min, startColorRange.G.max);
-		std::uniform_real_distribution<float> startColorB(startColorRange.B.min, startColorRange.B.max);
-		std::uniform_real_distribution<float> startColorA(startColorRange.A.min, startColorRange.A.max);
+		std::uniform_real_distribution<float> startColorR(startColorRange.min.x, startColorRange.max.x);
+		std::uniform_real_distribution<float> startColorG(startColorRange.min.y, startColorRange.max.y);
+		std::uniform_real_distribution<float> startColorB(startColorRange.min.z, startColorRange.max.z);
+		std::uniform_real_distribution<float> startColorA(startColorRange.min.w, startColorRange.max.w);
 
 		Vector4 startColor = { startColorR(randomEngine),startColorG(randomEngine),startColorB(randomEngine),startColorA(randomEngine) };
 
 		// 終了時の色の設定
-		std::uniform_real_distribution<float> finishColorR(finishColorRange.R.min, finishColorRange.R.max);
-		std::uniform_real_distribution<float> finishColorG(finishColorRange.G.min, finishColorRange.G.max);
-		std::uniform_real_distribution<float> finishColorB(finishColorRange.B.min, finishColorRange.B.max);
-		std::uniform_real_distribution<float> finishColorA(finishColorRange.A.min, finishColorRange.A.max);
+		std::uniform_real_distribution<float> finishColorR(finishColorRange.min.x, finishColorRange.max.x);
+		std::uniform_real_distribution<float> finishColorG(finishColorRange.min.y, finishColorRange.max.y);
+		std::uniform_real_distribution<float> finishColorB(finishColorRange.min.z, finishColorRange.max.z);
+		std::uniform_real_distribution<float> finishColorA(finishColorRange.min.w, finishColorRange.max.w);
 
 		Vector4 finishColor = { finishColorR(randomEngine),finishColorG(randomEngine),finishColorB(randomEngine),finishColorA(randomEngine) };
 
@@ -852,9 +852,9 @@ ParticleManager::Particle ParticleManager::MakeNewHitParticle(const Vector3& tra
 	newParticle->transform.rotate = { 0.0f,0.0f,distRotate(randomEngine)};
 	newParticle->transform.translate = translate;
 
-	std::uniform_real_distribution<float> distVelocityX(velocityRange.x.min, velocityRange.x.max);
-	std::uniform_real_distribution<float> distVelocityY(velocityRange.y.min, velocityRange.y.max);
-	std::uniform_real_distribution<float> distVelocityZ(velocityRange.z.min, velocityRange.z.max);
+	std::uniform_real_distribution<float> distVelocityX(velocityRange.min.x, velocityRange.max.x);
+	std::uniform_real_distribution<float> distVelocityY(velocityRange.min.y, velocityRange.max.y);
+	std::uniform_real_distribution<float> distVelocityZ(velocityRange.min.z, velocityRange.max.z);
 
 	// velocityの設定
 	newParticle->velocity = { distVelocityX(randomEngine),distVelocityY(randomEngine),distVelocityZ(randomEngine) };
@@ -866,18 +866,18 @@ ParticleManager::Particle ParticleManager::MakeNewHitParticle(const Vector3& tra
 	newParticle->currentTime = 0.0f;
 
 	// 発生時の色の設定
-	std::uniform_real_distribution<float> startColorR(startColorRange.R.min, startColorRange.R.max);
-	std::uniform_real_distribution<float> startColorG(startColorRange.G.min, startColorRange.G.max);
-	std::uniform_real_distribution<float> startColorB(startColorRange.B.min, startColorRange.B.max);
-	std::uniform_real_distribution<float> startColorA(startColorRange.A.min, startColorRange.A.max);
+	std::uniform_real_distribution<float> startColorR(startColorRange.min.x, startColorRange.max.x);
+	std::uniform_real_distribution<float> startColorG(startColorRange.min.y, startColorRange.max.y);
+	std::uniform_real_distribution<float> startColorB(startColorRange.min.z, startColorRange.max.z);
+	std::uniform_real_distribution<float> startColorA(startColorRange.min.w, startColorRange.max.w);
 
 	Vector4 startColor = { startColorR(randomEngine),startColorG(randomEngine),startColorB(randomEngine),startColorA(randomEngine) };
 
 	// 終了時の色の設定
-	std::uniform_real_distribution<float> finishColorR(finishColorRange.R.min, finishColorRange.R.max);
-	std::uniform_real_distribution<float> finishColorG(finishColorRange.G.min, finishColorRange.G.max);
-	std::uniform_real_distribution<float> finishColorB(finishColorRange.B.min, finishColorRange.B.max);
-	std::uniform_real_distribution<float> finishColorA(finishColorRange.A.min, finishColorRange.A.max);
+	std::uniform_real_distribution<float> finishColorR(finishColorRange.min.x, finishColorRange.max.x);
+	std::uniform_real_distribution<float> finishColorG(finishColorRange.min.y, finishColorRange.max.y);
+	std::uniform_real_distribution<float> finishColorB(finishColorRange.min.z, finishColorRange.max.z);
+	std::uniform_real_distribution<float> finishColorA(finishColorRange.min.w, finishColorRange.max.w);
 
 	Vector4 finishColor = { finishColorR(randomEngine),finishColorG(randomEngine),finishColorB(randomEngine),finishColorA(randomEngine) };
 
@@ -896,7 +896,7 @@ void ParticleManager::DecelerationUpdate(Particle& particle)
 	float ease = 1.0f - sqrtf(1.0f - t * t);
 
 	// 減速の最大割合（たとえば0.9なら最小で10%は残る）
-	float maxDeceleration = 0.6f;
+	float maxDeceleration = 0.51f;
 
 	// イージングで変化する減速率（0.0〜0.9）
 	float decelerationFactor = ease * maxDeceleration;

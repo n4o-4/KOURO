@@ -52,7 +52,6 @@
     <ClCompile Include="engine\effect\Grayscale.cpp" />
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="engine\effect\LuminanceBasedOutline.cpp" />
-    <ClCompile Include="ExplosionEmitter.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -142,7 +141,6 @@
     <ClInclude Include="engine\effect\Random.h" />
     <ClInclude Include="engine\effect\Vignette.h" />
     <ClInclude Include="engine\effect\MotionBlur.h" />
-    <ClInclude Include="ExplosionEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

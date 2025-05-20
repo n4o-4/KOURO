@@ -10,7 +10,6 @@
 #include "CameraManager.h"
 #include "ParticleManager.h"
 #include "ParticleEmitter.h"
-#include "ExplosionEmitter.h"	
 #include "SceneManager.h"
 #include "WorldTransform.h"
 #include "AnimationManager.h"

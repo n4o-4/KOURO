@@ -110,17 +110,14 @@ public:
 
 	struct ColorRange
 	{
-		Range R;
-		Range G;
-		Range B;
-		Range A;
+		Vector4 min;
+		Vector4 max;
 	};
 
 	struct Vec3Range
 	{
-		Range x;
-		Range y;
-		Range z;
+		Vector3 min;
+		Vector3 max;
 	};
 
 public:
