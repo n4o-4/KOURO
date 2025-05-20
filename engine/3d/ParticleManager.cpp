@@ -173,12 +173,12 @@ void ParticleManager::Update()
 						// baseScale に掛ける
 						(*particleIterator).transform.scale = (*particleIterator).baseScale * scaleFactor;
 					}
+					else {
+						// 通常スケール
+						(*particleIterator).transform.scale = (*particleIterator).baseScale;
+					}
 				}
-				else {
-					// 通常スケール
-					(*particleIterator).transform.scale = (*particleIterator).baseScale;
-				}
-
+				
 				++particleGroupIterator->second.kNumInstance;
 			}
 
