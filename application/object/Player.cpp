@@ -31,10 +31,12 @@ void Player::Initialize() {
 	objectTransform_ = std::make_unique<WorldTransform>();
 	objectTransform_->Initialize();
 	objectTransform_->transform.translate = { 0.0f, initialY_ , kInitialZ_ };
+	
 
 	doorObjectTransform_ = std::make_unique<WorldTransform>();
 	doorObjectTransform_->Initialize();
 	doorObjectTransform_->transform.translate = { 1.36f, -0.01f , 0.94f };
+	//doorObjectTransform_->transform.scale = Vector3(2.0f, 2.0f, 2.0f);
 
 	doorObjectTransform_->SetParent(objectTransform_.get());
 
