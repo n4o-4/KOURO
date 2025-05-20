@@ -10,9 +10,15 @@ void GameOver::Initialize() {
 	over_->SetSize({ 1280.0f,720.0f });
 	over_->SetPosition({ 0.0f,0.0f });
 
+	AudioManager::GetInstance()->Initialize();
+	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/gameOVER.mp3");
+	overBGM_ = std::make_unique<Audio>();
+	overBGM_->Initialize();
+	overBGM_->SoundPlay("Resources/bgm/gameOVER.mp3", 9999);
 }
 
 void GameOver::Finalize() {
+	overBGM_->SoundStop("Resources/bgm/gameOVER.mp3");
 }
 
 void GameOver::Update() {

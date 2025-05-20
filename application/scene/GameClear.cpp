@@ -10,6 +10,12 @@ void GameClear::Initialize() {
 	clear_->SetSize({ 1280.0f,720.0f });
 	clear_->SetPosition({ 0.0f,0.0f });
 
+	AudioManager::GetInstance()->Initialize();
+	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/gameCLEAR.mp3");
+	clearBGM_ = std::make_unique<Audio>();
+	clearBGM_->Initialize();
+	clearBGM_->SoundPlay("Resources/bgm/gameCLEAR.mp3", 9999);
+
 }
 
 void GameClear::Finalize() {

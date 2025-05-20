@@ -182,7 +182,29 @@ void GameScene::Initialize() {
 	human_->Initialize(Object3dCommon::GetInstance());
 	human_->SetModel(ModelManager::GetInstance()->FindModel("human/wlak.gltf"));*/
 
-	// wave sprite
+	//BGM
+	AudioManager::GetInstance()->Initialize();
+	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/easy.mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/nomal.mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/hard.mp3");
+
+	easyBGM_ = std::make_unique<Audio>();
+	nomalBGM_ = std::make_unique<Audio>();
+	hardBGM_ = std::make_unique<Audio>();
+
+	easyBGM_->Initialize();
+	nomalBGM_->Initialize();
+	hardBGM_->Initialize();
+
+	if (easy_) {
+		easyBGM_->SoundPlay("Resources/bgm/easy.mp3", 9999);
+	} else if (nomal_) {
+		nomalBGM_->SoundPlay("Resources/bgm/nomal.mp3", 9999);
+	} else if (hard_) {
+		hardBGM_->SoundPlay("Resources/bgm/hard.mp3", 9999);
+	}
+
+	//wave sprite
 	TextureManager::GetInstance()->LoadTexture("Resources/text/wave1.png");
 	wave1_ = std::make_unique<Sprite>();
 	wave1_->Initialize(SpriteCommon::GetInstance(), "Resources/text/wave1.png");
@@ -214,6 +236,14 @@ void GameScene::Initialize() {
 ///						終了処理
 void GameScene::Finalize() {
 	BaseScene::Finalize();
+
+	if (easy_) {
+		easyBGM_->SoundStop("Resources/bgm/easy.mp3");
+	} else if (nomal_) {
+		nomalBGM_->SoundStop("Resources/bgm/nomal.mp3");
+	} else if (hard_) {
+		hardBGM_->SoundStop("Resources/bgm/hard.mp3");
+	}
 
 	skyDome_.reset();
 	ground_.reset();
@@ -330,6 +360,7 @@ void GameScene::Update() {
 
 			waveIndex_++;
 			if (easy_) {
+				
 				if (waveIndex_ < EwaveCsvPaths_.size()) {
 
 					currentWaveImageIndex_ = waveIndex_ + 1;
