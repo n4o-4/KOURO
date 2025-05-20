@@ -100,6 +100,10 @@ public:
 		
 		bool sameScale = true;
 		bool enableDeceleration = false; // 減速を有効にするかどうか
+		float speed = 20.0f; // パーティクルの速度
+
+		bool enablePulse = false; // 輝きを有効にするかどうか
+
 	};
 
 	struct Range
@@ -209,7 +213,7 @@ private:
 
 	void calculationBillboardMatrix();
 
-	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange,Range lifeTimeRange,bool sameScale);
+	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange,Range lifeTimeRange,bool sameScale, float speed);
 
 	Particle MakeNewHitParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Range lifeTimeRange);
 

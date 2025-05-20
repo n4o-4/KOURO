@@ -150,33 +150,34 @@ void ParticleManager::Update()
 					DecelerationUpdate(*particleIterator);
 				}
 
-				float t = (*particleIterator).currentTime / (*particleIterator).lifeTime;
-				t = std::clamp(t, 0.0f, 1.0f);
+				if (particleGroup->enablePulse)
+				{
+					float t = (*particleIterator).currentTime / (*particleIterator).lifeTime;
+					t = std::clamp(t, 0.0f, 1.0f);
 
-				// 揺れを始めるのは寿命の80%以降
-				float expandStartT = 0.8f;
+					// 揺れを始めるのは寿命の80%以降
+					float expandStartT = 0.65f;
 
-				if (t >= expandStartT) {
-					float localT = (t - expandStartT) / (1.0f - expandStartT);  // 0〜1
+					if (t >= expandStartT) {
+						float localT = (t - expandStartT) / (1.0f - expandStartT);  // 0〜1
 
-					float frequency = 6.0f;  // 揺れの回数
-					float amplitude = 1.0f;  // 最大振幅（scaleが0まで下がる）
+						float frequency = 6.0f;  // 揺れの回数
+						float amplitude = 1.0f;  // 最大振幅（scaleが0まで下がる）
 
-					// sin波（0〜±1）で揺れ
-					float wave = sinf(localT * frequency * 2.0f * 3.14159f);  // -1〜1
+						// sin波（0〜±1）で揺れ
+						float wave = sinf(localT * frequency * 2.0f * 3.14159f);  // -1〜1
 
-					// 0〜1で上下するようにする（絶対値を取る）
-					float scaleFactor = 1.0f - fabsf(wave) * amplitude;
+						// 0〜1で上下するようにする（絶対値を取る）
+						float scaleFactor = 1.0f - fabsf(wave) * amplitude;
 
-					// baseScale に掛ける
-					(*particleIterator).transform.scale = (*particleIterator).baseScale * scaleFactor;
+						// baseScale に掛ける
+						(*particleIterator).transform.scale = (*particleIterator).baseScale * scaleFactor;
+					}
 				}
 				else {
 					// 通常スケール
 					(*particleIterator).transform.scale = (*particleIterator).baseScale;
 				}
-
-				//(*particleIterator).transform.scale = (*particleIterator).baseScale;
 
 				++particleGroupIterator->second.kNumInstance;
 			}
@@ -757,7 +758,7 @@ void ParticleManager::calculationBillboardMatrix()
 	billboardMatrix.m[3][2] = 0.0f;
 }
 
-ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange ,Range lifeTimeRange,bool sameScale)
+ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange ,Range lifeTimeRange,bool sameScale,float speed)
 {
 		// 新しいパーティクルの生成
 		std::unique_ptr<Particle> newParticle;
@@ -793,8 +794,6 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 			newParticle->baseScale = { distScaleX(randomEngine),distScaleY(randomEngine),distScaleZ(randomEngine) };
 		}
 
-		
-
 		// transformの設定
 		
 		newParticle->transform.rotate = { 0.0f,0.0f,0.0f };
@@ -807,6 +806,16 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 
 		// velocityの設定
 		newParticle->velocity = { distVelocityX(randomEngine),distVelocityY(randomEngine),distVelocityZ(randomEngine) };
+
+		float length = std::sqrt(newParticle->velocity.x * newParticle->velocity.x + newParticle->velocity.y * newParticle->velocity.y + newParticle->velocity.z * newParticle->velocity.z);
+
+		if (length > speed) {
+			newParticle->velocity = Normalize(newParticle->velocity) * speed;
+		}
+		else if (length < std::numeric_limits<float>::epsilon()) {
+			// ゼロベクトルだった場合にデフォルトの速度を与えるなど
+			newParticle->velocity = { 1.0f, 0.0f, 0.0f }; // 例
+		}
 
 		std::uniform_real_distribution<float> distTime(lifeTimeRange.min, lifeTimeRange.max);
 
@@ -910,7 +919,10 @@ void ParticleManager::Emit(const std::string name, const Vector3& position, uint
 {
 	if (particleGroups.find(name) != particleGroups.end()) {
 		for (uint32_t currentCount = 0; currentCount < count;) {
-			particleGroups.find(name)->second.particles.push_back(MakeNewParticle(position,startColorRange,finishColorRange,velocityRange, scaleRange,lifeTimeRange,particleGroups.find(name)->second.sameScale));
+			particleGroups.find(name)->second.particles.push_back
+			(
+				MakeNewParticle(position,startColorRange,finishColorRange,velocityRange, scaleRange,lifeTimeRange,particleGroups.find(name)->second.sameScale, particleGroups.find(name)->second.speed)
+			);
 			++currentCount;
 		}
 	}

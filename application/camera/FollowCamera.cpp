@@ -41,8 +41,6 @@ void FollowCamera::Update()
     // 回転の計算
     CalculationTranslate();
 
-   
-
     // 基底クラスの更新
     BaseCamera::Update();
 }

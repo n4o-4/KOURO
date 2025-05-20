@@ -137,6 +137,8 @@ void GameScene::Initialize() {
 	// 減速を有効
 	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableDeceleration = true;
 
+	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enablePulse = true;
+
 	emitter1_ = std::make_unique<ParticleEmitter>();
 	emitter1_->Initialize("plane_Particle");
 	emitter1_->SetPosition({ 0.0f,2.0f,0.0f });
