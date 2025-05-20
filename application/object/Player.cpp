@@ -516,7 +516,7 @@ void Player::UpdateMachineGunAndHeat() {
 		}
 		// 煙を出す
 		if (smokeEmitter_) {
-			smokeEmitter_->SetPosition(objectTransform_->transform.translate);
+			smokeEmitter_->SetPosition(machineGunHeadTransform_->GetWorldPosition());
 			smokeEmitter_->Update();  // 一定間隔でEmitしてくれる
 		}
 	} else {
