@@ -41,44 +41,10 @@ void FollowCamera::Update()
     // 回転の計算
     CalculationTranslate();
 
-    // 高度によるFOV演出
-    UpdateHeightFOVEffect();
-    
-    // マシンガン発射時のカメラ演出を更新
-    UpdateFiringCameraEffect();
-
-    // ミサイル発射時のカメラ演出を更新
-    UpdateMissileFiringCameraEffect();
+   
 
     // 基底クラスの更新
     BaseCamera::Update();
-}
-
-///=============================================================================
-///                        前方向ベクトルを取得
-Vector3 FollowCamera::GetForwardDirection() const {
-    // カメラの回転行列から前方向ベクトルを計算
-    Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);
-    Vector3 forward = { 0.0f, 0.0f, 1.0f }; // デフォルトの前方向
-    return TransformNormal(forward, rotateMatrix);
-}
-
-///=============================================================================
-///                        カメラからの右方向ベクトルを取得
-Vector3 FollowCamera::GetRightDirection() const {
-    // カメラの回転行列から右方向ベクトルを計算
-    Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);
-    Vector3 right = { 1.0f, 0.0f, 0.0f }; // デフォルトの右方向
-    return TransformNormal(right, rotateMatrix);
-}
-
-///=============================================================================
-///                        カメラからの上方向ベクトルを取得
-Vector3 FollowCamera::GetUpDirection() const {
-    // カメラの回転行列から上方向ベクトルを計算
-    Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);
-    Vector3 up = { 0.0f, 1.0f, 0.0f }; // デフォルトの上方向
-    return TransformNormal(up, rotateMatrix);
 }
 
 ///=============================================================================
@@ -123,92 +89,4 @@ void FollowCamera::CalculationTranslate()
     Vector3 offset = CalculationOffset();
 
     viewProjection_->transform.translate = interTarget_ + offset;
-}
-
-///=============================================================================
-///                        高度によるFOV演出
-void FollowCamera::UpdateHeightFOVEffect()
-{
-    // ターゲットが設定されていない場合は処理しない
-    if (!target_) return;
-
-    // プレイヤーの高度を取得
-    float playerHeight = target_->transform.translate.y;
-    
-    // 高度に基づいたFOV調整（Y座標が0.0以上の場合）
-    if (playerHeight >= 0.0f) {
-        // 高度に応じてFOV増加量を計算
-        // 高度が高いほどFOVを広げる（最大でmaxHeightForFOV_まで考慮）
-        float heightFactor = std::min(playerHeight / maxHeightForFOV_, 1.0f);
-        
-        // 高度に応じたFOV増加を計算
-        float fovIncrease = heightFOVIncrease_ * heightFactor;
-        targetFOV_ = baseFOV_ + fovIncrease;
-    } 
-    else {
-        // 地上（Y < 0.0）では基本FOVに戻す
-        targetFOV_ = baseFOV_;
-    }
-    
-    // 現在のFOVを目標値へ滑らかに補間
-    currentFOV_ = currentFOV_ + (targetFOV_ - currentFOV_) * fovLerpSpeed_;
-
-    // フォールバックチェック（極端な値にならないよう制限）
-    currentFOV_ = std::max(baseFOV_, std::min(currentFOV_, baseFOV_ + heightFOVIncrease_));
-    
-    // FOVをカメラに適用（ラジアンへの変換が必要な場合）
-    viewProjection_->fovY = currentFOV_ * (3.14159f / 180.0f);
-    
-    // 現在の高度を保存（必要に応じて）
-    prevPlayerHeight_ = playerHeight;
-}
-
-///=============================================================================
-///                        マシンガン発射時のカメラ演出を更新
-void FollowCamera::UpdateFiringCameraEffect(){
-    //ミサイル発射中はマシンガン発射中の演出を無効化
-    if (isMissileFiring_) return;
-
-    Vector3 targetOffset = defaultOffset_;
-    
-    // マシンガン発射中はカメラを近づける
-    // RTボタンが押されている間だけ近づける
-    if (Input::GetInstance()->PushKey(DIK_J) ||
-    Input::GetInstance()->PushGamePadButton(Input::GamePadButton::LEFT_SHOULDER)) {
-        // Z方向（距離）のみ調整して近づける
-        targetOffset.z = defaultOffset_.z * firingOffsetFactor_;
-    }
-    
-    // 現在のオフセットを目標値に滑らかに補間
-    offset_ = Lerp(offset_, targetOffset, firingLerpSpeed_);
-}
-
-///=============================================================================
-///                        ミサイル発射時のカメラ演出を更新
-void FollowCamera::UpdateMissileFiringCameraEffect(){
-    Vector3 targetOffset = defaultOffset_;
-    
-    // ミサイル発射ボタンが押された時に発射状態を開始
-    if (Input::GetInstance()->PushKey(DIK_SPACE) ||
-        Input::GetInstance()->PushGamePadButton(Input::GamePadButton::RIGHT_SHOULDER)) {
-        isMissileFiring_ = true;
-        missileFireTimer_ = 0.0f;  // タイマーをリセット
-    }
-    
-    // ミサイル発射中の処理（数秒間継続）
-    if (isMissileFiring_) {
-        // カメラを遠ざける
-        targetOffset.z = defaultOffset_.z * missileFiringOffsetFactor_;
-        
-        // タイマーを進める（60FPSを想定）
-        missileFireTimer_ += 1.0f / 60.0f;
-        
-        // 持続時間が経過したら演出を終了
-        if (missileFireTimer_ >= missileFireDuration_) {
-            isMissileFiring_ = false;
-        }
-    }
-    
-    // 現在のオフセットを目標値に滑らかに補間
-    offset_ = Lerp(offset_, targetOffset, missileFiringLerpSpeed_);
 }
