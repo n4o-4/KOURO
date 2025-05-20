@@ -64,38 +64,33 @@ void Player::Initialize() {
 	machineGunBodyTransform_->SetParent(objectTransform_.get());
 	machineGunHeadTransform_->SetParent(machineGunBodyTransform_.get());
 
-	explosionEmitter_ = std::make_unique<ExplosionEmitter>();
+	explosionEmitter_ = std::make_unique<ParticleEmitter>();
 	explosionEmitter_->Initialize("missileSmoke");
 	explosionEmitter_->SetParticleCount(kExplosionParticleCount_);
 	explosionEmitter_->SetFrequency(kExplosionFrequency_);
-	explosionEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ kExplosionLifeTime_,kExplosionLifeTime_ }));
+	explosionEmitter_->SetLifeTimeRange({1.0f,1.0f});
 
 	smokeEmitter_ = std::make_unique<ParticleEmitter>();
 	smokeEmitter_->Initialize("missileSmoke");
 	smokeEmitter_->SetParticleCount(4);
 	smokeEmitter_->SetFrequency(0.1f);
-	smokeEmitter_->SetLifeTimeRange({ {0.3f, 0.5f} });
+	smokeEmitter_->SetLifeTimeRange( {0.3f, 0.5f} );
 	smokeEmitter_->SetStartColorRange(
 		ParticleManager::ColorRange(
-			{ 0.3f, 0.5f },
-			{ 0.3f, 0.5f },
-			{ 0.3f, 0.5f },
-			{ 0.8f, 1.0f }
+			{0.3f,0.3f,0.3f,0.3f},
+			{0.5f,0.5f,0.5f,0.5f}
 		)
 	);
 	smokeEmitter_->SetFinishColorRange(
 		ParticleManager::ColorRange(
-			{ 0.6f, 0.8f },
-			{ 0.6f, 0.8f },
-			{ 0.6f, 0.8f },
-			{ 0.0f, 0.3f }
+			{ 0.6f,0.6f,0.6f,0.0f },
+			{ 0.8f,0.8f,0.8f,0.3f }
 		)
 	);
 	smokeEmitter_->SetVelocityRange(
-		ParticleManager::VelocityRange(
-			{ 0.0f, 0.0f },
-			{ 0.0f, 6.0f },
-			{ -1.0f, 1.0f }
+		ParticleManager::Vec3Range(
+			{ 0.0f,0.0f,-1.0f },
+			{ 0.0f,6.0f,1.0f }
 		)
 	);
 	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);

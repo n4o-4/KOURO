@@ -11,8 +11,8 @@ void GroundTypeEnemy::Initialize() {
 	worldTransform_->transform.scale=(Vector3(modelScale_, modelScale_, modelScale_));
 
 	particleEmitter_->SetParticleCount(20);
-	particleEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ 1.0f,1.0f }));
-	particleEmitter_->SetVelocityRange(ParticleManager::VelocityRange({ -3.0f,3.0f }, { -3.0f,3.0f }, { -3.0f,3.0f }));
+	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({ 1.0f,1.0f }));
+	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({ -3.0f,-3.0f,-3.0f }, {3.0f,3.0f,3.0f}));
 
 
 	AudioManager::GetInstance()->SoundLoadFile("Resources/se/爆発1.mp3");

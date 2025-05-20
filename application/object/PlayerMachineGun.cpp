@@ -21,8 +21,12 @@ PlayerMachineGun::PlayerMachineGun(const Vector3& position, const Vector3& veloc
 	particleEmitter_->Initialize("missileSmoke");
 	particleEmitter_->SetParticleCount(10);  // デフォルト発生数
 	particleEmitter_->SetFrequency(0.04f);  // より高頻度で発生させる
-	particleEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({ 0.01f, 0.01f }));
-	particleEmitter_->SetStartColorRange(ParticleManager::ColorRange({ 0.66f, 0.85f }, { 0.64f, 0.83f }, { 0.18f, 0.21f }, { 1.0f, 1.0f }));
+	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({ 0.01f, 0.01f }));
+	particleEmitter_->SetStartColorRange(ParticleManager::ColorRange({ 0.66f, 0.64f, 0.18f, 1.0f },
+		{ 0.85f, 0.83f, 0.21f, 1.0f }));
+
+	
+	
 }
 
 void PlayerMachineGun::Update() {

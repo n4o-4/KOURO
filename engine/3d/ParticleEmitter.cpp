@@ -19,19 +19,21 @@ void ParticleEmitter::Initialize(std::string name)
 	emitter.transform.translate = { 0.0f,0.0f,0.0f };
 	emitter.lifeTime = 1.0f;
 
-	startColorRange = { {0.56f,1.0f},{0.0f,0.37f},{0.0f,0.19f},{1.0f,1.0f} };
+	startColorRange = {{ 0.56f,0.0f,0.0f,1.0f }, {1.0f,0.37f,0.19f,1.0f} };
 
-	finishColorRange = { {1.0f,1.0f},{1.0f,1.0f},{1.0f,1.0f},{1.0f,1.0f} };
+	finishColorRange = { {0.56f,0.0f,0.0f,1.0f}, {1.0f,0.37f,0.19f,1.0f} };
 
-	velocityRange = { {0.0f,0.0f},{0.0f,0.0f},{0.0f,0.0f} };
+	velocityRange = { {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 
-	lifeTimeRange = { {0.2f,0.5f} };
+	scaleRange = { {0.0f,0.0f,0.0f} };
+
+	lifeTimeRange = { 1.0f,1.0f };
 }
 
 void ParticleEmitter::Emit()
 {
 
-	ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,lifeTimeRange);
+	ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,scaleRange,lifeTimeRange);
 
 }
 
@@ -45,6 +47,11 @@ void ParticleEmitter::Emit(uint32_t count,Vector3 startColor,Vector3 finishColor
     Emit();
     // 元のカウント数に戻す
     emitter.count = originalCount;
+}
+
+void ParticleEmitter::HitEmit()
+{
+	ParticleManager::GetInstance()->HitEmit(name, emitter.transform.translate, emitter.count, startColorRange, finishColorRange, velocityRange, lifeTimeRange);
 }
 
 void ParticleEmitter::SetPosition(const Vector3& position)
@@ -74,15 +81,9 @@ void ParticleEmitter::Update()
 		
 		emitter.frequencyTime -= emitter.frequency;
 
-		Vector3 startColor;
-
-		std::uniform_real_distribution<float> colorR(0.56f, 1.0f); // min , max
-		std::uniform_real_distribution<float> colorG(0.0f, 0.37f);
-		std::uniform_real_distribution<float> colorB(0.0f, 0.19f);
-	
 		if (particleGroups.find(name) != particleGroups.end())
 		{
-			ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,lifeTimeRange);
+			ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count, startColorRange, finishColorRange, velocityRange, scaleRange, lifeTimeRange);
 		}
 	}
 }

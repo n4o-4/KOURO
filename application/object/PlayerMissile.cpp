@@ -30,15 +30,26 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
     particleEmitterMissileSmoke_->SetParticleCount(4);   // デフォルト発生数
     particleEmitterMissileSmoke_->SetFrequency(0.04f);    // より高頻度で発生させる
 	
+
+
 	ParticleManager::GetInstance()->SetBlendMode("Add");
 
-    ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png", ParticleManager::ParticleType::Normal);
-	explosionEmitter_ = std::make_unique<ExplosionEmitter>();
-	explosionEmitter_->Initialize("missileSmoke");
+    ParticleManager::GetInstance()->CreateParticleGroup("explosion", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+	explosionEmitter_ = std::make_unique<ParticleEmitter>();
+	explosionEmitter_->Initialize("explosion");
     // パーティクル設定の調整
     
+	
+
 	explosionEmitter_->SetParticleCount(100);   
 	explosionEmitter_->SetFrequency(0.04f);
+    explosionEmitter_->SetLifeTimeRange({ 0.5f, 1.0f }); // 寿命を短くする
+    explosionEmitter_->SetScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
+	explosionEmitter_->SetVelocityRange(ParticleManager::Vec3Range({ -100.0f,-100.0f,-100.0f }, { 100.0f,100.0f,100.0f }));
+
+
+    ParticleManager::GetInstance()->GetParticleGroup("explosion")->enableBillboard = true;
+    ParticleManager::GetInstance()->GetParticleGroup("explosion")->enablePulse = true;
 
     //===================================================
     // トランスフォームの初期化

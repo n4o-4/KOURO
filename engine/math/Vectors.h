@@ -18,6 +18,8 @@ struct Vector3 {
 
 	// 🔹 **ベクトルの加算代入演算子を追加**
 	Vector3& operator+=(const Vector3& v) { x += v.x; y += v.y; z += v.z; return *this; }
+	// 🔹 **ベクトルの減算代入演算子を追加**
+	Vector3& operator-=(const Vector3& v) { x -= v.x; y -= v.y; z -= v.z; return *this; }
 	// 🔹 スカラー乗算代入演算子を追加
 	Vector3& operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
 	// 🔹 **単項マイナス演算子を追加**

@@ -14,6 +14,8 @@ public:
     // 指定した数のパーティクルを放出するオーバーロードを追加
     void Emit(uint32_t count,Vector3 startColor,Vector3 finishColor);
     
+	void HitEmit();
+
     // エミッタの位置を設定するメソッドを追加
     void SetPosition(const Vector3& position);
     
@@ -28,8 +30,10 @@ public:
     void SetStartColorRange(ParticleManager::ColorRange colorRange) { startColorRange = colorRange; }
     void SetFinishColorRange(ParticleManager::ColorRange colorRange) { finishColorRange = colorRange; }
 
-	void SetVelocityRange(ParticleManager::VelocityRange velocityRange) { this->velocityRange = velocityRange; }
-	void SetLifeTimeRange(ParticleManager::LifeTimeRange lifeTimeRange) { this->lifeTimeRange = lifeTimeRange; }
+	void SetVelocityRange(ParticleManager::Vec3Range velocityRange) { this->velocityRange = velocityRange; }
+	void SetLifeTimeRange(ParticleManager::Range lifeTimeRange) { this->lifeTimeRange = lifeTimeRange; }
+
+	void SetScaleRange(ParticleManager::Vec3Range scaleRange) { this->scaleRange = scaleRange; }
 
 private:
 
@@ -55,6 +59,9 @@ private:
 	ParticleManager::ColorRange startColorRange;
 	ParticleManager::ColorRange finishColorRange;   
 
-    ParticleManager::VelocityRange velocityRange;
-	ParticleManager::LifeTimeRange lifeTimeRange;
+    ParticleManager::Vec3Range velocityRange;
+	
+	ParticleManager::Vec3Range scaleRange;
+
+	ParticleManager::Range lifeTimeRange;
 };

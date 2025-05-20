@@ -33,8 +33,8 @@ void BaseEnemy::Initialize(Model *model) {
 	particleEmitter_ = std::make_unique<ParticleEmitter>();
 	particleEmitter_->Initialize("missileSmoke");
 	particleEmitter_->SetParticleCount(80);
-	particleEmitter_->SetLifeTimeRange(ParticleManager::LifeTimeRange({1.0f, 1.5f}));
-	particleEmitter_->SetVelocityRange(ParticleManager::VelocityRange({-10.0f, 10.0f}, {-10.0f, 10.0f}, {-10.0f, 10.0f}));
+	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({1.0f, 1.5f}));
+	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({ -10.0f,-10.0f,-10.0f }, {10.0f,10.0f,10.0f}));
 }
 
 ///=============================================================================

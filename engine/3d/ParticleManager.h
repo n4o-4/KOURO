@@ -24,6 +24,7 @@ public:
 		kSubtract,
 		kMultiply,
 		kScreen,
+		kAlpla,
 
 		kCountOfBlendMode,
 	};
@@ -74,6 +75,7 @@ public:
 
 	struct Particle {
 		Transform transform;
+		Vector3 baseScale;
 		Vector3 velocity;
 		Vector4 color;
 		float lifeTime;
@@ -90,28 +92,36 @@ public:
 		Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource;
 		uint32_t kNumInstance;
 		ParticleForGPU* instancingData;
+		Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
+		Material* material;
+
 		ParticleType type;
 		bool enableBillboard = false;
+		
+		bool sameScale = true;
+		bool enableDeceleration = false; // 減速を有効にするかどうか
+		float speed = 100.0f; // パーティクルの速度
+
+		bool enablePulse = false; // 輝きを有効にするかどうか
+
+	};
+
+	struct Range
+	{
+		float min;
+		float max;
 	};
 
 	struct ColorRange
 	{
-		Vector2 R;
-		Vector2 G;
-		Vector2 B;
-		Vector2 A;
+		Vector4 min;
+		Vector4 max;
 	};
 
-	struct LifeTimeRange
+	struct Vec3Range
 	{
-		Vector2 range;
-	};
-
-	struct VelocityRange
-	{
-		Vector2 x;
-		Vector2 y;
-		Vector2 z;
+		Vector3 min;
+		Vector3 max;
 	};
 
 public:
@@ -126,9 +136,9 @@ public:
 	// パーティクルグループの生成関数
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleType type);
 
-	void Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
+	void Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange, Range lifeTimeRange);
 
-	void HitEmit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
+	void HitEmit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Range lifeTimeRange);
 
 	std::unordered_map<std::string, ParticleGroup> GetParticleGroups() { return particleGroups; }
 
@@ -164,6 +174,14 @@ public:
 
 	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
 
+	ParticleGroup* GetParticleGroup(const std::string& name) {
+		auto it = particleGroups.find(name);
+		if (it != particleGroups.end()) {
+			return &it->second;
+		}
+		return nullptr;
+	}
+
 private:
 	static std::unique_ptr<ParticleManager> instance;
 
@@ -195,9 +213,13 @@ private:
 
 	void calculationBillboardMatrix();
 
-	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
+	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange,Range lifeTimeRange,bool sameScale, float speed);
 
-	Particle MakeNewHitParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, VelocityRange velocityRange, LifeTimeRange lifeTimeRange);
+	Particle MakeNewHitParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Range lifeTimeRange);
+
+	private:
+
+		void DecelerationUpdate(Particle& particle);
 
 private:
 
@@ -243,6 +265,5 @@ private:
 	std::unique_ptr<uint32_t> indexData;
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource = nullptr;
 
-
+	
 };
-

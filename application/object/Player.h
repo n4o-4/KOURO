@@ -258,7 +258,7 @@ private:
 	// カメラ
 	FollowCamera* followCamera_ = nullptr;
 	float distinationRotateY_;
-	std::unique_ptr<ExplosionEmitter> explosionEmitter_ = nullptr;
+	std::unique_ptr<ParticleEmitter> explosionEmitter_ = nullptr;
 
 	//========================================
 	// ロックオン関連
