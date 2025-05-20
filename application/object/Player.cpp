@@ -451,12 +451,20 @@ void Player::UpdateMissiles() {
 }
 
 void Player::UpdateMachineGunAndHeat() {
+
+	// マシンガンの回転速度（通常時とオーバーヒート時）
+	const float kMachineGunRotateSpeed_Normal = 0.25f;
+	const float kMachineGunRotateSpeed_Overheat = 0.05f;
+
 	//マシンガンの弾の更新
 	 // マシンガンの発射
 	if (Input::GetInstance()->PushKey(DIK_J) ||
 		Input::GetInstance()->PushGamePadButton(Input::GamePadButton::LEFT_SHOULDER)) {
 		
-		machineGunHeadTransform_->transform.rotate.z++;
+
+		// 状態に応じて回転速度を変更
+		float rotateSpeed = isOverheated_ ? kMachineGunRotateSpeed_Overheat : kMachineGunRotateSpeed_Normal;
+		machineGunHeadTransform_->transform.rotate.z += rotateSpeed;
 
 		isShootingMachineGun_ = true;
 	} else {
@@ -733,12 +741,16 @@ void Player::RecoverBoostEnergy() {
 }
 
 void Player::ShootMachineGun() {
-	// マシンガン弾の発射処理をPlayerMachineGunクラスに委譲
+	// 反動と揺れ用の出力変数
 	Vector3 recoilVelocity;
 	float shakeIntensity;
 
+	// 【変更】machineGunHeadTransform_のワールド位置を取得
+	Vector3 bulletPosition = machineGunHeadTransform_->GetWorldPosition();
+
+	// Shoot関数に位置を渡す
 	auto bullet = PlayerMachineGun::Shoot(
-		objectTransform_->transform.translate,
+		bulletPosition,
 		followCamera_,
 		recoilVelocity,
 		shakeIntensity
@@ -751,10 +763,11 @@ void Player::ShootMachineGun() {
 	// 弾を追加
 	machineGunBullets_.push_back(std::move(bullet));
 
-	// エフェクト
-	explosionEmitter_->SetPosition(objectTransform_.get()->transform.translate);
+	// 発射エフェクトもマシンガンヘッドに出すように変更（任意）
+	explosionEmitter_->SetPosition(bulletPosition);
 	explosionEmitter_->Emit();
 }
+
 
 void Player::ApplyRecoil() {
 	if (Length(recoilVelocity_) > kRecoilThreshold_) {

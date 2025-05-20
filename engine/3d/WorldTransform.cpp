@@ -45,3 +45,12 @@ void WorldTransform::TransferMatrix()
 
 	transformData_->matWorldInverse = matWorldInverse_;
 }
+
+Vector3 WorldTransform::GetWorldPosition() const
+{
+	return {
+		matWorld_.m[3][0],
+		matWorld_.m[3][1],
+		matWorld_.m[3][2]
+	};
+}

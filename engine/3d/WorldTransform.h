@@ -29,6 +29,8 @@ public:
 	const Microsoft::WRL::ComPtr<ID3D12Resource>& GetTransformResource() { return transformResource_; }
 
 	void SetParent(WorldTransform* parent) { parent_ = parent; }
+	// ワールド座標を取得
+	Vector3 GetWorldPosition() const;
 
 public:
 

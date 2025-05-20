@@ -235,7 +235,7 @@ private:
 	bool machineGunSoundPlayed_ = false;
 	//オーバーヒート関連
 	float heatLevel_ = 0.0f;            // 現在の熱量
-	float maxHeat_ = 150.0f;            // オーバーヒートライン
+	float maxHeat_ = 100.0f;            // オーバーヒートライン
 	float heatPerShot_ = 5.0f;          // 1発ごとの加熱量
 	float heatCooldownRate_ = 0.8f;     // 自然冷却速度（毎フレーム）
 	bool isOverheated_ = false;        // オーバーヒート中か
