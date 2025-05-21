@@ -1,11 +1,11 @@
-#include "Player.h"
+ï»¿#include "Player.h"
 
 void Player::Initialize(Model* model)
 {
 	///=========================================
-	/// eƒNƒ‰ƒX
+	/// è¦ªã‚¯ãƒ©ã‚¹
 	
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	BaseCharacter::Initialize(model);
 
 	worldTransform_->useQuaternion_ = true;
@@ -13,18 +13,45 @@ void Player::Initialize(Model* model)
 
 void Player::Update()
 {
-	///=========================================
-	/// eƒNƒ‰ƒX
+	// ç§»å‹•
+	Move();
 
-	// XV
+	worldTransform_->quaternionTransform.rotate.y += 0.01f;
+
+	///=========================================
+	/// è¦ªã‚¯ãƒ©ã‚¹
+
+	// æ›´æ–°
 	BaseCharacter::Update();
 }
 
 void Player::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 {
 	///=========================================
-	/// eƒNƒ‰ƒX
+	/// è¦ªã‚¯ãƒ©ã‚¹
 	
-	// •`‰æ
+	// æç”»
 	BaseCharacter::Draw(directionalLight,pointLight,spotLight);
+}
+
+void Player::Move()
+{
+	velocity_ = { 0.0f,0.0f,0.0f };
+
+	if (Input::GetInstance()->PushKey(DIK_A))
+	{
+		velocity_.x -= 0.1f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_D))
+	{
+		velocity_.x += 0.1f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_W))
+	{
+		velocity_.z += 0.1f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_S))
+	{
+		velocity_.z -= 0.1f;
+	}
 }

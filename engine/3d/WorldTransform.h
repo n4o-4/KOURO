@@ -49,6 +49,8 @@ private:
 
 	const WorldTransform* parent_ = nullptr;
 
+	Quaternion preRotate_;
+
 public:
 
 

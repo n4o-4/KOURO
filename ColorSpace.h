@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "BaseEffect.h"
 
 namespace ColorSpaceShader
@@ -16,16 +16,16 @@ class ColorSpace : public BaseEffect
 {
 public:
 
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) override;
 
-	// XV
+	// æ›´æ–°
 	void Update() override;
 
-	// •`‰æ
+	// æç”»
 	void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
 
-	// ƒŠƒ\[ƒX‚Ì‰ğ•ú
+	// ãƒªã‚½ãƒ¼ã‚¹ã®è§£æ”¾
 	void Reset() override { resource_.Reset(); }
 
 private:
@@ -38,7 +38,7 @@ private:
 
 	void CreatePipeLineState(Pipeline* pipeline);
 
-	// ƒ}ƒeƒŠƒAƒ‹‚Ì¶¬
+	// ãƒãƒ†ãƒªã‚¢ãƒ«ã®ç”Ÿæˆ
 	void CreateMaterial();
 
 	void DrawImGui() override;
@@ -49,12 +49,12 @@ public:
 	float saturation = 0.0f;
 	float value = 0.0f;	
 
-private: // ƒƒ“ƒo•Ï”
+private: // ãƒ¡ãƒ³ãƒå¤‰æ•°
 
-	// ƒŠƒ\[ƒX
+	// ãƒªã‚½ãƒ¼ã‚¹
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource_;
 
-	// ƒ|ƒCƒ“ƒ^[
+	// ãƒã‚¤ãƒ³ã‚¿ãƒ¼
 	ColorSpaceShader::Material* data_ = nullptr;
 
 };

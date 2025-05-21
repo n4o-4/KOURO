@@ -121,6 +121,7 @@ void GameScene::Initialize() {
 	player_ = std::make_unique<Player>();
 	player_->Initialize((ModelManager::GetInstance()->FindModel("terrain.obj")));
 
+	player_->SetCamera(cameraManager_->GetActiveCamera());
 
 	///========================================
 	/// 入力

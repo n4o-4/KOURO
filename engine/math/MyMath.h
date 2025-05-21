@@ -787,6 +787,15 @@ static Matrix4x4 MakeAffineMatrixforQuater(const Vector3& scale, const Quaternio
 	return result;
 }
 
+static Vector3 qCross(const Quaternion& q1, const Quaternion& q2)
+{
+	return Vector3(
+		q1.y * q2.z - q1.z * q2.y,
+		q1.z * q2.x - q1.x * q2.z,
+		q1.x * q2.y - q1.y * q2.x
+	);
+}
+
 namespace Vect4
 {
 	static Vector4 Lerp(const Vector4& a, const Vector4& b, float t)

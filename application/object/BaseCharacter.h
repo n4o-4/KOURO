@@ -1,38 +1,38 @@
-#pragma once
+ï»¿#pragma once
 // Engine
 #include "Kouro.h"
 
 
 class BaseCharacter
 {
-public: // ŒöŠJƒƒ“ƒoŠÖ”
+public: // å…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 
-	// ‰Šú‰»ˆ—
+	// åˆæœŸåŒ–å‡¦ç†
 	virtual void Initialize(Model* model);
 
-	// XVˆ—
+	// æ›´æ–°å‡¦ç†
 	virtual void Update();
 
-	// •`‰æˆ—
+	// æç”»å‡¦ç†
 	virtual void Draw(DirectionalLight directionalLight,PointLight pointLight,SpotLight spotLight);
 
 
-protected: // ”h¶—pƒƒ“ƒoŠÖ”
+protected: // æ´¾ç”Ÿç”¨ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	void DrawImGui();
 
-protected: // ”h¶—pƒƒ“ƒo•Ï”
+protected: // æ´¾ç”Ÿç”¨ãƒ¡ãƒ³ãƒå¤‰æ•°
 
-	// 3Dƒ‚ƒfƒ‹
+	// 3Dãƒ¢ãƒ‡ãƒ«
 	std::unique_ptr<Object3d> object3d_;
 
-	// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
 	std::unique_ptr<WorldTransform> worldTransform_;
 
-	// ‘¬“x
+	// é€Ÿåº¦
 	Vector3 velocity_ = { 0.0f,0.0f,0.0f };
 
-	// —LŒøƒtƒ‰ƒO
+	// æœ‰åŠ¹ãƒ•ãƒ©ã‚°
 	bool isActive_ = true;
 
 	BaseCamera* camera_ = nullptr;

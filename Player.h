@@ -1,19 +1,24 @@
-#pragma once
+ï»¿#pragma once
 #include "BaseCharacter.h"
 class Player : public BaseCharacter
 {
-public: // ŒöŠJƒƒ“ƒoŠÖ”
+public: // å…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 
-	// ‰Šú‰»ˆ—
+	// åˆæœŸåŒ–å‡¦ç†
 	void Initialize(Model* model) override;
 
-	// XVˆ—
+	// æ›´æ–°å‡¦ç†
 	void Update() override;
 
-	// •`‰æˆ—
+	// æç”»å‡¦ç†
 	void Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) override;
 
-	// ƒJƒƒ‰‚ğİ’è
+	// ã‚«ãƒ¡ãƒ©ã‚’è¨­å®š
 	void SetCamera(BaseCamera* camera) { camera_ = camera; }
+
+private: // éå…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
+
+	// ç§»å‹•
+	void Move();
 };
 

@@ -1,57 +1,66 @@
-#include "BaseCharacter.h"
+ï»¿#include "BaseCharacter.h"
 
 void BaseCharacter::Initialize(Model* model)
 {
 	///========================================
-	/// ƒIƒuƒWƒFƒNƒg3D
+	/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ3D
 	
-	// ¶¬‚Æ‰Šú‰»
+	// ç”Ÿæˆã¨åˆæœŸåŒ–
 	object3d_ = std::make_unique<Object3d>();
 	object3d_->Initialize(Object3dCommon::GetInstance());
 
-	// ƒ‚ƒfƒ‹‚ğİ’è
+	// ãƒ¢ãƒ‡ãƒ«ã‚’è¨­å®š
 	object3d_->SetModel(model);
 
-	// ƒ[ƒJƒ‹s—ñ‚Ì‰Šú‰»
+	// ãƒ­ãƒ¼ã‚«ãƒ«è¡Œåˆ—ã®åˆæœŸåŒ–
 	object3d_->SetLocalMatrix(MakeIdentity4x4());
 
 
 
 	///========================================
-	/// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+	/// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
 	
-	// ¶¬‚Æ‰Šú‰»
+	// ç”Ÿæˆã¨åˆæœŸåŒ–
 	worldTransform_ = std::make_unique<WorldTransform>();
 	worldTransform_->Initialize();
 
-	// ‰Šú’l‚Ìİ’è
+	// åˆæœŸå€¤ã®è¨­å®š
 
 
 	///========================================
-	/// ‚»‚Ì‘¼•Ï”
+	/// ãã®ä»–å¤‰æ•°
 	
-	// ‘¬“x‚Ì‰Šú‰»
+	// é€Ÿåº¦ã®åˆæœŸåŒ–
 	velocity_ = { 0.0f,0.0f,0.0f };
 
-	// —LŒøƒtƒ‰ƒO‚Ì‰Šú‰»
+	// æœ‰åŠ¹ãƒ•ãƒ©ã‚°ã®åˆæœŸåŒ–
 	isActive_ = true;
 }
 
 void BaseCharacter::Update()
 {
 	///========================================
-	/// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
-	
-	// XV
+	/// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
+
+	if (worldTransform_->useQuaternion_)
+	{
+		worldTransform_->quaternionTransform.translate += velocity_;
+	}
+	else
+	{
+		worldTransform_->transform.translate += velocity_;
+	}
+
+	// æ›´æ–°
 	worldTransform_->UpdateMatrix();
 }
 
 void BaseCharacter::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 {
 	///========================================
-	/// ƒIƒuƒWƒFƒNƒg3D
+	/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ3D
 
-	// •`‰æ
+	// æç”»
 	object3d_->Draw(*worldTransform_.get(), camera_->GetViewProjection(), directionalLight, pointLight, spotLight);
 }
 
