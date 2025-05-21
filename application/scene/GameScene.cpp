@@ -121,7 +121,7 @@ void GameScene::Initialize() {
 	player_ = std::make_unique<Player>();
 	player_->Initialize((ModelManager::GetInstance()->FindModel("terrain.obj")));
 
-	player_->SetCamera(cameraManager_->GetActiveCamera());
+	
 
 	///========================================
 	/// 入力
@@ -147,7 +147,7 @@ void GameScene::Update() {
 	//human_->Update();
 	
 	//lineDrawer_->Update();
-
+	player_->SetCamera(cameraManager_->GetActiveCamera());
 
 	BaseScene::Update();
 

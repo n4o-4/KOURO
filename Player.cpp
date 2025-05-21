@@ -16,13 +16,37 @@ void Player::Update()
 	// 移動
 	Move();
 
-	worldTransform_->quaternionTransform.rotate.y += 0.01f;
+	Vector3 euler = QuaternionToEuler(worldTransform_->quaternionTransform.rotate);
+
+	//euler.y += 0.01f;
+
+	worldTransform_->quaternionTransform.rotate = EulerToQuaternion(euler);
 
 	///=========================================
 	/// 親クラス
 
 	// 更新
 	BaseCharacter::Update();
+
+#ifdef _DEBUG
+	
+	const char* cameraType = "Unknown";
+
+	if (dynamic_cast<DebugCamera*>(camera_)) {
+		cameraType = "DebugCamera";
+	}
+	else if (dynamic_cast<FollowCamera*>(camera_)) {
+		cameraType = "FollowCamera";
+	}
+	else if (camera_ == Camera::GetInstance()) {
+		cameraType = "DefaultCamera";
+	}
+
+	ImGui::Begin("Player Camera");
+	ImGui::Text("Active Camera: %s", cameraType);
+	ImGui::End();
+
+#endif
 }
 
 void Player::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)

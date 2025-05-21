@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Vectors.h"
 #include "Matrixs.h"
 #include <algorithm>
@@ -46,7 +46,7 @@ static Quaternion operator-(const Quaternion& q1, const Quaternion& q2)
 
 static bool operator!=(const Quaternion& q1, const Quaternion& q2)
 {
-	const float epsilon = 1e-5f; // ¸“x‚Ì‹–—e”ÍˆÍ
+	const float epsilon = 1e-5f; // ç²¾åº¦ã®è¨±å®¹ç¯„å›²
 	return (
 		std::abs(q1.x - q2.x) > epsilon ||
 		std::abs(q1.y - q2.y) > epsilon ||

@@ -23,6 +23,22 @@ void CameraManager::Update()
 	}
 
 	activeCamera_->Update();
+
+	const char* cameraType = "Unknown";
+
+	if (dynamic_cast<DebugCamera*>(activeCamera_)) {
+		cameraType = "DebugCamera";
+	}
+	else if (dynamic_cast<FollowCamera*>(activeCamera_)) {
+		cameraType = "FollowCamera";
+	}
+	else if (activeCamera_ == Camera::GetInstance()) {
+		cameraType = "DefaultCamera";
+	}
+
+	ImGui::Begin("Camera Info");
+	ImGui::Text("Active Camera: %s", cameraType);
+	ImGui::End();
 }
 
 void CameraManager::ChangeActiveCamera()
