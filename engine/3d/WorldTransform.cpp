@@ -14,19 +14,29 @@ void WorldTransform::Initialize()
 
 	transform.translate = { 0.0f,0.0f,0.0f };
 
+	quaternionTransform.scale = { 1.0f,1.0f,1.0f };
+
+	quaternionTransform.rotate = { 0.0f,0.0f,0.0f ,1.0f };
+
+	quaternionTransform.translate = { 0.0f,0.0f,0.0f };
 }
 
 void WorldTransform::UpdateMatrix()
 {
-
-	matWorld_ = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+	if (useQuaternion_)
+	{
+		matWorld_ = MakeAffineMatrixforQuater(quaternionTransform.scale, quaternionTransform.rotate, quaternionTransform.translate);
+	}
+	else
+	{
+		matWorld_ = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+	}
 
 	matWorldInverse_ = Inverse(matWorld_);
 
 	transformData_->matWorld = matWorld_;
 
 	transformData_->matWorldInverse = matWorldInverse_;
-
 }
 
 void WorldTransform::TransferMatrix()

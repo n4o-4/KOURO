@@ -147,9 +147,10 @@ void GameScene::Update() {
 	
 	//lineDrawer_->Update();
 
-	emitter1_->Update();
 
 	BaseScene::Update();
+
+	emitter1_->Update();
 
 	ParticleManager::GetInstance()->Update();
 
@@ -169,6 +170,8 @@ void GameScene::Update() {
 	ground_->Update();
 
 	transform_->UpdateMatrix();
+
+	player_->Update();
 
 #ifdef _DEBUG
 
@@ -226,7 +229,9 @@ void GameScene::Draw()
 	DrawObject();
 	/// オブジェクト描画
 
-	ground_->Draw(*transform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+	//ground_->Draw(*transform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+
+	player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
 
 	DrawForegroundSprite();
 	/// 前景スプライト描画

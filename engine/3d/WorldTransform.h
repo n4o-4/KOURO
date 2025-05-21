@@ -38,6 +38,8 @@ public:
 
 	Matrix4x4 matWorldInverse_;
 
+	bool useQuaternion_ = false;
+
 private:
 
 	// 定数バッファ

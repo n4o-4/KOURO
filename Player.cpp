@@ -7,6 +7,8 @@ void Player::Initialize(Model* model)
 	
 	// ‰Šú‰»
 	BaseCharacter::Initialize(model);
+
+	worldTransform_->useQuaternion_ = true;
 }
 
 void Player::Update()
