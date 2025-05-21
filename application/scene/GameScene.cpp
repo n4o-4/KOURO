@@ -4,7 +4,7 @@
 
 ///=============================================================================
 ///						マトリックス表示
-void ShowMatrix4x4(const Matrix4x4 &matrix, const char *label) {
+static void ShowMatrix4x4(const Matrix4x4 &matrix, const char *label) {
 	ImGui::Text("%s", label);
 	if(ImGui::BeginTable(label, 4, ImGuiTableFlags_Borders)) {
 		// 
@@ -18,42 +18,6 @@ void ShowMatrix4x4(const Matrix4x4 &matrix, const char *label) {
 		ImGui::EndTable();
 	}
 }
-
-//void ShowColorRangeEditor(const char* label) {
-//
-//	ParticleManager::ParticleGroup* group = ParticleManager::GetInstance()->GetParticleGroup(label);
-//
-//	if (ImGui::TreeNode(label)) {
-//
-//		ImGui::Text("startColor Range");
-//
-//		Vector4 startColor
-//
-//		ImGui::ColorEdit4("Min", (float*)&group->startColorRange.R.min, ImGuiColorEditFlags_Float);
-//
-//		// グラデーションの可視化：左=Min、右=Max
-//		ImVec4 colorMin = ImVec4(colorRange.R.min, colorRange.G.min, colorRange.B.min, colorRange.A.min);
-//		ImVec4 colorMax = ImVec4(colorRange.R.max, colorRange.G.max, colorRange.B.max, colorRange.A.max);
-//
-//
-//
-//		ImGui::Text("Gradient Preview:");
-//		ImDrawList* drawList = ImGui::GetWindowDrawList();
-//		ImVec2 p = ImGui::GetCursorScreenPos();
-//		float width = ImGui::GetContentRegionAvail().x;
-//		float height = 20.0f;
-//		ImVec2 p1 = ImVec2(p.x + width, p.y + height);
-//
-//		// グラデーション矩形を描画
-//		drawList->AddRectFilledMultiColor(p, p1,
-//			ImColor(colorMin), ImColor(colorMax),
-//			ImColor(colorMax), ImColor(colorMin));
-//
-//		ImGui::Dummy(ImVec2(width, height)); // スペースを確保
-//
-//		ImGui::TreePop();
-//	}
-//}
 
 ///=============================================================================
 ///						初期化
@@ -103,9 +67,6 @@ void GameScene::Initialize() {
 	//sceneManager_->GetPostEffect()->ApplyEffect("Blur",PostEffect::EffectType::MotionBlur);
 	sceneManager_->GetPostEffect()->ApplyEffect("colorSpace",PostEffect::EffectType::ColorSpace);
 
-    //dissolve_ = dynamic_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
-	colorSpace_ = dynamic_cast<ColorSpace*>(sceneManager_->GetPostEffect()->GetEffectData("colorSpace"));
-
 	///========================================
 	///		ライン描画
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
@@ -152,6 +113,13 @@ void GameScene::Initialize() {
 	
 	emitter1_->SetLifeTimeRange({ 0.5f,0.8f });
 	emitter1_->SetFrequency(1.0f);
+
+	///========================================
+	///		プレイヤー
+	
+	// 初期化と生成
+	player_ = std::make_unique<Player>();
+	player_->Initialize((ModelManager::GetInstance()->FindModel("terrain.obj")));
 
 
 	///========================================

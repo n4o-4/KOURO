@@ -8,6 +8,7 @@
 #include "FollowCamera.h"
 #include <random>
 #include "LineDrawerBase.h"
+#include "Player.h"
 
 class GameScene : public BaseScene
 {
@@ -49,7 +50,7 @@ private:
 
 	std::unique_ptr<ParticleEmitter> emitter3_ = nullptr;
 
-	ColorSpace* colorSpace_ = nullptr;
+	std::unique_ptr<Player> player_ = nullptr;
 
 private:
 

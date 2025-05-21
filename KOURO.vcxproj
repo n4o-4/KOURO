@@ -19,6 +19,7 @@
     <ClCompile Include="application\scene\SceneFactory.cpp" />
     <ClCompile Include="application\scene\SceneManager.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
+    <ClCompile Include="application\object\BaseCharacter.cpp" />
     <ClCompile Include="ColorSpace.cpp" />
     <ClCompile Include="engine\3d\ModelDatas.cpp" />
     <ClCompile Include="engine\effect\BaseEffect.cpp" />
@@ -72,6 +73,7 @@
     <ClCompile Include="engine\effect\Random.cpp" />
     <ClCompile Include="engine\effect\Vignette.cpp" />
     <ClCompile Include="engine\effect\MotionBlur.cpp" />
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -83,6 +85,7 @@
     <ClInclude Include="application\scene\SceneFactory.h" />
     <ClInclude Include="application\scene\SceneManager.h" />
     <ClInclude Include="application\scene\TitleScene.h" />
+    <ClInclude Include="application\object\BaseCharacter.h" />
     <ClInclude Include="ColorSpace.h" />
     <ClInclude Include="engine\effect\BaseEffect.h" />
     <ClInclude Include="engine\effect\BoxFilter.h" />
@@ -141,6 +144,7 @@
     <ClInclude Include="engine\effect\Random.h" />
     <ClInclude Include="engine\effect\Vignette.h" />
     <ClInclude Include="engine\effect\MotionBlur.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
