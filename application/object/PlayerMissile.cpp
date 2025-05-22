@@ -21,6 +21,9 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
     ModelManager::GetInstance()->LoadModel("missile.obj");
     model_->SetModel("missile.obj");
 
+
+    ParticleManager::GetInstance()->SetBlendMode("Add");
+
     //===================================================
     // パーティクルの初期化
     ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png", ParticleManager::ParticleType::Normal);
@@ -28,19 +31,22 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 	particleEmitterMissileSmoke_->Initialize("missileSmoke");
     // パーティクル設定の調整
     particleEmitterMissileSmoke_->SetParticleCount(4);   // デフォルト発生数
-    particleEmitterMissileSmoke_->SetFrequency(0.04f);    // より高頻度で発生させる
-	
+    particleEmitterMissileSmoke_->SetFrequency(0.1f);    // より高頻度で発生させる
+    particleEmitterMissileSmoke_->SetStartColorRange(ParticleManager::ColorRange({ 1.0f,1.0f,1.0f,1.0f }, { 1.0f,1.0f,1.0f,1.0f }));
+	particleEmitterMissileSmoke_->SetFinishColorRange(ParticleManager::ColorRange({ 1.0f,1.0f,1.0f,0.0f }, { 1.0f,1.0f,1.0f,0.0f }));
+    particleEmitterMissileSmoke_->SetScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
+    particleEmitterMissileSmoke_->SetVelocityRange(ParticleManager::Vec3Range({ -10.0f,-10.0f,-10.0f }, { 10.0f,10.0f,10.0f }));
 
+    ParticleManager::GetInstance()->GetParticleGroup("missileSmoke")->enableBillboard = true;
+    
+    ParticleManager::GetInstance()->GetParticleGroup("missileSmoke")->enableDeceleration = true;
 
-	ParticleManager::GetInstance()->SetBlendMode("Add");
 
     ParticleManager::GetInstance()->CreateParticleGroup("explosion", "Resources/circle.png", ParticleManager::ParticleType::Normal);
 	explosionEmitter_ = std::make_unique<ParticleEmitter>();
 	explosionEmitter_->Initialize("explosion");
     // パーティクル設定の調整
-    
 	
-
 	explosionEmitter_->SetParticleCount(100);   
 	explosionEmitter_->SetFrequency(0.04f);
     explosionEmitter_->SetLifeTimeRange({ 0.5f, 1.0f }); // 寿命を短くする
@@ -49,7 +55,7 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 
 
     ParticleManager::GetInstance()->GetParticleGroup("explosion")->enableBillboard = true;
-    ParticleManager::GetInstance()->GetParticleGroup("explosion")->enablePulse = true;
+   // ParticleManager::GetInstance()->GetParticleGroup("explosion")->enablePulse = true;
 
     //===================================================
     // トランスフォームの初期化
