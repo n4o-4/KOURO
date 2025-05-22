@@ -127,12 +127,12 @@ void GameScene::Initialize() {
 	emitter2_->Initialize("smoke");
 	emitter2_->SetPosition({ 0.0f,2.0f,0.0f });
 	emitter2_->SetParticleCount(10);
-	emitter2_->SetVelocityRange({ {-5.0f,0.0f,-5.0f },{5.0f,20.0f,5.0f} });
-	emitter2_->SetScaleRange({ {0.3f,0.3f,0.3f},{0.3f,0.3f,0.3f} });
+	emitter2_->SetVelocityRange({ {0.0f,0.0f,0.0f },{0.0f,10.0f,0.0f} });
+	emitter2_->SetScaleRange({ {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} });
 	emitter2_->SetStartColorRange({ {1.0f, 0.5f, 0.0f, 1.0f}, {1.0f, 0.7f, 0.2f, 1.0f} });
 	emitter2_->SetFinishColorRange({ {1.0f, 0.0f, 0.0f, 0.0f}, {1.0f, 0.2f, 0.0f, 0.0f} });
-	emitter2_->SetLifeTimeRange({ 0.5f,0.8f });
-	emitter2_->SetFrequency(0.2f);
+	emitter2_->SetLifeTimeRange({ 0.1f,0.8f });
+	emitter2_->SetFrequency(0.01f);
 
 
 	///========================================

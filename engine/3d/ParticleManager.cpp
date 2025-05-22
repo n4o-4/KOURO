@@ -455,10 +455,27 @@ void ParticleManager::CreatePipeline()
 			blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
 			blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 			blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ONE;
+			//blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
 
-			blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
+			blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
 			blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 			blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+			//blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
+
+
+			///ChatGPT
+			//// RGBチャンネルのブレンド（加算）
+			//blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;  // ソース色にアルファを乗算
+			//blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;       // 背景色をそのまま
+			//blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;      // 加算合成
+
+			//// アルファチャンネルのブレンド（通常あまり重要ではないが、同様に設定）
+			//blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ZERO;
+			//blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ONE;
+			//blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+
+
+			/// Dest = 背景
 
 			break;
 
