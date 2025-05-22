@@ -167,7 +167,7 @@ void TitleScene::Update() {
 	case Phase::kMain:
 		
 			if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-				if ((easy || nomal || hard) && selectNum != 0) {
+				if (selectNum != 0) {
 
 					fade_->Start(Fade::Status::FadeOut, fadeTime_);
 					phase_ = Phase::kFadeOut;
@@ -232,7 +232,7 @@ void TitleScene::Update() {
 	}
 	if (ImGui::TreeNode("condition")) {
 		ImGui::Text("selectNum: %d", selectNum);
-		ImGui::TextWrapped("stsrtTime : %d", stsrtTime);
+	
 		Vector2 pos1 = select1_->GetPosition(); 
 		Vector2 pos2 = select2_->GetPosition();
 		Vector2 pos3 = select3_->GetPosition();
@@ -298,11 +298,11 @@ void TitleScene::Update() {
 	//title
 	title_->Update();
 	//select
-	select();
 	select1_->Update();
 	select2_->Update();
 	select3_->Update();
 	select4_->Update();
+	select();
 	
 }
 

@@ -55,15 +55,13 @@ private:
 
 	std::unique_ptr<Sprite> operation_ = nullptr;
 
-	bool start = false;
+
 	bool tutorial = false;
 	bool easy = false;
 	bool nomal = false;
 	bool hard = false;
 
-	int stsrtTime = 120;
 	int selectNum = 0;
-	float stickCooldown_ = 0.0f;
 	bool stickReleased_ = true;
 
 
