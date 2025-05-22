@@ -36,8 +36,6 @@ void TitleScene::Initialize()
 	particleEmitter_1 = std::make_unique<ParticleEmitter>();
 	particleEmitter_1->Initialize("Particle_1");
 
-	ParticleManager::GetInstance()->SetBlendMode("Add");
-
 	AudioManager::GetInstance()->Initialize();
 	AudioManager::GetInstance()->SoundLoadFile("Resources/Alarm01.wav");
 

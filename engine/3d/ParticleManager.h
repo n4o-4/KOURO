@@ -96,11 +96,15 @@ public:
 		Material* material;
 
 		ParticleType type;
+
+		BlendMode blendMode = BlendMode::kNone; // ブレンドモード
+
 		bool enableBillboard = false;
-		
 		bool sameScale = true;
 		bool enableDeceleration = false; // 減速を有効にするかどうか
 		float speed = 20.0f; // パーティクルの速度
+
+		
 
 		bool enablePulse = false; // 輝きを有効にするかどうか
 
@@ -170,8 +174,6 @@ public:
 		}
 	}
 
-	void SetBlendMode(std::string sBlendMode);
-
 	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
 
 	ParticleGroup* GetParticleGroup(const std::string& name) {
@@ -238,8 +240,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState = nullptr;
 
 	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, size_t(BlendMode::kCountOfBlendMode)> sPipeLineStates_;
-
-	BlendMode blendMode = BlendMode::kAdd;
 
 	// 汎用Vertexリソース
 	ParticleModel::ModelData modelData;

@@ -40,6 +40,8 @@ public:
 
 	bool useQuaternion_ = false;
 
+	Vector3 deltaRotate_ = { 0.0f,0.0f,0.0f };
+
 private:
 
 	// 定数バッファ

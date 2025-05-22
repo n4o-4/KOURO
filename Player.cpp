@@ -16,11 +16,7 @@ void Player::Update()
 	// 移動
 	Move();
 
-	Vector3 euler = QuaternionToEuler(worldTransform_->quaternionTransform.rotate);
-
-	//euler.y += 0.01f;
-
-	worldTransform_->quaternionTransform.rotate = EulerToQuaternion(euler);
+	//worldTransform_->deltaRotate_ = { 0.01f,0.0f,0.0f };
 
 	///=========================================
 	/// 親クラス
@@ -29,21 +25,14 @@ void Player::Update()
 	BaseCharacter::Update();
 
 #ifdef _DEBUG
+
+
+	ImGui::Begin("Player Transform");
 	
-	const char* cameraType = "Unknown";
+	ImGui::DragFloat3("scale", &worldTransform_->quaternionTransform.scale.x, 0.01f);
+	ImGui::DragFloat4("rotate", &worldTransform_->quaternionTransform.rotate.x, 0.01f);
+	ImGui::DragFloat3("translate", &worldTransform_->quaternionTransform.translate.x, 0.01f);
 
-	if (dynamic_cast<DebugCamera*>(camera_)) {
-		cameraType = "DebugCamera";
-	}
-	else if (dynamic_cast<FollowCamera*>(camera_)) {
-		cameraType = "FollowCamera";
-	}
-	else if (camera_ == Camera::GetInstance()) {
-		cameraType = "DefaultCamera";
-	}
-
-	ImGui::Begin("Player Camera");
-	ImGui::Text("Active Camera: %s", cameraType);
 	ImGui::End();
 
 #endif

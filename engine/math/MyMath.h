@@ -797,40 +797,40 @@ static Vector3 qCross(const Quaternion& q1, const Quaternion& q2)
 }
 
 static Quaternion EulerToQuaternion(const Vector3& euler) {
+	float cx = std::cos(euler.x * 0.5f);
+	float sx = std::sin(euler.x * 0.5f);
 	float cy = std::cos(euler.y * 0.5f);
 	float sy = std::sin(euler.y * 0.5f);
-	float cp = std::cos(euler.x * 0.5f);
-	float sp = std::sin(euler.x * 0.5f);
-	float cr = std::cos(euler.z * 0.5f);
-	float sr = std::sin(euler.z * 0.5f);
+	float cz = std::cos(euler.z * 0.5f);
+	float sz = std::sin(euler.z * 0.5f);
 
 	Quaternion q;
-	q.w = cr * cp * cy + sr * sp * sy;
-	q.x = sr * cp * cy - cr * sp * sy;
-	q.y = cr * sp * cy + sr * cp * sy;
-	q.z = cr * cp * sy - sr * sp * cy;
+	q.w = cx * cy * cz + sx * sy * sz;
+	q.x = sx * cy * cz - cx * sy * sz;
+	q.y = cx * sy * cz + sx * cy * sz;
+	q.z = cx * cy * sz - sx * sy * cz;
 
 	return qNormalize(q); // 念のため正規化
 }
 
 
 
-static Vector3 QuaternionToEuler(const Quaternion& q) {
+static Vector3  QuaternionToEuler(const Quaternion& q) {
 	Vector3 euler;
 
-	// Pitch (x軸)
-	float sinp = 2.0f * (q.w * q.x + q.y * q.z);
-	float cosp = 1.0f - 2.0f * (q.x * q.x + q.y * q.y);
+	// X (Pitch)
+	float sinp = 2.0f * (q.w * q.x - q.y * q.z);
+	float cosp = 1.0f - 2.0f * (q.x * q.x + q.z * q.z);
 	euler.x = std::atan2(sinp, cosp);
 
-	// Yaw (y軸)
-	float siny = 2.0f * (q.w * q.y - q.z * q.x);
-	siny = std::clamp(siny, -1.0f, 1.0f);
-	euler.y = std::asin(siny);
+	// Y (Yaw)
+	float siny = 2.0f * (q.w * q.y + q.x * q.z);
+	float cosy = 1.0f - 2.0f * (q.y * q.y + q.z * q.z);
+	euler.y = std::atan2(siny, cosy);
 
-	// Roll (z軸)
-	float sinr = 2.0f * (q.w * q.z + q.x * q.y);
-	float cosr = 1.0f - 2.0f * (q.y * q.y + q.z * q.z);
+	// Z (Roll)
+	float sinr = 2.0f * (q.w * q.z - q.x * q.y);
+	float cosr = 1.0f - 2.0f * (q.z * q.z + q.x * q.x);
 	euler.z = std::atan2(sinr, cosr);
 
 	return euler;

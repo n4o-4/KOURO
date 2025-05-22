@@ -178,6 +178,11 @@ void ParticleManager::Update()
 						(*particleIterator).transform.scale = (*particleIterator).baseScale;
 					}
 				}
+				else
+				{
+					// 通常スケール
+					(*particleIterator).transform.scale = (*particleIterator).baseScale;
+				}
 				
 				++particleGroupIterator->second.kNumInstance;
 			}
@@ -194,17 +199,15 @@ void ParticleManager::Draw(std::string filePath)
 	// ルートシグネチャを設定
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 
-	// PSOを設定
-	dxCommon_->GetCommandList()->SetPipelineState(sPipeLineStates_[static_cast<int>(blendMode)].Get());
-
-	
-
 	// VBVを設定
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// 
 	for (std::unordered_map<std::string, ParticleGroup>::iterator particleGroupIterator = particleGroups.begin(); particleGroupIterator != particleGroups.end();) {
 		
+		// PSOを設定
+		dxCommon_->GetCommandList()->SetPipelineState(sPipeLineStates_[static_cast<int>(particleGroupIterator->second.blendMode)].Get());
+
 		// 三角色
 		particleGroupIterator->second.material->color = { 1.0f, 1.0f, 1.0f, 1.0f, };
 		particleGroupIterator->second.material->enableLighting = false;
@@ -247,39 +250,6 @@ void ParticleManager::Draw(std::string filePath)
 		++particleGroupIterator;
 	}
 
-}
-
-void ParticleManager::SetBlendMode(std::string sBlendMode)
-{
-
-	if (sBlendMode == "None")
-	{
-		blendMode = BlendMode::kNone;
-	}
-	else if (sBlendMode == "Normal")
-	{
-		blendMode = BlendMode::kNormal;
-	}
-	else if(sBlendMode == "Add")
-	{
-		blendMode = BlendMode::kAdd;
-	}
-	else if (sBlendMode == "Subtract")
-	{
-		blendMode = BlendMode::kSubtract;
-	}
-	else if (sBlendMode == "Multiply")
-	{
-		blendMode = BlendMode::kMultiply;
-	}
-	else if (sBlendMode == "Screen")
-	{
-		blendMode = BlendMode::kScreen;
-	}
-	else if (sBlendMode == "Alpha")
-	{
-		blendMode = BlendMode::kAlpla;
-	}
 }
 
 void ParticleManager::CreateRootSignature()

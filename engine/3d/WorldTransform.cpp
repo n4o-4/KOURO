@@ -25,7 +25,9 @@ void WorldTransform::UpdateMatrix()
 {
 	if (useQuaternion_)
 	{
-		
+		Quaternion delta = EulerToQuaternion(deltaRotate_);
+
+		quaternionTransform.rotate = qNormalize(Multiply(delta,quaternionTransform.rotate));
 
 		matWorld_ = MakeAffineMatrixforQuater(quaternionTransform.scale, quaternionTransform.rotate, quaternionTransform.translate);
 	}
