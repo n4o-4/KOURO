@@ -37,8 +37,12 @@ private:
 	std::unique_ptr<SpotLight> spotLight = nullptr;
 
 	//model
-	std::unique_ptr<Object3d> player_ = nullptr;
-	std::unique_ptr<WorldTransform> playerWorldTransform_ = nullptr;
+	std::unique_ptr<Object3d> mv_ = nullptr;
+	std::unique_ptr<WorldTransform> mvWorldTransform_ = nullptr;
+	std::unique_ptr<Object3d> mvB_ = nullptr;
+	std::unique_ptr<WorldTransform> mvBWorldTransform_ = nullptr;
+	std::unique_ptr<Object3d> mvR_ = nullptr;
+	std::unique_ptr<WorldTransform> mvRWorldTransform_ = nullptr;
 
 	//
 	std::unique_ptr<Sprite> title_ = nullptr;
@@ -51,15 +55,17 @@ private:
 
 	std::unique_ptr<Sprite> operation_ = nullptr;
 
-	bool start = false;
-	bool operation = false;
+
+	bool tutorial = false;
 	bool easy = false;
 	bool nomal = false;
 	bool hard = false;
 
-	int stsrtTime = 120;
 	int selectNum = 0;
+	bool stickReleased_ = true;
 
+
+	//
 	bool music = false;
 	std::unique_ptr<Audio> se1_ = nullptr;
 	std::unique_ptr<Audio> bgm_ = nullptr;
