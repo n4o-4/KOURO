@@ -16,17 +16,20 @@ PlayerMachineGun::PlayerMachineGun(const Vector3& position, const Vector3& veloc
 
 	BaseObject::Initialize(worldTransform_->transform.translate, 1.2f);  // 当たり判定のサイズ
 
-	ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png", ParticleManager::ParticleType::Normal);
-	particleEmitter_ = std::make_unique<ParticleEmitter>();
-	particleEmitter_->Initialize("missileSmoke");
-	particleEmitter_->SetParticleCount(10);  // デフォルト発生数
-	particleEmitter_->SetFrequency(0.04f);  // より高頻度で発生させる
-	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({ 0.01f, 0.01f }));
-	particleEmitter_->SetStartColorRange(ParticleManager::ColorRange({ 0.66f, 0.64f, 0.18f, 1.0f },
-		{ 0.85f, 0.83f, 0.21f, 1.0f }));
+	ParticleManager::GetInstance()->CreateParticleGroup("bullet", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+	ParticleManager::GetInstance()->GetParticleGroup("bullet")->enableBillboard = true;
 
-	
-	
+	particleEmitter_ = std::make_unique<ParticleEmitter>();
+	particleEmitter_->Initialize("bullet");
+	particleEmitter_->SetParticleCount(2);  // デフォルト発生数
+	particleEmitter_->SetFrequency(0.001f);  // より高頻度で発生させる
+	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({ 0.1f, 0.1f }));
+	particleEmitter_->SetStartColorRange(ParticleManager::ColorRange({ 0.961f, 1.000f, 0.388f, 1.0f },{ 0.961f, 1.000f, 0.388f, 1.0f }));
+	particleEmitter_->SetFinishColorRange(ParticleManager::ColorRange({ 0.961f, 1.000f, 0.388f, 1.0f }, { 0.961f, 1.000f, 0.388f, 1.0f }));
+
+	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }));
+
+	particleEmitter_->SetScaleRange(ParticleManager::Vec3Range({ 0.4f, 0.4f,0.4f }, { 0.4f, 0.4f,0.4f }));
 }
 
 void PlayerMachineGun::Update() {
@@ -55,6 +58,10 @@ void PlayerMachineGun::Update() {
 
 	model_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 	worldTransform_->UpdateMatrix();
+
+	particleEmitter_->SetPosition(worldTransform_->transform.translate);
+
+	particleEmitter_->Update();
 
 	BaseObject::Update(worldTransform_->transform.translate);
 }
