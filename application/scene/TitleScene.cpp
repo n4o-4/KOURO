@@ -167,7 +167,7 @@ void TitleScene::Update() {
 	case Phase::kMain:
 		
 			if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-				if ((easy || nomal || hard) && selectNum != 3) {
+				if ((easy || nomal || hard) && selectNum != 0) {
 
 					fade_->Start(Fade::Status::FadeOut, fadeTime_);
 					phase_ = Phase::kFadeOut;
@@ -342,13 +342,6 @@ void TitleScene::Draw()
 	} else if (selectNum == 3) {
 		select4_->Draw();
 	}  
-		
-	
-	
-	
-	if (operation) {
-		operation_->Draw();
-	}
 	
 	fade_->Draw();
 
@@ -386,6 +379,7 @@ void TitleScene::select() {
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 			se1_->SoundPlay("Resources/se/47.mp3", 0);
 			mvBWorldTransform_->transform.translate.z += 0.2f;
+			tutorial = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = false;
 			SceneManager::GetInstance()->GetTransitionData().nomal = false;
 			SceneManager::GetInstance()->GetTransitionData().hard = false;

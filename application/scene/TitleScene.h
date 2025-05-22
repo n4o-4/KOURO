@@ -56,7 +56,7 @@ private:
 	std::unique_ptr<Sprite> operation_ = nullptr;
 
 	bool start = false;
-	bool operation = false;
+	bool tutorial = false;
 	bool easy = false;
 	bool nomal = false;
 	bool hard = false;
