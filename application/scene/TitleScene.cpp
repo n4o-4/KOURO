@@ -58,33 +58,33 @@ void TitleScene::Initialize()
 	start2_->SetPosition({ 230.0f,325.0f });
 
 	//select
-	TextureManager::GetInstance()->LoadTexture("Resources/scene/select1.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/scene/Tutorial.png");
 	select1_ = std::make_unique<Sprite>();
-	select1_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/select1.png");
-	select1_->SetTexSize({ 240.0f,90.0f });
-	select1_->SetSize({ 270.0f,120.0f });
-	select1_->SetPosition({ 728.0f,90.0f });
+	select1_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/Tutorial.png");
+	select1_->SetTexSize({ 110.0f,81.0f });
+	select1_->SetSize({ 110.0f,81.0f });
+	select1_->SetPosition({ 844.0f,190.0f });
 
-	TextureManager::GetInstance()->LoadTexture("Resources/scene/select2.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/scene/Easy.png");
 	select2_ = std::make_unique<Sprite>();
-	select2_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/select2.png");
-	select2_->SetTexSize({ 240.0f,90.0f });
-	select2_->SetSize({ 240.0f,90.0f });
-	select2_->SetPosition({ 728.0f,240.0f });
+	select2_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/Easy.png");
+	select2_->SetTexSize({ 110.0f,81.0f });
+	select2_->SetSize({ 110.0f,81.0f });
+	select2_->SetPosition({ 844.0f,190.0f });
 
-	TextureManager::GetInstance()->LoadTexture("Resources/scene/select3.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/scene/Nomal.png");
 	select3_ = std::make_unique<Sprite>();
-	select3_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/select3.png");
-	select3_->SetTexSize({ 240.0f,90.0f });
-	select3_->SetSize({ 240.0f,90.0f });
-	select3_->SetPosition({ 728.0f,390.0f });
+	select3_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/Nomal.png");
+	select3_->SetTexSize({ 110.0f,81.0f });
+	select3_->SetSize({ 110.0f,81.0f });
+	select3_->SetPosition({ 844.0f,190.0f });
 
-	TextureManager::GetInstance()->LoadTexture("Resources/scene/select4.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/scene/Hard.png");
 	select4_ = std::make_unique<Sprite>();
-	select4_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/select4.png");
-	select4_->SetTexSize({ 240.0f,90.0f });
-	select4_->SetSize({ 240.0f,90.0f });
-	select4_->SetPosition({ 728.0f,540.0f });
+	select4_->Initialize(SpriteCommon::GetInstance(), "Resources/scene/Hard.png");
+	select4_->SetTexSize({ 110.0f,81.0f });
+	select4_->SetSize({ 110.0f,81.0f });
+	select4_->SetPosition({ 844.0f,190.0f });
 
 	TextureManager::GetInstance()->LoadTexture("Resources/scene/operation.png");
 	operation_ = std::make_unique<Sprite>();
@@ -96,24 +96,44 @@ void TitleScene::Initialize()
 	skyDome_ = std::make_unique<SkyDome>();
 	skyDome_->Initialize();
 
-	ModelManager::GetInstance()->LoadModel("player/Microwave.obj");
-	player_ = std::make_unique<Object3d>();
-	player_->Initialize(Object3dCommon::GetInstance());
-	player_->SetModel("player/Microwave.obj");
+	//model
+	ModelManager::GetInstance()->LoadModel("titleM/wv.obj");
+	ModelManager::GetInstance()->LoadModel("titleM/wvb.obj");
+	ModelManager::GetInstance()->LoadModel("titleM/wvr.obj");
+	mv_ = std::make_unique<Object3d>();
+	mv_->Initialize(Object3dCommon::GetInstance());
+	mv_->SetModel("titleM/wv.obj");
 	
-	playerWorldTransform_ = std::make_unique<WorldTransform>();
-	playerWorldTransform_->Initialize();
-	playerWorldTransform_->transform.scale = { 2.0f,2.0f,2.0f };
-	playerWorldTransform_->transform.rotate = { 0.0f,3.7f,0.0f };
-	playerWorldTransform_->transform.translate = { 5.0f,-2.8f,0.0f };
+	mvWorldTransform_ = std::make_unique<WorldTransform>();
+	mvWorldTransform_->Initialize();
+	mvWorldTransform_->transform.scale = { 4.9f,4.9f,4.9f };
+	mvWorldTransform_->transform.rotate = { -0.08f,3.14f,0.0f };
+	mvWorldTransform_->transform.translate = { 0.0f,-8.2f,3.0f };
 
-	//
-	start = false;
-	operation = false;
+	mvB_ = std::make_unique<Object3d>();
+	mvB_->Initialize(Object3dCommon::GetInstance());
+	mvB_->SetModel("titleM/wvb.obj");
+
+	mvBWorldTransform_ = std::make_unique<WorldTransform>();
+	mvBWorldTransform_->Initialize();
+	mvBWorldTransform_->transform.scale = { 4.9f,4.9f,4.9f };
+	mvBWorldTransform_->transform.rotate = { -0.08f,3.14f,0.0f };
+	mvBWorldTransform_->transform.translate = { 0.0f,-8.2f,3.0f };
+
+	mvR_ = std::make_unique<Object3d>();
+	mvR_->Initialize(Object3dCommon::GetInstance());
+	mvR_->SetModel("titleM/wvr.obj");
+
+	mvRWorldTransform_ = std::make_unique<WorldTransform>();
+	mvRWorldTransform_->Initialize();
+	mvRWorldTransform_->transform.scale = { 4.9f,4.9f,4.9f };
+	mvRWorldTransform_->transform.rotate = { -0.08f,3.14f,0.0f };
+	mvRWorldTransform_->transform.translate = { 4.4f,-1.9f,-1.8f };
+
+	
 	easy = false;
 	nomal = false;
 	hard = false;
-	stsrtTime = 50;
 
 	AudioManager::GetInstance()->Initialize();
 	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/title.mp3");
@@ -211,6 +231,7 @@ void TitleScene::Update() {
 		ImGui::TreePop();
 	}
 	if (ImGui::TreeNode("condition")) {
+		ImGui::Text("selectNum: %d", selectNum);
 		ImGui::TextWrapped("stsrtTime : %d", stsrtTime);
 		Vector2 pos1 = select1_->GetPosition(); 
 		Vector2 pos2 = select2_->GetPosition();
@@ -235,35 +256,54 @@ void TitleScene::Update() {
 
 			//audio->SoundPlay("Resources/Spinning_World.mp3", 1);
 		}
+
+		if (ImGui::TreeNode("model")) {
+			if (ImGui::TreeNode("mv_")) {
+				ImGui::DragFloat3("Scale", &mvWorldTransform_->transform.scale.x, 0.1f);
+				ImGui::DragFloat3("Rotate", &mvWorldTransform_->transform.rotate.x, 0.01f);
+				ImGui::DragFloat3("Translate", &mvWorldTransform_->transform.translate.x, 0.1f);
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("mvB_")) {
+				ImGui::DragFloat3("Scale##B", &mvBWorldTransform_->transform.scale.x, 0.1f);
+				ImGui::DragFloat3("Rotate##B", &mvBWorldTransform_->transform.rotate.x, 0.01f);
+				ImGui::DragFloat3("Translate##B", &mvBWorldTransform_->transform.translate.x, 0.1f);
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("mvR_")) {
+				ImGui::DragFloat3("Scale##R", &mvRWorldTransform_->transform.scale.x, 0.1f);
+				ImGui::DragFloat3("Rotate##R", &mvRWorldTransform_->transform.rotate.x, 0.01f);
+				ImGui::DragFloat3("Translate##R", &mvRWorldTransform_->transform.translate.x, 0.1f);
+				ImGui::TreePop();
+			}
+			ImGui::TreePop();
+		}
+
+
 	}
 #endif
 
 	skyDome_->Update();
 
-	playerWorldTransform_->UpdateMatrix();
-	player_->SetLocalMatrix(MakeIdentity4x4());
-	player_->Update();
+	mvWorldTransform_->UpdateMatrix();
+	mv_->SetLocalMatrix(MakeIdentity4x4());
+	mv_->Update();
+	mvBWorldTransform_->UpdateMatrix();
+	mvB_->SetLocalMatrix(MakeIdentity4x4());
+	mvB_->Update();
+	mvRWorldTransform_->UpdateMatrix();
+	mvR_->SetLocalMatrix(MakeIdentity4x4());
+	mvR_->Update();
 
 	//title
 	title_->Update();
-	start1_->Update();
-	start2_->Update();
 	//select
+	select();
 	select1_->Update();
 	select2_->Update();
 	select3_->Update();
 	select4_->Update();
-	operation_->Update();
-	if (!start) {
-		if(Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)){
-			start = true;
-		}
-	}
-	if (start) {
-	select();
 	
-	}
-
 }
 
 void TitleScene::Draw()
@@ -282,30 +322,30 @@ void TitleScene::Draw()
 		*pointLight.get(),
 		*spotLight.get());
 
-	player_->Draw(*playerWorldTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), 
+	mv_->Draw(*mvWorldTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(),
+		*directionalLight, *pointLight, *spotLight);
+	mvB_->Draw(*mvBWorldTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(),
+		*directionalLight, *pointLight, *spotLight);
+	mvR_->Draw(*mvRWorldTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(),
 		*directionalLight, *pointLight, *spotLight);
 
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	
+
 	title_->Draw();
-	if (!start) {
-		stsrtTime--;
-		if (stsrtTime <= 50) {
-			start1_->Draw();
-			if (stsrtTime <= 25) {
-				start2_->Draw();
-			}
-		}
-		if (stsrtTime == 0) {
-			stsrtTime = 50;
-		}
-	}
-	if (start) {
+	if (selectNum == 0) {
 		select1_->Draw();
+	} else if (selectNum == 1) {
 		select2_->Draw();
+	} else if (selectNum == 2) {
 		select3_->Draw();
+	} else if (selectNum == 3) {
 		select4_->Draw();
-	}
+	}  
+		
+	
+	
+	
 	if (operation) {
 		operation_->Draw();
 	}
@@ -316,75 +356,69 @@ void TitleScene::Draw()
 
 void TitleScene::select() {
 
-	playerWorldTransform_->transform.rotate = { 0.0f,-3.7f,0.0f };
-	playerWorldTransform_->transform.translate = { -5.0f,-2.8f,0.0f };
-	title_->SetPosition({ -200.0f,0.0f });
+	//title_->SetPosition({ -200.0f,0.0f });
 
-	if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::DPAD_DOWN)) {
-		selectNum++;
-	}
-	if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::DPAD_UP)) {
-		selectNum--;
-	}
-	if (selectNum > 4) {
+	Vector2 stickInput = Input::GetInstance()->GetLeftStick();
+
+		if (stickInput.x > 0.5f && stickReleased_) {
+			selectNum++;
+			stickReleased_ = false;
+			mvRWorldTransform_->transform.rotate.z -= 0.4f;
+		}
+
+		else if (stickInput.x < -0.5f && stickReleased_) {
+			selectNum--;
+			stickReleased_ = false;
+			mvRWorldTransform_->transform.rotate.z += 0.4f;
+		}
+
+		if (std::abs(stickInput.x) < 0.3f) {
+			stickReleased_ = true;
+		}
+	//}
+	if (selectNum >= 3) {
 		selectNum = 3;
 	}
-	if (selectNum < -1) {
+	if (selectNum <= 0) {
 		selectNum = 0;
 	}
 	if (selectNum == 0) {
-		select1_->SetSize({ 270.0f,120.0f });
-		select2_->SetSize({ 240.0f,90.0f });
-		select3_->SetSize({ 240.0f,90.0f });
-		select4_->SetSize({ 240.0f,90.0f });
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 			se1_->SoundPlay("Resources/se/47.mp3", 0);
+			mvBWorldTransform_->transform.translate.z += 0.2f;
+			SceneManager::GetInstance()->GetTransitionData().easy = false;
+			SceneManager::GetInstance()->GetTransitionData().nomal = false;
+			SceneManager::GetInstance()->GetTransitionData().hard = false;
+		}
+	}
+	if (selectNum == 1) {
+		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
+			se1_->SoundPlay("Resources/se/47.mp3", 0);
+			mvBWorldTransform_->transform.translate.z += 0.2f;
 			easy = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = true;
 			SceneManager::GetInstance()->GetTransitionData().nomal = false;
 			SceneManager::GetInstance()->GetTransitionData().hard = false;
 		}
 	}
-	if (selectNum == 1) {
-		select2_->SetSize({ 270.0f,120.0f });
-		select3_->SetSize({ 240.0f,90.0f });
-		select4_->SetSize({ 240.0f,90.0f });
-		select1_->SetSize({ 240.0f,90.0f });
+	if (selectNum == 2) {
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 			se1_->SoundPlay("Resources/se/47.mp3", 0);
+			mvBWorldTransform_->transform.translate.z += 0.2f;
 			nomal = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = false;
 			SceneManager::GetInstance()->GetTransitionData().nomal = true;
 			SceneManager::GetInstance()->GetTransitionData().hard = false;
 		}
 	}
-	if (selectNum == 2) {
-		select3_->SetSize({ 270.0f,120.0f });
-		select4_->SetSize({ 240.0f,90.0f });
-		select1_->SetSize({ 240.0f,90.0f });
-		select2_->SetSize({ 240.0f,90.0f });
+	if (selectNum == 3) {
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 			se1_->SoundPlay("Resources/se/47.mp3", 0);
+			mvBWorldTransform_->transform.translate.z += 0.2f;
 			hard = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = false;
 			SceneManager::GetInstance()->GetTransitionData().nomal = false;
 			SceneManager::GetInstance()->GetTransitionData().hard = true;
-		}
-	}
-	if (selectNum == 3) {
-		select4_->SetSize({ 270.0f,120.0f });
-		select1_->SetSize({ 240.0f,90.0f });
-		select2_->SetSize({ 240.0f,90.0f });
-		select3_->SetSize({ 240.0f,90.0f });
-		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-			se1_->SoundPlay("Resources/se/47.mp3", 0);
-			operation = !operation;
-			easy = false;
-			nomal = false;
-			hard = false;
-			SceneManager::GetInstance()->GetTransitionData().easy = false;
-			SceneManager::GetInstance()->GetTransitionData().nomal = false;
-			SceneManager::GetInstance()->GetTransitionData().hard = false;
 		}
 		
 	}
