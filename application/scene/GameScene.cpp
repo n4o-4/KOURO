@@ -87,6 +87,10 @@ void GameScene::Initialize() {
 	///========================================
 	///		パーティクル
 	
+	std::vector<std::string> planeFilePaths = {
+		"Resources/circle.png"
+	};
+
 	// plane
 	ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", ParticleManager::ParticleType::Normal);
 	// ブレンドモードの設定
@@ -112,7 +116,12 @@ void GameScene::Initialize() {
 	emitter1_->SetFrequency(1.0f);
 	
 
-	ParticleManager::GetInstance()->CreateParticleGroup("smoke", "Resources/smoke.png", ParticleManager::ParticleType::Normal);
+	std::vector<std::string> smokeFilePaths = {
+		"Resources/smoke.png",
+		"Resources/circle.png",
+	};
+
+	ParticleManager::GetInstance()->CreateParticleGroup("smoke", "Resources/smoke.png" , ParticleManager::ParticleType::Normal);
 
 	// ブレンドモードの設定
 	ParticleManager::GetInstance()->GetParticleGroup("smoke")->blendMode = ParticleManager::BlendMode::kAdd;
@@ -134,6 +143,25 @@ void GameScene::Initialize() {
 	emitter2_->SetLifeTimeRange({ 0.1f,0.8f });
 	emitter2_->SetFrequency(0.01f);
 
+
+	ParticleManager::GetInstance()->CreateParticleGroup("smoke2", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+
+	// ブレンドモードの設定
+	ParticleManager::GetInstance()->GetParticleGroup("smoke2")->blendMode = ParticleManager::BlendMode::kAdd;
+	// billboardを有効
+	ParticleManager::GetInstance()->GetParticleGroup("smoke2")->enableBillboard = true;
+	// 減速を有効
+	ParticleManager::GetInstance()->GetParticleGroup("smoke2")->enableDeceleration = true;
+	emitter3_ = std::make_unique<ParticleEmitter>();
+	emitter3_->Initialize("smoke2");
+	emitter3_->SetPosition({ 0.0f,2.0f,0.0f });
+	emitter3_->SetParticleCount(10);
+	emitter3_->SetVelocityRange({ {0.0f,0.0f,0.0f },{0.0f,10.0f,0.0f} });
+	emitter3_->SetScaleRange({ {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} });
+	emitter3_->SetStartColorRange({ {1.0f, 0.5f, 0.0f, 1.0f}, {1.0f, 0.7f, 0.2f, 1.0f} });
+	emitter3_->SetFinishColorRange({ {1.0f, 0.0f, 0.0f, 0.0f}, {1.0f, 0.2f, 0.0f, 0.0f} });
+	emitter3_->SetLifeTimeRange({ 0.1f,0.8f });
+	emitter3_->SetFrequency(0.01f);
 
 	///========================================
 	///		プレイヤー
@@ -175,6 +203,8 @@ void GameScene::Update() {
 	//emitter1_->Update();
 
 	emitter2_->Update();
+
+	emitter3_->Update();
 
 	ParticleManager::GetInstance()->Update();
 

@@ -462,8 +462,6 @@ void ParticleManager::CreatePipeline()
 			blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
 			//blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
 
-
-			///ChatGPT
 			//// RGBチャンネルのブレンド（加算）
 			//blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;  // ソース色にアルファを乗算
 			//blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;       // 背景色をそのまま

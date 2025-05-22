@@ -48,6 +48,8 @@ private:
 
 	std::unique_ptr<ParticleEmitter> emitter2_ = nullptr;
 
+	std::unique_ptr<ParticleEmitter> emitter3_ = nullptr;
+
 	std::unique_ptr<Player> player_ = nullptr;
 
 private:
