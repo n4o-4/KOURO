@@ -63,6 +63,12 @@ void Player::Initialize() {
 	doorObjectTransform_->SetParent(objectTransform_.get());
 	machineGunBodyTransform_->SetParent(objectTransform_.get());
 	machineGunHeadTransform_->SetParent(machineGunBodyTransform_.get());
+	
+	ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+
+	ParticleManager::GetInstance()->CreateParticleGroup("OverHeat", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+
+	ParticleManager::GetInstance()->GetParticleGroup("OverHeat")->enableBillboard = true;
 
 	explosionEmitter_ = std::make_unique<ParticleEmitter>();
 	explosionEmitter_->Initialize("missileSmoke");
@@ -71,14 +77,14 @@ void Player::Initialize() {
 	explosionEmitter_->SetLifeTimeRange({1.0f,1.0f});
 
 	smokeEmitter_ = std::make_unique<ParticleEmitter>();
-	smokeEmitter_->Initialize("missileSmoke");
+	smokeEmitter_->Initialize("OverHeat");
 	smokeEmitter_->SetParticleCount(4);
 	smokeEmitter_->SetFrequency(0.1f);
 	smokeEmitter_->SetLifeTimeRange( {0.3f, 0.5f} );
 	smokeEmitter_->SetStartColorRange(
 		ParticleManager::ColorRange(
-			{0.3f,0.3f,0.3f,0.3f},
-			{0.5f,0.5f,0.5f,0.5f}
+			{1.0f,1.0f,1.0f,0.3f},
+			{1.0f,1.0f,1.0f,0.5f}
 		)
 	);
 	smokeEmitter_->SetFinishColorRange(
@@ -93,6 +99,22 @@ void Player::Initialize() {
 			{ 0.0f,6.0f,1.0f }
 		)
 	);
+
+	smokeEmitter_->SetSpawnRange
+	(
+		ParticleManager::Vec3Range(
+			{ -0.5f,-0.5f,-0.5f },
+			{ 0.5f,0.5f,0.5f }
+		)
+	);
+
+	smokeEmitter_->SetScaleRange(
+		ParticleManager::Vec3Range(
+			{ 1.0f,1.0f,1.0f },
+			{ 1.0f,1.0f,1.0f }
+		)
+	);
+
 	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);
 
 	AudioManager::GetInstance()->SoundLoadFile("Resources/se/missile.mp3");

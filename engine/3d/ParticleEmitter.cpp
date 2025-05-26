@@ -28,12 +28,14 @@ void ParticleEmitter::Initialize(std::string name)
 	scaleRange = { {0.0f,0.0f,0.0f} };
 
 	lifeTimeRange = { 1.0f,1.0f };
+
+	spawnRange = { {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
 }
 
 void ParticleEmitter::Emit()
 {
 
-	ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,scaleRange,lifeTimeRange);
+	ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,startColorRange,finishColorRange,velocityRange,scaleRange,lifeTimeRange,spawnRange);
 
 }
 
@@ -83,7 +85,7 @@ void ParticleEmitter::Update()
 
 		if (particleGroups.find(name) != particleGroups.end())
 		{
-			ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count, startColorRange, finishColorRange, velocityRange, scaleRange, lifeTimeRange);
+			ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count, startColorRange, finishColorRange, velocityRange, scaleRange, lifeTimeRange,spawnRange);
 		}
 	}
 }

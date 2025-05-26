@@ -744,6 +744,7 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 
 		newParticleGroup.type = type;
 
+		newParticleGroup.kNumInstance = 0;
 
 		particleGroups[name] = newParticleGroup;
 	}
@@ -761,7 +762,7 @@ void ParticleManager::calculationBillboardMatrix()
 	billboardMatrix.m[3][2] = 0.0f;
 }
 
-ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange ,Range lifeTimeRange,bool sameScale,float speed)
+ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange ,Range lifeTimeRange,bool sameScale,float speed,Vec3Range spawnRange)
 {
 		// 新しいパーティクルの生成
 		std::unique_ptr<Particle> newParticle;
@@ -769,8 +770,13 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		newParticle = std::make_unique<Particle>();
 
 		// positionの設定
-		std::uniform_real_distribution<float> distribution(0.0f,0.0f);
-		Vector3 randomTranslate = { distribution(randomEngine),distribution(randomEngine) ,distribution(randomEngine) };
+		std::uniform_real_distribution<float> distributionX(spawnRange.min.x, spawnRange.max.x);
+		std::uniform_real_distribution<float> distributionY(spawnRange.min.y, spawnRange.max.y);
+		std::uniform_real_distribution<float> distributionZ(spawnRange.min.z, spawnRange.max.z);
+
+
+
+		Vector3 randomTranslate = { distributionX(randomEngine),distributionY(randomEngine) ,distributionZ(randomEngine) };
 
 		// rotateの設定
 		std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
@@ -918,14 +924,14 @@ void ParticleManager::DecelerationUpdate(Particle& particle)
 	particle.velocity -= deceleratedVelocity;
 }
 
-void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange, Range lifeTimeRange)
+void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange, Range lifeTimeRange,Vec3Range spawnRange)
 {
 	if (particleGroups.find(name) != particleGroups.end()) {
 		for (uint32_t currentCount = 0; currentCount < count;) {
 			particleGroups.find(name)->second.particles.push_back
 			(
-				MakeNewParticle(position,startColorRange,finishColorRange,velocityRange, scaleRange,lifeTimeRange,particleGroups.find(name)->second.sameScale, particleGroups.find(name)->second.speed)
-			);
+				MakeNewParticle(position, startColorRange, finishColorRange, velocityRange, scaleRange, lifeTimeRange, particleGroups.find(name)->second.sameScale, particleGroups.find(name)->second.speed, spawnRange
+				));
 			++currentCount;
 		}
 	}

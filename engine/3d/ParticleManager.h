@@ -136,7 +136,7 @@ public:
 	// パーティクルグループの生成関数
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleType type);
 
-	void Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange, Range lifeTimeRange);
+	void Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange, Range lifeTimeRange, Vec3Range spawnRange);
 
 	void HitEmit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Range lifeTimeRange);
 
@@ -213,7 +213,7 @@ private:
 
 	void calculationBillboardMatrix();
 
-	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange,Range lifeTimeRange,bool sameScale, float speed);
+	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange,Range lifeTimeRange,bool sameScale, float speed,Vec3Range spawnRange);
 
 	Particle MakeNewHitParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Range lifeTimeRange);
 

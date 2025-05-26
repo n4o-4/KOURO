@@ -30,6 +30,22 @@ PlayerMachineGun::PlayerMachineGun(const Vector3& position, const Vector3& veloc
 	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }));
 
 	particleEmitter_->SetScaleRange(ParticleManager::Vec3Range({ 0.4f, 0.4f,0.4f }, { 0.4f, 0.4f,0.4f }));
+
+	ParticleManager::GetInstance()->CreateParticleGroup("hitSprite", "Resources/hitSprite.png", ParticleManager::ParticleType::Normal);
+
+	ParticleManager::GetInstance()->GetParticleGroup("hitSprite")->enableBillboard = true;
+
+	hitSprite_ = std::make_unique<ParticleEmitter>();
+	hitSprite_->Initialize("hitSprite");
+	hitSprite_->SetParticleCount(1);  // デフォルト発生数
+
+	hitSprite_->SetLifeTimeRange(ParticleManager::Range({ 0.1f, 0.1f }));
+	hitSprite_->SetStartColorRange(ParticleManager::ColorRange({ 1.0f, 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
+	particleEmitter_->SetFinishColorRange(ParticleManager::ColorRange({ 1.0f, 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
+
+	hitSprite_->SetVelocityRange(ParticleManager::Vec3Range({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }));
+	hitSprite_->SetScaleRange(ParticleManager::Vec3Range({ 2.0f, 2.0f, 2.0f }, { 2.0f, 2.0f, 2.0f }));
+	hitSprite_->SetSpawnRange(ParticleManager::Vec3Range({ -0.1f, -0.1f, -0.1f }, { 0.1f, 0.1f, 0.1f }));
 }
 
 void PlayerMachineGun::Update() {
@@ -114,6 +130,9 @@ void PlayerMachineGun::OnCollisionEnter(BaseObject* other) {
 		isActive_ = false;
 
 		particleEmitter_->Emit();
+
+		hitSprite_->SetPosition(worldTransform_->transform.translate);
+		hitSprite_->Emit();
 	}
 }
 

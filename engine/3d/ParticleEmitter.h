@@ -35,6 +35,8 @@ public:
 
 	void SetScaleRange(ParticleManager::Vec3Range scaleRange) { this->scaleRange = scaleRange; }
 
+
+	void SetSpawnRange(ParticleManager::Vec3Range spawnRange) { this->spawnRange = spawnRange; }
 private:
 
     struct Emitter {
@@ -64,4 +66,6 @@ private:
 	ParticleManager::Vec3Range scaleRange;
 
 	ParticleManager::Range lifeTimeRange;
+
+	ParticleManager::Vec3Range spawnRange = { {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }; // パーティクルの発生位置範囲
 };

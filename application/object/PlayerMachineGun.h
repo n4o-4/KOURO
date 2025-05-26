@@ -57,7 +57,11 @@ private:
 	// 弾の寿命
 	int lifeTime_ = 0;
 
-	std::unique_ptr<ParticleEmitter> particleEmitter_;
+	std::unique_ptr<ParticleEmitter> particleEmitter_; // 弾道
+	
+	std::unique_ptr<ParticleEmitter> hitSprite_;
+
+	std::unique_ptr<ParticleEmitter> hitSpark_;
 
 	// マシンガン関連の定数
 	static constexpr int kCooldownTime = 5;
