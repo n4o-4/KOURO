@@ -35,12 +35,31 @@ void BaseEnemy::Initialize(Model *model) {
 	particleEmitter_->SetParticleCount(80);
 	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({1.0f, 1.5f}));
 	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({-10.0f, -10.0f, -10.0f}, {10.0f, 10.0f, 10.0f}));
+
+	avoidanceVelocity_ = {0.0f, 0.0f, 0.0f};
+	otherEnemies_ = nullptr;
 }
 
 ///=============================================================================
 ///						描画
 void BaseEnemy::Update() {
 	if (IsAlive()) {
+		// 回避ベクトルをリセット
+		avoidanceVelocity_ = {0.0f, 0.0f, 0.0f};
+		// 他の敵との衝突回避
+		CalculateAvoidance();
+
+		// プレイヤーとの距離維持の計算 (MoveToTarget内でも考慮されるが、ここで明示的に行うことも可能)
+		if (target_) {
+			Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
+			float distanceToTarget = Length(toTarget);
+			if (distanceToTarget < safeDistance_ && distanceToTarget > 0.0f) { // 距離が0の場合の除算エラーを避ける
+				Vector3 awayFromTarget = Normalize(worldTransform_->transform.translate - target_->transform.translate);
+				// safeDistance_ との差に基づいて離れる力を調整
+				float pushStrength = (safeDistance_ - distanceToTarget) / safeDistance_;
+				avoidanceVelocity_ += awayFromTarget * speed_ * pushStrength * 0.5f; // 離れる力は少し弱めに
+			}
+		}
 
 		// 弾の更新
 		BulletUpdate();
@@ -127,32 +146,53 @@ void BaseEnemy::MoveToTarget() {
 	if (target_) {
 		// 目標方向の計算
 		Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
-		Vector3 desiredDir = Normalize(toTarget);
+		float distanceToTarget = Length(toTarget);
 
-		// 目標回転角度の計算
-		float targetY = std::atan2(desiredDir.x, desiredDir.z);
-		float currentY = worldTransform_->transform.rotate.y;
+		Vector3 desiredDir = {0.0f, 0.0f, 0.0f};
+		if (distanceToTarget > 0.001f) { // ゼロ除算を避ける
+			desiredDir = Normalize(toTarget);
+		}
 
-		// ステアリング制限回転
-		float delta = targetY - currentY;
-		delta = std::fmod(delta + static_cast<float>(std::numbers::pi), 2.0f * static_cast<float>(std::numbers::pi)) - static_cast<float>(std::numbers::pi);
+		// プレイヤーに近づきすぎている場合は、少し離れるか停止する
+		if (distanceToTarget < safeDistance_) {
+			// 離れる方向を維持しつつ、速度を落とすか、逆方向に少し動く
+			// desiredDir はプレイヤーへの方向なので、これとは逆向きの動きや停止を考慮
+			// 例えば、速度を0にするか、safeDistance_ に向かって後退する
+			// ここでは単純に目標速度を0に近づける
+			Vector3 targetVelocity = {0.0f, 0.0f, 0.0f};
+			// もしsafeDistance_よりかなり近いなら、少し後退する力を加える
+			if (distanceToTarget < safeDistance_ * 0.5f && distanceToTarget > 0.0f) {
+				Vector3 awayFromTarget = Normalize(worldTransform_->transform.translate - target_->transform.translate);
+				targetVelocity = awayFromTarget * speed_ * 0.5f; // 後退速度は少し遅め
+			}
+			velocity_ = Lerp(velocity_, targetVelocity, 0.2f); // 急停止/急後退しないように補間
+		} else {
+			// 目標回転角度の計算
+			float targetY = std::atan2(desiredDir.x, desiredDir.z);
+			float currentY = worldTransform_->transform.rotate.y;
 
-		float maxSteeringAngle = 0.05f; // フレームあたりの最大回転角
-		delta = std::clamp(delta, -maxSteeringAngle, maxSteeringAngle);
-		worldTransform_->transform.rotate.y += delta;
+			// ステアリング制限回転
+			float delta = targetY - currentY;
+			delta = std::fmod(delta + static_cast<float>(std::numbers::pi), 2.0f * static_cast<float>(std::numbers::pi)) - static_cast<float>(std::numbers::pi);
 
-		// 現在の回転方向に基づいて前進
-		Vector3 forward = {
-			sinf(worldTransform_->transform.rotate.y),
-			0.0f,
-			cosf(worldTransform_->transform.rotate.y)};
+			float maxSteeringAngle = 0.05f; // フレームあたりの最大回転角
+			delta = std::clamp(delta, -maxSteeringAngle, maxSteeringAngle);
+			worldTransform_->transform.rotate.y += delta;
 
-		// 速度補間(スムーズ)
-		Vector3 targetVelocity = forward * speed_;
-		velocity_ = Lerp(velocity_, targetVelocity, 0.1f);
+			// 現在の回転方向に基づいて前進
+			Vector3 forward = {
+				sinf(worldTransform_->transform.rotate.y),
+				0.0f,
+				cosf(worldTransform_->transform.rotate.y)};
+
+			// 速度補間(スムーズ)
+			Vector3 targetVelocity = forward * speed_;
+			velocity_ = Lerp(velocity_, targetVelocity, 0.1f);
+		}
 
 		// 位置の移動
 		worldTransform_->transform.translate += velocity_;
+		worldTransform_->transform.translate += avoidanceVelocity_; // 回避ベクトルを最終的な移動に加算
 	}
 }
 
@@ -200,10 +240,44 @@ void BaseEnemy::RandomMove(float scale) {
 		cosf(worldTransform_->transform.rotate.y)};
 	worldTransform_->transform.scale = {scale, scale, scale};
 	velocity_ = forward * speed_;
-	worldTransform_->transform.translate += velocity_;
+	// worldTransform_->transform.translate += velocity_; // BaseEnemy::Update()の最後で加算するためコメントアウト
 }
 // コンテキストベースの方向選択
 Vector3 BaseEnemy::SelectDirection() {
 	// 実装は省略（シンプルさを優先）
 	return velocity_;
+}
+
+void BaseEnemy::CalculateAvoidance() {
+	if (!otherEnemies_ || otherEnemies_->empty()) {
+		return;
+	}
+
+	Vector3 totalAvoidanceForce = {0.0f, 0.0f, 0.0f};
+	int neighborsCount = 0;
+
+	for (BaseEnemy *other : *otherEnemies_) {
+		if (other == this || !other->IsAlive()) {
+			continue;
+		}
+
+		Vector3 toOther = other->GetWorldTransform()->transform.translate - worldTransform_->transform.translate;
+		float distance = Length(toOther);
+
+		if (distance < avoidanceRadius_ && distance > 0.0f) { // 距離が0の場合は無視
+			// 反発力は距離に反比例
+			Vector3 avoidanceForce = Normalize(worldTransform_->transform.translate - other->GetWorldTransform()->transform.translate);
+			avoidanceForce = avoidanceForce * (1.0f - (distance / avoidanceRadius_)); // 近いほど強い力
+			totalAvoidanceForce += avoidanceForce;
+			neighborsCount++;
+		}
+	}
+
+	if (neighborsCount > 0) {
+		totalAvoidanceForce.x = totalAvoidanceForce.x / static_cast<float>(neighborsCount); // 平均化
+		totalAvoidanceForce.y = totalAvoidanceForce.y / static_cast<float>(neighborsCount); // 平均化
+		totalAvoidanceForce.z = totalAvoidanceForce.z / static_cast<float>(neighborsCount); // 平均化
+		// 回避速度を現在の速度や状態に応じて調整することも可能
+		avoidanceVelocity_ += totalAvoidanceForce * speed_ * 0.75f; // 回避力は少し弱めに設定
+	}
 }

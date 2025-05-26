@@ -133,59 +133,38 @@ void GroundTypeEnemy3::UpdateWanderState() {
 
 void GroundTypeEnemy3::UpdateChaseState() {
 	if (target_) {
-		// ターゲットに向かうベクトルを計算
-		Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
-		float distance = Length(toTarget);
-
-		Vector3 direction = Normalize(toTarget);
-		velocity_ = { direction.x * speed_,0.0f,direction.z * speed_ };
-
-		//
-		worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
-
-		//
-		float targetRotationY = std::atan2(direction.x, direction.z);
-		worldTransform_->transform.rotate.y = targetRotationY;
-
+		BaseEnemy::MoveToTarget(); // BaseEnemyの追尾・距離維持ロジックを利用
+		// モデルの色やスケール設定は必要に応じてここで行う
 		SetModelColor(Vector4{ 1.0f, 1.0f, 1.0f, 1.0f });
+		worldTransform_->transform.scale = { modelScale_, modelScale_, modelScale_ };
 	}
 }
 
 void GroundTypeEnemy3::UpdateCombatState() {
 	if (!target_) return;
 
-	// ターゲットに向かうベクトルを計算
-	Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
+	BaseEnemy::MoveToTarget(); // BaseEnemyの追尾・距離維持ロジックを利用
+
+	// ターゲットに向かうベクトルを計算 (PushTargetAwayの条件判定用)
+	Vector3 toTargetForPush = target_->transform.translate - worldTransform_->transform.translate;
 
 	// y軸の差を確認（高さがほぼ同じかチェック）
-	float yDiff = std::abs(toTarget.y);
+	float yDiff = std::abs(toTargetForPush.y);
 	const float yTolerance = 3.0f; // 高さの差が3以下のときのみ押すことができます
 
 	// 水平方向のベクトル（XZ平面のみで距離計算）
-	toTarget.y = 0.0f;
-	float distance = Length(toTarget);
-
-	// 追跡移動
-	Vector3 direction = Normalize(toTarget);
-	velocity_ = direction * speed_ * 3.0f;
-
-	// 位置更新（y軸維持）
-	float originalY = worldTransform_->transform.translate.y;
-	worldTransform_->transform.translate += velocity_;
-	worldTransform_->transform.translate.y = originalY;
-
-	// 回転の更新
-	float targetRotationY = std::atan2(direction.x, direction.z);
-	worldTransform_->transform.rotate.y = targetRotationY;
+	toTargetForPush.y = 0.0f;
+	float distanceForPush = Length(toTargetForPush);
 
 	// 一定距離内にあり、y軸もほぼ同じときだけ押し出す
-	const float pushThreshold = 1.0f;
-	if (distance < pushThreshold && yDiff < yTolerance) {
+	const float pushThreshold = 1.0f; // この閾値は敵のサイズやゲームデザインに応じて調整
+	if (distanceForPush < pushThreshold && yDiff < yTolerance) {
 		PushTargetAway();
 	}
 
 	// カラー変更(戦闘状態用)
 	SetModelColor(Vector4{ 0.4f, 0.0f, 0.0f, 1.0f });
+	worldTransform_->transform.scale = { modelScale_, modelScale_, modelScale_ };
 	
 }
 

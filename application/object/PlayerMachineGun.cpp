@@ -13,7 +13,6 @@ PlayerMachineGun::PlayerMachineGun(const Vector3 &position, const Vector3 &veloc
 	worldTransform_->transform.translate = position;
 	worldTransform_->transform.scale = {0.8f, 0.8f, 0.8f}; // マシンガンの弾は小さめ
 	velocity_ = velocity;
-
 	BaseObject::Initialize(worldTransform_->transform.translate, 1.6f); // 当たり判定のサイズ
 
 	ParticleManager::GetInstance()->CreateParticleGroup("bullet", "Resources/circle.png", ParticleManager::ParticleType::Normal);

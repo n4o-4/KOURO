@@ -5,6 +5,7 @@
 #include <list>
 #include <memory>
 #include <random>
+#include <vector> // 追加
 
 #include "EnemyBullet.h"
 
@@ -59,6 +60,10 @@ public:
 	const int GetSpawnHp() const {
 		return spawnHp_;
 	}
+
+	void SetOtherEnemies(std::vector<BaseEnemy *> *enemies) {
+		otherEnemies_ = enemies;
+	}
 	///--------------------------------------------------------------
 	///						 当たり判定
 private:
@@ -76,6 +81,8 @@ private:
 protected:
 	// 方向を選択するメソッド
 	Vector3 SelectDirection();
+
+	void CalculateAvoidance(); // 他の敵との衝突回避計算
 
 	void BulletUpdate();
 	void BulletDraw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
@@ -116,16 +123,18 @@ protected:
 	int spawnHp_ = 1;
 
 	// 移動関連
-	float speed_ = 1.9f;						 // 移動速度
-	float minX_ = -100.0f;						 // 左の限界
-	float maxX_ = 100.0f;						 // 右の限界
-	float minY_ = 0.0f;							 // 下の限界
-	float maxY_ = 100.0f;						 // 上の限界
-	int direction_ = 1;							 // 移動方向 (1:右, -1:左)
-	float rotationVelocityY_ = 0.0f;			 // Y軸回転速度
-	float targetRotationY_ = 0.0f;				 // ターゲットのY軸回転
-	Vector3 velocity_ = {0.0f, 0.0f, 0.0f};		 // 現在の速度ベクトル
-	Vector3 spawnPosition_ = {0.0f, 0.0f, 0.0f}; // スポーン位置
+	float speed_ = 1.9f;							 // 移動速度
+	float minX_ = -100.0f;							 // 左の限界
+	float maxX_ = 100.0f;							 // 右の限界
+	float minY_ = 0.0f;								 // 下の限界
+	float maxY_ = 100.0f;							 // 上の限界
+	int direction_ = 1;								 // 移動方向 (1:右, -1:左)
+	float rotationVelocityY_ = 0.0f;				 // Y軸回転速度
+	float targetRotationY_ = 0.0f;					 // ターゲットのY軸回転
+	Vector3 velocity_ = {0.0f, 0.0f, 0.0f};			 // 現在の速度ベクトル
+	Vector3 spawnPosition_ = {0.0f, 0.0f, 0.0f};	 // スポーン位置
+	Vector3 avoidanceVelocity_ = {0.0f, 0.0f, 0.0f}; // 回避ベクトル
+	float avoidanceRadius_ = 15.0f;					 // 敵同士の回避半径
 
 	// 行動状態
 	float stateTimer_ = 0.0f;
@@ -134,7 +143,7 @@ protected:
 	// 行動パラメータ
 	float chaseDistance_ = 64.0f;		   // この距離内ならプレイヤーを追いかける
 	float combatDistance_ = 32.0f;		   // 戦闘を行う距離
-	float safeDistance_ = 10.0f;		   // 安全距離（この距離を保つ）
+	float safeDistance_ = 20.0f;		   // 安全距離（この距離を保つ）
 	float wanderRadius_ = 32.0f;		   // 徘徊半径
 	float directionChangeInterval_ = 3.0f; // 方向変更の間隔
 
@@ -150,5 +159,6 @@ protected:
 
 	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
-	Vector3 avoidanceVelocity_ = {0.0f, 0.0f, 0.0f};
+	// Vector3 avoidanceVelocity_ = {0.0f, 0.0f, 0.0f}; // 上に移動しました
+	std::vector<BaseEnemy *> *otherEnemies_; // 他の敵オブジェクトのリストへのポインタ
 };

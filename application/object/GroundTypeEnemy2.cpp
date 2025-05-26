@@ -1,6 +1,6 @@
 #include "GroundTypeEnemy2.h"
-#include <PlayerMissile.h>
 #include <PlayerMachineGun.h>
+#include <PlayerMissile.h>
 
 void GroundTypeEnemy2::Initialize() {
 	ModelManager::GetInstance()->LoadModel("enemy/bomb/bomb.obj");
@@ -9,13 +9,12 @@ void GroundTypeEnemy2::Initialize() {
 	worldTransform_->transform.scale = (Vector3(modelScale_, modelScale_, modelScale_));
 
 	particleEmitter_->SetParticleCount(20);
-	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({ 1.0f,1.0f }));
-	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({ -3.0f,-3.0f,-3.0f }, {3.0f,3.0f,3.0f}));
+	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({1.0f, 1.0f}));
+	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({-3.0f, -3.0f, -3.0f}, {3.0f, 3.0f, 3.0f}));
 
 	AudioManager::GetInstance()->SoundLoadFile("Resources/se/爆発1.mp3");
 	se1_ = std::make_unique<Audio>();
 	se1_->Initialize();
-
 }
 
 void GroundTypeEnemy2::Update() {
@@ -37,7 +36,6 @@ void GroundTypeEnemy2::Update() {
 		}
 	}
 
-
 	if (isHitReacting_) {
 		hitReactionTimer_ += 1.0f / 60.0f;
 
@@ -45,7 +43,8 @@ void GroundTypeEnemy2::Update() {
 		float t = hitReactionTimer_ / kTotalReactionTime;
 
 		// clamp
-		if (t > 1.0f) t = 1.0f;
+		if (t > 1.0f)
+			t = 1.0f;
 
 		// イージング（バウンド風：t=0で1.0、t=0.5で1.7、t=1.0で1.0）
 		float scaleFactor = modelScale_ + 0.7f * sinf(t * 3.141592f); // πで1周期 → 1→1.7→1
@@ -63,119 +62,98 @@ void GroundTypeEnemy2::Update() {
 		}
 	}
 
-	
-
 	BaseEnemy::Update();
 }
 
 void GroundTypeEnemy2::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
-	
+
 	BaseEnemy::Draw(viewProjection, directionalLight, pointLight, spotLight);
 }
-
-
 
 void GroundTypeEnemy2::Attack() {
 }
 
-void GroundTypeEnemy2::OnCollisionEnter(BaseObject* other) {
-	if (dynamic_cast<PlayerMissile*>(other)) {
+void GroundTypeEnemy2::OnCollisionEnter(BaseObject *other) {
+	if (dynamic_cast<PlayerMissile *>(other)) {
 		se1_->SoundPlay("Resources/se/爆発1.mp3", 0);
 		--hp_;
 		HitJump();
 		particleEmitter_->Emit();
 	}
-	if (dynamic_cast<PlayerMachineGun*>(other)) {
+	if (dynamic_cast<PlayerMachineGun *>(other)) {
 		--hp_;
 		HitJump();
 		particleEmitter_->Emit();
 	}
 }
 
-void GroundTypeEnemy2::OnCollisionStay(BaseObject* other) {
+void GroundTypeEnemy2::OnCollisionStay(BaseObject *other) {
 }
 
-void GroundTypeEnemy2::OnCollisionExit(BaseObject* other) {
+void GroundTypeEnemy2::OnCollisionExit(BaseObject *other) {
 }
 
-void GroundTypeEnemy2::HitJump()
-{
+void GroundTypeEnemy2::HitJump() {
 	isHitReacting_ = true;
 	hitReactionTimer_ = 0.0f;
 	modelScale_ = modelScale_ / 2.0f;
 }
 
 void GroundTypeEnemy2::UpdateWanderState() {
-	
+
 	BaseEnemy::RandomMove(modelScale_);
 }
 
 void GroundTypeEnemy2::UpdateChaseState() {
 	if (target_) {
-		// ターゲットに向かうベクトルを計算
-		Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
-		float distance = Length(toTarget);
-
-		Vector3 direction = Normalize(toTarget);
-		velocity_ = { direction.x * speed_,0.0f,direction.z * speed_ };
-
-		//
-		worldTransform_->transform.translate = worldTransform_->transform.translate + velocity_;
-
-		//
-		float targetRotationY = std::atan2(direction.x, direction.z);
-		worldTransform_->transform.rotate.y = targetRotationY;
-		worldTransform_->transform.scale = { modelScale_, modelScale_, modelScale_ };
-		SetModelColor(Vector4{ 1.0f, 1.0f, 1.0f, 1.0f });
+		BaseEnemy::MoveToTarget(); // BaseEnemyの追尾ロジックを利用
+		worldTransform_->transform.scale = {modelScale_, modelScale_, modelScale_};
+		SetModelColor(Vector4{1.0f, 1.0f, 1.0f, 1.0f});
 	}
 }
 
 void GroundTypeEnemy2::UpdateCombatState() {
 	if (target_) {
-		// 
+		BaseEnemy::MoveToTarget(); // BaseEnemyの追尾・距離維持ロジックを利用
+
 		Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
-		Vector3 direction = Normalize(toTarget);
+		float distanceToTarget = Length(toTarget);
 
-		//
-		float dashSpeed = speed_ * 3.0f;
-		velocity_ = { direction.x * dashSpeed,0.0f,direction.z * dashSpeed };
-		velocity_ += avoidanceVelocity_;
-		//
-		worldTransform_->transform.translate += velocity_;
-
-		// 
-		float targetRotationY = std::atan2(direction.x, direction.z);
-		worldTransform_->transform.rotate.y = targetRotationY;
-
-		if (!isBlinkEffect_) {
-			isBlinkEffect_ = true;
-			blinkEffectTimer_ = 0.0f;
+		// 点滅エフェクトと攻撃準備（プレイヤーが安全距離より少し内側に入ったら）
+		if (distanceToTarget < safeDistance_ + 5.0f) { // safeDistance_ より少し広い範囲で反応
+			if (!isBlinkEffect_) {
+				isBlinkEffect_ = true;
+				blinkEffectTimer_ = 0.0f;
+			}
 		}
+
 		if (isBlinkEffect_) {
 			blinkEffectTimer_ += 1.0f / 60.0f;
 
 			float t = blinkEffectTimer_;
-			float scale = modelScale_ + 0.35f * sinf(t * 10.0f);
-			worldTransform_->transform.scale = { scale, scale, scale };
+			float scale = modelScale_ + 0.35f * sinf(t * 10.0f); // 点滅中の拡縮
+			worldTransform_->transform.scale = {scale, scale, scale};
 
 			int blinkPhase = static_cast<int>(t * 5.0f) % 2;
 			if (blinkPhase == 0) {
-				SetModelColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+				SetModelColor({1.0f, 1.0f, 1.0f, 1.0f});
 			} else {
-				SetModelColor({ 1.0f, 0.0f, 0.0f, 1.0f });
+				SetModelColor({1.0f, 0.0f, 0.0f, 1.0f}); // 赤く点滅
 			}
 
-			// 
 			if (blinkEffectTimer_ >= blinkEffectDuration_) {
 				isBlinkEffect_ = false;
 				blinkEffectTimer_ = 0.0f;
-
-				worldTransform_->transform.scale = { modelScale_, modelScale_, modelScale_ };
-				SetModelColor({ 1.0f, 1.0f, 1.0f, 1.0f });
-				
+				worldTransform_->transform.scale = {modelScale_, modelScale_, modelScale_};
+				SetModelColor({1.0f, 1.0f, 1.0f, 1.0f});
+				// ここで攻撃実行や、次の行動への移行など
+				// 今回は点滅終了でリセットのみ
 			}
+		} else {
+			// 点滅していない時は通常のスケールと色
+			worldTransform_->transform.scale = {modelScale_, modelScale_, modelScale_};
+			SetModelColor({1.0f, 1.0f, 1.0f, 1.0f});
 		}
-		
 	}
 }
 
@@ -193,11 +171,11 @@ void GroundTypeEnemy2::UpdateActionState() {
 	Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
 	float distance = Length(toTarget);
 
-	// 距離に基づいて状態を変更 
+	// 距離に基づいて状態を変更
 	ActionState newState = currentState_; // デフォルトは現在の状態を維持
 
 	if (distance > chaseDistance_) {
-		// プレイヤーが遠い場合は徘徊 
+		// プレイヤーが遠い場合は徘徊
 		newState = ActionState::Wander;
 	} else if (distance > combatDistance_) {
 		// 追跡範囲内なら追跡
