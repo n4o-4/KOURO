@@ -1,7 +1,7 @@
 ﻿#include "PlayerMachineGun.h"
 #include "Enemy.h"
 
-PlayerMachineGun::PlayerMachineGun(const Vector3& position, const Vector3& velocity) {
+PlayerMachineGun::PlayerMachineGun(const Vector3 &position, const Vector3 &velocity) {
 	model_ = std::make_unique<Object3d>();
 	model_->Initialize(Object3dCommon::GetInstance());
 
@@ -11,23 +11,23 @@ PlayerMachineGun::PlayerMachineGun(const Vector3& position, const Vector3& veloc
 	worldTransform_ = std::make_unique<WorldTransform>();
 	worldTransform_->Initialize();
 	worldTransform_->transform.translate = position;
-	worldTransform_->transform.scale = { 0.8f, 0.8f, 0.8f };  // マシンガンの弾は小さめ
+	worldTransform_->transform.scale = {0.8f, 0.8f, 0.8f}; // マシンガンの弾は小さめ
 	velocity_ = velocity;
 
-	BaseObject::Initialize(worldTransform_->transform.translate, 1.2f);  // 当たり判定のサイズ
+	BaseObject::Initialize(worldTransform_->transform.translate, 1.6f); // 当たり判定のサイズ
 
 	ParticleManager::GetInstance()->CreateParticleGroup("bullet", "Resources/circle.png", ParticleManager::ParticleType::Normal);
 	ParticleManager::GetInstance()->GetParticleGroup("bullet")->enableBillboard = true;
 
 	particleEmitter_ = std::make_unique<ParticleEmitter>();
 	particleEmitter_->Initialize("bullet");
-	particleEmitter_->SetParticleCount(2);  // デフォルト発生数
-	particleEmitter_->SetFrequency(0.001f);  // より高頻度で発生させる
-	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({ 0.1f, 0.1f }));
-	particleEmitter_->SetStartColorRange(ParticleManager::ColorRange({ 0.961f, 1.000f, 0.388f, 1.0f },{ 0.961f, 1.000f, 0.388f, 1.0f }));
-	particleEmitter_->SetFinishColorRange(ParticleManager::ColorRange({ 0.961f, 1.000f, 0.388f, 1.0f }, { 0.961f, 1.000f, 0.388f, 1.0f }));
+	particleEmitter_->SetParticleCount(2);	// デフォルト発生数
+	particleEmitter_->SetFrequency(0.001f); // より高頻度で発生させる
+	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({0.1f, 0.1f}));
+	particleEmitter_->SetStartColorRange(ParticleManager::ColorRange({0.961f, 1.000f, 0.388f, 1.0f}, {0.961f, 1.000f, 0.388f, 1.0f}));
+	particleEmitter_->SetFinishColorRange(ParticleManager::ColorRange({0.961f, 1.000f, 0.388f, 1.0f}, {0.961f, 1.000f, 0.388f, 1.0f}));
 
-	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }));
+	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}));
 
 	particleEmitter_->SetScaleRange(ParticleManager::Vec3Range({ 0.4f, 0.4f,0.4f }, { 0.4f, 0.4f,0.4f }));
 
@@ -52,7 +52,7 @@ void PlayerMachineGun::Update() {
 	lifeTime_++;
 
 	// 一定時間で消滅
-	if (lifeTime_ > 120) {  // 約2秒
+	if (lifeTime_ > 120) { // 約2秒
 		isActive_ = false;
 	}
 
@@ -67,12 +67,12 @@ void PlayerMachineGun::Update() {
 		float yaw = std::atan2(dir.x, dir.z);
 
 		// Pitch（X軸回転）を求める（XZ平面で真横に撃たない場合のみ有効）
-		float pitch = -std::asin(dir.y);  // マイナスを付けて上方向を正に
+		float pitch = -std::asin(dir.y); // マイナスを付けて上方向を正に
 
-		worldTransform_->transform.rotate = { pitch, yaw, 0.0f };
+		worldTransform_->transform.rotate = {pitch, yaw, 0.0f};
 	}
 
-	model_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
+	model_->SetLocalMatrix(MakeIdentity4x4()); // ローカル行列を単位行列に
 	worldTransform_->UpdateMatrix();
 
 	particleEmitter_->SetPosition(worldTransform_->transform.translate);
@@ -83,20 +83,20 @@ void PlayerMachineGun::Update() {
 }
 
 void PlayerMachineGun::Draw(ViewProjection viewProjection, DirectionalLight directionalLight,
-	PointLight pointLight, SpotLight spotLight) {
+							PointLight pointLight, SpotLight spotLight) {
 	if (isActive_) {
 		model_->Draw(*worldTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
 	}
 }
 
 std::unique_ptr<PlayerMachineGun> PlayerMachineGun::Shoot(
-	const Vector3& playerPosition,
-	FollowCamera* followCamera,
-	Vector3& outRecoilVelocity,
-	float& outShakeIntensity) {
+	const Vector3 &playerPosition,
+	FollowCamera *followCamera,
+	Vector3 &outRecoilVelocity,
+	float &outShakeIntensity) {
 
 	// プレイヤーの向いている方向を取得（カメラの方向を基準にする）
-	Vector3 forward = { 0.0f, 0.0f, 1.0f };  // Z方向が基準
+	Vector3 forward = {0.0f, 0.0f, 1.0f}; // Z方向が基準
 	Matrix4x4 rotationMatrix = MakeRotateMatrix(followCamera->GetViewProjection().transform.rotate);
 	forward = TransformNormal(forward, rotationMatrix);
 
@@ -106,7 +106,7 @@ std::unique_ptr<PlayerMachineGun> PlayerMachineGun::Shoot(
 
 	// ばらつきを適用
 	Vector3 bulletVelocity = forward * kBulletSpeed + Vector3(randomX, randomY, 0.0f);
-	bulletVelocity = Normalize(bulletVelocity) * kBulletSpeed;  // 速度を一定に
+	bulletVelocity = Normalize(bulletVelocity) * kBulletSpeed; // 速度を一定に
 
 	// 反動の計算
 	Vector3 recoilDirection = -forward;
@@ -122,11 +122,11 @@ std::unique_ptr<PlayerMachineGun> PlayerMachineGun::Shoot(
 ///=============================================================================
 ///                        当たり判定の実装
 ///=============================================================================
-void PlayerMachineGun::OnCollisionEnter(BaseObject* other) {
+void PlayerMachineGun::OnCollisionEnter(BaseObject *other) {
 	// 敵接触
-	if (Enemy* enemy = dynamic_cast<Enemy*>(other)) {
+	if (Enemy *enemy = dynamic_cast<Enemy *>(other)) {
 		//---------------------------------------
-		//弾を消す
+		// 弾を消す
 		isActive_ = false;
 
 		particleEmitter_->Emit();
