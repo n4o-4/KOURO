@@ -29,7 +29,9 @@ PlayerMachineGun::PlayerMachineGun(const Vector3 &position, const Vector3 &veloc
 
 	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}));
 
-	particleEmitter_->SetScaleRange(ParticleManager::Vec3Range({ 0.4f, 0.4f,0.4f }, { 0.4f, 0.4f,0.4f }));
+	particleEmitter_->SetStartScaleRange(ParticleManager::Vec3Range({ 0.4f, 0.4f,0.4f }, { 0.4f, 0.4f,0.4f }));
+
+	particleEmitter_->SetFinishScaleRange(ParticleManager::Vec3Range({ 0.4f, 0.4f,0.4f }, { 0.4f, 0.4f,0.4f }));
 
 	ParticleManager::GetInstance()->CreateParticleGroup("hitSprite", "Resources/gradationLine.png", ParticleManager::ParticleType::Ring);
 
@@ -39,13 +41,13 @@ PlayerMachineGun::PlayerMachineGun(const Vector3 &position, const Vector3 &veloc
 	hitSprite_->Initialize("hitSprite");
 	hitSprite_->SetParticleCount(1);  // デフォルト発生数
 
-	hitSprite_->SetLifeTimeRange(ParticleManager::Range({ 0.1f, 0.1f }));
+	hitSprite_->SetLifeTimeRange(ParticleManager::Range({ 0.5f, 0.5f }));
 	hitSprite_->SetStartColorRange(ParticleManager::ColorRange({ 1.0f, 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
-	particleEmitter_->SetFinishColorRange(ParticleManager::ColorRange({ 1.0f, 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
+	hitSprite_->SetFinishColorRange(ParticleManager::ColorRange({ 1.0f, 1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 0.0f }));
 
 	hitSprite_->SetVelocityRange(ParticleManager::Vec3Range({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }));
-	hitSprite_->SetScaleRange(ParticleManager::Vec3Range({ 10.0f, 10.0f, 10.0f }, { 10.0f, 10.0f, 10.0f }));
-	hitSprite_->SetSpawnRange(ParticleManager::Vec3Range({ -0.1f, -0.1f, -0.1f }, { 0.1f, 0.1f, 0.1f }));
+	hitSprite_->SetStartScaleRange(ParticleManager::Vec3Range({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }));
+	hitSprite_->SetStartScaleRange(ParticleManager::Vec3Range({ 15.0f,15.0f,15.0f, }, { 15.0f,15.0f,15.0f }));
 }
 
 void PlayerMachineGun::Update() {

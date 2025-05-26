@@ -22,8 +22,6 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
     model_->SetModel("missile.obj");
 
 
-    ParticleManager::GetInstance()->SetBlendMode("Add");
-
     //===================================================
     // パーティクルの初期化
     ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png", ParticleManager::ParticleType::Normal);
@@ -34,7 +32,10 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
     particleEmitterMissileSmoke_->SetFrequency(0.01f);    // より高頻度で発生させる
     particleEmitterMissileSmoke_->SetStartColorRange(ParticleManager::ColorRange({ 1.0f,1.0f,1.0f,1.0f }, { 1.0f,1.0f,1.0f,1.0f }));
 	particleEmitterMissileSmoke_->SetFinishColorRange(ParticleManager::ColorRange({ 1.0f,1.0f,1.0f,0.0f }, { 1.0f,1.0f,1.0f,0.0f }));
-    particleEmitterMissileSmoke_->SetScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
+    particleEmitterMissileSmoke_->SetStartScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
+
+    particleEmitterMissileSmoke_->SetFinishScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
+
     particleEmitterMissileSmoke_->SetVelocityRange(ParticleManager::Vec3Range({ -10.0f,-10.0f,-10.0f }, { 10.0f,10.0f,10.0f }));
     
 	particleEmitterMissileSmoke_->SetLifeTimeRange({ 0.1f, 0.5f }); // 寿命を短くする
@@ -52,7 +53,8 @@ PlayerMissile::PlayerMissile(const Vector3 &position, const Vector3 &initialVelo
 	explosionEmitter_->SetParticleCount(100);   
 	explosionEmitter_->SetFrequency(0.04f);
     explosionEmitter_->SetLifeTimeRange({ 0.5f, 1.0f }); // 寿命を短くする
-    explosionEmitter_->SetScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
+    explosionEmitter_->SetStartScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
+    explosionEmitter_->SetFinishScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
 	explosionEmitter_->SetVelocityRange(ParticleManager::Vec3Range({ -100.0f,-100.0f,-100.0f }, { 100.0f,100.0f,100.0f }));
 
 

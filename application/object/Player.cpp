@@ -100,21 +100,6 @@ void Player::Initialize() {
 		)
 	);
 
-	smokeEmitter_->SetSpawnRange
-	(
-		ParticleManager::Vec3Range(
-			{ -0.5f,-0.5f,-0.5f },
-			{ 0.5f,0.5f,0.5f }
-		)
-	);
-
-	smokeEmitter_->SetScaleRange(
-		ParticleManager::Vec3Range(
-			{ 1.0f,1.0f,1.0f },
-			{ 1.0f,1.0f,1.0f }
-		)
-	);
-
 	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);
 
 	AudioManager::GetInstance()->SoundLoadFile("Resources/se/missile.mp3");

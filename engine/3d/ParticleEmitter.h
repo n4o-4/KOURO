@@ -10,11 +10,11 @@ public:
     void Initialize(std::string name);
 
     void Emit();
+
+	void RadialEmit();
     
     // 指定した数のパーティクルを放出するオーバーロードを追加
     void Emit(uint32_t count,Vector3 startColor,Vector3 finishColor);
-    
-	void HitEmit();
 
     // エミッタの位置を設定するメソッドを追加
     void SetPosition(const Vector3& position);
@@ -27,16 +27,18 @@ public:
 
     void Update();
 
-    void SetStartColorRange(ParticleManager::ColorRange colorRange) { startColorRange = colorRange; }
-    void SetFinishColorRange(ParticleManager::ColorRange colorRange) { finishColorRange = colorRange; }
+    void SetStartColorRange(ParticleManager::ColorRange colorRange) { particleStates.startColorRange = colorRange; }
+    void SetFinishColorRange(ParticleManager::ColorRange colorRange) { particleStates.finishColorRange = colorRange; }
 
-	void SetVelocityRange(ParticleManager::Vec3Range velocityRange) { this->velocityRange = velocityRange; }
-	void SetLifeTimeRange(ParticleManager::Range lifeTimeRange) { this->lifeTimeRange = lifeTimeRange; }
+	void SetStartScaleRange(ParticleManager::Vec3Range scaleRange) { particleStates.startScaleRange = scaleRange; }
+	void SetFinishScaleRange(ParticleManager::Vec3Range scaleRange) { particleStates.finishScaleRange = scaleRange; }
 
-	void SetScaleRange(ParticleManager::Vec3Range scaleRange) { this->scaleRange = scaleRange; }
+	void SetRotateRange(ParticleManager::Vec3Range rotateRange) { particleStates.rotateRange = rotateRange; }
+	void SetTranslateRange(ParticleManager::Vec3Range translateRange) { particleStates.translateRange = translateRange; }
 
+    void SetVelocityRange(ParticleManager::Vec3Range velocityRange) { particleStates.velocityRange = velocityRange; }
+    void SetLifeTimeRange(ParticleManager::Range lifeTimeRange) { particleStates.lifeTimeRange = lifeTimeRange; }
 
-	void SetSpawnRange(ParticleManager::Vec3Range spawnRange) { this->spawnRange = spawnRange; }
 private:
 
     struct Emitter {
@@ -57,15 +59,6 @@ private:
 
     std::mt19937 randomEngine;
 
-	// パーティクルの色の範囲を保持するメンバ変数を追加
-	ParticleManager::ColorRange startColorRange;
-	ParticleManager::ColorRange finishColorRange;   
+	ParticleManager::ParticleStates particleStates;
 
-    ParticleManager::Vec3Range velocityRange;
-	
-	ParticleManager::Vec3Range scaleRange;
-
-	ParticleManager::Range lifeTimeRange;
-
-	ParticleManager::Vec3Range spawnRange = { {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }; // パーティクルの発生位置範囲
 };
