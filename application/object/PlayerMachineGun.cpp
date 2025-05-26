@@ -31,7 +31,7 @@ PlayerMachineGun::PlayerMachineGun(const Vector3 &position, const Vector3 &veloc
 
 	particleEmitter_->SetScaleRange(ParticleManager::Vec3Range({ 0.4f, 0.4f,0.4f }, { 0.4f, 0.4f,0.4f }));
 
-	ParticleManager::GetInstance()->CreateParticleGroup("hitSprite", "Resources/hitSprite.png", ParticleManager::ParticleType::Normal);
+	ParticleManager::GetInstance()->CreateParticleGroup("hitSprite", "Resources/gradationLine.png", ParticleManager::ParticleType::Ring);
 
 	ParticleManager::GetInstance()->GetParticleGroup("hitSprite")->enableBillboard = true;
 
@@ -44,7 +44,7 @@ PlayerMachineGun::PlayerMachineGun(const Vector3 &position, const Vector3 &veloc
 	particleEmitter_->SetFinishColorRange(ParticleManager::ColorRange({ 1.0f, 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
 
 	hitSprite_->SetVelocityRange(ParticleManager::Vec3Range({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }));
-	hitSprite_->SetScaleRange(ParticleManager::Vec3Range({ 2.0f, 2.0f, 2.0f }, { 2.0f, 2.0f, 2.0f }));
+	hitSprite_->SetScaleRange(ParticleManager::Vec3Range({ 10.0f, 10.0f, 10.0f }, { 10.0f, 10.0f, 10.0f }));
 	hitSprite_->SetSpawnRange(ParticleManager::Vec3Range({ -0.1f, -0.1f, -0.1f }, { 0.1f, 0.1f, 0.1f }));
 }
 
@@ -124,15 +124,16 @@ std::unique_ptr<PlayerMachineGun> PlayerMachineGun::Shoot(
 ///=============================================================================
 void PlayerMachineGun::OnCollisionEnter(BaseObject *other) {
 	// 敵接触
-	if (Enemy *enemy = dynamic_cast<Enemy *>(other)) {
-		//---------------------------------------
-		// 弾を消す
-		isActive_ = false;
+	if (BaseEnemy *enemy = dynamic_cast<BaseEnemy *>(other)) {
 
 		particleEmitter_->Emit();
 
 		hitSprite_->SetPosition(worldTransform_->transform.translate);
 		hitSprite_->Emit();
+
+		//---------------------------------------
+		// 弾を消す
+		isActive_ = false;
 	}
 }
 
