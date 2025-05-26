@@ -21,7 +21,7 @@ void BaseEnemy::Initialize(Model *model) {
 	spawnWorldTransform_->Initialize();*/
 	//========================================
 	// 当たり判定との同期
-	BaseObject::Initialize(worldTransform_->transform.translate, 1.0f);
+	BaseObject::Initialize(worldTransform_->transform.translate, 6.0f);
 
 	// 乱数生成器の初期化
 	std::random_device rd;
@@ -34,7 +34,7 @@ void BaseEnemy::Initialize(Model *model) {
 	particleEmitter_->Initialize("missileSmoke");
 	particleEmitter_->SetParticleCount(80);
 	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({1.0f, 1.5f}));
-	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({ -10.0f,-10.0f,-10.0f }, {10.0f,10.0f,10.0f}));
+	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({-10.0f, -10.0f, -10.0f}, {10.0f, 10.0f, 10.0f}));
 }
 
 ///=============================================================================
