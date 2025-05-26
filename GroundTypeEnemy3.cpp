@@ -1,9 +1,9 @@
 ﻿#include "GroundTypeEnemy3.h"
-#include "PlayerMissile.h"
-#include <cmath>
-#include <algorithm>
-#include "PlayerMachineGun.h"
 #include "Player.h"
+#include "PlayerMachineGun.h"
+#include "PlayerMissile.h"
+#include <algorithm>
+#include <cmath>
 
 void GroundTypeEnemy3::Initialize() {
 	ModelManager::GetInstance()->LoadModel("enemy/chair/chair.obj");
@@ -12,13 +12,12 @@ void GroundTypeEnemy3::Initialize() {
 	worldTransform_->transform.scale = (Vector3(modelScale_, modelScale_, modelScale_));
 
 	particleEmitter_->SetParticleCount(20);
-	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({ 1.0f,1.0f }));
-	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({ -3.0f,-3.0f,-3.0f }, {3.0f,3.0f,3.0f}));
+	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({1.0f, 1.0f}));
+	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({-3.0f, -3.0f, -3.0f}, {3.0f, 3.0f, 3.0f}));
 
 	AudioManager::GetInstance()->SoundLoadFile("Resources/se/爆発1.mp3");
-    se1_ = std::make_unique<Audio>();
+	se1_ = std::make_unique<Audio>();
 	se1_->Initialize();
-
 }
 
 void GroundTypeEnemy3::Update() {
@@ -40,7 +39,6 @@ void GroundTypeEnemy3::Update() {
 		}
 	}
 
-
 	if (isHitReacting_) {
 		hitReactionTimer_ += 1.0f / 60.0f;
 
@@ -48,7 +46,8 @@ void GroundTypeEnemy3::Update() {
 		float t = hitReactionTimer_ / kTotalReactionTime;
 
 		// clamp
-		if (t > 1.0f) t = 1.0f;
+		if (t > 1.0f)
+			t = 1.0f;
 
 		// イージング（バウンド風：t=0で1.0、t=0.5で1.7、t=1.0で1.0）
 		float scaleFactor = modelScale_ + 0.7f * sinf(t * 3.141592f); // πで1周期 → 1→1.7→1
@@ -73,7 +72,8 @@ void GroundTypeEnemy3::Draw(ViewProjection viewProjection, DirectionalLight dire
 }
 
 void GroundTypeEnemy3::PushTargetAway() {
-	if (!target_) return;
+	if (!target_)
+		return;
 	// 現在地を保存
 	Vector3 enemyPos = worldTransform_->transform.translate;
 	Vector3 targetPos = target_->transform.translate;
@@ -98,26 +98,24 @@ void GroundTypeEnemy3::PushTargetAway() {
 	target_->transform.translate.y = originalY;
 }
 
-
-
-void GroundTypeEnemy3::OnCollisionEnter(BaseObject* other) {
-	if (dynamic_cast<PlayerMissile*>(other)) {
+void GroundTypeEnemy3::OnCollisionEnter(BaseObject *other) {
+	if (dynamic_cast<PlayerMissile *>(other)) {
 		se1_->SoundPlay("Resources/se/爆発1.mp3", 0);
 		--hp_;
 		HitJump();
 		particleEmitter_->Emit();
 	}
-	if (dynamic_cast<PlayerMachineGun*>(other)) {
+	if (dynamic_cast<PlayerMachineGun *>(other)) {
 		--hp_;
 		HitJump();
 		particleEmitter_->Emit();
 	}
 }
 
-void GroundTypeEnemy3::OnCollisionStay(BaseObject* other) {
+void GroundTypeEnemy3::OnCollisionStay(BaseObject *other) {
 }
 
-void GroundTypeEnemy3::OnCollisionExit(BaseObject* other) {
+void GroundTypeEnemy3::OnCollisionExit(BaseObject *other) {
 }
 
 void GroundTypeEnemy3::HitJump() {
@@ -125,7 +123,6 @@ void GroundTypeEnemy3::HitJump() {
 	hitReactionTimer_ = 0.0f;
 	modelScale_ = modelScale_ / 2.0f;
 }
-
 
 void GroundTypeEnemy3::UpdateWanderState() {
 	BaseEnemy::RandomMove(modelScale_);
@@ -135,13 +132,14 @@ void GroundTypeEnemy3::UpdateChaseState() {
 	if (target_) {
 		BaseEnemy::MoveToTarget(); // BaseEnemyの追尾・距離維持ロジックを利用
 		// モデルの色やスケール設定は必要に応じてここで行う
-		SetModelColor(Vector4{ 1.0f, 1.0f, 1.0f, 1.0f });
-		worldTransform_->transform.scale = { modelScale_, modelScale_, modelScale_ };
+		SetModelColor(Vector4{1.0f, 1.0f, 1.0f, 1.0f});
+		worldTransform_->transform.scale = {modelScale_, modelScale_, modelScale_};
 	}
 }
 
 void GroundTypeEnemy3::UpdateCombatState() {
-	if (!target_) return;
+	if (!target_)
+		return;
 
 	BaseEnemy::MoveToTarget(); // BaseEnemyの追尾・距離維持ロジックを利用
 
@@ -163,9 +161,8 @@ void GroundTypeEnemy3::UpdateCombatState() {
 	}
 
 	// カラー変更(戦闘状態用)
-	SetModelColor(Vector4{ 0.4f, 0.0f, 0.0f, 1.0f });
-	worldTransform_->transform.scale = { modelScale_, modelScale_, modelScale_ };
-	
+	SetModelColor(Vector4{0.4f, 0.0f, 0.0f, 1.0f});
+	worldTransform_->transform.scale = {modelScale_, modelScale_, modelScale_};
 }
 
 void GroundTypeEnemy3::UpdateActionState() {
@@ -182,11 +179,11 @@ void GroundTypeEnemy3::UpdateActionState() {
 	Vector3 toTarget = target_->transform.translate - worldTransform_->transform.translate;
 	float distance = Length(toTarget);
 
-	// 距離に基づいて状態を変更 
+	// 距離に基づいて状態を変更
 	ActionState newState = currentState_; // デフォルトは現在の状態を維持
 
 	if (distance > chaseDistance_) {
-		// プレイヤーが遠い場合は徘徊 
+		// プレイヤーが遠い場合は徘徊
 		newState = ActionState::Wander;
 	} else if (distance > combatDistance_) {
 		// 追跡範囲内なら追跡
