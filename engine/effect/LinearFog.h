@@ -1,13 +1,24 @@
 ﻿#pragma once
 #include "BaseEffect.h"
 
+
 namespace LinearFogShader
 {
 	struct Material
 	{
-		Matrix4x4 projectionInverse;
-	};
 
+		Matrix4x4 projectionInverse;
+
+		Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; // フォグの色
+
+		float strength = 0.1f; // フォグの強さ  
+
+		float start = 10.0f; // フォグの開始位置  
+
+		float end = 200.0f; // フォグの終了位置  
+
+		float padding[1]; // パディング (16バイト境界のため)  
+	};
 }
 
 class LinearFog : public BaseEffect
