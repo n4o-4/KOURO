@@ -100,11 +100,12 @@ void GameClear::Initialize() {
 	
 	mwdishTransform_ = std::make_unique<WorldTransform>();
 	mwdishTransform_->Initialize();
-	mwdishTransform_->transform.translate = { 0.2f, -0.1f , 0.0f };
+	mwdishTransform_->transform.translate = { 0.3f, 0.3f , 0.2f };
+	mwdishTransform_->transform.scale = { 0.56f,1.0f,0.56f };
 
 	clearTransform_ = std::make_unique<WorldTransform>();
 	clearTransform_->Initialize();
-	clearTransform_->transform.translate = { 0.9f, 0.6f , 0.2f };
+	clearTransform_->transform.translate = { 0.9f, 0.4f , 0.2f };
 	clearTransform_->transform.scale = { 0.5f, 0.5f , 1.0f };
 
 	spawnTransform_ = std::make_unique<WorldTransform>();
@@ -174,8 +175,8 @@ void GameClear::Update() {
 		break;
 	case Phase::kMain:
 
-		//UpdateMoveMwbody();
-		//UpdateMoveClear();
+		UpdateMoveMwbody();
+		UpdateMoveClear();
 		ParticleManager::GetInstance()->Update();
 
 		UpdateMissileFlight();
@@ -394,8 +395,8 @@ void GameClear::UpdateMissileFlight() {
 void GameClear::UpdateMoveClear() {
 	if (isClear_) {
 	mwdishTransform_->transform.rotate.y += 0.05f;
-	if (mwdishTransform_->transform.rotate.y >= 12.65) {
-		mwdishTransform_->transform.rotate.y = 12.65f;
+	if (mwdishTransform_->transform.rotate.y >= 12.45) {
+		mwdishTransform_->transform.rotate.y = 12.45f;
 		isClear_ = false;
 		}
 	}
