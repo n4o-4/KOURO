@@ -35,6 +35,7 @@ public:
 
 	void UpdateMissileFlight();
 
+	void UpdateMoveClear();
 
 private:
 
@@ -49,7 +50,7 @@ private:
 	std::unique_ptr<DirectionalLight> directionalLight = nullptr;
 	std::unique_ptr<PointLight> pointLight = nullptr;
 	std::unique_ptr<SpotLight> spotLight = nullptr;
-
+	std::unique_ptr<SpotLight> mvSpotLight = nullptr;
 
 	// model
 	std::unique_ptr<Object3d> mwbody_;
@@ -58,6 +59,7 @@ private:
 	std::unique_ptr<Object3d> clearModel_;
 	std::unique_ptr<Object3d> spawnModel_;
 	std::unique_ptr<Object3d> missileModel_;
+	std::unique_ptr<Object3d> mvSceneModel_;
 
 	// ワールド変換
 	std::unique_ptr<WorldTransform> mwbodyTransform_;
@@ -66,6 +68,7 @@ private:
 	std::unique_ptr<WorldTransform> clearTransform_;
 	std::unique_ptr<WorldTransform> spawnTransform_;
 	std::unique_ptr<WorldTransform> missileTransform_;
+	std::unique_ptr<WorldTransform> mvSceneTransform_;
 
 	// パーティクル
 	std::unique_ptr<ParticleEmitter> particleEmitterMissileSmoke_ = nullptr;
@@ -73,7 +76,7 @@ private:
 
 	//
 	float moveTimer_ = 0.0f;
-	const float moveDuration_ = 5.0f;
+	const float moveDuration_ = 3.2f;
 	bool isMoving_ = true;
 
 
@@ -82,5 +85,10 @@ private:
 	const float missileDuration_ = 1.0f;
 	bool isMissileMoving_ = true;
 	bool isMissileVisible_ = true;
+
+	bool isClear_ = true;
+	bool isDoor_ = true;
+	float doorTimer_ = 0.0f;
+	const float doorDuration_ = 2.0f;
 };
 

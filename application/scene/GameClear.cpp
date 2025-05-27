@@ -23,7 +23,16 @@ void GameClear::Initialize() {
 	spotLight->cosAngle_ = 0.2f;
 	spotLight->cosFalloffStart_;
 
-
+	mvSpotLight = std::make_unique<SpotLight>();
+	mvSpotLight->Initialize();
+	mvSpotLight->direction_ = { 0.0f,-1.0f,0.0f };
+	mvSpotLight->position_ = { 0.0f,3.0f,-1.0f };
+	mvSpotLight->intensity_ = 11.0f;
+	mvSpotLight->decay_ = 0.87f;
+	mvSpotLight->distance_ = 4800.0f;
+	mvSpotLight->cosAngle_ = 0.2f;
+	mvSpotLight->cosFalloffStart_;
+	mvSpotLight->color_ = { 0.925f, 0.498f, 0.118f, 1.0f };
 
 
 
@@ -44,11 +53,12 @@ void GameClear::Initialize() {
 	//model
 
 	ModelManager::GetInstance()->LoadModel("scene/MWbody.obj");
-	ModelManager::GetInstance()->LoadModel("player/Microwave_door.obj");
+	ModelManager::GetInstance()->LoadModel("scene/MWdoor.obj");
 	ModelManager::GetInstance()->LoadModel("scene/dish.obj");
 	ModelManager::GetInstance()->LoadModel("scene/Clear.obj");
 	ModelManager::GetInstance()->LoadModel("Spawn/Spawn.obj");
 	ModelManager::GetInstance()->LoadModel("missile.obj");
+	ModelManager::GetInstance()->LoadModel("scene/MWScenen.obj");
 
 	mwbody_ = std::make_unique<Object3d>();
 	mwbody_->Initialize(Object3dCommon::GetInstance());
@@ -56,7 +66,7 @@ void GameClear::Initialize() {
 
 	mwdoor_ = std::make_unique<Object3d>();
 	mwdoor_->Initialize(Object3dCommon::GetInstance());
-	mwdoor_->SetModel("player/Microwave_door.obj");
+	mwdoor_->SetModel("scene/MWdoor.obj");
 
 	mwdish_ = std::make_unique<Object3d>();
 	mwdish_->Initialize(Object3dCommon::GetInstance());
@@ -74,6 +84,10 @@ void GameClear::Initialize() {
 	missileModel_->Initialize(Object3dCommon::GetInstance());
 	missileModel_->SetModel("missile.obj");
 
+	mvSceneModel_ = std::make_unique<Object3d>();
+	mvSceneModel_->Initialize(Object3dCommon::GetInstance());
+	mvSceneModel_->SetModel("scene/MWScenen.obj");
+
 	// 初期位置を設定
 	mwbodyTransform_ = std::make_unique<WorldTransform>();
 	mwbodyTransform_->Initialize();
@@ -90,7 +104,8 @@ void GameClear::Initialize() {
 
 	clearTransform_ = std::make_unique<WorldTransform>();
 	clearTransform_->Initialize();
-	clearTransform_->transform.translate = { 0.0f, 1.0f , 1.0f };
+	clearTransform_->transform.translate = { 0.9f, 0.6f , 0.2f };
+	clearTransform_->transform.scale = { 0.5f, 0.5f , 1.0f };
 
 	spawnTransform_ = std::make_unique<WorldTransform>();
 	spawnTransform_->Initialize();
@@ -101,6 +116,9 @@ void GameClear::Initialize() {
 	missileTransform_->transform.translate = { 3.6f, 50.7f , 38.3f };
 	missileTransform_->transform.rotate = { 0.1f, 1.6f, -1.0f };
 
+	mvSceneTransform_ = std::make_unique<WorldTransform>();
+	mvSceneTransform_->Initialize();
+	mvSceneTransform_->transform.translate = { 0.0f, 0.0f , 0.0f };
 
 	ParticleManager::GetInstance()->SetBlendMode("Add");
 	// パーティクルの初期化
@@ -123,8 +141,8 @@ void GameClear::Initialize() {
 
 	mwdoorTransform_->SetParent(mwbodyTransform_.get());
 	mwdishTransform_->SetParent(mwbodyTransform_.get());
-	//clearTransform_->SetParent(mwbodyTransform_.get());
-
+	clearTransform_->SetParent(mwdishTransform_.get());
+	mvSceneTransform_->SetParent(mwdoorTransform_.get());
 	
 
 
@@ -141,6 +159,7 @@ void GameClear::Update() {
 	directionalLight->Update();
 	pointLight->Update();
 	spotLight->Update();
+	mvSpotLight->Update();
 
 	switch (phase_)
 	{
@@ -155,9 +174,9 @@ void GameClear::Update() {
 		break;
 	case Phase::kMain:
 
-		UpdateMoveMwbody();
-
-		//ParticleManager::GetInstance()->Update();
+		//UpdateMoveMwbody();
+		//UpdateMoveClear();
+		ParticleManager::GetInstance()->Update();
 
 		UpdateMissileFlight();
 
@@ -184,6 +203,10 @@ void GameClear::Update() {
 		missileTransform_->UpdateMatrix();// 行列更新
 		missileModel_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
 		missileModel_->Update();// 更新
+
+		mvSceneTransform_->UpdateMatrix();// 行列更新
+		mvSceneModel_->SetLocalMatrix(MakeIdentity4x4());// ローカル行列を単位行列に
+		mvSceneModel_->Update();// 更新
 
 #ifdef _DEBUG
 		ImGui::Begin("Model Transform Editor");
@@ -226,6 +249,22 @@ void GameClear::Update() {
 			ImGui::DragFloat3("Scale##missile", &missileTransform_->transform.scale.x, 0.01f);
 		}
 
+		if (ImGui::CollapsingHeader("MW Scene")) {
+			ImGui::DragFloat3("Position##MWScenen", &mvSceneTransform_->transform.translate.x, 0.1f);
+			ImGui::DragFloat3("Rotation##MWScenen", &mvSceneTransform_->transform.rotate.x, 0.1f);
+			ImGui::DragFloat3("Scale##MWScenen", &mvSceneTransform_->transform.scale.x, 0.01f);
+		}
+
+		if (ImGui::CollapsingHeader("mvSpotLight Light")) {
+			ImGui::DragFloat3("mvSpotLight Position", &mvSpotLight->position_.x, 1.0f);
+			ImGui::DragFloat3("mvSpotLight Direction", &mvSpotLight->direction_.x, 0.05f);
+			ImGui::DragFloat("Intensity", &mvSpotLight->intensity_, 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat("Decay", &mvSpotLight->decay_, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("Distance", &mvSpotLight->distance_, 1.0f, 0.0f, 10000.0f);
+			ImGui::DragFloat("CosAngle", &mvSpotLight->cosAngle_, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("FalloffStart", &mvSpotLight->cosFalloffStart_, 0.01f, 0.0f, 1.0f);
+			ImGui::ColorEdit3("Color", &mvSpotLight->color_.x);
+		}
 		ImGui::End();
 #endif
 		if (Input::GetInstance()->Triggerkey(DIK_RETURN) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
@@ -273,22 +312,23 @@ void GameClear::Draw() {
 	mwdoor_->Draw(*mwdoorTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(),
 		*directionalLight, *pointLight, *spotLight);
 	mwdish_->Draw(*mwdishTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(),
-		*directionalLight, *pointLight, *spotLight);
+		*directionalLight, *pointLight, *mvSpotLight);
 	clearModel_->Draw(*clearTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(),
-		*directionalLight, *pointLight, *spotLight);
+		*directionalLight, *pointLight, *mvSpotLight);
 	if (isMissileVisible_) {
 	spawnModel_->Draw(*spawnTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(),
 		*directionalLight, *pointLight, *spotLight);
 	missileModel_->Draw(*missileTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(),
 		*directionalLight, *pointLight, *spotLight);
 	}
-
+	mvSceneModel_->Draw(*mvSceneTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(),
+		*directionalLight, *pointLight, *mvSpotLight);
 
 	DrawForegroundSprite();
 
 	fade_->Draw();
 
-	//ParticleManager::GetInstance()->Draw("Resources/circle.png");
+	ParticleManager::GetInstance()->Draw("Resources/circle.png");
 }
 
 void GameClear::UpdateMoveMwbody() {
@@ -303,7 +343,7 @@ void GameClear::UpdateMoveMwbody() {
 
 	// LERP 
 	Vector3 startPos = { 0.0f, 1.0f, 1.0f };
-	Vector3 endPos = { -0.5f, -0.8f, -8.0f };
+	Vector3 endPos = { -0.0f, -0.8f, -11.8f };
 	Vector3 newPos = {
 		startPos.x + (endPos.x - startPos.x) * t,
 		startPos.y + (endPos.y - startPos.y) * t,
@@ -311,14 +351,7 @@ void GameClear::UpdateMoveMwbody() {
 	};
 	mwbodyTransform_->transform.translate = newPos;
 
-	Vector3 startRot = { 0.0f, 3.14f, 0.0f };
-	Vector3 endRot = { 0.0f, 3.34f, 0.0f };
-	Vector3 newRot = {
-		startRot.x + (endRot.x - startRot.x) * t,
-		startRot.y + (endRot.y - startRot.y) * t,
-		startRot.z + (endRot.z - startRot.z) * t
-	};
-	mwbodyTransform_->transform.rotate = newRot;
+	
 }
 
 void GameClear::UpdateMissileFlight() {
@@ -356,5 +389,33 @@ void GameClear::UpdateMissileFlight() {
 	};
 	missileTransform_->transform.rotate = newRot;
 
+}
+
+void GameClear::UpdateMoveClear() {
+	if (isClear_) {
+	mwdishTransform_->transform.rotate.y += 0.05f;
+	if (mwdishTransform_->transform.rotate.y >= 12.65) {
+		mwdishTransform_->transform.rotate.y = 12.65f;
+		isClear_ = false;
+		}
+	}
+	if (!isClear_) {
+		if (isDoor_) {
+		doorTimer_ += 1.0f / 60.0f;
+		float t = doorTimer_ / doorDuration_;
+
+		Vector3 startRot = { 0.0f, 0.0f, 0.0f };
+		Vector3 endRot = { 0.0f, 3.0f, 0.0f };
+		Vector3 newRot = {
+			startRot.x + (endRot.x - startRot.x) * t,
+			startRot.y + (endRot.y - startRot.y) * t,
+			startRot.z + (endRot.z - startRot.z) * t
+			};
+		mwdoorTransform_->transform.rotate = newRot;
+		}
+		if (doorTimer_ >= doorDuration_) {
+			isDoor_ = false;
+		}
+	}
 }
 
