@@ -523,7 +523,9 @@ void Player::UpdateMachineGunAndHeat() {
 		}
 		// 煙を出す
 		if (smokeEmitter_) {
-			smokeEmitter_->SetPosition(machineGunHeadTransform_->GetWorldPosition());
+
+			Vector3 smokePosition = machineGunHeadTransform_->GetWorldPosition();
+			smokeEmitter_->SetPosition(smokePosition);
 			smokeEmitter_->Update();  // 一定間隔でEmitしてくれる
 		}
 	} else {
@@ -771,8 +773,8 @@ void Player::ShootMachineGun() {
 	machineGunBullets_.push_back(std::move(bullet));
 
 	// 発射エフェクトもマシンガンヘッドに出すように変更（任意）
-	explosionEmitter_->SetPosition(bulletPosition);
-	explosionEmitter_->Emit();
+	//explosionEmitter_->SetPosition(bulletPosition);
+	//explosionEmitter_->Emit();
 }
 
 

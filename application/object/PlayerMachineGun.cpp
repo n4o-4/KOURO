@@ -128,7 +128,7 @@ void PlayerMachineGun::OnCollisionEnter(BaseObject *other) {
 	// 敵接触
 	if (BaseEnemy *enemy = dynamic_cast<BaseEnemy *>(other)) {
 
-		particleEmitter_->Emit();
+		//particleEmitter_->Emit();
 
 		hitSprite_->SetPosition(worldTransform_->transform.translate);
 		hitSprite_->Emit();
