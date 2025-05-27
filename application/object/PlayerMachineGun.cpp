@@ -68,7 +68,7 @@ void PlayerMachineGun::Update() {
 void PlayerMachineGun::Draw(ViewProjection viewProjection, DirectionalLight directionalLight,
 							PointLight pointLight, SpotLight spotLight) {
 	if (isActive_) {
-		model_->Draw(*worldTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
+		//model_->Draw(*worldTransform_.get(), viewProjection, directionalLight, pointLight, spotLight);
 	}
 }
 
