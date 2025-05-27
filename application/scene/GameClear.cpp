@@ -120,7 +120,7 @@ void GameClear::Initialize() {
 	mvSceneTransform_->Initialize();
 	mvSceneTransform_->transform.translate = { 0.0f, 0.0f , 0.0f };
 
-	ParticleManager::GetInstance()->SetBlendMode("Add");
+
 	// パーティクルの初期化
 	ParticleManager::GetInstance()->CreateParticleGroup("explosion", "Resources/circle.png", ParticleManager::ParticleType::Normal);
 	explosionEmitter_ = std::make_unique<ParticleEmitter>();
@@ -130,7 +130,9 @@ void GameClear::Initialize() {
 	explosionEmitter_->SetParticleCount(100);
 	explosionEmitter_->SetFrequency(0.04f);
 	explosionEmitter_->SetLifeTimeRange({ 0.5f, 1.0f }); // 寿命を短くする
-	explosionEmitter_->SetScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
+	explosionEmitter_->SetStartScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
+	explosionEmitter_->SetFinishScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
+
 	explosionEmitter_->SetVelocityRange(ParticleManager::Vec3Range({ -100.0f,-100.0f,-100.0f }, { 100.0f,100.0f,100.0f }));
 
 
