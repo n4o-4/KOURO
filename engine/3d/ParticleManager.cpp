@@ -745,6 +745,8 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 		newParticleGroup.type = type;
 
 
+		newParticleGroup.kNumInstance = 0;
+
 		particleGroups[name] = newParticleGroup;
 	}
 }
