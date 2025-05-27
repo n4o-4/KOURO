@@ -157,7 +157,7 @@ void GameClear::Update() {
 
 		UpdateMoveMwbody();
 
-		ParticleManager::GetInstance()->Update();
+		//ParticleManager::GetInstance()->Update();
 
 		UpdateMissileFlight();
 
@@ -288,7 +288,7 @@ void GameClear::Draw() {
 
 	fade_->Draw();
 
-	ParticleManager::GetInstance()->Draw("Resources/circle.png");
+	//ParticleManager::GetInstance()->Draw("Resources/circle.png");
 }
 
 void GameClear::UpdateMoveMwbody() {
