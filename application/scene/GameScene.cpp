@@ -181,13 +181,13 @@ void GameScene::Initialize() {
 	hitEffect1_Circle_->SetParticleCount(40);
 	//hitEffect1_Circle_->SetVelocityRange({ {-0.5f,-0.5f,-0.5f },{0.5f,0.5f,0.5f} });
 
-	hitEffect1_Circle_->SetTranslateRange({ {-0.1f,-0.1f,-0.1f},{0.1f,0.1f,0.1f} });
+	hitEffect1_Circle_->SetTranslateRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
 
 	hitEffect1_Circle_->SetStartScaleRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
 	hitEffect1_Circle_->SetFinishScaleRange({ {0.5f,0.05f,0.5f},{0.5f,0.05f,0.5f} });
 
-	hitEffect1_Circle_->SetStartColorRange({ {0.024f, 0.318f, 1.0f, 1.0f}, {0.024f, 0.318f, 1.0f, 1.0f} });
-	hitEffect1_Circle_->SetFinishColorRange({ {0.024f, 0.318f, 1.0f, 0.0f},{0.024f, 0.318f, 1.0f, 0.0f} });
+	hitEffect1_Circle_->SetStartColorRange({ {0.3f, 0.5f, 1.0f, 1.0f}, {0.3f, 0.5f, 1.0f, 1.0f} });
+	hitEffect1_Circle_->SetFinishColorRange({ {0.3f, 0.5f, 1.0f, 0.0f}, {0.3f, 0.5f, 1.0f, 0.0f} });
 
 	hitEffect1_Circle_->SetLifeTimeRange({ 0.5f,0.5f });
 	hitEffect1_Circle_->SetFrequency(1.0f);

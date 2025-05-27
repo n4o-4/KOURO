@@ -184,6 +184,7 @@ void ParticleManager::Update()
 				Vector4 color = Vect4::Lerp((*particleIterator).startColor, (*particleIterator).finishColor, lifeRatio);
 
 				(*particleIterator).color = color;
+
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].color = (*particleIterator).color;
 
 				if (particleGroup->enableDeceleration)
