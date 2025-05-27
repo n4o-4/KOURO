@@ -12,6 +12,14 @@ void LinearFog::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	CreateMaterial();
 
 	data_->projectionInverse = MakeIdentity4x4();
+
+	data_->color = { 1.0f, 1.0f, 1.0f, 1.0f }; // フォグの色
+
+	data_->strength = 0.001f; // フォグの強さ
+
+	data_->start = 10.0f; // フォグの開始位置
+
+	data_->end = 200.0f; // フォグの終了位置
 }
 
 void LinearFog::Update()

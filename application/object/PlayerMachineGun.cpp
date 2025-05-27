@@ -28,7 +28,25 @@ PlayerMachineGun::PlayerMachineGun(const Vector3 &position, const Vector3 &veloc
 
 	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}));
 
-	particleEmitter_->SetScaleRange(ParticleManager::Vec3Range({0.4f, 0.4f, 0.4f}, {0.4f, 0.4f, 0.4f}));
+	particleEmitter_->SetStartScaleRange(ParticleManager::Vec3Range({ 0.4f, 0.4f,0.4f }, { 0.4f, 0.4f,0.4f }));
+
+	particleEmitter_->SetFinishScaleRange(ParticleManager::Vec3Range({ 0.4f, 0.4f,0.4f }, { 0.4f, 0.4f,0.4f }));
+
+	ParticleManager::GetInstance()->CreateParticleGroup("hitSprite", "Resources/gradationLine.png", ParticleManager::ParticleType::Ring);
+
+	ParticleManager::GetInstance()->GetParticleGroup("hitSprite")->enableBillboard = true;
+
+	hitSprite_ = std::make_unique<ParticleEmitter>();
+	hitSprite_->Initialize("hitSprite");
+	hitSprite_->SetParticleCount(1);  // デフォルト発生数
+
+	hitSprite_->SetLifeTimeRange(ParticleManager::Range({ 0.5f, 0.5f }));
+	hitSprite_->SetStartColorRange(ParticleManager::ColorRange({ 1.0f, 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
+	hitSprite_->SetFinishColorRange(ParticleManager::ColorRange({ 1.0f, 1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 0.0f }));
+
+	hitSprite_->SetVelocityRange(ParticleManager::Vec3Range({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }));
+	hitSprite_->SetStartScaleRange(ParticleManager::Vec3Range({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }));
+	hitSprite_->SetStartScaleRange(ParticleManager::Vec3Range({ 15.0f,15.0f,15.0f, }, { 15.0f,15.0f,15.0f }));
 }
 
 void PlayerMachineGun::Update() {
@@ -107,12 +125,16 @@ std::unique_ptr<PlayerMachineGun> PlayerMachineGun::Shoot(
 ///=============================================================================
 void PlayerMachineGun::OnCollisionEnter(BaseObject *other) {
 	// 敵接触
-	if (Enemy *enemy = dynamic_cast<Enemy *>(other)) {
+	if (BaseEnemy *enemy = dynamic_cast<BaseEnemy *>(other)) {
+
+		//particleEmitter_->Emit();
+
+		hitSprite_->SetPosition(worldTransform_->transform.translate);
+		hitSprite_->Emit();
+
 		//---------------------------------------
 		// 弾を消す
 		isActive_ = false;
-
-		particleEmitter_->Emit();
 	}
 }
 

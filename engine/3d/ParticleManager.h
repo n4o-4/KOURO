@@ -75,7 +75,8 @@ public:
 
 	struct Particle {
 		Transform transform;
-		Vector3 baseScale;
+		Vector3 startScale;
+		Vector3 finishScale;
 		Vector3 velocity;
 		Vector4 color;
 		float lifeTime;
@@ -96,11 +97,15 @@ public:
 		Material* material;
 
 		ParticleType type;
+
+		BlendMode blendMode = BlendMode::kNone; // ブレンドモード
+
 		bool enableBillboard = false;
-		
 		bool sameScale = true;
 		bool enableDeceleration = false; // 減速を有効にするかどうか
-		float speed = 100.0f; // パーティクルの速度
+		float speed = 20.0f; // パーティクルの速度
+
+		
 
 		bool enablePulse = false; // 輝きを有効にするかどうか
 
@@ -124,6 +129,18 @@ public:
 		Vector3 max;
 	};
 
+	struct ParticleStates
+	{
+		ColorRange startColorRange;     // 発生時の色の範囲
+		ColorRange finishColorRange;    // 終了時の色の範囲
+		Vec3Range velocityRange;        // 速度の範囲
+		Vec3Range rotateRange;          // 回転の範囲
+		Vec3Range startScaleRange;      // 発生時のスケールの範囲
+		Vec3Range finishScaleRange;     // 終了時のスケールの範囲
+		Vec3Range translateRange;       // 発生位置の範囲
+		Range lifeTimeRange;            // ライフタイムの範囲
+	};
+
 public:
 	static ParticleManager* GetInstance();
 
@@ -136,9 +153,9 @@ public:
 	// パーティクルグループの生成関数
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleType type);
 
-	void Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange, Range lifeTimeRange);
+	void Emit(const std::string name, const Vector3& position, uint32_t count, ParticleStates states);
 
-	void HitEmit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Range lifeTimeRange);
+	void RadialEmit(const std::string name, const Vector3& position, uint32_t count, ParticleStates states);
 
 	std::unordered_map<std::string, ParticleGroup> GetParticleGroups() { return particleGroups; }
 
@@ -169,8 +186,6 @@ public:
 			group.second.instancingData = nullptr;  // インスタンシングデータのポインタをnullptrに設定
 		}
 	}
-
-	void SetBlendMode(std::string sBlendMode);
 
 	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
 
@@ -213,9 +228,9 @@ private:
 
 	void calculationBillboardMatrix();
 
-	Particle MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange,Range lifeTimeRange,bool sameScale, float speed);
+	Particle MakeNewParticle(const Vector3& translate, ParticleStates states,bool sameScale, float speed);
 
-	Particle MakeNewHitParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Range lifeTimeRange);
+	Particle MakeNewRadialParticle(const Vector3& translate, ParticleStates states, bool sameScale, float speed);
 
 	private:
 
@@ -238,8 +253,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState = nullptr;
 
 	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, size_t(BlendMode::kCountOfBlendMode)> sPipeLineStates_;
-
-	BlendMode blendMode = BlendMode::kAdd;
 
 	// 汎用Vertexリソース
 	ParticleModel::ModelData modelData;

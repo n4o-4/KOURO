@@ -96,6 +96,47 @@ void ParticleManager::Update()
 					(*particleIterator).velocity += accelerationField.acceleration * kDeltaTime;
 				}
 
+				float lifeRatio = (*particleIterator).currentTime / (*particleIterator).lifeTime;
+
+				// scale
+				Vector3 baseScale = Lerp((*particleIterator).startScale, (*particleIterator).finishScale, lifeRatio);
+				
+				if (particleGroup->enablePulse)
+				{
+					float t = (*particleIterator).currentTime / (*particleIterator).lifeTime;
+					t = std::clamp(t, 0.0f, 1.0f);
+
+					// 揺れを始めるのは寿命の80%以降
+					float expandStartT = 0.65f;
+
+					if (t >= expandStartT) {
+						float localT = (t - expandStartT) / (1.0f - expandStartT);  // 0〜1
+
+						float frequency = 6.0f;  // 揺れの回数
+						float amplitude = 1.0f;  // 最大振幅（scaleが0まで下がる）
+
+						// sin波（0〜±1）で揺れ
+						float wave = sinf(localT * frequency * 2.0f * 3.14159f);  // -1〜1
+
+						// 0〜1で上下するようにする（絶対値を取る）
+						float scaleFactor = 1.0f - fabsf(wave) * amplitude;
+
+						// baseScale に掛ける
+						(*particleIterator).transform.scale = baseScale * scaleFactor;
+					}
+					else {
+						// 通常スケール
+						(*particleIterator).transform.scale = baseScale;
+					}
+				}
+				else
+				{
+					// 通常スケール
+					(*particleIterator).transform.scale = baseScale;
+				}
+
+
+				// translate
 				(*particleIterator).transform.translate += (*particleIterator).velocity * kDeltaTime;
 				(*particleIterator).currentTime += kDeltaTime;
 
@@ -138,7 +179,7 @@ void ParticleManager::Update()
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].World = worldMatrix;
 				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].WVP = worldViewProjectionMatrix;
 
-				float lifeRatio = (*particleIterator).currentTime / (*particleIterator).lifeTime;
+				
 
 				Vector4 color = Vect4::Lerp((*particleIterator).startColor, (*particleIterator).finishColor, lifeRatio);
 
@@ -150,37 +191,7 @@ void ParticleManager::Update()
 					DecelerationUpdate(*particleIterator);
 				}
 
-				// 通常スケール
-				(*particleIterator).transform.scale = (*particleIterator).baseScale;
-
-				if (particleGroup->enablePulse)
-				{
-					float t = (*particleIterator).currentTime / (*particleIterator).lifeTime;
-					t = std::clamp(t, 0.0f, 1.0f);
-
-					// 揺れを始めるのは寿命の80%以降
-					float expandStartT = 0.65f;
-
-					if (t >= expandStartT) {
-						float localT = (t - expandStartT) / (1.0f - expandStartT);  // 0〜1
-
-						float frequency = 6.0f;  // 揺れの回数
-						float amplitude = 1.0f;  // 最大振幅（scaleが0まで下がる）
-
-						// sin波（0〜±1）で揺れ
-						float wave = sinf(localT * frequency * 2.0f * 3.14159f);  // -1〜1
-
-						// 0〜1で上下するようにする（絶対値を取る）
-						float scaleFactor = 1.0f - fabsf(wave) * amplitude;
-
-						// baseScale に掛ける
-						(*particleIterator).transform.scale = (*particleIterator).baseScale * scaleFactor;
-					}
-					else {
-						// 通常スケール
-						(*particleIterator).transform.scale = (*particleIterator).baseScale;
-					}
-				}
+				
 				
 				++particleGroupIterator->second.kNumInstance;
 			}
@@ -197,17 +208,15 @@ void ParticleManager::Draw(std::string filePath)
 	// ルートシグネチャを設定
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 
-	// PSOを設定
-	dxCommon_->GetCommandList()->SetPipelineState(sPipeLineStates_[static_cast<int>(blendMode)].Get());
-
-	
-
 	// VBVを設定
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// 
 	for (std::unordered_map<std::string, ParticleGroup>::iterator particleGroupIterator = particleGroups.begin(); particleGroupIterator != particleGroups.end();) {
 		
+		// PSOを設定
+		dxCommon_->GetCommandList()->SetPipelineState(sPipeLineStates_[static_cast<int>(particleGroupIterator->second.blendMode)].Get());
+
 		// 三角色
 		particleGroupIterator->second.material->color = { 1.0f, 1.0f, 1.0f, 1.0f, };
 		particleGroupIterator->second.material->enableLighting = false;
@@ -250,39 +259,6 @@ void ParticleManager::Draw(std::string filePath)
 		++particleGroupIterator;
 	}
 
-}
-
-void ParticleManager::SetBlendMode(std::string sBlendMode)
-{
-
-	if (sBlendMode == "None")
-	{
-		blendMode = BlendMode::kNone;
-	}
-	else if (sBlendMode == "Normal")
-	{
-		blendMode = BlendMode::kNormal;
-	}
-	else if(sBlendMode == "Add")
-	{
-		blendMode = BlendMode::kAdd;
-	}
-	else if (sBlendMode == "Subtract")
-	{
-		blendMode = BlendMode::kSubtract;
-	}
-	else if (sBlendMode == "Multiply")
-	{
-		blendMode = BlendMode::kMultiply;
-	}
-	else if (sBlendMode == "Screen")
-	{
-		blendMode = BlendMode::kScreen;
-	}
-	else if (sBlendMode == "Alpha")
-	{
-		blendMode = BlendMode::kAlpla;
-	}
 }
 
 void ParticleManager::CreateRootSignature()
@@ -488,10 +464,27 @@ void ParticleManager::CreatePipeline()
 			blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
 			blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 			blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ONE;
+			//blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
 
 			blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
 			blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 			blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+			//blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
+
+
+			///ChatGPT
+			//// RGBチャンネルのブレンド（加算）
+			//blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;  // ソース色にアルファを乗算
+			//blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;       // 背景色をそのまま
+			//blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;      // 加算合成
+
+			//// アルファチャンネルのブレンド（通常あまり重要ではないが、同様に設定）
+			//blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ZERO;
+			//blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ONE;
+			//blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+
+
+			/// Dest = 背景
 
 			break;
 
@@ -744,6 +737,9 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 
 		newParticleGroup.type = type;
 
+		newParticleGroup.kNumInstance = 0;
+
+		newParticleGroup.blendMode = BlendMode::kAdd;
 
 		newParticleGroup.kNumInstance = 0;
 
@@ -763,20 +759,28 @@ void ParticleManager::calculationBillboardMatrix()
 	billboardMatrix.m[3][2] = 0.0f;
 }
 
-ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange ,Range lifeTimeRange,bool sameScale,float speed)
+ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& translate, ParticleStates states,bool sameScale,float speed)
 {
 		// 新しいパーティクルの生成
 		std::unique_ptr<Particle> newParticle;
 
 		newParticle = std::make_unique<Particle>();
 
-		// positionの設定
-		std::uniform_real_distribution<float> distribution(0.0f,0.0f);
-		Vector3 randomTranslate = { distribution(randomEngine),distribution(randomEngine) ,distribution(randomEngine) };
 
-		// rotateの設定
-		std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
-		float rotate = distRotate(randomEngine);
+
+		// positionの設定
+		std::uniform_real_distribution<float> distTranslateX(states.translateRange.min.x, states.translateRange.max.x);
+		std::uniform_real_distribution<float> distTranslateY(states.translateRange.min.y, states.translateRange.max.y);
+		std::uniform_real_distribution<float> distTranslateZ(states.translateRange.min.z, states.translateRange.max.z);
+
+		Vector3 randomTranslate = { distTranslateX(randomEngine),distTranslateY(randomEngine) ,distTranslateZ(randomEngine) };
+
+		std::uniform_real_distribution<float> distRotateX(states.rotateRange.min.x, states.rotateRange.max.x);
+		std::uniform_real_distribution<float> distRotateY(states.rotateRange.min.y, states.rotateRange.max.y);
+		std::uniform_real_distribution<float> distRotateZ(states.rotateRange.min.z, states.rotateRange.max.z);
+
+		Vector3 randomRotate = { distRotateX(randomEngine),distRotateY(randomEngine),distRotateZ(randomEngine) };
+
 
 
 		// scaleの設定
@@ -784,30 +788,41 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		// 同じスケールにするかどうか
 		if (sameScale)
 		{
-			std::uniform_real_distribution<float> distScale(scaleRange.min.x, scaleRange.max.x);
+			// 初期
+			std::uniform_real_distribution<float> distStartScale(states.startScaleRange.min.x, states.startScaleRange.max.x);
+			float scale = distStartScale(randomEngine);
+			newParticle->startScale = { scale,scale,scale };
 
-			float scale = distScale(randomEngine);
+			// 終了
+			std::uniform_real_distribution<float> distFinishScale(states.finishScaleRange.min.x, states.finishScaleRange.max.x);
+			scale = distFinishScale(randomEngine);
+			newParticle->finishScale = { scale,scale,scale };
 
-			newParticle->baseScale = { scale,scale,scale };
 		}
 		else
 		{
-			std::uniform_real_distribution<float> distScaleX(scaleRange.min.x, scaleRange.max.x);
-			std::uniform_real_distribution<float> distScaleY(scaleRange.min.y, scaleRange.max.y);
-			std::uniform_real_distribution<float> distScaleZ(scaleRange.min.z, scaleRange.max.z);
+			std::uniform_real_distribution<float> distStartScaleX(states.startScaleRange.min.x, states.startScaleRange.max.x);
+			std::uniform_real_distribution<float> distStartScaleY(states.startScaleRange.min.y, states.startScaleRange.max.y);
+			std::uniform_real_distribution<float> distStartScaleZ(states.startScaleRange.min.z, states.startScaleRange.max.z);
 
-			newParticle->baseScale = { distScaleX(randomEngine),distScaleY(randomEngine),distScaleZ(randomEngine) };
+			newParticle->startScale = { distStartScaleX(randomEngine),distStartScaleY(randomEngine),distStartScaleZ(randomEngine) };
+
+			std::uniform_real_distribution<float> distFinishScaleX(states.finishScaleRange.min.x, states.finishScaleRange.max.x);
+			std::uniform_real_distribution<float> distFinishScaleY(states.finishScaleRange.min.y, states.finishScaleRange.max.y);
+			std::uniform_real_distribution<float> distFinishScaleZ(states.finishScaleRange.min.z, states.finishScaleRange.max.z);
+
+			newParticle->finishScale = { distFinishScaleX(randomEngine),distFinishScaleY(randomEngine),distFinishScaleZ(randomEngine) };
 		}
 
 		// transformの設定
 		
-		newParticle->transform.rotate = { 0.0f,0.0f,0.0f };
+		newParticle->transform.rotate = randomRotate;
 		newParticle->transform.translate = translate + randomTranslate;
 
 
-		std::uniform_real_distribution<float> distVelocityX(velocityRange.min.x, velocityRange.max.x);
-		std::uniform_real_distribution<float> distVelocityY(velocityRange.min.y, velocityRange.max.y);
-		std::uniform_real_distribution<float> distVelocityZ(velocityRange.min.z, velocityRange.max.z);
+		std::uniform_real_distribution<float> distVelocityX(states.velocityRange.min.x, states.velocityRange.max.x);
+		std::uniform_real_distribution<float> distVelocityY(states.velocityRange.min.y, states.velocityRange.max.y);
+		std::uniform_real_distribution<float> distVelocityZ(states.velocityRange.min.z, states.velocityRange.max.z);
 
 		// velocityの設定
 		newParticle->velocity = { distVelocityX(randomEngine),distVelocityY(randomEngine),distVelocityZ(randomEngine) };
@@ -819,28 +834,28 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		}
 		else if (length < std::numeric_limits<float>::epsilon()) {
 			// ゼロベクトルだった場合にデフォルトの速度を与えるなど
-			newParticle->velocity = { 1.0f, 0.0f, 0.0f }; // 例
+			newParticle->velocity = { 0.0f, 0.0f, 0.0f }; // 例
 		}
 
-		std::uniform_real_distribution<float> distTime(lifeTimeRange.min, lifeTimeRange.max);
+		std::uniform_real_distribution<float> distTime(states.lifeTimeRange.min, states.lifeTimeRange.max);
 
 		// ライフタイムの設定
 		newParticle->lifeTime = distTime(randomEngine);
 		newParticle->currentTime = 0.0f;
 
 		// 発生時の色の設定
-		std::uniform_real_distribution<float> startColorR(startColorRange.min.x, startColorRange.max.x);
-		std::uniform_real_distribution<float> startColorG(startColorRange.min.y, startColorRange.max.y);
-		std::uniform_real_distribution<float> startColorB(startColorRange.min.z, startColorRange.max.z);
-		std::uniform_real_distribution<float> startColorA(startColorRange.min.w, startColorRange.max.w);
+		std::uniform_real_distribution<float> startColorR(states.startColorRange.min.x, states.startColorRange.max.x);
+		std::uniform_real_distribution<float> startColorG(states.startColorRange.min.y, states.startColorRange.max.y);
+		std::uniform_real_distribution<float> startColorB(states.startColorRange.min.z, states.startColorRange.max.z);
+		std::uniform_real_distribution<float> startColorA(states.startColorRange.min.w, states.startColorRange.max.w);
 
 		Vector4 startColor = { startColorR(randomEngine),startColorG(randomEngine),startColorB(randomEngine),startColorA(randomEngine) };
 
 		// 終了時の色の設定
-		std::uniform_real_distribution<float> finishColorR(finishColorRange.min.x, finishColorRange.max.x);
-		std::uniform_real_distribution<float> finishColorG(finishColorRange.min.y, finishColorRange.max.y);
-		std::uniform_real_distribution<float> finishColorB(finishColorRange.min.z, finishColorRange.max.z);
-		std::uniform_real_distribution<float> finishColorA(finishColorRange.min.w, finishColorRange.max.w);
+		std::uniform_real_distribution<float> finishColorR(states.finishColorRange.min.x, states.finishColorRange.max.x);
+		std::uniform_real_distribution<float> finishColorG(states.finishColorRange.min.y, states.finishColorRange.max.y);
+		std::uniform_real_distribution<float> finishColorB(states.finishColorRange.min.z, states.finishColorRange.max.z);
+		std::uniform_real_distribution<float> finishColorA(states.finishColorRange.min.w, states.finishColorRange.max.w);
 
 		Vector4 finishColor = { finishColorR(randomEngine),finishColorG(randomEngine),finishColorB(randomEngine),finishColorA(randomEngine) };
 
@@ -850,53 +865,112 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		return *newParticle;
 }
 
-ParticleManager::Particle ParticleManager::MakeNewHitParticle(const Vector3& translate, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Range lifeTimeRange)
+ParticleManager::Particle ParticleManager::MakeNewRadialParticle(const Vector3& translate, ParticleStates states, bool sameScale, float speed)
 {
 	// 新しいパーティクルの生成
-	std::unique_ptr<Particle> newParticle;
+	std::unique_ptr<Particle> newParticle = std::make_unique<Particle>();
 
-	newParticle = std::make_unique<Particle>();
+	// 中心位置（エミッターの位置）
+	Vector3 center = translate;
 
-	std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
+	// ランダムな位置オフセット（中心からの距離）
+	std::uniform_real_distribution<float> distTranslateX(states.translateRange.min.x, states.translateRange.max.x);
+	std::uniform_real_distribution<float> distTranslateY(states.translateRange.min.y, states.translateRange.max.y);
+	std::uniform_real_distribution<float> distTranslateZ(states.translateRange.min.z, states.translateRange.max.z);
 
-	std::uniform_real_distribution<float> distScale(0.4f, 1.5f);
+	Vector3 offset = {
+		distTranslateX(randomEngine),
+		distTranslateY(randomEngine),
+		distTranslateZ(randomEngine)
+	};
 
-	// transformの設定
-	newParticle->transform.scale = { 0.05f,distScale(randomEngine),1.0f};
-	newParticle->transform.rotate = { 0.0f,0.0f,distRotate(randomEngine)};
-	newParticle->transform.translate = translate;
+	// パーティクルの位置（中心 + オフセット）
+	newParticle->transform.translate = center + offset;
 
-	std::uniform_real_distribution<float> distVelocityX(velocityRange.min.x, velocityRange.max.x);
-	std::uniform_real_distribution<float> distVelocityY(velocityRange.min.y, velocityRange.max.y);
-	std::uniform_real_distribution<float> distVelocityZ(velocityRange.min.z, velocityRange.max.z);
+	// 中心 → パーティクル方向ベクトル（XY平面を仮定）
+	Vector3 direction = Normalize(offset);
 
-	// velocityの設定
-	newParticle->velocity = { distVelocityX(randomEngine),distVelocityY(randomEngine),distVelocityZ(randomEngine) };
+	// 回転（Z軸）を方向に合わせて設定（XY平面の場合）
+	float angleZ = std::atan2(direction.y, direction.x);
+	newParticle->transform.rotate = { 0.0f, 0.0f, angleZ };
 
-	std::uniform_real_distribution<float> distTime(lifeTimeRange.min, lifeTimeRange.max);
+	// スケール設定（細長くする）
+	if (sameScale)
+	{
+		std::uniform_real_distribution<float> distStartScale(states.startScaleRange.min.x, states.startScaleRange.max.x);
+		float scale = distStartScale(randomEngine);
+		newParticle->startScale = { scale, scale * 0.1f, scale };
 
-	// ライフタイムの設定
+		std::uniform_real_distribution<float> distFinishScale(states.finishScaleRange.min.x, states.finishScaleRange.max.x);
+		scale = distFinishScale(randomEngine);
+		newParticle->finishScale = { scale, scale * 0.1f, scale };
+	}
+	else
+	{
+		std::uniform_real_distribution<float> distStartScaleX(states.startScaleRange.min.x, states.startScaleRange.max.x);
+		std::uniform_real_distribution<float> distStartScaleY(states.startScaleRange.min.y, states.startScaleRange.max.y);
+		std::uniform_real_distribution<float> distStartScaleZ(states.startScaleRange.min.z, states.startScaleRange.max.z);
+
+		newParticle->startScale = {
+			distStartScaleX(randomEngine),
+			distStartScaleY(randomEngine),
+			distStartScaleZ(randomEngine)
+		};
+
+		std::uniform_real_distribution<float> distFinishScaleX(states.finishScaleRange.min.x, states.finishScaleRange.max.x);
+		std::uniform_real_distribution<float> distFinishScaleY(states.finishScaleRange.min.y, states.finishScaleRange.max.y);
+		std::uniform_real_distribution<float> distFinishScaleZ(states.finishScaleRange.min.z, states.finishScaleRange.max.z);
+
+		newParticle->finishScale = {
+			distFinishScaleX(randomEngine),
+			distFinishScaleY(randomEngine),
+			distFinishScaleZ(randomEngine)
+		};
+	}
+
+	// velocity（速度）設定：中心→外方向に speed 倍のベクトル
+	newParticle->velocity = direction * 1.8f;
+
+	// 念のため、速度がゼロでないことを保証
+	float length = std::sqrt(newParticle->velocity.x * newParticle->velocity.x +
+		newParticle->velocity.y * newParticle->velocity.y +
+		newParticle->velocity.z * newParticle->velocity.z);
+
+	if (length < std::numeric_limits<float>::epsilon()) {
+		// ゼロベクトルだった場合にデフォルトの速度を与えるなど
+		newParticle->velocity = { 1.0f, 0.0f, 0.0f }; // 例
+		}
+
+	// ライフタイム設定
+	std::uniform_real_distribution<float> distTime(states.lifeTimeRange.min, states.lifeTimeRange.max);
 	newParticle->lifeTime = distTime(randomEngine);
 	newParticle->currentTime = 0.0f;
 
-	// 発生時の色の設定
-	std::uniform_real_distribution<float> startColorR(startColorRange.min.x, startColorRange.max.x);
-	std::uniform_real_distribution<float> startColorG(startColorRange.min.y, startColorRange.max.y);
-	std::uniform_real_distribution<float> startColorB(startColorRange.min.z, startColorRange.max.z);
-	std::uniform_real_distribution<float> startColorA(startColorRange.min.w, startColorRange.max.w);
+	// カラー（開始時）
+	std::uniform_real_distribution<float> startColorR(states.startColorRange.min.x, states.startColorRange.max.x);
+	std::uniform_real_distribution<float> startColorG(states.startColorRange.min.y, states.startColorRange.max.y);
+	std::uniform_real_distribution<float> startColorB(states.startColorRange.min.z, states.startColorRange.max.z);
+	std::uniform_real_distribution<float> startColorA(states.startColorRange.min.w, states.startColorRange.max.w);
 
-	Vector4 startColor = { startColorR(randomEngine),startColorG(randomEngine),startColorB(randomEngine),startColorA(randomEngine) };
+	newParticle->startColor = {
+		startColorR(randomEngine),
+		startColorG(randomEngine),
+		startColorB(randomEngine),
+		startColorA(randomEngine)
+	};
 
-	// 終了時の色の設定
-	std::uniform_real_distribution<float> finishColorR(finishColorRange.min.x, finishColorRange.max.x);
-	std::uniform_real_distribution<float> finishColorG(finishColorRange.min.y, finishColorRange.max.y);
-	std::uniform_real_distribution<float> finishColorB(finishColorRange.min.z, finishColorRange.max.z);
-	std::uniform_real_distribution<float> finishColorA(finishColorRange.min.w, finishColorRange.max.w);
+	// カラー（終了時）
+	std::uniform_real_distribution<float> finishColorR(states.finishColorRange.min.x, states.finishColorRange.max.x);
+	std::uniform_real_distribution<float> finishColorG(states.finishColorRange.min.y, states.finishColorRange.max.y);
+	std::uniform_real_distribution<float> finishColorB(states.finishColorRange.min.z, states.finishColorRange.max.z);
+	std::uniform_real_distribution<float> finishColorA(states.finishColorRange.min.w, states.finishColorRange.max.w);
 
-	Vector4 finishColor = { finishColorR(randomEngine),finishColorG(randomEngine),finishColorB(randomEngine),finishColorA(randomEngine) };
-
-	newParticle->startColor = startColor;
-	newParticle->finishColor = finishColor;
+	newParticle->finishColor = {
+		finishColorR(randomEngine),
+		finishColorG(randomEngine),
+		finishColorB(randomEngine),
+		finishColorA(randomEngine)
+	};
 
 	return *newParticle;
 }
@@ -920,24 +994,27 @@ void ParticleManager::DecelerationUpdate(Particle& particle)
 	particle.velocity -= deceleratedVelocity;
 }
 
-void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Vec3Range scaleRange, Range lifeTimeRange)
+void ParticleManager::Emit(const std::string name, const Vector3& position, uint32_t count, ParticleStates states)
 {
 	if (particleGroups.find(name) != particleGroups.end()) {
 		for (uint32_t currentCount = 0; currentCount < count;) {
 			particleGroups.find(name)->second.particles.push_back
 			(
-				MakeNewParticle(position,startColorRange,finishColorRange,velocityRange, scaleRange,lifeTimeRange,particleGroups.find(name)->second.sameScale, particleGroups.find(name)->second.speed)
+				MakeNewParticle(position,states,particleGroups.find(name)->second.sameScale, particleGroups.find(name)->second.speed)
 			);
 			++currentCount;
 		}
 	}
 }
 
-void ParticleManager::HitEmit(const std::string name, const Vector3& position, uint32_t count, ColorRange startColorRange, ColorRange finishColorRange, Vec3Range velocityRange, Range lifeTimeRange)
+void ParticleManager::RadialEmit(const std::string name, const Vector3& position, uint32_t count, ParticleStates states)
 {
 	if (particleGroups.find(name) != particleGroups.end()) {
 		for (uint32_t currentCount = 0; currentCount < count;) {
-			particleGroups.find(name)->second.particles.push_back(MakeNewHitParticle(position, startColorRange, finishColorRange, velocityRange, lifeTimeRange));
+			particleGroups.find(name)->second.particles.push_back
+			(
+				MakeNewRadialParticle(position, states, particleGroups.find(name)->second.sameScale, particleGroups.find(name)->second.speed)
+			);
 			++currentCount;
 		}
 	}

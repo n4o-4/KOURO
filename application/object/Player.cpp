@@ -63,6 +63,12 @@ void Player::Initialize() {
 	doorObjectTransform_->SetParent(objectTransform_.get());
 	machineGunBodyTransform_->SetParent(objectTransform_.get());
 	machineGunHeadTransform_->SetParent(machineGunBodyTransform_.get());
+	
+	ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+
+	ParticleManager::GetInstance()->CreateParticleGroup("OverHeat", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+
+	ParticleManager::GetInstance()->GetParticleGroup("OverHeat")->enableBillboard = true;
 
 	explosionEmitter_ = std::make_unique<ParticleEmitter>();
 	explosionEmitter_->Initialize("missileSmoke");
@@ -71,14 +77,14 @@ void Player::Initialize() {
 	explosionEmitter_->SetLifeTimeRange({1.0f,1.0f});
 
 	smokeEmitter_ = std::make_unique<ParticleEmitter>();
-	smokeEmitter_->Initialize("missileSmoke");
+	smokeEmitter_->Initialize("OverHeat");
 	smokeEmitter_->SetParticleCount(4);
 	smokeEmitter_->SetFrequency(0.1f);
 	smokeEmitter_->SetLifeTimeRange( {0.3f, 0.5f} );
 	smokeEmitter_->SetStartColorRange(
 		ParticleManager::ColorRange(
-			{0.3f,0.3f,0.3f,0.3f},
-			{0.5f,0.5f,0.5f,0.5f}
+			{1.0f,1.0f,1.0f,0.3f},
+			{1.0f,1.0f,1.0f,0.5f}
 		)
 	);
 	smokeEmitter_->SetFinishColorRange(
@@ -93,6 +99,7 @@ void Player::Initialize() {
 			{ 0.0f,6.0f,1.0f }
 		)
 	);
+
 	BaseObject::Initialize(objectTransform_->transform.translate, 1.0f);
 
 	AudioManager::GetInstance()->SoundLoadFile("Resources/se/missile.mp3");
@@ -516,7 +523,9 @@ void Player::UpdateMachineGunAndHeat() {
 		}
 		// 煙を出す
 		if (smokeEmitter_) {
-			smokeEmitter_->SetPosition(machineGunHeadTransform_->GetWorldPosition());
+
+			Vector3 smokePosition = machineGunHeadTransform_->GetWorldPosition();
+			smokeEmitter_->SetPosition(smokePosition);
 			smokeEmitter_->Update();  // 一定間隔でEmitしてくれる
 		}
 	} else {
@@ -764,8 +773,8 @@ void Player::ShootMachineGun() {
 	machineGunBullets_.push_back(std::move(bullet));
 
 	// 発射エフェクトもマシンガンヘッドに出すように変更（任意）
-	explosionEmitter_->SetPosition(bulletPosition);
-	explosionEmitter_->Emit();
+	//explosionEmitter_->SetPosition(bulletPosition);
+	//explosionEmitter_->Emit();
 }
 
 
