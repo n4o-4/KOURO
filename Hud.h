@@ -46,6 +46,9 @@ private:
 	// 3D球体ミニマップの描画 - このメソッドを追加
 	void DrawSphereMap(ViewProjection viewProjection);
 
+	// プレイヤーステータスバーの描画
+	void DrawPlayerStatusBars(ViewProjection viewProjection);
+
 	// カメラに正対する円を描画する補助関数
 	void DrawFacingCircle(const Vector3 &center, float radius, const Vector4 &color, int segments, const Vector3 &cameraForward);
 
@@ -169,4 +172,17 @@ private:
 	Vector4 sphereMapLockColor_ = {1.0f, 0.2f, 0.2f, 0.7f}; // ロック時の色を追加
 	float sphereMapFov_ = 60.0f * (kPi / 180.0f);			// 視界の角度 (デフォルト60度)
 	Vector4 sphereMapFovColor_ = {0.5f, 0.8f, 1.0f, 0.3f};	// 視界扇形の色
+
+	// プレイヤーステータスバー関連
+	float statusBarWidth_ = 10.0f;							   // ステータスバーの基本幅
+	float statusBarHeight_ = 0.5f;							   // ステータスバーの高さ
+	float boostBarPositionX_ = 0.0f;						   // ブーストバーのX位置（画面中央からのオフセット）
+	float boostBarPositionY_ = -12.0f;						   // ブーストバーのY位置（画面下部からのオフセット）
+	float weaponBarPositionX_ = 8.0f;						   // 武器バーのX位置（照準からのオフセット）
+	float weaponBarPositionY_ = -5.0f;						   // 武器バーのY位置（照準からのオフセット）
+	Vector4 boostGaugeColor_ = {0.2f, 0.8f, 1.0f, 0.8f};	   // ブーストゲージの色
+	Vector4 quickBoostChargeColor_ = {1.0f, 1.0f, 0.2f, 0.9f}; // クイックブーストチャージの色
+	Vector4 weaponReadyColor_ = {0.2f, 1.0f, 0.5f, 0.8f};	   // 武器準備完了時の色
+	Vector4 weaponReloadColor_ = {1.0f, 0.6f, 0.2f, 0.7f};	   // 武器リロード中の色
+	Vector4 overheatColor_ = {1.0f, 0.2f, 0.1f, 0.9f};		   // オーバーヒート時の色
 };
