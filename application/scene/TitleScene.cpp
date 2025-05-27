@@ -369,11 +369,11 @@ void TitleScene::select() {
 			stickReleased_ = true;
 		}
 	//}
-	if (selectNum >= 3) {
-		selectNum = 3;
-	}
-	if (selectNum <= 0) {
+	if (selectNum >= 4) {
 		selectNum = 0;
+	}
+	if (selectNum <= -1) {
+		selectNum = 3;
 	}
 	if (selectNum == 0) {
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
