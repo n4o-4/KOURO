@@ -10,6 +10,7 @@
 #include "MiyaScene.h"
 #include "GameClear.h"
 #include "GameOver.h"
+#include "TutorialScene.h"
 
 // このゲーム用のシーン工場
 class SceneFactory : public AbstaractSceneFactory
