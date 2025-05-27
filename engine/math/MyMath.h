@@ -433,17 +433,34 @@ static Matrix4x4 Inverse(Matrix4x4 matrix)
 	return resultMatrix;
 }
 
-static Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRation, float nearClip, float farClip)
+//static Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRation, float nearClip, float farClip)
+//{
+//	float tanHalfFovY = tanf(fovY * 0.5f);
+//	float scaleX = 1.0f / (aspectRation * tanHalfFovY);
+//	float scaleY = 1.0f / tanHalfFovY;
+//	Matrix4x4 resultMatrix{};
+//	resultMatrix.m[0][0] = scaleX;
+//	resultMatrix.m[1][1] = scaleY;
+//	resultMatrix.m[2][2] = farClip / (farClip - nearClip);
+//	resultMatrix.m[2][3] = 1;
+//	resultMatrix.m[3][2] = (-nearClip * farClip) / (farClip - nearClip);
+//
+//	return resultMatrix;
+//}
+
+static Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip)
 {
 	float tanHalfFovY = tanf(fovY * 0.5f);
-	float scaleX = 1.0f / (aspectRation * tanHalfFovY);
+	float scaleX = 1.0f / (aspectRatio * tanHalfFovY);
 	float scaleY = 1.0f / tanHalfFovY;
+
 	Matrix4x4 resultMatrix{};
 	resultMatrix.m[0][0] = scaleX;
 	resultMatrix.m[1][1] = scaleY;
 	resultMatrix.m[2][2] = farClip / (farClip - nearClip);
-	resultMatrix.m[2][3] = 1;
-	resultMatrix.m[3][2] = (-nearClip * farClip) / (farClip - nearClip);
+	resultMatrix.m[2][3] = 1.0f;
+	resultMatrix.m[3][2] = -nearClip * farClip / (farClip - nearClip);
+	resultMatrix.m[3][3] = 0.0f;
 
 	return resultMatrix;
 }

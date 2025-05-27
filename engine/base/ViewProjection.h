@@ -19,7 +19,8 @@ struct ConstBufferDataViewProjection
 {
 	Vector3 worldPosition;
 	float padding[1];
-	Matrix4x4 matViewProjection;
+	Matrix4x4 matView;
+	Matrix4x4 matProjection;
 };
 
 class ViewProjection

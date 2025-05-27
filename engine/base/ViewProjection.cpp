@@ -18,7 +18,9 @@ void ViewProjection::Initialize()
 	nearClip = 0.1f;
 	farClip = 100.0f;
 
-	viewProjectionData_->matViewProjection = MakeIdentity4x4();
+	viewProjectionData_->matView = MakeIdentity4x4();
+
+	viewProjectionData_->matProjection = MakeIdentity4x4();
 }
 
 void ViewProjection::Update()
@@ -31,7 +33,9 @@ void ViewProjection::Update()
 
 	matProjection_ = MakePerspectiveFovMatrix(fovY, aspectRation, nearClip, farClip);
 
-	viewProjectionData_->worldPosition = worldPosition_;
+	viewProjectionData_->worldPosition = Vector3(matWorld_.m[3][0], matWorld_.m[3][1], matWorld_.m[3][2]);
 
-	viewProjectionData_->matViewProjection = Multiply(matView_,matProjection_);
+	viewProjectionData_->matView = matView_;
+
+	viewProjectionData_->matProjection = matProjection_;
 }

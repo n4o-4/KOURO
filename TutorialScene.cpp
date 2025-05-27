@@ -71,6 +71,8 @@ void TutorialScene::Initialize()
 	// 敵とスポーンの情報を最新に保つ
 	hud_->SetEnemiesAndSpawns(&enemies_, &spawns_);
 	hud_->Initialize(cameraManager_->GetFollowCamera(), player_.get(), lockOnSystem_.get());
+
+	sceneManager_->GetPostEffect()->ApplyEffect("Outline", PostEffect::EffectType::DepthBasedOutline); // 完
 }
 
 void TutorialScene::Finalize()
@@ -284,6 +286,7 @@ void TutorialScene::Update()
 
 		//========================================
 		// フェードアウト
+		break;
 	case Phase::kFadeOut:
 		//---------------------------------------
 		// `フェードアウトが終わった場合
