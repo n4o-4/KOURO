@@ -169,9 +169,11 @@ void TitleScene::Update() {
 			if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 				if (selectNum != 0) {
 
-					fade_->Start(Fade::Status::FadeOut, fadeTime_);
-					phase_ = Phase::kFadeOut;
+				
 				}
+
+				fade_->Start(Fade::Status::FadeOut, fadeTime_);
+				phase_ = Phase::kFadeOut;
 			}
 		
 		
@@ -180,7 +182,17 @@ void TitleScene::Update() {
 	case Phase::kFadeOut:
 
 		if (fade_->IsFinished()) {
-			SceneManager::GetInstance()->ChangeScene("GAME");
+
+			if (selectNum == 0) {
+
+				SceneManager::GetInstance()->ChangeScene("TUTORIAL");
+
+			}
+			else
+			{
+				SceneManager::GetInstance()->ChangeScene("GAME");
+			}
+
 
 			return;
 		}

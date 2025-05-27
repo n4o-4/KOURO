@@ -95,6 +95,7 @@
     <ClCompile Include="application\object\Spawn.cpp" />
     <ClCompile Include="engine\effect\Vignette.cpp" />
     <ClCompile Include="engine\effect\MotionBlur.cpp" />
+    <ClCompile Include="TutorialScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -188,6 +189,7 @@
     <ClInclude Include="Gritch.h" />
     <ClInclude Include="GroundTypeEnemy4.h" />
     <ClInclude Include="Hud.h" />
+    <ClInclude Include="TutorialScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

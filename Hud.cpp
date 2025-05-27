@@ -64,9 +64,9 @@ void Hud::Update() {
 ///						描画
 void Hud::Draw(ViewProjection viewProjection) {
     // 戦闘モードでない場合は描画しない
-    if(!isCombatMode_) {
+    /*if(!isCombatMode_) {
         return;
-    }
+    }*/
 
     // 照準の描画
     DrawCrosshair(viewProjection);
