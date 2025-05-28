@@ -16,7 +16,7 @@ void Player::Initialize() {
 	// Object3d を初期化
 	object3d_ = std::make_unique<Object3d>();
 	object3d_->Initialize(Object3dCommon::GetInstance());
-	
+
 	door_ = std::make_unique<Object3d>();
 	door_->Initialize(Object3dCommon::GetInstance());
 
@@ -44,7 +44,7 @@ void Player::Initialize() {
 	objectTransform_ = std::make_unique<WorldTransform>();
 	objectTransform_->Initialize();
 	objectTransform_->transform.translate = { 0.0f, initialY_ , kInitialZ_ };
-	
+
 
 	doorObjectTransform_ = std::make_unique<WorldTransform>();
 	doorObjectTransform_->Initialize();
@@ -63,7 +63,7 @@ void Player::Initialize() {
 	doorObjectTransform_->SetParent(objectTransform_.get());
 	machineGunBodyTransform_->SetParent(objectTransform_.get());
 	machineGunHeadTransform_->SetParent(machineGunBodyTransform_.get());
-	
+
 	ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png", ParticleManager::ParticleType::Normal);
 
 	ParticleManager::GetInstance()->CreateParticleGroup("OverHeat", "Resources/circle.png", ParticleManager::ParticleType::Normal);
@@ -74,17 +74,17 @@ void Player::Initialize() {
 	explosionEmitter_->Initialize("missileSmoke");
 	explosionEmitter_->SetParticleCount(kExplosionParticleCount_);
 	explosionEmitter_->SetFrequency(kExplosionFrequency_);
-	explosionEmitter_->SetLifeTimeRange({1.0f,1.0f});
+	explosionEmitter_->SetLifeTimeRange({ 1.0f,1.0f });
 
 	smokeEmitter_ = std::make_unique<ParticleEmitter>();
 	smokeEmitter_->Initialize("OverHeat");
 	smokeEmitter_->SetParticleCount(4);
 	smokeEmitter_->SetFrequency(0.1f);
-	smokeEmitter_->SetLifeTimeRange( {0.3f, 0.5f} );
+	smokeEmitter_->SetLifeTimeRange({ 0.3f, 0.5f });
 	smokeEmitter_->SetStartColorRange(
 		ParticleManager::ColorRange(
-			{1.0f,1.0f,1.0f,0.3f},
-			{1.0f,1.0f,1.0f,0.5f}
+			{ 1.0f,1.0f,1.0f,0.3f },
+			{ 1.0f,1.0f,1.0f,0.5f }
 		)
 	);
 	smokeEmitter_->SetFinishColorRange(
@@ -260,7 +260,7 @@ void Player::DrawImGui() {
 	// アナログスティック入力を合成
 	Vector2 stickInput = Input::GetInstance()->GetLeftStick();
 
-	
+
 	ImGui::Text("X : %.2f :: Y : %.2f", stickInput.x, stickInput.y);
 
 	prevPos = objectTransform_->transform.translate;
@@ -286,140 +286,140 @@ void Player::DrawImGui() {
 ///--------------------------------------------------------------
 ///                        移動入力の取得
 Vector3 Player::GetMovementInput() {
-    Vector3 rawInputDirection = { 0.0f, 0.0f, 0.0f };
-    // キーボード入力
-    if (Input::GetInstance()->PushKey(DIK_W)) { rawInputDirection.z += 1.0f; }
-    if (Input::GetInstance()->PushKey(DIK_S)) { rawInputDirection.z -= 1.0f; }
-    if (Input::GetInstance()->PushKey(DIK_A)) { rawInputDirection.x -= 1.0f; }
-    if (Input::GetInstance()->PushKey(DIK_D)) { rawInputDirection.x += 1.0f; }
+	Vector3 rawInputDirection = { 0.0f, 0.0f, 0.0f };
+	// キーボード入力
+	if (Input::GetInstance()->PushKey(DIK_W)) { rawInputDirection.z += 1.0f; }
+	if (Input::GetInstance()->PushKey(DIK_S)) { rawInputDirection.z -= 1.0f; }
+	if (Input::GetInstance()->PushKey(DIK_A)) { rawInputDirection.x -= 1.0f; }
+	if (Input::GetInstance()->PushKey(DIK_D)) { rawInputDirection.x += 1.0f; }
 
-    // アナログスティック入力を合成
-    Vector2 stickInput = Input::GetInstance()->GetLeftStick();
-    rawInputDirection.x += stickInput.x;
-    rawInputDirection.z += stickInput.y; // スティックのY軸をZ軸移動にマッピング
+	// アナログスティック入力を合成
+	Vector2 stickInput = Input::GetInstance()->GetLeftStick();
+	rawInputDirection.x += stickInput.x;
+	rawInputDirection.z += stickInput.y; // スティックのY軸をZ軸移動にマッピング
 
-    // 入力の大きさを計算し、メンバ変数に保存 (0.0 ~ 1.0 にクランプ)
-    currentInputMagnitude_ = Length(rawInputDirection);
-    if (currentInputMagnitude_ > 1.0f) {
-        currentInputMagnitude_ = 1.0f;
-    } else if (currentInputMagnitude_ < kVelocityStopThreshold_) { // ごくわずかな入力は0として扱う
-        currentInputMagnitude_ = 0.0f;
-    }
-    
-    Vector3 worldDirection = { 0.0f, 0.0f, 0.0f };
-    if (currentInputMagnitude_ > 0.0f) { // 入力がある場合のみ方向を正規化
-        worldDirection = Normalize(rawInputDirection);
-    }
+	// 入力の大きさを計算し、メンバ変数に保存 (0.0 ~ 1.0 にクランプ)
+	currentInputMagnitude_ = Length(rawInputDirection);
+	if (currentInputMagnitude_ > 1.0f) {
+		currentInputMagnitude_ = 1.0f;
+	} else if (currentInputMagnitude_ < kVelocityStopThreshold_) { // ごくわずかな入力は0として扱う
+		currentInputMagnitude_ = 0.0f;
+	}
 
-    // カメラの向きに合わせて入力方向を回転
-    if (followCamera_) {
-        Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate);
-        worldDirection = TransformNormal(worldDirection, rotateMatrix);
-    }
-    worldDirection.y = 0.0f; // 上下方向の移動は無効化
+	Vector3 worldDirection = { 0.0f, 0.0f, 0.0f };
+	if (currentInputMagnitude_ > 0.0f) { // 入力がある場合のみ方向を正規化
+		worldDirection = Normalize(rawInputDirection);
+	}
 
-    return worldDirection; // 正規化されたワールド空間での目標移動方向
+	// カメラの向きに合わせて入力方向を回転
+	if (followCamera_) {
+		Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate);
+		worldDirection = TransformNormal(worldDirection, rotateMatrix);
+	}
+	worldDirection.y = 0.0f; // 上下方向の移動は無効化
+
+	return worldDirection; // 正規化されたワールド空間での目標移動方向
 }
 ///--------------------------------------------------------------
 ///                        移動
 void Player::UpdateMove(Vector3 direction) { // direction は正規化された目標移動方向
-    // 入力方向と大きさに応じて加速度を決定
-    float currentAccelerationRate = accelerationRate_;
-    if (isBoosting_ && !isQuickBoosting_) { // 通常ブースト中は加速度もアップ
-        currentAccelerationRate *= boostAccelerationFactor_;
-    }
+	// 入力方向と大きさに応じて加速度を決定
+	float currentAccelerationRate = accelerationRate_;
+	if (isBoosting_ && !isQuickBoosting_) { // 通常ブースト中は加速度もアップ
+		currentAccelerationRate *= boostAccelerationFactor_;
+	}
 
-    if (currentInputMagnitude_ > kVelocityStopThreshold_) {
-        float controlFactor = isJumping_ ? airControlFactor_ : 1.0f;
-        acceleration_ = direction * (currentAccelerationRate * controlFactor * currentInputMagnitude_);
-    } else {
-        acceleration_ = { 0.0f, 0.0f, 0.0f };
-    }
+	if (currentInputMagnitude_ > kVelocityStopThreshold_) {
+		float controlFactor = isJumping_ ? airControlFactor_ : 1.0f;
+		acceleration_ = direction * (currentAccelerationRate * controlFactor * currentInputMagnitude_);
+	} else {
+		acceleration_ = { 0.0f, 0.0f, 0.0f };
+	}
 
-    velocity_ = velocity_ + acceleration_;
+	velocity_ = velocity_ + acceleration_;
 
-    float targetSpeedLimit;
-    if (isQuickBoosting_) {
-        targetSpeedLimit = maxSpeed_ * kQuickBoostSpeedMultiplier_;
-    } else if (isBoosting_) {
-        // 通常ブースト時は、基本のブースト速度と、入力の大きさを考慮した速度の大きい方を採用し、
-        // さらに限界突破用の最大速度を設定
-        float baseBoostSpeed = maxSpeed_ * boostFactor_;
-        float inputScaledBoostSpeed = maxSpeed_ * currentInputMagnitude_ * boostFactor_; // スティック入力も少し影響
-        targetSpeedLimit = std::max(baseBoostSpeed, inputScaledBoostSpeed);
-        targetSpeedLimit = std::min(targetSpeedLimit, maxSpeed_ * boostMaxSpeedFactor_); // 限界突破上限
-    } else {
-        targetSpeedLimit = maxSpeed_ * currentInputMagnitude_;
-    }
+	float targetSpeedLimit;
+	if (isQuickBoosting_) {
+		targetSpeedLimit = maxSpeed_ * kQuickBoostSpeedMultiplier_;
+	} else if (isBoosting_) {
+		// 通常ブースト時は、基本のブースト速度と、入力の大きさを考慮した速度の大きい方を採用し、
+		// さらに限界突破用の最大速度を設定
+		float baseBoostSpeed = maxSpeed_ * boostFactor_;
+		float inputScaledBoostSpeed = maxSpeed_ * currentInputMagnitude_ * boostFactor_; // スティック入力も少し影響
+		targetSpeedLimit = std::max(baseBoostSpeed, inputScaledBoostSpeed);
+		targetSpeedLimit = std::min(targetSpeedLimit, maxSpeed_ * boostMaxSpeedFactor_); // 限界突破上限
+	} else {
+		targetSpeedLimit = maxSpeed_ * currentInputMagnitude_;
+	}
 
-    float currentSpeed = Length(velocity_);
+	float currentSpeed = Length(velocity_);
 
-    if (currentSpeed > targetSpeedLimit) {
-        if (isQuickBoosting_ || isBoosting_) {
-            velocity_ = Normalize(velocity_) * targetSpeedLimit;
-        } else {
-            float slowedSpeed = currentSpeed * kPostBoostSlowdownRate_;
-            velocity_ = Normalize(velocity_) * std::max(targetSpeedLimit, slowedSpeed);
-        }
-    }
+	if (currentSpeed > targetSpeedLimit) {
+		if (isQuickBoosting_ || isBoosting_) {
+			velocity_ = Normalize(velocity_) * targetSpeedLimit;
+		} else {
+			float slowedSpeed = currentSpeed * kPostBoostSlowdownRate_;
+			velocity_ = Normalize(velocity_) * std::max(targetSpeedLimit, slowedSpeed);
+		}
+	}
 
-    // 移動が入力されているときだけ向きを変更
-    if (Length(velocity_) > kVelocityStopThreshold_) {
-        distinationRotateY_ = std::atan2(velocity_.x, velocity_.z);
-    }
+	// 移動が入力されているときだけ向きを変更
+	if (Length(velocity_) > kVelocityStopThreshold_) {
+		distinationRotateY_ = std::atan2(velocity_.x, velocity_.z);
+	}
 
-    objectTransform_->transform.rotate.y = LerpShortAngle(objectTransform_->transform.rotate.y, distinationRotateY_, kRotationLerpFactor_);
+	objectTransform_->transform.rotate.y = LerpShortAngle(objectTransform_->transform.rotate.y, distinationRotateY_, kRotationLerpFactor_);
 
-    // 高速移動中は進行方向に傾ける
-    float targetTilt = 0.0f;
-    if (isQuickBoosting_ || isBoosting_) {
-        // 機体のローカルX軸（横移動）成分で傾ける
-        Matrix4x4 invRotateMatrix = Inverse(MakeRotateYMatrix(objectTransform_->transform.rotate.y));
-        Vector3 localVelocity = TransformNormal(velocity_, invRotateMatrix);
-        targetTilt = localVelocity.x * kMovementTiltFactor_;
-        targetTilt = std::clamp(targetTilt, -kMovementMaxTilt_, kMovementMaxTilt_);
-    }
-    objectTransform_->transform.rotate.z = fLerp(objectTransform_->transform.rotate.z, targetTilt, kMovementTiltLerpFactor_);
+	// 高速移動中は進行方向に傾ける
+	float targetTilt = 0.0f;
+	if (isQuickBoosting_ || isBoosting_) {
+		// 機体のローカルX軸（横移動）成分で傾ける
+		Matrix4x4 invRotateMatrix = Inverse(MakeRotateYMatrix(objectTransform_->transform.rotate.y));
+		Vector3 localVelocity = TransformNormal(velocity_, invRotateMatrix);
+		targetTilt = localVelocity.x * kMovementTiltFactor_;
+		targetTilt = std::clamp(targetTilt, -kMovementMaxTilt_, kMovementMaxTilt_);
+	}
+	objectTransform_->transform.rotate.z = fLerp(objectTransform_->transform.rotate.z, targetTilt, kMovementTiltLerpFactor_);
 
-    objectTransform_->transform.translate += velocity_;
+	objectTransform_->transform.translate += velocity_;
 
-    // 移動制限
-    objectTransform_->transform.translate.x = std::clamp(objectTransform_->transform.translate.x, -495.0f, 495.0f);
-    objectTransform_->transform.translate.z = std::clamp(objectTransform_->transform.translate.z, -495.0f, 495.0f);
+	// 移動制限
+	objectTransform_->transform.translate.x = std::clamp(objectTransform_->transform.translate.x, -495.0f, 495.0f);
+	objectTransform_->transform.translate.z = std::clamp(objectTransform_->transform.translate.z, -495.0f, 495.0f);
 }
 ///--------------------------------------------------------------
 ///                        ジャンプ
 void Player::UpdateJump() {
-    if (!isJumping_) {
-        // Aボタンまたはスペースキーでジャンプ開始
-        if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A) || // ゲームパッド Aボタン
-            Input::GetInstance()->Triggerkey(DIK_SPACE)) {                         // キーボード スペースキー
-            isJumping_ = true;
-            jumpVelocity_ = kJumpInitialVelocity_;
-            fallSpeed_ = 0.0f;
-        }
-    }
+	if (!isJumping_) {
+		// Aボタンまたはスペースキーでジャンプ開始
+		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A) || // ゲームパッド Aボタン
+			Input::GetInstance()->Triggerkey(DIK_SPACE)) {                         // キーボード スペースキー
+			isJumping_ = true;
+			jumpVelocity_ = kJumpInitialVelocity_;
+			fallSpeed_ = 0.0f;
+		}
+	}
 
-    if (isJumping_) {
-        objectTransform_->transform.translate.y += jumpVelocity_;
-        jumpVelocity_ -= kJumpVelocityDecay_;
+	if (isJumping_) {
+		objectTransform_->transform.translate.y += jumpVelocity_;
+		jumpVelocity_ -= kJumpVelocityDecay_;
 
-        if (jumpVelocity_ <= 0.0f) {
-            jumpVelocity_ = 0.0f;
-            fallSpeed_ += gravity_;
-            if (fallSpeed_ > maxFallSpeed_) {
-                fallSpeed_ = maxFallSpeed_;
-            }
-            objectTransform_->transform.translate.y -= fallSpeed_;
-        }
+		if (jumpVelocity_ <= 0.0f) {
+			jumpVelocity_ = 0.0f;
+			fallSpeed_ += gravity_;
+			if (fallSpeed_ > maxFallSpeed_) {
+				fallSpeed_ = maxFallSpeed_;
+			}
+			objectTransform_->transform.translate.y -= fallSpeed_;
+		}
 
-        if (objectTransform_->transform.translate.y <= initialY_) {
-            objectTransform_->transform.translate.y = initialY_;
-            isJumping_ = false;
-            jumpVelocity_ = 0.0f;
-            fallSpeed_ = 0.0f;
-        }
-    }
+		if (objectTransform_->transform.translate.y <= initialY_) {
+			objectTransform_->transform.translate.y = initialY_;
+			isJumping_ = false;
+			jumpVelocity_ = 0.0f;
+			fallSpeed_ = 0.0f;
+		}
+	}
 }
 ///--------------------------------------------------------------
 ///						 弾の処理と更新
@@ -444,7 +444,7 @@ void Player::UpdateMissiles() {
 		// ドア開くフラグをオンにする
 		isDoorOpening_ = true;
 		isDoorClosing_ = false; // 強制開き直しにも対応
-	
+
 	}
 
 	// 弾の更新
@@ -464,12 +464,11 @@ void Player::UpdateMachineGunAndHeat() {
 	const float kMachineGunRotateSpeed_Overheat = 0.05f;
 
 	//マシンガンの弾の更新
-	 // マシンガンの発射
+	// マシンガンの発射
 	if (Input::GetInstance()->PushKey(DIK_J) ||
 		Input::GetInstance()->PushGamePadButton(Input::GamePadButton::LEFT_SHOULDER)) {
-		
 
-		// 状態に応じて回転速度を変更
+		// 回転速度を状態に応じて変化
 		float rotateSpeed = isOverheated_ ? kMachineGunRotateSpeed_Overheat : kMachineGunRotateSpeed_Normal;
 		machineGunHeadTransform_->transform.rotate.z += rotateSpeed;
 
@@ -477,6 +476,49 @@ void Player::UpdateMachineGunAndHeat() {
 	} else {
 		isShootingMachineGun_ = false;
 	}
+
+	// 向き調整（発射していない時も含む）
+	if (followCamera_) {
+		const float interpolateRate = 0.2f;
+
+		// カメラの前方向（ワールド空間）
+		Matrix4x4 invView = Inverse(followCamera_->GetViewMatrix());
+		Vector3 worldForward = TransformNormal({ 0.0f, 0.0f, 1.0f }, invView);
+		worldForward = Normalize(worldForward);
+
+		// 目標ワールド回転角
+		float targetPitch = -std::atan2(worldForward.y, std::sqrt(worldForward.x * worldForward.x + worldForward.z * worldForward.z));
+		float targetYaw = std::atan2(worldForward.x, worldForward.z);
+
+		// マシンガンbodyの親（＝objectTransform_）のワールド行列を取得
+		Matrix4x4 parentWorldMatrix = objectTransform_->matWorld_;
+
+		// 親のワールド行列から逆行列を取って、ワールド回転をローカルに戻す
+		Matrix4x4 invParent = Inverse(parentWorldMatrix);
+
+		// ワールド向きをローカル空間に変換
+		Vector3 localForward = TransformNormal(worldForward, invParent);
+
+		// ローカル空間での回転角に変換
+		float localPitch = -std::atan2(localForward.y, std::sqrt(localForward.x * localForward.x + localForward.z * localForward.z));
+		float localYaw = std::atan2(localForward.x, localForward.z);
+
+		// 現在角度
+		float currentPitch = machineGunBodyTransform_->transform.rotate.x;
+		float currentYaw = machineGunBodyTransform_->transform.rotate.y;
+
+		if (isShootingMachineGun_) {
+			// 撃ってる間はカメラ方向へ
+			machineGunBodyTransform_->transform.rotate.x = fLerp(currentPitch, localPitch, interpolateRate);
+			machineGunBodyTransform_->transform.rotate.y = LerpShortAngle(currentYaw, localYaw, interpolateRate);
+		} else {
+			// 撃ってないときは初期位置へ
+			machineGunBodyTransform_->transform.rotate.x = fLerp(currentPitch, 0.0f, interpolateRate);
+			machineGunBodyTransform_->transform.rotate.y = LerpShortAngle(currentYaw, 0.0f, interpolateRate);
+		}
+	}
+
+
 
 	if (machineGunCooldown_ > 0) {
 		machineGunCooldown_--;
@@ -494,7 +536,7 @@ void Player::UpdateMachineGunAndHeat() {
 
 	// 発射入力
 	if (isShootingMachineGun_ && !isOverheated_ && machineGunCooldown_ <= 0) {
-		
+
 		ShootMachineGun();
 		if (!machineGunSoundPlayed_) {
 			se3_->SoundPlay("Resources/se/999DCD4E5D2A205C05.mp3", 9999);
@@ -512,7 +554,7 @@ void Player::UpdateMachineGunAndHeat() {
 		machineGunSoundPlayed_ = false;
 		se3_->SoundStop("Resources/se/999DCD4E5D2A205C05.mp3");
 	}
-	
+
 	// 自然冷却 or クールダウン処理
 	if (isOverheated_) {
 		se3_->SoundStop("Resources/se/999DCD4E5D2A205C05.mp3");
@@ -589,44 +631,44 @@ void Player::Shoot() {
 ///--------------------------------------------------------------
 ///                        ブースト処理
 bool Player::HandleBoost() {
-    UpdateQuickBoostCooldowns();
+	UpdateQuickBoostCooldowns();
 
-    // クイックブーストの入力判定と実行試行
-    bool quickBoostTriggered = Input::GetInstance()->Triggerkey(DIK_LSHIFT) ||
-                               Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::X);
-    bool quickBoostActivatedThisFrame = false;
+	// クイックブーストの入力判定と実行試行
+	bool quickBoostTriggered = Input::GetInstance()->Triggerkey(DIK_LSHIFT) ||
+		Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::X);
+	bool quickBoostActivatedThisFrame = false;
 
-    if (quickBoostTriggered) {
-        quickBoostActivatedThisFrame = HandleQuickBoostActivation();
+	if (quickBoostTriggered) {
+		quickBoostActivatedThisFrame = HandleQuickBoostActivation();
 		if (quickBoostActivatedThisFrame) {
-			se2_->SoundPlay("Resources/se/高速移動.mp3", 0);  
+			se2_->SoundPlay("Resources/se/高速移動.mp3", 0);
 		}
-    }
+	}
 
-    if (ProcessActiveQuickBoost() || quickBoostActivatedThisFrame) {
-        // クイックブーストが実行中、またはこのフレームで起動した場合
-        isBoosting_ = false; // 通常ブーストはオフ
-        RecoverBoostEnergy(); // エネルギー回復は試行
-        return true; // クイックブーストが処理された
-    }
+	if (ProcessActiveQuickBoost() || quickBoostActivatedThisFrame) {
+		// クイックブーストが実行中、またはこのフレームで起動した場合
+		isBoosting_ = false; // 通常ブーストはオフ
+		RecoverBoostEnergy(); // エネルギー回復は試行
+		return true; // クイックブーストが処理された
+	}
 
-    // 通常ブーストの処理 (クイックブーストが実行されなかった場合)
-    bool normalBoostHoldInput = Input::GetInstance()->PushKey(DIK_LSHIFT) ||
-                                Input::GetInstance()->PushGamePadButton(Input::GamePadButton::X);
+	// 通常ブーストの処理 (クイックブーストが実行されなかった場合)
+	bool normalBoostHoldInput = Input::GetInstance()->PushKey(DIK_LSHIFT) ||
+		Input::GetInstance()->PushGamePadButton(Input::GamePadButton::X);
 
-    if (normalBoostHoldInput && currentBoostTime_ > 0.0f && !isQuickBoosting_) {
-        isBoosting_ = true;
-        currentBoostTime_ -= boostEnergyConsumptionRate_;
-        if (currentBoostTime_ < 0.0f) {
-            currentBoostTime_ = 0.0f;
-            isBoosting_ = false;
-        }
-    } else {
-        isBoosting_ = false;
-    }
-    
-    RecoverBoostEnergy();
-    return false; // クイックブーストはこの関数呼び出しでは起動しなかった
+	if (normalBoostHoldInput && currentBoostTime_ > 0.0f && !isQuickBoosting_) {
+		isBoosting_ = true;
+		currentBoostTime_ -= boostEnergyConsumptionRate_;
+		if (currentBoostTime_ < 0.0f) {
+			currentBoostTime_ = 0.0f;
+			isBoosting_ = false;
+		}
+	} else {
+		isBoosting_ = false;
+	}
+
+	RecoverBoostEnergy();
+	return false; // クイックブーストはこの関数呼び出しでは起動しなかった
 }
 
 void Player::UpdateQuickBoostCooldowns() {
@@ -681,72 +723,72 @@ bool Player::ProcessActiveQuickBoost() {
 }
 
 bool Player::HandleQuickBoostActivation() {
-    // この関数は HandleBoost から quickBoostTriggered が true の場合に呼び出される想定
-    // なので、ここでの入力再チェックは不要だが、安全のために残しても良い
-    // bool boostInput = Input::GetInstance()->Triggerkey(DIK_LSHIFT) ||
-    //                   Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::X);
+	// この関数は HandleBoost から quickBoostTriggered が true の場合に呼び出される想定
+	// なので、ここでの入力再チェックは不要だが、安全のために残しても良い
+	// bool boostInput = Input::GetInstance()->Triggerkey(DIK_LSHIFT) ||
+	//                   Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::X);
 
-    if (quickBoostCooldown_ <= 0.0f &&
-        currentBoostTime_ >= quickBoostConsumption_ &&
-        quickBoostUsedCount_ < maxQuickBoostUses_ &&
-        !isQuickBoosting_) { // isQuickBoosting_ のチェックは ProcessActiveQuickBoost で行われるため、ここでは不要かもしれないが念のため
+	if (quickBoostCooldown_ <= 0.0f &&
+		currentBoostTime_ >= quickBoostConsumption_ &&
+		quickBoostUsedCount_ < maxQuickBoostUses_ &&
+		!isQuickBoosting_) { // isQuickBoosting_ のチェックは ProcessActiveQuickBoost で行われるため、ここでは不要かもしれないが念のため
 
-        Vector3 rawBoostDirection = {0.0f, 0.0f, 0.0f};
-        // ... (rawBoostDirection と worldBoostDirection の決定ロジックは変更なし) ...
-        if (Input::GetInstance()->PushKey(DIK_W)) { rawBoostDirection.z += 1.0f; }
-        if (Input::GetInstance()->PushKey(DIK_S)) { rawBoostDirection.z -= 1.0f; }
-        if (Input::GetInstance()->PushKey(DIK_A)) { rawBoostDirection.x -= 1.0f; }
-        if (Input::GetInstance()->PushKey(DIK_D)) { rawBoostDirection.x += 1.0f; }
-        Vector2 stickInput = Input::GetInstance()->GetLeftStick();
-        rawBoostDirection.x += stickInput.x;
-        rawBoostDirection.z += stickInput.y;
+		Vector3 rawBoostDirection = { 0.0f, 0.0f, 0.0f };
+		// ... (rawBoostDirection と worldBoostDirection の決定ロジックは変更なし) ...
+		if (Input::GetInstance()->PushKey(DIK_W)) { rawBoostDirection.z += 1.0f; }
+		if (Input::GetInstance()->PushKey(DIK_S)) { rawBoostDirection.z -= 1.0f; }
+		if (Input::GetInstance()->PushKey(DIK_A)) { rawBoostDirection.x -= 1.0f; }
+		if (Input::GetInstance()->PushKey(DIK_D)) { rawBoostDirection.x += 1.0f; }
+		Vector2 stickInput = Input::GetInstance()->GetLeftStick();
+		rawBoostDirection.x += stickInput.x;
+		rawBoostDirection.z += stickInput.y;
 
-        Vector3 worldBoostDirection = {0.0f, 0.0f, 0.0f};
-        if (Length(rawBoostDirection) > kVelocityStopThreshold_) {
-            worldBoostDirection = Normalize(rawBoostDirection);
-            if (followCamera_) {
-                Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate);
-                worldBoostDirection = TransformNormal(worldBoostDirection, rotateMatrix);
-            }
-        } else {
-            if (followCamera_){
-                 Matrix4x4 rotateMatrix = MakeRotateYMatrix(objectTransform_->transform.rotate.y);
-                 worldBoostDirection = TransformNormal({0.0f,0.0f,1.0f},rotateMatrix);
-            } else {
-                 return false;
-            }
-        }
-        worldBoostDirection.y = 0.0f;
-        if (Length(worldBoostDirection) < kVelocityStopThreshold_){
-            return false;
-        }
-        worldBoostDirection = Normalize(worldBoostDirection);
+		Vector3 worldBoostDirection = { 0.0f, 0.0f, 0.0f };
+		if (Length(rawBoostDirection) > kVelocityStopThreshold_) {
+			worldBoostDirection = Normalize(rawBoostDirection);
+			if (followCamera_) {
+				Matrix4x4 rotateMatrix = MakeRotateMatrix(followCamera_->GetViewProjection().transform.rotate);
+				worldBoostDirection = TransformNormal(worldBoostDirection, rotateMatrix);
+			}
+		} else {
+			if (followCamera_) {
+				Matrix4x4 rotateMatrix = MakeRotateYMatrix(objectTransform_->transform.rotate.y);
+				worldBoostDirection = TransformNormal({ 0.0f,0.0f,1.0f }, rotateMatrix);
+			} else {
+				return false;
+			}
+		}
+		worldBoostDirection.y = 0.0f;
+		if (Length(worldBoostDirection) < kVelocityStopThreshold_) {
+			return false;
+		}
+		worldBoostDirection = Normalize(worldBoostDirection);
 
-        isQuickBoosting_ = true;
-        quickBoostFrames_ = maxQuickBoostFrames_;
-        currentBoostTime_ -= quickBoostConsumption_;
-        quickBoostCooldown_ = maxQuickBoostCooldown_;
-        quickBoostUsedCount_++;
+		isQuickBoosting_ = true;
+		quickBoostFrames_ = maxQuickBoostFrames_;
+		currentBoostTime_ -= quickBoostConsumption_;
+		quickBoostCooldown_ = maxQuickBoostCooldown_;
+		quickBoostUsedCount_++;
 
-        if (quickBoostUsedCount_ >= maxQuickBoostUses_) {
-            quickBoostChargeCooldown_ = quickBoostChargeTime_;
-        }
-        
-        velocity_ = worldBoostDirection * (maxSpeed_ * kQuickBoostSpeedMultiplier_ * 0.8f);
-        return true; // クイックブースト起動成功
-    }
-    return false; // クイックブースト起動せず (条件不足)
+		if (quickBoostUsedCount_ >= maxQuickBoostUses_) {
+			quickBoostChargeCooldown_ = quickBoostChargeTime_;
+		}
+
+		velocity_ = worldBoostDirection * (maxSpeed_ * kQuickBoostSpeedMultiplier_ * 0.8f);
+		return true; // クイックブースト起動成功
+	}
+	return false; // クイックブースト起動せず (条件不足)
 }
 
 void Player::RecoverBoostEnergy() {
-    // 通常ブーストもクイックブーストも使用していない時にエネルギー回復
-    if (!isBoosting_ && !isQuickBoosting_ && currentBoostTime_ < maxBoostTime_) {
-        float recoveryMultiplier = (Length(velocity_) < kVelocityStopThreshold_ * 5.0f) ? kStationaryBoostRecoveryMultiplier_ : 1.0f;
-        currentBoostTime_ += boostRecoveryRate_ * recoveryMultiplier;
-        if (currentBoostTime_ > maxBoostTime_) {
-            currentBoostTime_ = maxBoostTime_;
-        }
-    }
+	// 通常ブーストもクイックブーストも使用していない時にエネルギー回復
+	if (!isBoosting_ && !isQuickBoosting_ && currentBoostTime_ < maxBoostTime_) {
+		float recoveryMultiplier = (Length(velocity_) < kVelocityStopThreshold_ * 5.0f) ? kStationaryBoostRecoveryMultiplier_ : 1.0f;
+		currentBoostTime_ += boostRecoveryRate_ * recoveryMultiplier;
+		if (currentBoostTime_ > maxBoostTime_) {
+			currentBoostTime_ = maxBoostTime_;
+		}
+	}
 }
 
 void Player::ShootMachineGun() {
@@ -794,8 +836,8 @@ void Player::ApplyShake() {
 		float shakeAmount = shakeIntensity_ * kShakeBaseIntensityFactor_;
 
 		// rand() の代わりにC++の<random>を使うことを推奨
-		float offsetX = (static_cast<float>(rand() % kShakeRandRangeX_ - (kShakeRandRangeX_/2)) ) * shakeAmount * kShakeOffsetXFactor_;
-		float offsetRot = (static_cast<float>(rand() % kShakeRandRangeRot_ - (kShakeRandRangeRot_/2)) ) * shakeAmount * kShakeOffsetRotFactor_;
+		float offsetX = (static_cast<float>(rand() % kShakeRandRangeX_ - (kShakeRandRangeX_ / 2))) * shakeAmount * kShakeOffsetXFactor_;
+		float offsetRot = (static_cast<float>(rand() % kShakeRandRangeRot_ - (kShakeRandRangeRot_ / 2))) * shakeAmount * kShakeOffsetRotFactor_;
 
 		objectTransform_->transform.translate.x += offsetX;
 		objectTransform_->transform.rotate.y += offsetRot;

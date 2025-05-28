@@ -53,6 +53,12 @@ public:
 		return defaultOffset_;
 	}
 
+	// カメラのビューマトリックスを取得
+	Matrix4x4 GetViewMatrix() const {
+		return viewProjection_->matView_;
+	}
+
+
 	// カメラのデフォルトオフセットを設定
 	void SetDefaultOffset(const Vector3 &offset) {
 		defaultOffset_ = offset;
