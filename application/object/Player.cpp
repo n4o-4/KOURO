@@ -54,7 +54,7 @@ void Player::Initialize() {
 	// マシンガンBody
 	machineGunBodyTransform_ = std::make_unique<WorldTransform>();
 	machineGunBodyTransform_->Initialize();
-	machineGunBodyTransform_->transform.translate = { 0.0f, 0.0f , 0.0f };
+	machineGunBodyTransform_->transform.translate = { 2.15f, 1.59f , -0.7f };
 	// マシンガンHead
 	machineGunHeadTransform_ = std::make_unique<WorldTransform>();
 	machineGunHeadTransform_->Initialize();
@@ -247,7 +247,8 @@ void Player::DrawImGui() {
 
 
 	ImGui::DragFloat3("door Translate", &doorObjectTransform_->transform.translate.x, 0.01f);
-	ImGui::DragFloat3("MG_BODY Translate", &machineGunHeadTransform_->transform.translate.x, 0.01f);
+	ImGui::DragFloat3("MG_HEAD Translate", &machineGunHeadTransform_->transform.translate.x, 0.01f);
+	ImGui::DragFloat3("MG_BODY Translate", &machineGunBodyTransform_->transform.translate.x, 0.01f);
 
 	static Vector3 prevPos;
 
