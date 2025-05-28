@@ -9,6 +9,8 @@ void TutorialScene::Initialize()
 	//========================================
 	// テクスチャの読み込み
 
+	AudioManager::GetInstance()->Initialize();
+
 	//========================================
 	// ライト
 	// 指向性
@@ -72,7 +74,9 @@ void TutorialScene::Initialize()
 	hud_->SetEnemiesAndSpawns(&enemies_, &spawns_);
 	hud_->Initialize(cameraManager_->GetFollowCamera(), player_.get(), lockOnSystem_.get());
 
-	sceneManager_->GetPostEffect()->ApplyEffect("Outline", PostEffect::EffectType::DepthBasedOutline); // 完
+	//sceneManager_->GetPostEffect()->ApplyEffect("Outline", PostEffect::EffectType::DepthBasedOutline); // 完
+
+	cameraManager_->Update();
 }
 
 void TutorialScene::Finalize()
@@ -422,10 +426,10 @@ void TutorialScene::Draw()
 			*spotLight.get());
 		//========================================
 		// 地面
-		ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+		/*ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 			*directionalLight.get(),
 			*pointLight.get(),
-			*spotLight.get());
+			*spotLight.get());*/
 		//========================================
 		// spawnの描画
 		for (const auto& Spawn : spawns_) {

@@ -22,7 +22,11 @@ void FollowCamera::Initialize() {
 		viewProjection_->transform.translate = currentPosition_;
 	}
 	// 軽く傾ける
-	viewProjection_->transform.rotate = {0.1f, 0.0f, 0.0f};
+	viewProjection_->transform.rotate = {-1.1f, -1.1f, 0.0f};
+
+	destinationRotate = { -1.1f,-1.1f,0.0f };
+
+	viewProjection_->Update();
 }
 
 ///=============================================================================
@@ -43,7 +47,7 @@ void FollowCamera::Update() {
 	CalculationTranslate();
 
 	// 高度によるFOV演出
-	UpdateHeightFOVEffect();
+	//UpdateHeightFOVEffect();
 
 	// マシンガン発射時のカメラ演出を更新
 	UpdateFiringCameraEffect();
@@ -116,12 +120,14 @@ void FollowCamera::CalculationRotate() {
 
 	viewProjection_->transform.rotate = Lerp(viewProjection_->transform.rotate, destinationRotate, easingFactor_);
 
-	// 回転Xを範囲制限
-	float clampedX = std::clamp(viewProjection_->transform.rotate.x, -0.8f, 1.5f);
-	if (clampedX != viewProjection_->transform.rotate.x) {
-		destinationRotate.x = clampedX;
-	}
-	viewProjection_->transform.rotate.x = clampedX;
+	//// 回転Xを範囲制限
+	//float clampedX = std::clamp(viewProjection_->transform.rotate.x, -0.8f, 1.5f);
+	//if (clampedX != viewProjection_->transform.rotate.x) {
+	//	destinationRotate.x = clampedX;
+	//}
+	//viewProjection_->transform.rotate.x = clampedX;
+
+	ImGui::DragFloat3("Camera Rotate", &viewProjection_->transform.rotate.x, 0.01f);
 }
 
 ///=============================================================================
@@ -133,24 +139,24 @@ void FollowCamera::CalculationTranslate() {
 
 	viewProjection_->transform.translate = interTarget_ + offset;
 
-	/// カメラの角度の修正が必要無ければ
-	if (viewProjection_->transform.translate.y >= 0.1f) {
-		return;
-	}
+	///// カメラの角度の修正が必要無ければ
+	//if (viewProjection_->transform.translate.y >= 0.1f) {
+	//	return;
+	//}
 
-	// カメラの高さが0.1以下なら、下方向（上向き）への回転を制限
-	while (viewProjection_->transform.translate.y <= 0.1f) {
-		// 下向きすぎないように制限（上を向かせすぎない）
-		// destinationRotate.x = std::max(destinationRotate.x, 0.1f);
+	//// カメラの高さが0.1以下なら、下方向（上向き）への回転を制限
+	//while (viewProjection_->transform.translate.y <= 0.1f) {
+	//	// 下向きすぎないように制限（上を向かせすぎない）
+	//	// destinationRotate.x = std::max(destinationRotate.x, 0.1f);
 
-		viewProjection_->transform.rotate.x += 0.001f;
+	//	viewProjection_->transform.rotate.x += 0.001f;
 
-		interTarget_ = Lerp(interTarget_, target_->transform.translate, easingFactor_);
+	//	interTarget_ = Lerp(interTarget_, target_->transform.translate, easingFactor_);
 
-		Vector3 offset = CalculationOffset();
+	//	Vector3 offset = CalculationOffset();
 
-		viewProjection_->transform.translate = interTarget_ + offset;
-	}
+	//	viewProjection_->transform.translate = interTarget_ + offset;
+	//}
 
 	// 目標角度を修正
 	destinationRotate.x = viewProjection_->transform.rotate.x;
