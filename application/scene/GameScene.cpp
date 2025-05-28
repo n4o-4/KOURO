@@ -179,9 +179,9 @@ void GameScene::Initialize() {
 	hitEffect1_Circle_->Initialize("circle");
 	hitEffect1_Circle_->SetPosition({ 0.0f,2.0f,0.0f });
 	hitEffect1_Circle_->SetParticleCount(40);
-	//hitEffect1_Circle_->SetVelocityRange({ {-0.5f,-0.5f,-0.5f },{0.5f,0.5f,0.5f} });
+	hitEffect1_Circle_->SetVelocityRange({ {-0.5f,-0.5f,-0.5f },{0.5f,0.5f,0.5f} });
 
-	hitEffect1_Circle_->SetTranslateRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
+	hitEffect1_Circle_->SetTranslateRange({ {-0.1f,-0.1f,-0.1f},{0.1f,0.1f,0.1f} });
 
 	hitEffect1_Circle_->SetStartScaleRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
 	hitEffect1_Circle_->SetFinishScaleRange({ {0.5f,0.05f,0.5f},{0.5f,0.05f,0.5f} });
