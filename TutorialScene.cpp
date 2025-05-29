@@ -261,10 +261,29 @@ void TutorialScene::Update()
 		// パーティクル
 		ParticleManager::GetInstance()->Update();
 
+		//----------------------------------------
+		// Tutorialフェーズ
+		switch (tutorialPhase_) {
+		// 説明フェーズ
+		case TutorialPhase::kExplain:
+
+			//playerが動いたらtrue
+
+
+			// プレイヤーの操作説明
+			/*if (Input::GetInstance()->Triggerkey(DIK_RETURN)) {
+				tutorialPhase_ = TutorialPhase::kPlay;
+			}*/
+			break;
+		// プレイフェーズ
+		case TutorialPhase::kPlay:
+			break;
+		}
+
+		break;
 
 		//========================================
 		// フェードアウト
-		break;
 	case Phase::kFadeOut:
 		//---------------------------------------
 		// `フェードアウトが終わった場合
@@ -273,12 +292,10 @@ void TutorialScene::Update()
 			if (isGameClear_) {
 				// ゲームクリアシーンに遷移
 				SceneManager::GetInstance()->ChangeScene("CLEAR");
-			}
-			else if (isGameOver_) {
+			} else if (isGameOver_) {
 				// ゲームオーバーシーンに遷移
 				SceneManager::GetInstance()->ChangeScene("OVER");
-			}
-			else {
+			} else {
 				// タイトルシーンに遷移
 				SceneManager::GetInstance()->ChangeScene("TITLE");
 			}

@@ -26,6 +26,14 @@
 class TutorialScene : public BaseScene
 {
 private:
+
+	//Tutorialフェーズ
+	enum class TutorialPhase
+	{
+		kExplain, // 説明フェーズ
+		kPlay,   // プレイフェーズ
+	};
+
 	//========================================
 	// ライトクラス
 	std::unique_ptr<DirectionalLight> directionalLight = nullptr;
@@ -69,6 +77,9 @@ private:
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 	//
 	std::vector<std::unique_ptr<BaseEnemy>> spawns_;
+	//=========================================
+	// フェーズ
+	TutorialPhase tutorialPhase_ = TutorialPhase::kExplain;
 
 public: // メンバ関数
 	// 初期化
