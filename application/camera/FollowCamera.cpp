@@ -202,12 +202,15 @@ void FollowCamera::UpdateFiringCameraEffect() {
 
 	Vector3 targetOffset = defaultOffset_;
 
-	// マシンガン発射中はカメラを近づける
+	// マシンガン発射中判定を更新
 	// RTボタンが押されている間だけ近づける
 	if (Input::GetInstance()->PushKey(DIK_J) ||
 		Input::GetInstance()->PushGamePadButton(Input::GamePadButton::LEFT_SHOULDER)) {
+		isFiring_ = true;
 		// Z方向（距離）のみ調整して近づける
 		targetOffset.z = defaultOffset_.z * firingOffsetFactor_;
+	} else {
+		isFiring_ = false;
 	}
 
 	// 現在のオフセットを目標値に滑らかに補間
@@ -252,66 +255,132 @@ void FollowCamera::UpdateAimAssist() {
 		return;
 	}
 
+	// マシンガン射撃時のみエイムアシストを有効にする設定がONで、射撃していない場合は処理しない
+	if (enableAimAssistOnlyWhileFiring_ && !isFiring_) {
+		// 射撃していない時はアシスト強度をリセット
+		currentAimAssistStrength_ = 0.0f;
+		currentAimTarget_ = nullptr;
+		targetSwitchCooldown_ = 0.0f;
+		return;
+	}
+
+	// ターゲット切り替えクールダウンを更新
+	if (targetSwitchCooldown_ > 0.0f) {
+		targetSwitchCooldown_ -= 1.0f / 60.0f;
+	}
+
 	// 最も近い敵を見つける
 	BaseEnemy *nearestEnemy = FindNearestEnemyInSight();
 
-	// アシスト対象が変わった場合、強度をリセット
+	// アシスト対象が変わった場合の処理
 	if (nearestEnemy != currentAimTarget_) {
-		currentAimTarget_ = nearestEnemy;
-		currentAimAssistStrength_ = 0.0f;
+		// クールダウン中でない場合、または現在のターゲットが無効/死亡している場合のみ切り替え
+		if (targetSwitchCooldown_ <= 0.0f ||
+			!currentAimTarget_ ||
+			currentAimTarget_->GetHp() <= 0 ||
+			!IsEnemyInAssistRange(currentAimTarget_->GetPosition())) {
+
+			currentAimTarget_ = nearestEnemy;
+			currentAimAssistStrength_ = 0.0f;
+			targetSwitchCooldown_ = targetSwitchCooldownTime_;
+		}
 	}
 
 	// アシスト対象が存在しない場合は終了
-	if (!currentAimTarget_) {
+	if (!currentAimTarget_ || currentAimTarget_->GetHp() <= 0) {
+		currentAimAssistStrength_ = 0.0f;
+		return;
+	}
+
+	// ターゲットが範囲外になった場合はリセット
+	if (!IsEnemyInAssistRange(currentAimTarget_->GetPosition())) {
+		currentAimTarget_ = nullptr;
+		currentAimAssistStrength_ = 0.0f;
 		return;
 	}
 
 	// プレイヤーからターゲットへの方向を計算
 	Vector3 targetPos = currentAimTarget_->GetPosition();
 	Vector3 playerPos = target_->transform.translate;
-	Vector3 toTarget = targetPos - playerPos;
+	Vector3 toTarget = {
+		targetPos.x - playerPos.x,
+		targetPos.y - playerPos.y,
+		targetPos.z - playerPos.z};
+
+	// 距離を計算
+	float distance = sqrtf(toTarget.x * toTarget.x + toTarget.y * toTarget.y + toTarget.z * toTarget.z);
+	if (distance < 0.001f)
+		return; // ゼロ除算回避
+
+	// 正規化
+	toTarget.x /= distance;
+	toTarget.y /= distance;
+	toTarget.z /= distance;
 
 	// Y軸回転（水平方向）の目標角度を計算
-	float targetRotationY = std::atan2(toTarget.x, toTarget.z);
+	float targetRotationY = atan2f(toTarget.x, toTarget.z);
 
 	// X軸回転（垂直方向）の目標角度を計算
-	float distanceXZ = std::sqrt(toTarget.x * toTarget.x + toTarget.z * toTarget.z);
-	float targetRotationX = -std::atan2(toTarget.y, distanceXZ);
+	float distanceXZ = sqrtf(toTarget.x * toTarget.x + toTarget.z * toTarget.z);
+	float targetRotationX = -atan2f(toTarget.y, distanceXZ);
+
+	// 射撃中はより早くアシスト強度を上げる
+	float effectiveRampUpTime = enableAimAssistOnlyWhileFiring_ && isFiring_ ? assistRampUpTime_ * 0.3f : assistRampUpTime_;
 
 	// 入力がないとき、徐々にアシスト強度を上げる
-	if (timeSinceLastInput_ > 0.0f && timeSinceLastInput_ < assistRampUpTime_) {
-		currentAimAssistStrength_ = std::min(1.0f, timeSinceLastInput_ / assistRampUpTime_);
-	} else if (timeSinceLastInput_ >= assistRampUpTime_) {
+	if (timeSinceLastInput_ > 0.0f && timeSinceLastInput_ < effectiveRampUpTime) {
+		currentAimAssistStrength_ = std::min(1.0f, timeSinceLastInput_ / effectiveRampUpTime);
+	} else if (timeSinceLastInput_ >= effectiveRampUpTime) {
 		currentAimAssistStrength_ = 1.0f;
 	}
 
 	// エイムアシストの強さを適用
 	float effectiveAssistStrength = currentAimAssistStrength_ * aimAssistFactor_;
 
+	// 射撃中はアシスト効果を強化
+	if (enableAimAssistOnlyWhileFiring_ && isFiring_) {
+		effectiveAssistStrength *= 1.5f;								   // 射撃中は50%強化
+		effectiveAssistStrength = std::min(effectiveAssistStrength, 1.5f); // 上限は1.5
+	}
+
+	// 距離による補正（近い敵ほど強いアシスト）
+	float distanceFactor = std::max(0.3f, 1.0f - (distance / aimAssistRange_));
+	effectiveAssistStrength *= distanceFactor;
+
 	// 現在の角度と目標角度の差分を計算
 	float deltaY = targetRotationY - destinationRotate.y;
-	// -πからπの範囲に正規化
-	deltaY = std::fmod(deltaY + static_cast<float>(M_PI), 2.0f * static_cast<float>(M_PI)) - static_cast<float>(M_PI);
+
+	// -πからπの範囲に正規化（改良版）
+	while (deltaY > static_cast<float>(M_PI))
+		deltaY -= 2.0f * static_cast<float>(M_PI);
+	while (deltaY < -static_cast<float>(M_PI))
+		deltaY += 2.0f * static_cast<float>(M_PI);
 
 	float deltaX = targetRotationX - destinationRotate.x;
 
-	// 目標との角度差が大きいほど、アシスト効果を弱める（自然な感覚に）
+	// 角度差による補正をより緩やかに
+	float absAngleY = fabsf(deltaY * (180.0f / static_cast<float>(M_PI)));
 	float angleFactorY = 1.0f;
-	float absAngleY = std::abs(deltaY * (180.0f / static_cast<float>(M_PI))); // 度に変換
 	if (absAngleY > assistInnerAngle_) {
-		// 内側範囲を超えると強度が徐々に下がる
-		angleFactorY = std::max(0.0f, 1.0f - ((absAngleY - assistInnerAngle_) / (aimAssistAngle_ - assistInnerAngle_)));
+		float angleFalloff = (absAngleY - assistInnerAngle_) / (aimAssistAngle_ - assistInnerAngle_);
+		angleFactorY = std::max(0.1f, 1.0f - angleFalloff * 0.7f); // 完全に0にせず、0.1まで
 	}
 
+	float absAngleX = fabsf(deltaX * (180.0f / static_cast<float>(M_PI)));
 	float angleFactorX = 1.0f;
-	float absAngleX = std::abs(deltaX * (180.0f / static_cast<float>(M_PI))); // 度に変換
 	if (absAngleX > assistInnerAngle_) {
-		angleFactorX = std::max(0.0f, 1.0f - ((absAngleX - assistInnerAngle_) / (aimAssistAngle_ - assistInnerAngle_)));
+		float angleFalloff = (absAngleX - assistInnerAngle_) / (aimAssistAngle_ - assistInnerAngle_);
+		angleFactorX = std::max(0.1f, 1.0f - angleFalloff * 0.7f);
 	}
 
 	// 最終的なアシスト回転量を計算
 	float assistRotationY = deltaY * aimAssistSpeed_ * effectiveAssistStrength * angleFactorY;
 	float assistRotationX = deltaX * aimAssistSpeed_ * effectiveAssistStrength * angleFactorX;
+
+	// より滑らかな補間を適用
+	float smoothFactor = 0.8f;
+	assistRotationY *= smoothFactor;
+	assistRotationX *= smoothFactor;
 
 	// アシスト効果を目標角度に適用
 	destinationRotate.y += assistRotationY;
@@ -329,8 +398,7 @@ BaseEnemy *FollowCamera::FindNearestEnemyInSight() {
 	}
 
 	BaseEnemy *nearestEnemy = nullptr;
-	float nearestDistance = FLT_MAX;
-	float nearestAngle = 180.0f; // 180度（最大値）で初期化
+	float bestScore = FLT_MAX;
 
 	// プレイヤー位置
 	Vector3 playerPos = target_->transform.translate;
@@ -342,26 +410,43 @@ BaseEnemy *FollowCamera::FindNearestEnemyInSight() {
 	auto checkEnemy = [&](BaseEnemy *enemy) {
 		if (enemy && enemy->GetHp() > 0) {
 			Vector3 enemyPos = enemy->GetPosition();
-			Vector3 toEnemy = enemyPos - playerPos;
-			float distance = Length(toEnemy);
+			Vector3 toEnemy = {
+				enemyPos.x - playerPos.x,
+				enemyPos.y - playerPos.y,
+				enemyPos.z - playerPos.z};
+
+			float distance = sqrtf(toEnemy.x * toEnemy.x + toEnemy.y * toEnemy.y + toEnemy.z * toEnemy.z);
 
 			// 距離が範囲内か
-			if (distance < aimAssistRange_) {
+			if (distance < aimAssistRange_ && distance > 0.001f) {
+				// 正規化
+				Vector3 toEnemyNorm = {
+					toEnemy.x / distance,
+					toEnemy.y / distance,
+					toEnemy.z / distance};
+
 				// カメラの前方向と敵への方向の角度を計算
-				Vector3 toEnemyNorm = Normalize(toEnemy);
-				float dotProduct = Dot(cameraForward, toEnemyNorm);
-				float angle = std::acos(std::clamp(dotProduct, -1.0f, 1.0f)) * (180.0f / static_cast<float>(M_PI)); // ラジアンから度に変換
+				float dotProduct = cameraForward.x * toEnemyNorm.x +
+								   cameraForward.y * toEnemyNorm.y +
+								   cameraForward.z * toEnemyNorm.z;
 
-				// 視野角内かつ最も近い敵を選定
+				dotProduct = std::clamp(dotProduct, -1.0f, 1.0f);
+				float angle = acosf(dotProduct) * (180.0f / static_cast<float>(M_PI));
+
+				// 視野角内かつスコア計算
 				if (angle < aimAssistAngle_) {
-					// 距離と角度を組み合わせたスコアを計算
-					// 角度が小さいほど優先度が高い
-					float angleWeight = 2.0f; // 角度の重要度（調整可能）
-					float score = distance + (angle * angleWeight);
+					// スコア計算：角度を重視し、距離も考慮
+					float angleWeight = 3.0f;	 // 角度の重要度を上げる
+					float distanceWeight = 0.5f; // 距離の重要度を下げる
+					float score = (angle * angleWeight) + (distance * distanceWeight);
 
-					if (score < nearestDistance) {
-						nearestDistance = score;
-						nearestAngle = angle;
+					// 現在のターゲットに対してはボーナスを与える（ターゲット切り替えを抑制）
+					if (enemy == currentAimTarget_) {
+						score *= 0.7f; // 30%のボーナス
+					}
+
+					if (score < bestScore) {
+						bestScore = score;
 						nearestEnemy = enemy;
 					}
 				}

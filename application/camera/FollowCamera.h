@@ -152,15 +152,18 @@ private:
 	const std::vector<std::unique_ptr<BaseEnemy>> *spawns_ = nullptr;
 
 	// エイムアシスト関連パラメータ
-	float aimAssistFactor_ = 0.8f;				// エイムアシストの強さ（0.0fから1.0f）
-	float aimAssistRange_ = 1024.0f;			// エイムアシスト検知の距離範囲（メートル）
-	float aimAssistAngle_ = 20.0f;				// エイムアシスト検知の角度範囲（度）
-	float aimAssistSpeed_ = 0.25f;				// エイムアシスト回転速度
-	float aimAssistDecayRate_ = 0.95f;			// プレイヤー入力時の減衰率
-	float currentAimAssistStrength_ = 0.0f;		// 現在のアシスト強度（0.0f〜1.0f）
-	BaseEnemy *currentAimTarget_ = nullptr;		// 現在のアシスト対象
-	float assistInputTriggerThreshold_ = 0.05f; // プレイヤー入力検出閾値
-	float assistInnerAngle_ = 15.0f;			// 強いアシストを適用する内側の角度範囲
-	float timeSinceLastInput_ = 0.0f;			// 最後の入力からの経過時間
-	float assistRampUpTime_ = 0.2f;				// アシスト強度が上がるまでの時間
+	bool enableAimAssistOnlyWhileFiring_ = true; // マシンガン射撃時のみエイムアシストを有効にするフラグ
+	float aimAssistFactor_ = 1.2f;				 // エイムアシストの強さ（0.0fから1.0f）- 強化
+	float aimAssistRange_ = 1024.0f;			 // エイムアシスト検知の距離範囲（メートル）
+	float aimAssistAngle_ = 45.0f;				 // エイムアシスト検知の角度範囲（度）- 拡大
+	float aimAssistSpeed_ = 0.35f;				 // エイムアシスト回転速度 - 高速化
+	float aimAssistDecayRate_ = 0.92f;			 // プレイヤー入力時の減衰率 - 緩やかに
+	float currentAimAssistStrength_ = 0.0f;		 // 現在のアシスト強度（0.0f〜1.0f）
+	BaseEnemy *currentAimTarget_ = nullptr;		 // 現在のアシスト対象
+	float assistInputTriggerThreshold_ = 0.08f;	 // プレイヤー入力検出閾値 - 感度を下げる
+	float assistInnerAngle_ = 25.0f;			 // 強いアシストを適用する内側の角度範囲 - 拡大
+	float timeSinceLastInput_ = 0.0f;			 // 最後の入力からの経過時間
+	float assistRampUpTime_ = 0.15f;			 // アシスト強度が上がるまでの時間 - 高速化
+	float targetSwitchCooldown_ = 0.0f;			 // ターゲット切り替えのクールダウン
+	float targetSwitchCooldownTime_ = 0.3f;		 // ターゲット切り替えクールダウン時間
 };
