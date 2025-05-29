@@ -146,6 +146,10 @@ void TitleScene::Initialize()
 	se1_->Initialize();
 
 	bgm_->SoundPlay("Resources/bgm/title.mp3", 10000);
+
+
+	cameraManager_->GetActiveCamera()->GetViewProjection().Initialize();
+
 }
 
 void TitleScene::Finalize() {

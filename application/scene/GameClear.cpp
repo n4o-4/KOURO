@@ -151,7 +151,7 @@ void GameClear::Initialize() {
 	mvSceneTransform_->Initialize();
 	mvSceneTransform_->transform.translate = { 0.0f, 0.0f , 0.0f };
 
-	ParticleManager::GetInstance()->SetBlendMode("Add");
+	
 
 	for (int i = 0; i < 4; ++i) {
 		missileModels_[i] = std::make_unique<Object3d>();
@@ -180,7 +180,8 @@ void GameClear::Initialize() {
 		explosionEmitter_[i]->SetFrequency(0.1f);
 		explosionEmitter_[i]->SetLifeTimeRange({ 3.5f, 8.0f });
 		explosionEmitter_[i]->SetVelocityRange(ParticleManager::Vec3Range({ -100.0f,-100.0f,-100.0f }, { 100.0f,100.0f,100.0f }));
-		explosionEmitter_[i]->SetScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
+		explosionEmitter_[i]->SetStartScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
+		explosionEmitter_[i]->SetFinishScaleRange(ParticleManager::Vec3Range({ 3.0f,3.0f,3.0f, }, { 5.0f,5.0f,5.0f }));
 	}
 	spawnTransforms_[0]->transform.translate = { 31.1f, 13.9f, 38.4f };
 	spawnTransforms_[1]->transform.translate = { 15.2f, 3.5f, 47.5f };
@@ -227,7 +228,8 @@ void GameClear::Initialize() {
 			{ 0.0f,6.0f,1.0f }
 		)
 	);
-	smokeEmitter_->SetScaleRange(ParticleManager::Vec3Range({ 0.5f,0.5f,0.5f }, { 1.0f,1.0f,1.0f }));
+	smokeEmitter_->SetStartScaleRange(ParticleManager::Vec3Range({ 0.5f,0.5f,0.5f }, { 1.0f,1.0f,1.0f }));
+	smokeEmitter_->SetFinishScaleRange(ParticleManager::Vec3Range({ 0.5f,0.5f,0.5f }, { 1.0f,1.0f,1.0f }));
 
 	mwdoorTransform_->SetParent(mwbodyTransform_.get());
 	mwdishTransform_->SetParent(mwbodyTransform_.get());

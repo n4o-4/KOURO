@@ -147,7 +147,6 @@ void GameOver::Initialize() {
 	textTransform_->transform.scale = { 0.55f, 0.55f , 1.0f };
 
 
-
 	ParticleManager::GetInstance()->CreateParticleGroup("missileSmoke", "Resources/circle.png", ParticleManager::ParticleType::Normal);
 	smokeEmitter_ = std::make_unique<ParticleEmitter>();
 	smokeEmitter_->Initialize("missileSmoke");
@@ -172,7 +171,8 @@ void GameOver::Initialize() {
 			{ 0.0f,6.0f,1.0f }
 		)
 	);
-	smokeEmitter_->SetScaleRange(ParticleManager::Vec3Range({ 0.5f,0.5f,0.5f }, { 1.0f,1.0f,1.0f }));
+	smokeEmitter_->SetStartScaleRange(ParticleManager::Vec3Range({ 0.5f,0.5f,0.5f }, { 1.0f,1.0f,1.0f }));
+	smokeEmitter_->SetFinishScaleRange(ParticleManager::Vec3Range({ 0.5f,0.5f,0.5f }, { 1.0f,1.0f,1.0f }));
 
 
 
@@ -181,9 +181,9 @@ void GameOver::Initialize() {
 	textTransform_->SetParent(mvTransforms_[2].get());
 	mvTransforms_[3]->SetParent(mvTransforms_[1].get());
 
-	cameraViewProjection_ = std::make_unique<ViewProjection>();
+	/*cameraViewProjection_ = std::make_unique<ViewProjection>();
 	cameraViewProjection_->Initialize();
-	cameraViewProjection_->transform.translate = { 0.0f, 0.0f, -15.0f };
+	cameraViewProjection_->transform.translate = { 0.0f, 0.0f, -15.0f };*/
 
 }
 
@@ -255,11 +255,15 @@ void GameOver::Update() {
 			ImGui::ColorEdit3("Color", &mvPointLight->color_.x);
 		}
 
+		/*if (ImGui::CollapsingHeader("smokeEmitter_")) {
+			ImGui::DragFloat3("Position##MWBody", &smokeEmitter_->,1.f);
+			
+		}*/
 
 		ImGui::End();
 #endif
 
-		cameraViewProjection_->Update();
+		//cameraViewProjection_->Update();
 
 		if (!isMoving_) {
 			cameraMove();
@@ -331,18 +335,18 @@ void GameOver::Draw() {
 	DrawObject();
 
 	if (!isText_) {
-		overModel_->Draw(*textTransform_.get(), *cameraViewProjection_,
+		overModel_->Draw(*textTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(),
 			*directionalLight, *mvPointLight, *spotLight);
 	} else {
-		titleModel_->Draw(*textTransform_.get(), *cameraViewProjection_,
+		titleModel_->Draw(*textTransform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(),
 			*directionalLight, *mvPointLight, *spotLight);
 	}
 	for (int i = 0; i < 4; ++i) {
-		mvModels_[i]->Draw(*mvTransforms_[i], *cameraViewProjection_,
+		mvModels_[i]->Draw(*mvTransforms_[i], cameraManager_->GetActiveCamera()->GetViewProjection(),
 				*directionalLight, *mvPointLight, *spotLight);
 	}
 	for (int i = 0; i < 5; ++i) {
-		enemyModels_[i]->Draw(*enemyTransforms_[i], *cameraViewProjection_,
+		enemyModels_[i]->Draw(*enemyTransforms_[i], cameraManager_->GetActiveCamera()->GetViewProjection(),
 			*directionalLight, *pointLight, *spotLight);
 	}
 
@@ -376,7 +380,7 @@ void GameOver::cameraMove() {
 			startPos.y + (endPos.y - startPos.y) * t,
 			startPos.z + (endPos.z - startPos.z) * t
 		};
-		cameraViewProjection_->transform.translate = newPos;
+		cameraManager_->GetActiveCamera()->GetViewProjection().transform.translate = newPos;
 	}
 
 
@@ -447,6 +451,7 @@ void GameOver::CloseMwdoor() {
 
 		isText_ = true;
 		showButtonA_ = false;
+		textTransform_->transform.translate = { -0.7f, 0.2f , -0.2f };
 
 		if (t >= 1.0f) {
 			isCloseDoor_ = true;
@@ -455,10 +460,10 @@ void GameOver::CloseMwdoor() {
 	if (isCloseDoor_) {
 
 		mvTransforms_[2]->transform.rotate.y += 0.05f;
-		cameraViewProjection_->transform.translate.z -= 0.1f;
+		cameraManager_->GetActiveCamera()->GetViewProjection().transform.translate.z -= 0.1f;
 	}
 
-	if (cameraViewProjection_->transform.translate.z <= -10.0f) {
+	if (cameraManager_->GetActiveCamera()->GetViewProjection().transform.translate.z <= -10.0f) {
 		isMove_ = true;
 	}
 	if (isMove_) {
