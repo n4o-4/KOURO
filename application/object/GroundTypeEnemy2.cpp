@@ -3,8 +3,8 @@
 #include <PlayerMissile.h>
 
 void GroundTypeEnemy2::Initialize() {
-	ModelManager::GetInstance()->LoadModel("enemy/bomb/bomb.obj");
-	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/bomb/bomb.obj"));
+	ModelManager::GetInstance()->LoadModel("enemy/Refrigerator/Refrigerator.obj");
+	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/Refrigerator/Refrigerator.obj"));
 
 	worldTransform_->transform.scale = (Vector3(modelScale_, modelScale_, modelScale_));
 
