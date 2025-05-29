@@ -148,7 +148,9 @@ public:
 	 * \return
 	 */
 	bool GetIsInvincible() const { return isInvincible_; }
+	
 
+	Vector3 GetVelocity() const { return velocity_; }
 
 private:
 	//========================================
