@@ -81,6 +81,77 @@ private:
 	// フェーズ
 	TutorialPhase tutorialPhase_ = TutorialPhase::kExplain;
 
+	// ミッションフラグ群
+	bool missionFlags_[6] = { false };
+
+	void MissionMove()
+	{
+		// プレイヤーが動いたらtrue
+		if (float(Length(player_->GetVelocity())) > 0.0f) {
+			missionFlags_[0] = true;
+		}
+	}
+	
+	void MissionCamera()
+	{
+		// カメラを動かしたらtrue
+
+		Vector2 vec2 = Input::GetInstance()->GetLeftStick();
+
+		float length = std::sqrt(vec2.x * vec2.x + vec2.y * vec2.y);
+
+		if (length > 0.0f)
+		{
+			missionFlags_[1] = true;
+		}
+	}
+
+	void MissionJump()
+	{
+		if (Input::GetInstance()->Triggerkey(DIK_SPACE) ||
+			Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
+		{
+			missionFlags_[2] = true;
+		}
+	}
+
+	void MissionBoost()
+	{
+		if (Input::GetInstance()->Triggerkey(DIK_LSHIFT) ||
+			Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::X))
+		{
+			missionFlags_[3] = true;
+		}
+	}
+	void MissionFireGun()
+	{
+		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::LEFT_SHOULDER)) 
+		{
+			missionFlags_[4] = true;
+		}
+	}
+
+	void MissionFireMissile()
+	{
+		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::RIGHT_SHOULDER))
+		{
+			missionFlags_[5] = true;
+		}
+	}
+	
+	// ミッション関数
+	void CheckMissions()
+	{
+		MissionMove();
+		MissionCamera();
+		MissionJump();
+		MissionBoost();
+		MissionFireGun();
+		MissionFireMissile();
+	}
+
+	std::unique_ptr<Sprite> checkBox_ = nullptr; // チェックボックスのスプライト
+
 public: // メンバ関数
 	// 初期化
 	void Initialize() override;

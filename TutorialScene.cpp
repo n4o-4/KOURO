@@ -9,6 +9,13 @@ void TutorialScene::Initialize()
 	//========================================
 	// テクスチャの読み込み
 
+	TextureManager::GetInstance()->LoadTexture("Resources/CheckBox.png");
+
+	checkBox_ = std::make_unique<Sprite>();
+	checkBox_->Initialize(SpriteCommon::GetInstance(),"Resources/CheckBox.png");
+
+	checkBox_->SetPosition({ 1200.0f, 100.0f });
+
 	//========================================
 	// ライト
 	// 指向性
@@ -73,6 +80,8 @@ void TutorialScene::Initialize()
 	hud_->Initialize(cameraManager_->GetFollowCamera(), player_.get(), lockOnSystem_.get());
 
 	sceneManager_->GetPostEffect()->ApplyEffect("Outline", PostEffect::EffectType::DepthBasedOutline); // 完
+
+	
 }
 
 void TutorialScene::Finalize()
@@ -86,6 +95,8 @@ void TutorialScene::Finalize()
 void TutorialScene::Update()
 {
 	BaseScene::Update();
+
+	bool allTrue = true;
 	//========================================
 	// フェーズ切り替え
 	switch (phase_) {
@@ -271,6 +282,19 @@ void TutorialScene::Update()
 
 			//playerが動いたらtrue
 
+			CheckMissions();
+
+			
+			for (int i = 0; i < 6; ++i) {
+				if (!missionFlags_[i]) {
+					allTrue = false;
+					break;
+				}
+			}
+
+			if (allTrue) {
+				tutorialPhase_ = TutorialPhase::kPlay;
+			}
 
 			// プレイヤーの操作説明
 			/*if (Input::GetInstance()->Triggerkey(DIK_RETURN)) {
