@@ -62,6 +62,8 @@ private:
 	std::unique_ptr<LockOn> lockOnSystem_ = nullptr;
 	// HUD
 	std::unique_ptr<Hud> hud_ = nullptr;
+	// エネミー
+	std::vector<std::unique_ptr<GroundTypeEnemy>> groundEnemies_;
 
 	//========================================
 	// 敵出現
@@ -79,7 +81,7 @@ private:
 	std::vector<std::unique_ptr<BaseEnemy>> spawns_;
 	//=========================================
 	// フェーズ
-	TutorialPhase tutorialPhase_ = TutorialPhase::kExplain;
+	TutorialPhase tutorialPhase_;
 
 public: // メンバ関数
 	// 初期化
