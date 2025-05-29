@@ -85,82 +85,82 @@ private:
 	static constexpr float kPi = 3.14159f;
 	static constexpr float kTwoPi = 2.0f * kPi;
 
-	// 戦闘モード
-	bool isCombatMode_ = false;
+	// 戦闘モード制御
+	bool isCombatMode_ = false; // HUD全体の表示/非表示を制御
 
-	// HUDの基本色設定
-	Vector4 hudBaseColor_ = {0.0f, 1.0f, 0.4f, 0.9f};
-	Vector4 hudAccentColor_ = {0.2f, 1.0f, 0.8f, 0.9f};
-	Vector4 hudEnemyColor_ = {1.0f, 0.3f, 0.0f, 0.9f};
-	Vector4 hudAlertColor_ = {1.0f, 0.8f, 0.0f, 0.9f};
-	Vector4 hudLockColor_ = {1.0f, 0.0f, 0.0f, 0.9f};
+	// HUDの基本色設定（UI全体の統一感を保つ）
+	Vector4 hudBaseColor_ = {0.0f, 1.0f, 0.4f, 0.9f};	// メイン色（緑系）
+	Vector4 hudAccentColor_ = {0.2f, 1.0f, 0.8f, 0.9f}; // アクセント色（シアン系）
+	Vector4 hudEnemyColor_ = {1.0f, 0.3f, 0.0f, 0.9f};	// 敵マーカー色（赤橙）
+	Vector4 hudAlertColor_ = {1.0f, 0.8f, 0.0f, 0.9f};	// 警告色（黄色）
+	Vector4 hudLockColor_ = {1.0f, 0.0f, 0.0f, 0.9f};	// ロック完了色（赤）
 
-	// 照準関連
-	float crosshairSize_ = 2.5f;
-	Vector4 crosshairColor_ = hudBaseColor_;
-	float crosshairDistance_ = 64.0f;
-	float crosshairGap_ = 8.0f;
-	float crosshairCenterRadius_ = 0.8f;
-	int crosshairCircleSegments_ = 16;
+	// 照準（クロスヘア）関連設定
+	float crosshairSize_ = 2.5f;			 // 照準の基本サイズ
+	Vector4 crosshairColor_ = hudBaseColor_; // 照準の色
+	float crosshairDistance_ = 64.0f;		 // プレイヤーから照準までの表示距離
+	float crosshairGap_ = 8.0f;				 // 中心からマーカーまでのギャップ
+	float crosshairCenterRadius_ = 0.8f;	 // 中央円の半径
+	int crosshairCircleSegments_ = 16;		 // 円の分割数（滑らかさ）
 
-	// ロックオン関連
-	float lockOnSize_ = 5.0f;
-	Vector4 lockOnColor_ = hudLockColor_;
-	Vector4 preciseLockonColor_ = hudLockColor_;
-	Vector4 simpleLockonColor_ = hudAlertColor_;
-	Vector4 noLockonColor_ = {0.5f, 0.8f, 0.5f, 0.7f};
-	Vector4 progressColor_ = hudAccentColor_;
-	float preciseLockonSizeRatio_ = 0.6f;
-	float simpleLockonSizeRatio_ = 0.4f;
-	float noLockonSizeRatio_ = 0.2f;
-	float lockOnRotation_ = 0.0f;
-	float lockOnRotationSpeed_ = 0.02f;
+	// ロックオン表示関連設定
+	float lockOnSize_ = 5.0f;						   // ロックオンマーカーの基本サイズ
+	Vector4 lockOnColor_ = hudLockColor_;			   // ロックオンマーカーの基本色
+	Vector4 preciseLockonColor_ = hudLockColor_;	   // 精密ロック時の色（赤）
+	Vector4 simpleLockonColor_ = hudAlertColor_;	   // 簡易ロック時の色（黄）
+	Vector4 noLockonColor_ = {0.5f, 0.8f, 0.5f, 0.7f}; // ロックなし時の色（薄緑）
+	Vector4 progressColor_ = hudAccentColor_;		   // ロック進行度の色（シアン）
+	float preciseLockonSizeRatio_ = 0.6f;			   // 精密ロック時のサイズ倍率
+	float simpleLockonSizeRatio_ = 0.4f;			   // 簡易ロック時のサイズ倍率
+	float noLockonSizeRatio_ = 0.2f;				   // ロックなし時のサイズ倍率
+	float lockOnRotation_ = 0.0f;					   // ロックオン表示の回転角度
+	float lockOnRotationSpeed_ = 0.02f;				   // ロックオン表示の回転速度
 
-	// 3D球体ミニマップ関連
-	bool use3DSphereMap_ = true;
-	float sphereMapRadius_ = 6.0f;
-	float sphereMapPositionX_ = 10.0f;
-	float sphereMapPositionY_ = -6.0f;
-	float sphereMapPositionZ_ = 27.0f;
-	float sphereMapRange_ = 512.0f;
-	float sphereObjectScale_ = 0.4f;
-	Vector4 sphereMapFovColor_ = {0.5f, 0.8f, 1.0f, 0.3f};
-	float sphereMapFov_ = 60.0f * (kPi / 180.0f);
-	Vector4 enemyDotColor_ = hudEnemyColor_;
-	Vector4 spawnBlockColor_ = hudAlertColor_;
-	Vector4 sphereGridColor_ = {0.0f, 0.8f, 0.4f, 0.6f};
-	int sphereLongitudeCount_ = 8;
-	int sphereLatitudeCount_ = 4;
+	// 3D球体ミニマップ関連設定
+	bool use3DSphereMap_ = true;						   // 3D球体ミニマップの使用フラグ
+	float sphereMapRadius_ = 6.0f;						   // 球体の半径
+	float sphereMapPositionX_ = 13.0f;					   // 球体の表示位置X（右側）
+	float sphereMapPositionY_ = -5.0f;					   // 球体の表示位置Y（下側）
+	float sphereMapPositionZ_ = 30.0f;					   // 球体の表示位置Z（前方）
+	float sphereMapRange_ = 1000.0f;					   // ミニマップの検出範囲
+	float sphereObjectScale_ = 0.4f;					   // 球体上のオブジェクトサイズ
+	Vector4 sphereMapFovColor_ = {0.5f, 0.8f, 1.0f, 0.3f}; // 視界扇形の色
+	float sphereMapFov_ = 60.0f * (kPi / 180.0f);		   // 視界角度（ラジアン）
+	Vector4 enemyDotColor_ = hudEnemyColor_;			   // 敵ドットの色
+	Vector4 spawnBlockColor_ = hudAlertColor_;			   // スポーンブロックの色
+	Vector4 sphereGridColor_ = {0.0f, 0.8f, 0.4f, 0.6f};   // 球体グリッドの色
+	int sphereLongitudeCount_ = 8;						   // 経線の数（縦線）
+	int sphereLatitudeCount_ = 4;						   // 緯線の数（横線）
 
-	// プレイヤーステータスバー関連
-	float screenDistance_ = 50.0f;
-	float statusBarWidth_ = 8.0f;
-	float statusBarHeight_ = 0.8f;
+	// プレイヤーステータスバー基本設定
+	float screenDistance_ = 65.0f; // HUD表示距離（プレイヤーからの距離）
+	float statusBarWidth_ = 14.0f; // ステータスバーの幅
+	float statusBarHeight_ = 0.8f; // ステータスバーの高さ
 
-	// ブーストゲージ位置
-	float boostBarOffsetX_ = -22.0f;
-	float boostBarOffsetY_ = -18.0f;
-	float quickBoostChargeSpacing_ = 1.5f;
-	float quickBoostChargeHeight_ = 0.4f;
-	float rechargeSpacing_ = 1.0f;
-	float rechargeBarHeight_ = 0.3f;
+	// ブーストゲージ位置設定（画面左下）
+	float boostBarOffsetX_ = -35.0f;	   // ブーストバーのX位置（左側）
+	float boostBarOffsetY_ = -18.0f;	   // ブーストバーのY位置（下側）
+	float quickBoostChargeSpacing_ = 1.5f; // クイックブーストチャージとの間隔
+	float quickBoostChargeHeight_ = 0.4f;  // クイックブーストチャージの高さ
+	float rechargeSpacing_ = 1.0f;		   // リチャージバーとの間隔
+	float rechargeBarHeight_ = 0.3f;	   // リチャージバーの高さ
 
-	// 武器ゲージ位置
-	float mgBarOffsetX_ = 8.0f;
-	float mgBarOffsetY_ = -18.0f;
-	float weaponCooldownSpacing_ = 1.2f;
-	float weaponCooldownHeight_ = 0.5f;
-	float missileBarSpacing_ = -3.5f;
-	float missileReadySpacing_ = 1.0f;
-	float missileReadyHeight_ = 0.3f;
+	// 武器ゲージ位置設定（画面右下）
+	float mgBarOffsetX_ = 0.0f;			 // マシンガンバーのX位置（右側）
+	float mgBarOffsetY_ = -18.0f;		 // マシンガンバーのY位置（下側）
+	float weaponCooldownSpacing_ = 1.2f; // 武器クールダウンとの間隔
+	float weaponCooldownHeight_ = 0.5f;	 // 武器クールダウンの高さ
+	float missileBarSpacing_ = -3.5f;	 // ミサイルバーとマシンガンバーの間隔
+	float missileReadySpacing_ = 1.0f;	 // ミサイル準備完了表示との間隔
+	float missileReadyHeight_ = 0.3f;	 // ミサイル準備完了表示の高さ
 
-	// ゲージ色設定
-	Vector4 boostGaugeColor_ = {0.2f, 0.8f, 1.0f, 0.8f};
-	Vector4 quickBoostChargeColor_ = {1.0f, 1.0f, 0.2f, 0.9f};
-	Vector4 weaponReadyColor_ = {0.2f, 1.0f, 0.5f, 0.8f};
-	Vector4 weaponReloadColor_ = {1.0f, 0.6f, 0.2f, 0.7f};
-	Vector4 weaponHeatColor_ = {1.0f, 0.8f, 0.0f, 0.8f};
-	Vector4 overheatColor_ = {1.0f, 0.2f, 0.1f, 0.9f};
-	Vector4 gaugeBorderColor_ = {0.3f, 0.6f, 0.3f, 0.6f};
-	float gaugeBorderWidth_ = 0.1f;
+	// ゲージ色設定（各種ステータス表示）
+	Vector4 boostGaugeColor_ = {0.2f, 0.8f, 1.0f, 0.8f};	   // ブーストゲージの色（青系）
+	Vector4 quickBoostChargeColor_ = {1.0f, 1.0f, 0.2f, 0.9f}; // クイックブーストチャージの色（黄色）
+	Vector4 weaponReadyColor_ = {0.2f, 1.0f, 0.5f, 0.8f};	   // 武器準備完了時の色（緑）
+	Vector4 weaponReloadColor_ = {1.0f, 0.6f, 0.2f, 0.7f};	   // 武器リロード中の色（橙）
+	Vector4 weaponHeatColor_ = {1.0f, 0.8f, 0.0f, 0.8f};	   // 武器発熱時の色（黄）
+	Vector4 overheatColor_ = {1.0f, 0.2f, 0.1f, 0.9f};		   // オーバーヒート時の色（赤）
+	Vector4 gaugeBorderColor_ = {0.3f, 0.6f, 0.3f, 0.6f};	   // ゲージ背景枠の色
+	float gaugeBorderWidth_ = 0.1f;							   // ゲージ背景枠の幅
 };
