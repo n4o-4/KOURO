@@ -81,7 +81,7 @@ private:
 	const std::vector<std::unique_ptr<BaseEnemy>> *enemies_ = nullptr;
 	const std::vector<std::unique_ptr<BaseEnemy>> *spawns_ = nullptr;
 
-	// 数学定数
+	// 数学定数  
 	static constexpr float kPi = 3.14159f;
 	static constexpr float kTwoPi = 2.0f * kPi;
 
