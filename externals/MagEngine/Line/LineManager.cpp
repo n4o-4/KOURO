@@ -101,6 +101,7 @@ void LineManager::DrawImGui() {
 	//========================================
 	// Sphereの描画
 	ImGui::Checkbox("Sphere", &isDrawSphere_);
+	
 	ImGui::End();
 #endif // _DEBUG
 }

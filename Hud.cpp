@@ -576,100 +576,141 @@ void Hud::DrawPlayerStatusBars(ViewProjection viewProjection) {
 	Vector3 cameraRight = followCamera_->GetRightDirection();
 	Vector3 cameraUp = followCamera_->GetUpDirection();
 
-	// --- ブーストゲージ ---
+	// 画面の基準位置を計算（プレイヤーの前方、固定距離）
+	Vector3 screenBasePos = playerPos + cameraForward * screenDistance_;
+
+	// --- ブーストゲージ（画面左下） ---
+	Vector3 boostBarCenter = screenBasePos + cameraRight * boostBarOffsetX_ + cameraUp * boostBarOffsetY_;
 	float boostRatio = player_->GetCurrentBoostTime() / player_->GetMaxBoostTime();
-	Vector3 boostBarCenter = playerPos + cameraRight * boostBarPositionX_ + cameraUp * boostBarPositionY_ + cameraForward * crosshairDistance_ * 0.8f; // 少し手前に表示
 
-	// 背景枠
-	DrawFacingSquare(boostBarCenter, statusBarWidth_ * 0.5f, Vector4{hudBaseColor_.x, hudBaseColor_.y, hudBaseColor_.z, 0.3f}, cameraRight, cameraUp);
+	// 背景バー
+	DrawStatusBar(boostBarCenter, statusBarWidth_, statusBarHeight_,
+				  Vector4{boostGaugeColor_.x, boostGaugeColor_.y, boostGaugeColor_.z, 0.3f},
+				  cameraRight, cameraUp);
 
-	// エネルギーゲージ
-	float currentBoostWidth = statusBarWidth_ * boostRatio;
-	Vector3 boostGaugeStart = boostBarCenter - cameraRight * (statusBarWidth_ * 0.5f) + cameraUp * (statusBarHeight_ * 0.5f); // 左上から開始
-	Vector3 boostGaugeEnd = boostGaugeStart + cameraRight * currentBoostWidth;
+	// ブーストゲージ本体
+	DrawStatusBar(boostBarCenter, statusBarWidth_ * boostRatio, statusBarHeight_,
+				  boostGaugeColor_, cameraRight, cameraUp);
 
-	// ゲージ本体（太い線で表現）
-	for (float i = -statusBarHeight_ * 0.5f; i <= statusBarHeight_ * 0.5f; i += 0.1f) { // 高さを出すために複数線を描画
-		Vector3 p1 = {boostGaugeStart.x, boostGaugeStart.y + cameraUp.y * i, boostGaugeStart.z + cameraUp.z * i};
-		Vector3 p2 = {boostGaugeEnd.x, boostGaugeEnd.y + cameraUp.y * i, boostGaugeEnd.z + cameraUp.z * i};
-		lineManager_->DrawLine(p1, p2, boostGaugeColor_);
-	}
-
-	// クイックブーストチャージ表示
+	// クイックブーストチャージ表示（ブーストバーの上に小さな四角で表示）
 	int maxCharges = player_->GetMaxQuickBoostUses();
 	int currentCharges = maxCharges - player_->GetQuickBoostUsedCount();
-	float chargeSegmentWidth = statusBarWidth_ / (maxCharges * 2.0f); // 各チャージ表示の幅
-	float chargeSpacing = chargeSegmentWidth * 0.3f;
-	Vector3 chargeStartPos = boostBarCenter + cameraRight * (statusBarWidth_ * 0.5f + chargeSpacing * 2.0f) + cameraUp * (statusBarHeight_ * 0.7f); // ゲージの右隣上に配置
+	float chargeWidth = statusBarWidth_ / maxCharges;
 
 	for (int i = 0; i < maxCharges; ++i) {
+		Vector3 chargePos = boostBarCenter + cameraUp * (statusBarHeight_ + quickBoostChargeSpacing_) +
+							cameraRight * (chargeWidth * (i - maxCharges * 0.5f + 0.5f));
 		Vector4 chargeColor = (i < currentCharges) ? quickBoostChargeColor_ : Vector4{quickBoostChargeColor_.x, quickBoostChargeColor_.y, quickBoostChargeColor_.z, 0.3f};
-		Vector3 segmentCenter = chargeStartPos + cameraRight * (i * (chargeSegmentWidth + chargeSpacing));
-		// 小さな四角形でチャージを表示
-		DrawFacingSquare(segmentCenter, chargeSegmentWidth * 0.4f, chargeColor, cameraRight, cameraUp);
+		DrawStatusBar(chargePos, chargeWidth * 0.8f, quickBoostChargeHeight_, chargeColor, cameraRight, cameraUp);
 	}
-	// クイックブーストのリチャージ中バー
+
+	// クイックブーストリチャージ表示（チャージバーの上）
 	if (player_->GetQuickBoostUsedCount() > 0 && player_->GetQuickBoostChargeCooldown() > 0) {
-		float rechargeRatio = static_cast<float>(player_->GetQuickBoostChargeCooldown()) / static_cast<float>(player_->GetQuickBoostChargeTime());
-		float rechargeBarWidth = chargeSegmentWidth * (maxCharges + (maxCharges - 1) * 0.3f); // 全チャージ分の幅
-		Vector3 rechargeBarStart = chargeStartPos - cameraRight * (chargeSegmentWidth * 0.4f);
-		Vector3 rechargeBarEnd = rechargeBarStart + cameraRight * (rechargeBarWidth * (1.0f - rechargeRatio));
-		lineManager_->DrawLine(rechargeBarStart - cameraUp * (statusBarHeight_ * 0.4f), rechargeBarEnd - cameraUp * (statusBarHeight_ * 0.4f), hudAlertColor_);
+		float rechargeRatio = 1.0f - (static_cast<float>(player_->GetQuickBoostChargeCooldown()) /
+									  static_cast<float>(player_->GetQuickBoostChargeTime()));
+		Vector3 rechargePos = boostBarCenter + cameraUp * (statusBarHeight_ + quickBoostChargeSpacing_ + quickBoostChargeHeight_ + rechargeSpacing_);
+
+		DrawStatusBar(rechargePos, statusBarWidth_ * rechargeRatio, rechargeBarHeight_,
+					  hudAlertColor_, cameraRight, cameraUp);
 	}
 
-	// --- 照準周りの武器ステータス ---
-	Vector3 crosshairScreenPos = playerPos + cameraForward * crosshairDistance_; // 照準の中心
-
-	// --- マシンガンステータス (照準の右下) ---
-	Vector3 machineGunBarBasePos = crosshairScreenPos + cameraRight * weaponBarPositionX_ - cameraUp * weaponBarPositionY_;
+	// --- マシンガンステータス（画面右下） ---
+	Vector3 mgBarCenter = screenBasePos + cameraRight * mgBarOffsetX_ + cameraUp * mgBarOffsetY_;
 
 	// 熱量ゲージ
 	float heatRatio = player_->GetHeatLevel() / player_->GetMaxHeat();
-	Vector4 heatColor = player_->IsOverheated() ? overheatColor_ : weaponReadyColor_;
-	if (player_->IsOverheated())
-		heatColor = overheatColor_;
-	else if (heatRatio > 0.7f)
-		heatColor = hudAlertColor_;
-	else
-		heatColor = weaponReadyColor_;
+	Vector4 heatColor = player_->IsOverheated() ? overheatColor_ : (heatRatio > 0.7f ? hudAlertColor_ : weaponHeatColor_);
 
-	float heatBarActualWidth = statusBarWidth_ * 0.3f; // 少し短く
-	Vector3 heatGaugeStart = machineGunBarBasePos - cameraRight * (heatBarActualWidth * 0.5f);
-	Vector3 heatGaugeEnd = heatGaugeStart + cameraRight * (heatBarActualWidth * heatRatio);
-	// ゲージ本体
-	for (float i = -statusBarHeight_ * 0.2f; i <= statusBarHeight_ * 0.2f; i += 0.05f) {
-		lineManager_->DrawLine(heatGaugeStart + cameraUp * i, heatGaugeEnd + cameraUp * i, heatColor);
-	}
-	// 背景枠
-	DrawFacingSquare(machineGunBarBasePos, heatBarActualWidth * 0.5f, Vector4{heatColor.x, heatColor.y, heatColor.z, 0.2f}, cameraRight, cameraUp);
+	// 背景バー
+	DrawStatusBar(mgBarCenter, statusBarWidth_, statusBarHeight_,
+				  Vector4{heatColor.x, heatColor.y, heatColor.z, 0.3f},
+				  cameraRight, cameraUp);
 
-	// クールダウン表示 (熱量ゲージの下に小さく)
+	// 熱量ゲージ本体
+	DrawStatusBar(mgBarCenter, statusBarWidth_ * heatRatio, statusBarHeight_,
+				  heatColor, cameraRight, cameraUp);
+
+	// マシンガンクールダウン表示（熱量バーの上）
 	if (player_->GetMachineGunCooldown() > 0 && !player_->IsOverheated()) {
-		float mgCooldownRatio = static_cast<float>(player_->GetMachineGunCooldown()) / static_cast<float>(Player::GetMachineGunFireInterval());
-		Vector3 mgCooldownCenter = machineGunBarBasePos - cameraUp * (statusBarHeight_ * 0.8f);
-		float mgCooldownWidth = heatBarActualWidth * mgCooldownRatio;
-		Vector3 mgCooldownStart = mgCooldownCenter - cameraRight * (heatBarActualWidth * 0.5f);
-		Vector3 mgCooldownEnd = mgCooldownStart + cameraRight * mgCooldownWidth;
-		lineManager_->DrawLine(mgCooldownStart, mgCooldownEnd, weaponReloadColor_);
+		float mgCooldownRatio = 1.0f - (static_cast<float>(player_->GetMachineGunCooldown()) /
+										static_cast<float>(Player::GetMachineGunFireInterval()));
+		Vector3 mgCooldownPos = mgBarCenter + cameraUp * (statusBarHeight_ + weaponCooldownSpacing_);
+
+		DrawStatusBar(mgCooldownPos, statusBarWidth_ * mgCooldownRatio, weaponCooldownHeight_,
+					  weaponReloadColor_, cameraRight, cameraUp);
 	}
 
-	// --- ミサイルステータス (照準の左下) ---
-	Vector3 missileBarBasePos = crosshairScreenPos - cameraRight * weaponBarPositionX_ - cameraUp * weaponBarPositionY_;
-	float missileReloadRatio = 1.0f - (static_cast<float>(player_->GetMissileCooldown()) / static_cast<float>(player_->GetMissileCooldownMax()));
+	// オーバーヒート警告表示
+	if (player_->IsOverheated()) {
+		Vector3 warningPos = mgBarCenter + cameraUp * (statusBarHeight_ + weaponCooldownSpacing_);
+		// 点滅効果
+		float blinkAlpha = 0.5f + 0.5f * sinf(lockOnRotation_ * 8.0f);
+		Vector4 warningColor = Vector4{overheatColor_.x, overheatColor_.y, overheatColor_.z, blinkAlpha};
+		DrawStatusBar(warningPos, statusBarWidth_, weaponCooldownHeight_, warningColor, cameraRight, cameraUp);
+	}
+
+	// --- ミサイルステータス（マシンガンバーの下） ---
+	Vector3 missileBarCenter = mgBarCenter + cameraUp * missileBarSpacing_;
+	float missileReloadRatio = 1.0f - (static_cast<float>(player_->GetMissileCooldown()) /
+									   static_cast<float>(player_->GetMissileCooldownMax()));
 	Vector4 missileColor = (player_->GetMissileCooldown() == 0) ? weaponReadyColor_ : weaponReloadColor_;
 
-	float missileBarActualWidth = statusBarWidth_ * 0.3f;
-	Vector3 missileGaugeStart = missileBarBasePos - cameraRight * (missileBarActualWidth * 0.5f);
-	Vector3 missileGaugeEnd = missileGaugeStart + cameraRight * (missileBarActualWidth * missileReloadRatio);
+	// 背景バー
+	DrawStatusBar(missileBarCenter, statusBarWidth_, statusBarHeight_,
+				  Vector4{missileColor.x, missileColor.y, missileColor.z, 0.3f},
+				  cameraRight, cameraUp);
 
-	for (float i = -statusBarHeight_ * 0.2f; i <= statusBarHeight_ * 0.2f; i += 0.05f) {
-		lineManager_->DrawLine(missileGaugeStart + cameraUp * i, missileGaugeEnd + cameraUp * i, missileColor);
+	// ミサイルリロードゲージ本体
+	DrawStatusBar(missileBarCenter, statusBarWidth_ * missileReloadRatio, statusBarHeight_,
+				  missileColor, cameraRight, cameraUp);
+
+	// ミサイル準備完了表示
+	if (player_->GetMissileCooldown() == 0) {
+		Vector3 readyPos = missileBarCenter + cameraUp * (statusBarHeight_ + missileReadySpacing_);
+		// 緩やかな点滅
+		float readyAlpha = 0.7f + 0.3f * sinf(lockOnRotation_ * 3.0f);
+		Vector4 readyColor = Vector4{weaponReadyColor_.x, weaponReadyColor_.y, weaponReadyColor_.z, readyAlpha};
+		DrawStatusBar(readyPos, statusBarWidth_, missileReadyHeight_, readyColor, cameraRight, cameraUp);
 	}
-	// 背景枠
-	DrawFacingSquare(missileBarBasePos, missileBarActualWidth * 0.5f, Vector4{missileColor.x, missileColor.y, missileColor.z, 0.2f}, cameraRight, cameraUp);
 }
 
-///=============================================================================
+// 2Dステータスバーを描画する補助関数
+void Hud::DrawStatusBar(const Vector3 &center, float width, float height, const Vector4 &color,
+						const Vector3 &cameraRight, const Vector3 &cameraUp) {
+	// バーの四隅を計算
+	float halfWidth = width * 0.5f;
+	float halfHeight = height * 0.5f;
+
+	Vector3 topLeft = center - cameraRight * halfWidth + cameraUp * halfHeight;
+	Vector3 topRight = center + cameraRight * halfWidth + cameraUp * halfHeight;
+	Vector3 bottomLeft = center - cameraRight * halfWidth - cameraUp * halfHeight;
+	Vector3 bottomRight = center + cameraRight * halfWidth - cameraUp * halfHeight;
+
+	// バーを塗りつぶすように線で描画
+	int fillLines = static_cast<int>(height * 10.0f); // 密度調整
+	for (int i = 0; i < fillLines; ++i) {
+		float t = static_cast<float>(i) / static_cast<float>(fillLines - 1);
+		Vector3 left;
+		left.x = fLerp(bottomLeft.x, topLeft.x, t);
+		left.y = fLerp(bottomLeft.y, topLeft.y, t);
+		left.z = fLerp(bottomLeft.z, topLeft.z, t);
+		Vector3 right;
+		right.x = fLerp(bottomRight.x, topRight.x, t);
+		right.y = fLerp(bottomRight.y, topRight.y, t);
+		right.z = fLerp(bottomRight.z, topRight.z, t);
+		// 左右の線を描画
+		lineManager_->DrawLine(left, right, color);
+	}
+
+	// 外枠を描画
+	Vector4 borderColor = Vector4{color.x * 0.7f, color.y * 0.7f, color.z * 0.7f, color.w};
+	lineManager_->DrawLine(topLeft, topRight, borderColor);
+	lineManager_->DrawLine(topRight, bottomRight, borderColor);
+	lineManager_->DrawLine(bottomRight, bottomLeft, borderColor);
+	lineManager_->DrawLine(bottomLeft, topLeft, borderColor);
+}
+
+//=============================================================================
 ///						レーダーディスプレイの描画
 void Hud::DrawRadarDisplay(ViewProjection viewProjection) {
 	// プレイヤーの位置を取得
@@ -1333,17 +1374,20 @@ void Hud::DrawImGui() {
 	}
 
 	// HUDステータスバー設定
-	if (ImGui::CollapsingHeader("Player Status Bar Settings")) {
-		ImGui::SliderFloat("Bar Width", &statusBarWidth_, 1.0f, 20.0f);
-		ImGui::SliderFloat("Bar Height", &statusBarHeight_, 0.1f, 2.0f);
-		ImGui::SliderFloat("Boost Bar Pos X", &boostBarPositionX_, -20.0f, 20.0f);
-		ImGui::SliderFloat("Boost Bar Pos Y", &boostBarPositionY_, -20.0f, 20.0f);
-		ImGui::SliderFloat("Weapon Bar Pos X", &weaponBarPositionX_, 0.0f, 20.0f);
-		ImGui::SliderFloat("Weapon Bar Pos Y", &weaponBarPositionY_, -10.0f, 10.0f);
+	if (ImGui::CollapsingHeader("Player Status Gauges Settings")) {
+		ImGui::SliderFloat("Boost Gauge Radius", &boostGaugeRadius_, 0.5f, 5.0f);
+		ImGui::SliderFloat("Boost Gauge Offset X", &boostGaugeOffsetX_, -10.0f, 10.0f);
+		ImGui::SliderFloat("Boost Gauge Offset Y", &boostGaugeOffsetY_, -10.0f, 10.0f);
+		ImGui::SliderFloat("QuickBoost Indicator Size", &quickBoostIndicatorSize_, 0.1f, 1.0f);
 		ImGui::ColorEdit4("Boost Gauge Color", &boostGaugeColor_.x);
 		ImGui::ColorEdit4("Quick Boost Charge Color", &quickBoostChargeColor_.x);
+
+		ImGui::SliderFloat("Weapon Gauge Radius", &weaponGaugeRadius_, 0.5f, 5.0f);
+		ImGui::SliderFloat("Weapon Gauge Offset X", &weaponGaugeOffsetX_, -10.0f, 10.0f);
+		ImGui::SliderFloat("Weapon Gauge Offset Y", &weaponGaugeOffsetY_, -10.0f, 10.0f);
 		ImGui::ColorEdit4("Weapon Ready Color", &weaponReadyColor_.x);
 		ImGui::ColorEdit4("Weapon Reload Color", &weaponReloadColor_.x);
+		ImGui::ColorEdit4("Weapon Heat Color", &weaponHeatColor_.x);
 		ImGui::ColorEdit4("Overheat Color", &overheatColor_.x);
 	}
 

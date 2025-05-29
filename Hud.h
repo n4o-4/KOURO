@@ -59,6 +59,10 @@ private:
 	void DrawFacingProgressArc(const Vector3 &center, float radius, float startAngle, float endAngle,
 							   const Vector4 &color, int segments, const Vector3 &cameraRight, const Vector3 &cameraUp);
 
+	// 2Dステータスバーを描画する補助関数
+	void DrawStatusBar(const Vector3 &center, float width, float height, const Vector4 &color,
+					   const Vector3 &cameraRight, const Vector3 &cameraUp);
+
 	// カメラに正対する多角形を描画する補助関数
 	void DrawFacingPolygon(const Vector3 &center, float size, int segments, const Vector4 &color, const Vector3 &cameraForward);
 
@@ -174,15 +178,50 @@ private:
 	Vector4 sphereMapFovColor_ = {0.5f, 0.8f, 1.0f, 0.3f};	// 視界扇形の色
 
 	// プレイヤーステータスバー関連
-	float statusBarWidth_ = 10.0f;							   // ステータスバーの基本幅
-	float statusBarHeight_ = 0.5f;							   // ステータスバーの高さ
-	float boostBarPositionX_ = 0.0f;						   // ブーストバーのX位置（画面中央からのオフセット）
-	float boostBarPositionY_ = -12.0f;						   // ブーストバーのY位置（画面下部からのオフセット）
-	float weaponBarPositionX_ = 8.0f;						   // 武器バーのX位置（照準からのオフセット）
-	float weaponBarPositionY_ = -5.0f;						   // 武器バーのY位置（照準からのオフセット）
+	// float statusBarWidth_ = 10.0f;							   // ステータスバーの基本幅
+	// float statusBarHeight_ = 0.5f;							   // ステータスバーの高さ
+	// float boostBarPositionX_ = 0.0f;						   // ブーストバーのX位置（画面中央からのオフセット）
+	// float boostBarPositionY_ = -12.0f;						   // ブーストバーのY位置（画面下部からのオフセット）
+	// float weaponBarPositionX_ = 8.0f;						   // 武器バーのX位置（照準からのオフセット）
+	// float weaponBarPositionY_ = -5.0f;						   // 武器バーのY位置（照準からのオフセット）
+
+	// 円形ゲージ関連設定
+	float boostGaugeRadius_ = 2.0f;							   // ブーストゲージの半径
+	float boostGaugeOffsetX_ = 0.0f;						   // ブーストゲージのXオフセット(照準基準)
+	float boostGaugeOffsetY_ = -8.0f;						   // ブーストゲージのYオフセット(照準基準)
+	float quickBoostIndicatorSize_ = 0.3f;					   // クイックブーストチャージインジケータのサイズ
 	Vector4 boostGaugeColor_ = {0.2f, 0.8f, 1.0f, 0.8f};	   // ブーストゲージの色
 	Vector4 quickBoostChargeColor_ = {1.0f, 1.0f, 0.2f, 0.9f}; // クイックブーストチャージの色
-	Vector4 weaponReadyColor_ = {0.2f, 1.0f, 0.5f, 0.8f};	   // 武器準備完了時の色
-	Vector4 weaponReloadColor_ = {1.0f, 0.6f, 0.2f, 0.7f};	   // 武器リロード中の色
-	Vector4 overheatColor_ = {1.0f, 0.2f, 0.1f, 0.9f};		   // オーバーヒート時の色
+
+	float weaponGaugeRadius_ = 1.5f;					   // 武器ゲージの半径
+	float weaponGaugeOffsetX_ = 5.0f;					   // 武器ゲージのXオフセット(照準基準)
+	float weaponGaugeOffsetY_ = -3.0f;					   // 武器ゲージのYオフセット(照準基準)
+	Vector4 weaponReadyColor_ = {0.2f, 1.0f, 0.5f, 0.8f};  // 武器準備完了時の色
+	Vector4 weaponReloadColor_ = {1.0f, 0.6f, 0.2f, 0.7f}; // 武器リロード中の色
+	Vector4 weaponHeatColor_ = {1.0f, 0.8f, 0.0f, 0.8f};   // マシンガンの通常発熱色
+	Vector4 overheatColor_ = {1.0f, 0.2f, 0.1f, 0.9f};	   // オーバーヒート時の色
+
+	// プレイヤーステータスバー関連（2D画面端表示）
+	float screenDistance_ = 50.0f; // 画面表示距離
+	float statusBarWidth_ = 8.0f;  // ステータスバーの幅
+	float statusBarHeight_ = 0.8f; // ステータスバーの高さ
+
+	// ブーストゲージ位置（画面左下）
+	float boostBarOffsetX_ = -20.0f;	   // ブーストバーのXオフセット（画面左）
+	float boostBarOffsetY_ = -15.0f;	   // ブーストバーのYオフセット（画面下）
+	float quickBoostChargeSpacing_ = 1.5f; // クイックブーストチャージとの間隔
+	float quickBoostChargeHeight_ = 0.4f;  // クイックブーストチャージの高さ
+	float rechargeSpacing_ = 1.0f;		   // リチャージバーとの間隔
+	float rechargeBarHeight_ = 0.3f;	   // リチャージバーの高さ
+
+	// 武器ゲージ位置（画面右下）
+	float mgBarOffsetX_ = 15.0f;		 // マシンガンバーのXオフセット（画面右）
+	float mgBarOffsetY_ = -15.0f;		 // マシンガンバーのYオフセット（画面下）
+	float weaponCooldownSpacing_ = 1.2f; // 武器クールダウンとの間隔
+	float weaponCooldownHeight_ = 0.5f;	 // 武器クールダウンの高さ
+
+	// ミサイルゲージ位置
+	float missileBarSpacing_ = -3.5f;  // ミサイルバーとマシンガンバーの間隔（下方向）
+	float missileReadySpacing_ = 1.0f; // ミサイル準備完了表示との間隔
+	float missileReadyHeight_ = 0.3f;  // ミサイル準備完了表示の高さ
 };
