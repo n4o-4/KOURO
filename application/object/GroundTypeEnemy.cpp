@@ -5,8 +5,8 @@
 #include "PlayerMachineGun.h"
 
 void GroundTypeEnemy::Initialize() {
-	ModelManager::GetInstance()->LoadModel("enemy/kumo/kumo.obj");
-	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/kumo/kumo.obj"));
+	ModelManager::GetInstance()->LoadModel("enemy/RC/RC.obj");
+	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/RC/RC.obj"));
 
 	worldTransform_->transform.scale=(Vector3(modelScale_, modelScale_, modelScale_));
 
