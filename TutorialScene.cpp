@@ -16,6 +16,13 @@ void TutorialScene::Initialize()
 
 	checkBox_->SetPosition({ 1200.0f, 100.0f });
 
+	checkBox_->SetTexSize({ 128.0f, 128.0f });
+
+	checkBox_->SetSize({ 48.0f, 48.0f });
+
+
+	checkBox_->Update();
+
 	//========================================
 	// ライト
 	// 指向性
@@ -530,6 +537,17 @@ void TutorialScene::Draw()
 		// フェード描画
 		switch (tutorialPhase_) {
 		case TutorialPhase::kExplain:
+
+			DrawBackgroundSprite();
+			/// 背景スプライト描画
+
+			DrawObject();
+			/// オブジェクト描画
+
+			DrawForegroundSprite();
+			/// 前景スプライト描画
+
+			checkBox_->Draw();
 
 			break;
 		case TutorialPhase::kPlay:
