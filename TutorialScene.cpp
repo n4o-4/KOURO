@@ -79,9 +79,15 @@ void TutorialScene::Initialize()
 	hud_->SetEnemiesAndSpawns(&enemies_, &spawns_);
 	hud_->Initialize(cameraManager_->GetFollowCamera(), player_.get(), lockOnSystem_.get());
 
-	sceneManager_->GetPostEffect()->ApplyEffect("Outline", PostEffect::EffectType::DepthBasedOutline); // 完
+	//========================================
+	// Enemy
+	auto groundEnemy = std::make_unique<GroundTypeEnemy>();
+	groundEnemy->Initialize();
+	groundEnemy->SetPosition({ 0.0f, 0.0f, 0.0f }); // 好きな座標に配置
+	groundEnemy->SetTarget(player_->GetWorldTransform());
+	enemies_.push_back(std::move(groundEnemy));
 
-	
+	tutorialPhase_ = TutorialPhase::kExplain;
 }
 
 void TutorialScene::Finalize()
@@ -165,45 +171,7 @@ void TutorialScene::Update()
 		// 地面
 		ground_->Update();
 
-		// 敵リスト
-		for (const auto& enemy : enemies_) {
-			enemy->Update();
-		}
-		{
-			std::vector<BaseEnemy*> allEnemies;
-			for (const auto& e : enemies_) {
-				allEnemies.push_back(e.get());
-			}
-			for (const auto& s : spawns_) {
-				allEnemies.push_back(s.get());
-			}
-		}
-		// 敵の削除
-		enemies_.erase(
-			// 削除条件
-			std::remove_if(enemies_.begin(), enemies_.end(),
-				[this](const std::unique_ptr<BaseEnemy>& enemy) {
-					// HPが0以下の場合
-					if (enemy->GetHp() <= 0) {
-						// ロックオンシステムから敵を削除
-						if (lockOnSystem_) {
-							lockOnSystem_->RemoveLockedEnemy(enemy.get());
-						}
-
-						// 削除したエネミーをターゲットに持つプレイヤーのミサイルのターゲットをnullptrに設定
-						for (auto it = player_->GetBullets().begin(); it != player_->GetBullets().end(); ++it) {
-
-							if (it->get()->GetTarget() == enemy.get()) {
-								it->get()->SetTarget(nullptr);
-							}
-						}
-
-						return true; // 削除する
-					}
-					return false; // 削除しない
-				}),
-			// 実際に削除する
-			enemies_.end());
+		
 
 		//---------------------------------------
 		// ロックオンの処理追加
@@ -240,14 +208,14 @@ void TutorialScene::Update()
 		// リセット
 		collisionManager_->Reset();
 
-		// エネミー
-		for (auto& enemy : enemies_) {
-			collisionManager_->AddCollider(enemy.get());
-			// エネミーの弾リスト
-			for (auto& bullet : enemy->GetBullets()) {
-				collisionManager_->AddCollider(bullet.get());
-			}
-		}
+		//// エネミー
+		//for (auto& enemy : enemies_) {
+		//	collisionManager_->AddCollider(enemy.get());
+		//	// エネミーの弾リスト
+		//	for (auto& bullet : enemy->GetBullets()) {
+		//		collisionManager_->AddCollider(bullet.get());
+		//	}
+		//}
 		// spwan
 		for (auto& spawn : spawns_) {
 			collisionManager_->AddCollider(spawn.get());
@@ -267,8 +235,8 @@ void TutorialScene::Update()
 
 		//---------------------------------------
 		// HUD
-		hud_->SetEnemiesAndSpawns(&enemies_, &spawns_);
-		hud_->Update();
+		/*hud_->SetEnemiesAndSpawns(&enemies_, &spawns_);
+		hud_->Update();*/
 
 		//---------------------------------------
 		// パーティクル
@@ -303,6 +271,56 @@ void TutorialScene::Update()
 			break;
 		// プレイフェーズ
 		case TutorialPhase::kPlay:
+
+			// 敵リスト
+			for (const auto& enemy : enemies_) {
+				enemy->Update();
+			}
+			{
+				std::vector<BaseEnemy*> allEnemies;
+				for (const auto& e : enemies_) {
+					allEnemies.push_back(e.get());
+				}
+				for (const auto& s : spawns_) {
+					allEnemies.push_back(s.get());
+				}
+			}
+			// 敵の削除
+			enemies_.erase(
+				// 削除条件
+				std::remove_if(enemies_.begin(), enemies_.end(),
+					[this](const std::unique_ptr<BaseEnemy>& enemy) {
+						// HPが0以下の場合
+						if (enemy->GetHp() <= 0) {
+							// ロックオンシステムから敵を削除
+							if (lockOnSystem_) {
+								lockOnSystem_->RemoveLockedEnemy(enemy.get());
+							}
+
+							// 削除したエネミーをターゲットに持つプレイヤーのミサイルのターゲットをnullptrに設定
+							for (auto it = player_->GetBullets().begin(); it != player_->GetBullets().end(); ++it) {
+
+								if (it->get()->GetTarget() == enemy.get()) {
+									it->get()->SetTarget(nullptr);
+								}
+							}
+
+							return true; // 削除する
+						}
+						return false; // 削除しない
+					}),
+				// 実際に削除する
+				enemies_.end());
+
+			// エネミー
+			for (auto& enemy : enemies_) {
+				collisionManager_->AddCollider(enemy.get());
+				// エネミーの弾リスト
+				for (auto& bullet : enemy->GetBullets()) {
+					collisionManager_->AddCollider(bullet.get());
+				}
+			}
+
 			break;
 		}
 
@@ -478,12 +496,12 @@ void TutorialScene::Draw()
 		}
 		//========================================
 		// 敵
-		for (const auto& enemy : enemies_) {
+		/*for (const auto& enemy : enemies_) {
 			enemy->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 				*directionalLight.get(),
 				*pointLight.get(),
 				*spotLight.get());
-		}
+		}*/
 		//========================================
 		// プレイヤーの描画
 		player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
@@ -508,6 +526,22 @@ void TutorialScene::Draw()
 		hud_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
 
 		DrawForegroundSprite();
+
+		// フェード描画
+		switch (tutorialPhase_) {
+		case TutorialPhase::kExplain:
+
+			break;
+		case TutorialPhase::kPlay:
+			for (const auto& enemy : enemies_) {
+				enemy->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+					*directionalLight.get(),
+					*pointLight.get(),
+					*spotLight.get());
+			}
+			break;
+		}
+
 		/// 前景スプライト描画
 
 		break;
