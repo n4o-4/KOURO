@@ -12,7 +12,7 @@ void TutorialScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture("Resources/CheckBox.png");
 
 	checkBox_ = std::make_unique<Sprite>();
-	checkBox_->Initialize(SpriteCommon::GetInstance(),"Resources/CheckBox.png");
+	checkBox_->Initialize(SpriteCommon::GetInstance(), "Resources/CheckBox.png");
 
 	checkBox_->SetPosition({ 1200.0f, 100.0f });
 
@@ -178,7 +178,7 @@ void TutorialScene::Update()
 		// 地面
 		ground_->Update();
 
-		
+
 
 		//---------------------------------------
 		// ロックオンの処理追加
@@ -252,14 +252,14 @@ void TutorialScene::Update()
 		//----------------------------------------
 		// Tutorialフェーズ
 		switch (tutorialPhase_) {
-		// 説明フェーズ
+			// 説明フェーズ
 		case TutorialPhase::kExplain:
 
 			//playerが動いたらtrue
 
 			CheckMissions();
 
-			
+
 			for (int i = 0; i < 6; ++i) {
 				if (!missionFlags_[i]) {
 					allTrue = false;
@@ -276,7 +276,7 @@ void TutorialScene::Update()
 				tutorialPhase_ = TutorialPhase::kPlay;
 			}*/
 			break;
-		// プレイフェーズ
+			// プレイフェーズ
 		case TutorialPhase::kPlay:
 
 			// 敵リスト
@@ -551,12 +551,25 @@ void TutorialScene::Draw()
 
 			break;
 		case TutorialPhase::kPlay:
+
+			DrawBackgroundSprite();
+			/// 背景スプライト描画
+
+			DrawObject();
+			/// オブジェクト描画
+
 			for (const auto& enemy : enemies_) {
 				enemy->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 					*directionalLight.get(),
 					*pointLight.get(),
 					*spotLight.get());
 			}
+
+			DrawForegroundSprite();
+			/// 前景スプライト描画
+
+
+
 			break;
 		}
 
