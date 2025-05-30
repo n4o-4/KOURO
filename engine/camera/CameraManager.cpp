@@ -36,9 +36,13 @@ void CameraManager::Update()
 		cameraType = "DefaultCamera";
 	}
 
+#ifdef _DEBUG
+
 	ImGui::Begin("Camera Info");
 	ImGui::Text("Active Camera: %s", cameraType);
 	ImGui::End();
+
+#endif
 }
 
 void CameraManager::ChangeActiveCamera()

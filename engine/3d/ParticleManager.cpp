@@ -63,6 +63,12 @@ void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager
 	----------------------------------------------------------*/
 
 	WriteDataInResource();
+	/*----------------------------------------------------------
+	* 
+	---------------------------------------------------------- */
+	cameraResource = dxCommon_->CreateBufferResource(sizeof(CameraForGPU));
+
+	cameraResource->Map(0, nullptr, reinterpret_cast<void**>(&cameraData));
 }
 
 void ParticleManager::Update()
@@ -73,9 +79,13 @@ void ParticleManager::Update()
 	----------------------------------------------------------*/
 	calculationBillboardMatrix();
 
-	Matrix4x4 viewMatrix = cameraManager_->GetActiveCamera()->GetViewProjection().matView_;
+	cameraData->view = cameraManager_->GetActiveCamera()->GetViewProjection().matView_;
 
-	Matrix4x4 projectionMatrix = cameraManager_->GetActiveCamera()->GetViewProjection().matProjection_;
+	cameraData->Projection = cameraManager_->GetActiveCamera()->GetViewProjection().matProjection_;
+
+	cameraData->billboardMatrix = billboardMatrix;
+
+	cameraData->cameraPosition = cameraManager_->GetActiveCamera()->GetViewProjection().worldPosition_;
 
 	for (std::unordered_map<std::string, ParticleGroup>::iterator particleGroupIterator = particleGroups.begin(); particleGroupIterator != particleGroups.end();) {
 
@@ -91,6 +101,8 @@ void ParticleManager::Update()
 					particleIterator = particleGroup->particles.erase(particleIterator);
 					continue;
 				}
+
+				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].stretch = particleGroupIterator->second.stretch;
 
 				if (IsCollision(accelerationField.area, (*particleIterator).transform.translate)) {
 					(*particleIterator).velocity += accelerationField.acceleration * kDeltaTime;
@@ -171,15 +183,13 @@ void ParticleManager::Update()
 				else
 				{
 					worldMatrix = MakeAffineMatrix((*particleIterator).transform.scale, (*particleIterator).transform.rotate, (*particleIterator).transform.translate);
-
 				}
 
-				Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
+				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].position = (*particleIterator).transform.translate;
 
-				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].World = worldMatrix;
-				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].WVP = worldViewProjectionMatrix;
+				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].scale = (*particleIterator).transform.scale;
 
-				
+				particleGroup->instancingData[particleGroupIterator->second.kNumInstance].velocity = (*particleIterator).velocity;
 
 				Vector4 color = Vect4::Lerp((*particleIterator).startColor, (*particleIterator).finishColor, lifeRatio);
 
@@ -197,6 +207,8 @@ void ParticleManager::Update()
 				++particleGroupIterator->second.kNumInstance;
 			}
 
+
+
 			++particleIterator;
 		}
 
@@ -211,6 +223,9 @@ void ParticleManager::Draw(std::string filePath)
 
 	// VBVを設定
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, cameraResource->GetGPUVirtualAddress());
 
 	// 
 	for (std::unordered_map<std::string, ParticleGroup>::iterator particleGroupIterator = particleGroups.begin(); particleGroupIterator != particleGroups.end();) {
@@ -229,6 +244,8 @@ void ParticleManager::Draw(std::string filePath)
 
 		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2,srvManager_->GetGPUDescriptorHandle(particleGroupIterator->second.materialData.textureIndex));
 
+		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(4, particleGroupIterator->second.flagsResource.Get()->GetGPUVirtualAddress());
+		
 		if (particleGroupIterator->second.type == ParticleType::Normal) {
 			// プリミティブトポロジーを設定
 			dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
@@ -288,7 +305,7 @@ void ParticleManager::CreateRootSignature()
 	* RootParameterの生成
 	----------------------------------------------------------*/
 
-	D3D12_ROOT_PARAMETER rootParameters[3] = {};
+	D3D12_ROOT_PARAMETER rootParameters[5] = {};
 
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
@@ -303,6 +320,14 @@ void ParticleManager::CreateRootSignature()
 	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;
 	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
+
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	rootParameters[3].Descriptor.ShaderRegister = 0;
+
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	rootParameters[4].Descriptor.ShaderRegister = 1;
 
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
@@ -588,12 +613,22 @@ void ParticleManager::CreatePipeline()
 void ParticleManager::InitializeVertexData()
 {
 	// 汎用
-	modelData.vertices.push_back({ {1.0f,1.0f,0.0f,1.0f},{0.0f,0.0f},{0.0f,0.0f,1.0f} }); // 左上
-	modelData.vertices.push_back({ {-1.0f,1.0f,0.0f,1.0f},{1.0f,0.0f},{0.0f,0.0f,1.0f} }); // 右上
-	modelData.vertices.push_back({ {1.0f,-1.0f,0.0f,1.0f},{0.0f,1.0f},{0.0f,0.0f,0.0f} }); // 左下
-	modelData.vertices.push_back({ {1.0f,-1.0f,0.0f,1.0f},{0.0f,1.0f},{0.0f,0.0f,1.0f} }); // 左下
-	modelData.vertices.push_back({ {-1.0f,1.0f,0.0f,1.0f},{1.0f,0.0f},{0.0f,0.0f,1.0f} });// 右上
-	modelData.vertices.push_back({ {-1.0f,-1.0f,0.0f,1.0f},{1.0f,1.0f},{0.0f,0.0f,1.0f} }); // 右下
+	//modelData.vertices.push_back({ {1.0f,1.0f,0.0f,1.0f},{0.0f,0.0f},{0.0f,0.0f,1.0f} }); // 左上
+	//modelData.vertices.push_back({ {-1.0f,1.0f,0.0f,1.0f},{1.0f,0.0f},{0.0f,0.0f,1.0f} }); // 右上
+	//modelData.vertices.push_back({ {1.0f,-1.0f,0.0f,1.0f},{0.0f,1.0f},{0.0f,0.0f,0.0f} }); // 左下
+	//modelData.vertices.push_back({ {1.0f,-1.0f,0.0f,1.0f},{0.0f,1.0f},{0.0f,0.0f,1.0f} }); // 左下
+	//modelData.vertices.push_back({ {-1.0f,1.0f,0.0f,1.0f},{1.0f,0.0f},{0.0f,0.0f,1.0f} });// 右上
+	//modelData.vertices.push_back({ {-1.0f,-1.0f,0.0f,1.0f},{1.0f,1.0f},{0.0f,0.0f,1.0f} }); // 右下
+
+	modelData.vertices.clear();
+
+	modelData.vertices.push_back({ { -0.5f,  0.5f, 0.0f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // 左上
+	modelData.vertices.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // 右上
+	modelData.vertices.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // 左下
+
+	modelData.vertices.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // 右上
+	modelData.vertices.push_back({ {  0.5f, -0.5f, 0.0f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // 右下
+	modelData.vertices.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // 左下
 
 	// リング
 
@@ -738,6 +773,11 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 
 		newParticleGroup.type = type;
 
+		newParticleGroup.stretch = 0.5f;
+
+		newParticleGroup.flagsResource = dxCommon_->CreateBufferResource(sizeof(FlagsForGPU));
+
+		newParticleGroup.flagsResource->Map(0, nullptr, reinterpret_cast<void**>(&newParticleGroup.flagsData));
 
 		particleGroups[name] = newParticleGroup;
 	}
@@ -746,7 +786,9 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 // ビルボードマトリクスの計算
 void ParticleManager::calculationBillboardMatrix()
 {
-	Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
+	//Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
+
+	Matrix4x4 backToFrontMatrix = MakeRotateZMatrix(std::numbers::pi_v<float>);
 
 	billboardMatrix = Multiply(backToFrontMatrix, cameraManager_->GetActiveCamera()->GetViewProjection().matWorld_);
 
@@ -761,8 +803,6 @@ ParticleManager::Particle ParticleManager::MakeNewParticle(const Vector3& transl
 		std::unique_ptr<Particle> newParticle;
 
 		newParticle = std::make_unique<Particle>();
-
-
 
 		// positionの設定
 		std::uniform_real_distribution<float> distTranslateX(states.translateRange.min.x, states.translateRange.max.x);

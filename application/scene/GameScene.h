@@ -48,6 +48,10 @@ private:
 
 	std::unique_ptr<ParticleEmitter> emitter2_ = nullptr;
 
+	std::unique_ptr<ParticleEmitter> emitter3_ = nullptr;
+
+	std::unique_ptr<ParticleEmitter> emitter4_ = nullptr;
+
 	std::unique_ptr<ParticleEmitter> hitEffect1_Ring1_ = nullptr;
 	std::unique_ptr<ParticleEmitter> hitEffect1_Ring2_ = nullptr;
 	std::unique_ptr<ParticleEmitter> hitEffect1_Circle_ = nullptr;

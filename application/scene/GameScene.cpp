@@ -92,24 +92,35 @@ void GameScene::Initialize() {
 	// ブレンドモードの設定
 	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->blendMode = ParticleManager::BlendMode::kAdd;
 	// billboardを有効
-	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableBillboard = true;
+	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableBillboard = true;
+	
+	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableStretch = true;
+	
 	// 減速を有効
-	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableDeceleration = true;
+
+
+
+	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableDeceleration = false;
 	// パルスを有効
-	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enablePulse = true;
+	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enablePulse = false;
 
 
 
 	emitter1_ = std::make_unique<ParticleEmitter>();
 	emitter1_->Initialize("plane_Particle");
-	emitter1_->SetPosition({ 0.0f,2.0f,0.0f });
-	emitter1_->SetParticleCount(100);
-	emitter1_->SetVelocityRange({ {-20.0f,-20.0f,-20.0f },{20.0f,20.0f,20.0f} });
-	//emitter1_->SetScaleRange({ {0.3f,0.3f,0.3f},{0.3f,0.3f,0.3f} });
-	emitter1_->SetStartColorRange({ {0.98f,0.37f,0.01f,1.0f}, {1.0f,0.72f,0.19f,1.0f} });
-	emitter1_->SetFinishColorRange({ {0.98f,0.0f,0.0f,1.0f}, {1.0f,0.72f,0.19f,1.0f} });
-	emitter1_->SetLifeTimeRange({ 0.5f,0.8f });
-	emitter1_->SetFrequency(1.0f);
+	emitter1_->SetPosition({ 1.0f,2.0f,0.0f });
+	emitter1_->SetParticleCount(1);
+	emitter1_->SetVelocityRange({ {0.0f,0.0f,2.0f },{0.0f,0.0f,2.0f} });
+	emitter1_->SetStartScaleRange({ {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} });
+
+	emitter1_->SetFinishScaleRange({ {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} });
+
+	emitter1_->SetTranslateRange({ { 0.0f,0.0f,0.0f },{ 0.0f,0.0f,0.0f } });
+
+	emitter1_->SetStartColorRange({ {0.667f, 0.169f, 1.0f, 1.0f}, {0.667f, 0.169f, 1.0f, 1.0f} });
+	emitter1_->SetFinishColorRange({ {0.667f, 0.169f, 1.0f, 1.0f},{0.667f, 0.169f, 1.0f, 1.0f} }); /*{ 1.0f, 0.72f, 0.19f, 1.0f }*/
+	emitter1_->SetLifeTimeRange({ 10.0f,10.0f });
+	emitter1_->SetFrequency(0.07f);
 	
 
 	ParticleManager::GetInstance()->CreateParticleGroup("HitEffect", "Resources/gradationLine.png", ParticleManager::ParticleType::Ring);
@@ -117,116 +128,77 @@ void GameScene::Initialize() {
 	// ブレンドモードの設定
 	ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->blendMode = ParticleManager::BlendMode::kAdd;
 	// billboardを有効
-	ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->enableBillboard = true;
+	ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->flagsData->enableBillboard = false;
 	// 減速を有効
 	ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->enableDeceleration = true;
 	// パルスを有効
 	//ParticleManager::GetInstance()->GetParticleGroup("smoke")->enablePulse = true;
-
 	emitter2_ = std::make_unique<ParticleEmitter>();
 	emitter2_->Initialize("HitEffect");
-	emitter2_->SetPosition({ 0.0f,2.0f,0.0f });
-	emitter2_->SetParticleCount(2);
+	emitter2_->SetPosition({ 1.0f,2.0f,20.0f });
+	emitter2_->SetParticleCount(1);
 	emitter2_->SetVelocityRange({ {0.0f,0.0f,0.0f },{0.0f,0.0f,0.0f} });
-	//emitter2_->SetScaleRange({ {0.5f,0.5f,0.5f},{1.5f,1.5f,1.5f} });
-	emitter2_->SetStartColorRange({ {0.0f, 0.369f, 1.0f, 1.0f}, {0.0f, 0.369f, 1.0f, 1.0f} });
-	emitter2_->SetFinishColorRange({ {0.0f, 0.369f, 1.0f, 0.0f}, {0.0f, 0.369f, 1.0f, 0.0f} });
-	emitter2_->SetLifeTimeRange({ 1.0f,1.0f });
-	emitter2_->SetFrequency(1.0f);
+	emitter2_->SetStartScaleRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
+	emitter2_->SetFinishScaleRange({ {3.0f,3.0f,3.0f},{3.0f,3.0f,3.0f} });
+	emitter2_->SetRotateRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
+	
+
+	emitter2_->SetTranslateRange({ { 0.0f,0.0f,0.0f },{ 0.0f,0.0f,0.0f } });
+
+	emitter2_->SetStartColorRange({ {1.0f,1.0f,1.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f} });
+	emitter2_->SetFinishColorRange({ {1.0f,1.0f,1.0f,0.0f},{1.0f,1.0f,1.0f,0.0f} }); /*{ 1.0f, 0.72f, 0.19f, 1.0f }*/
+	emitter2_->SetLifeTimeRange({ 0.5f,0.5f });
+	emitter2_->SetFrequency(0.2f);
+
 
 
 	///hitEffect1
 
-	ParticleManager::GetInstance()->CreateParticleGroup("circle", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+	ParticleManager::GetInstance()->CreateParticleGroup("spark", "Resources/circle.png", ParticleManager::ParticleType::Normal);
 
-	ParticleManager::GetInstance()->GetParticleGroup("circle")->blendMode = ParticleManager::BlendMode::kAdd;
-	ParticleManager::GetInstance()->GetParticleGroup("circle")->sameScale = false;
-	ParticleManager::GetInstance()->GetParticleGroup("circle")->enableBillboard = false;
+	ParticleManager::GetInstance()->GetParticleGroup("spark")->blendMode = ParticleManager::BlendMode::kAdd;
+	ParticleManager::GetInstance()->GetParticleGroup("spark")->flagsData->enableBillboard = true;
+	ParticleManager::GetInstance()->GetParticleGroup("spark")->flagsData->enableStretch = false;
 
-	// -----ring1-----
-
-	hitEffect1_Ring1_ = std::make_unique<ParticleEmitter>();
-	hitEffect1_Ring1_->Initialize("HitEffect");
-	hitEffect1_Ring1_->SetPosition({ 0.0f,2.0f,0.0f });
-	hitEffect1_Ring1_->SetParticleCount(1);
-	hitEffect1_Ring1_->SetVelocityRange({ {0.0f,0.0f,0.0f },{0.0f,0.0f,0.0f} });
-	hitEffect1_Ring1_->SetStartScaleRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
-	hitEffect1_Ring1_->SetFinishScaleRange({ {0.9f,0.9f,0.9f},{0.9f,0.9f,0.9f} });
-
-	hitEffect1_Ring1_->SetStartColorRange({ {0.024f, 0.318f, 1.0f, 1.0f}, {0.024f, 0.318f, 1.0f, 1.0f} });
-	hitEffect1_Ring1_->SetFinishColorRange({ {0.024f, 0.318f, 1.0f, 0.0f}, {0.024f, 0.318f, 1.0f, 0.0f} });
-
-	hitEffect1_Ring1_->SetLifeTimeRange({ 0.5f,0.5f });
-	hitEffect1_Ring1_->SetFrequency(1.0f);
-
-	// -----ring2-----
-
-	hitEffect1_Ring2_ = std::make_unique<ParticleEmitter>();
-	hitEffect1_Ring2_->Initialize("HitEffect");
-	hitEffect1_Ring2_->SetPosition({ 0.0f,2.0f,0.0f });
-	hitEffect1_Ring2_->SetParticleCount(1);
-	hitEffect1_Ring2_->SetVelocityRange({ {0.0f,0.0f,0.0f },{0.0f,0.0f,0.0f} });
-	hitEffect1_Ring2_->SetStartScaleRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
-	hitEffect1_Ring2_->SetFinishScaleRange({ {1.2f,1.2f,1.2f},{1.2f,1.2f,1.2f} });
-	hitEffect1_Ring2_->SetStartColorRange({ {0.024f, 0.318f, 1.0f, 1.0f},{0.024f, 0.318f, 1.0f, 1.0f} });
-	hitEffect1_Ring2_->SetFinishColorRange({ {0.024f, 0.318f, 1.0f, 0.0f}, {0.024f, 0.318f, 1.0f, 0.0f} });
-	hitEffect1_Ring2_->SetLifeTimeRange({ 0.5f,0.5f });
-	hitEffect1_Ring2_->SetFrequency(1.0f);
-
-	// -----circle-----
-
-	hitEffect1_Circle_ = std::make_unique<ParticleEmitter>();
-	hitEffect1_Circle_->Initialize("circle");
-	hitEffect1_Circle_->SetPosition({ 0.0f,2.0f,0.0f });
-	hitEffect1_Circle_->SetParticleCount(40);
-	hitEffect1_Circle_->SetVelocityRange({ {-0.5f,-0.5f,-0.5f },{0.5f,0.5f,0.5f} });
-
-	hitEffect1_Circle_->SetTranslateRange({ {-0.1f,-0.1f,-0.1f},{0.1f,0.1f,0.1f} });
-
-	hitEffect1_Circle_->SetStartScaleRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
-	hitEffect1_Circle_->SetFinishScaleRange({ {0.5f,0.05f,0.5f},{0.5f,0.05f,0.5f} });
-
-	hitEffect1_Circle_->SetStartColorRange({ {0.3f, 0.5f, 1.0f, 1.0f}, {0.3f, 0.5f, 1.0f, 1.0f} });
-	hitEffect1_Circle_->SetFinishColorRange({ {0.3f, 0.5f, 1.0f, 0.0f}, {0.3f, 0.5f, 1.0f, 0.0f} });
-
-	hitEffect1_Circle_->SetLifeTimeRange({ 0.5f,0.5f });
-	hitEffect1_Circle_->SetFrequency(1.0f);
+	emitter3_ = std::make_unique<ParticleEmitter>();
+	emitter3_->Initialize("spark");
+	emitter3_->SetPosition({ 1.0f,2.0f,20.0f });
+	emitter3_->SetParticleCount(10);
+	emitter3_->SetVelocityRange({ {-10.0f,-10.0f,-10.0f },{10.0f,10.0f,10.0f} });
+	emitter3_->SetStartScaleRange({ {0.3f,0.3f,0.3f},{0.3f,0.3f,0.3f} });
+	emitter3_->SetFinishScaleRange({ {0.1f,0.1f,0.1f},{0.1f,0.1f,0.1f} });
+	emitter3_->SetRotateRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
 
 
-	/// hiteffect2
+	emitter3_->SetTranslateRange({ { 0.0f,0.0f,0.0f },{ 0.0f,0.0f,0.0f } });
 
-	// circle1
-	hitEffect2_Circle1_ = std::make_unique<ParticleEmitter>();
-	hitEffect2_Circle1_->Initialize("circle");
-	hitEffect2_Circle1_->SetPosition({ 0.0f,2.0f,0.0f });
-	hitEffect2_Circle1_->SetParticleCount(8);
-	hitEffect2_Circle1_->SetVelocityRange({ {0.0f,0.0f,0.0f },{0.0f,0.0f,0.0f} });
-	hitEffect2_Circle1_->SetTranslateRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
+	emitter3_->SetStartColorRange({ {0.667f, 0.169f, 1.0f, 1.0f}, {0.667f, 0.169f, 1.0f, 1.0f} });
+	emitter3_->SetFinishColorRange({ {0.667f, 0.169f, 1.0f, 1.0f}, {0.667f, 0.169f, 1.0f, 1.0f} }); /*{ 1.0f, 0.72f, 0.19f, 1.0f }*/
+	emitter3_->SetLifeTimeRange({ 0.5f,0.5f });
+	emitter3_->SetFrequency(0.01f);
+	
+	ParticleManager::GetInstance()->CreateParticleGroup("ray", "Resources/circle.png", ParticleManager::ParticleType::Normal);
 
-	hitEffect2_Circle1_->SetRotateRange({ {0.0f,0.0f,-std::numbers::pi },{0.0f,0.0f,std::numbers::pi} });
+	ParticleManager::GetInstance()->GetParticleGroup("ray")->blendMode = ParticleManager::BlendMode::kAdd;
+	ParticleManager::GetInstance()->GetParticleGroup("ray")->flagsData->enableBillboard = true;
+	ParticleManager::GetInstance()->GetParticleGroup("ray")->flagsData->enableStretch = true;
 
-	hitEffect2_Circle1_->SetStartScaleRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
-	hitEffect2_Circle1_->SetFinishScaleRange({ {0.8f,0.1f,0.8f},{1.0f,0.3f,1.0f}});
+	emitter4_ = std::make_unique<ParticleEmitter>();
+	emitter4_->Initialize("ray");
+	emitter4_->SetPosition({ 1.0f,2.0f,20.0f });
+	emitter4_->SetParticleCount(10);
+	emitter4_->SetVelocityRange({ {-10.0f,-10.0f,-10.0f },{10.0f,10.0f,10.0f} });
+	emitter4_->SetStartScaleRange({ {0.3f,0.3f,0.3f},{0.3f,0.3f,0.3f} });
+	emitter4_->SetFinishScaleRange({ {0.1f,0.1f,0.1f},{0.1f,0.1f,0.1f} });
+	emitter4_->SetRotateRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
 
 
-	hitEffect2_Circle1_->SetStartColorRange({ {0.024f, 0.318f, 1.0f, 1.0f}, {0.024f, 0.318f, 1.0f, 1.0f} });
-	hitEffect2_Circle1_->SetFinishColorRange({ {0.024f, 0.318f, 1.0f, 0.0f},{0.024f, 0.318f, 1.0f, 0.0f} });
-	hitEffect2_Circle1_->SetLifeTimeRange({ 0.5f,0.5f });
-	hitEffect2_Circle1_->SetFrequency(0.01f);
-	// circle2
-	hitEffect2_Circle2_ = std::make_unique<ParticleEmitter>();
-	hitEffect2_Circle2_->Initialize("circle");
-	hitEffect2_Circle2_->SetPosition({ 0.0f,2.0f,0.0f });
-	hitEffect2_Circle2_->SetParticleCount(40);
-	hitEffect2_Circle2_->SetVelocityRange({ {-0.5f,-0.5f,-0.5f },{0.5f,0.5f,0.5f} });
-	hitEffect2_Circle2_->SetTranslateRange({ {-0.1f,-0.1f,-0.1f},{0.1f,0.1f,0.1f} });
-	hitEffect2_Circle2_->SetStartScaleRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
-	hitEffect2_Circle2_->SetFinishScaleRange({ {0.5f,0.05f,0.5f},{0.5f,0.05f,0.5f} });
-	hitEffect2_Circle2_->SetStartColorRange({ {0.024f, 0.318f, 1.0f, 1.0f}, {0.024f, 0.318f, 1.0f, 1.0f} });
-	hitEffect2_Circle2_->SetFinishColorRange({ {0.024f, 0.318f, 1.0f, 0.0f},{0.024f, 0.318f, 1.0f, 0.0f} });
-	hitEffect2_Circle2_->SetLifeTimeRange({ 0.5f,0.5f });
-	hitEffect2_Circle2_->SetFrequency(1.0f);
+	emitter4_->SetTranslateRange({ { 0.0f,0.0f,0.0f },{ 0.0f,0.0f,0.0f } });
 
+	emitter4_->SetStartColorRange({ {0.667f, 0.169f, 1.0f, 1.0f}, {0.667f, 0.169f, 1.0f, 1.0f} });
+	emitter4_->SetFinishColorRange({ {0.667f, 0.169f, 1.0f, 1.0f}, {0.667f, 0.169f, 1.0f, 1.0f} }); /*{ 1.0f, 0.72f, 0.19f, 1.0f }*/
+	emitter4_->SetLifeTimeRange({ 0.5f,0.5f });
+	emitter4_->SetFrequency(0.01f);
 
 
 	///========================================
@@ -244,7 +216,9 @@ void GameScene::Initialize() {
 	// マウスの入力受付を有効
 	Input::GetInstance()->SetIsReception(true);
 
+	cameraManager_->Update();
 
+	cameraManager_->GetActiveCamera()->GetViewProjection().transform.rotate = { 0.0f,0.78f,0.0f };
 }
 ///=============================================================================
 ///						終了処理
@@ -324,24 +298,16 @@ void GameScene::Update() {
 		ImGui::DragFloat("spotLight.cosFalloffStart", &spotLight->cosFalloffStart_, 0.01f);
 		ImGui::TreePop();
 	}
-
 	
-	if (ImGui::Button("hitEffect1"))
-	{
-		hitEffect1_Ring1_->Emit();
-		hitEffect1_Ring2_->Emit();
-		hitEffect1_Circle_->RadialEmit();
-	}
-
-	if (ImGui::Button("hitEffect2"))
-	{
-		hitEffect2_Circle1_->Emit();
-		//hitEffect2_Circ1le1_->RadialEmit();
-	}
-
-	//hitEffect2_Circle1_->Update();
-
 #endif
+
+	emitter1_->Update();
+
+	emitter2_->Update();
+
+	emitter3_->Update();
+
+	emitter4_->Update();
 
 	lineDrawer_->Update();
 }
@@ -359,7 +325,7 @@ void GameScene::Draw()
 
 	//ground_->Draw(*transform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
 
-	player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+	//player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
 
 	DrawForegroundSprite();
 	/// 前景スプライト描画

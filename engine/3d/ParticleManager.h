@@ -37,9 +37,44 @@ public:
 	};
 
 	struct ParticleForGPU {
-		Matrix4x4 WVP;
-		Matrix4x4 World;
+		Vector3 position;  // ワールド座標
+
+		float padding1[1];
+
+		Vector3 scale;
+
+		float padding2[1];
+
+		Vector3 velocity;
+
+		float padding3[1];
+
 		Vector4 color;
+
+		float stretch;
+
+		float padding4[3]; 
+	};
+
+	struct CameraForGPU {
+		Matrix4x4 view;
+		Matrix4x4 Projection; // ビュー投影行列
+		Matrix4x4 billboardMatrix; // ビルボード用の行列
+
+		bool enableBillboard; // ビルボードを有効にするかどうか
+
+		bool enableStretch; // ストレッチを有効にするかどうか
+
+		int padding1[2]; // パディング
+
+		Vector3 cameraPosition; // カメラ位置
+		float padding2[1]; // パディング
+	};
+
+	struct FlagsForGPU {
+		uint32_t enableBillboard; // ビルボードを有効にするかどうか
+		uint32_t enableStretch; // ストレッチを有効にするかどうか
+		uint32_t padding[2]; // パディング
 	};
 
 	struct Transform
@@ -109,6 +144,10 @@ public:
 
 		bool enablePulse = false; // 輝きを有効にするかどうか
 
+		float stretch = 1.0f; // パーティクルの伸び
+
+		Microsoft::WRL::ComPtr<ID3D12Resource> flagsResource; // フラグ用のリソース
+		FlagsForGPU* flagsData; // フラグデータ
 	};
 
 	struct Range
@@ -279,4 +318,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource = nullptr;
 
 	
+	Microsoft::WRL::ComPtr<ID3D12Resource> cameraResource = nullptr;
+	CameraForGPU* cameraData = nullptr;
 };

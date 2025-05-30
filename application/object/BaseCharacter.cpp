@@ -66,12 +66,14 @@ void BaseCharacter::Draw(DirectionalLight directionalLight, PointLight pointLigh
 
 void BaseCharacter::DrawImGui()
 {
+#ifdef _DEBUG
+
 	ImGui::Begin("Character Status");
 
 	ImGui::DragFloat3("scale", &worldTransform_->transform.scale.x, 0.01f);
 	ImGui::DragFloat3("rotate", &worldTransform_->transform.rotate.x, 0.01f);
 	ImGui::DragFloat3("translate", &worldTransform_->transform.translate.x, 0.01f);
 
-	
+#endif 
 
 }
