@@ -182,14 +182,10 @@ void TutorialScene::Update()
 
 		//---------------------------------------
 		// ロックオンの処理追加
-		if (lockOnSystem_) {
-			// プレイヤーの位置をロックオンシステムにセット
+		if (lockOnSystem_ && tutorialPhase_ == TutorialPhase::kPlay) {
 			lockOnSystem_->SetPosition(player_->GetPosition());
-
-			// カメラがFollowCameraの場合、視点方向を設定
 			auto activeCamera = cameraManager_->GetActiveCamera();
 			if (auto followCamera = dynamic_cast<FollowCamera*>(activeCamera)) {
-				// カメラからの視点方向をロックオンシステムに設定
 				lockOnSystem_->SetViewDirection(followCamera->GetForwardDirection());
 			}
 			std::vector<BaseEnemy*> allTargets;
@@ -199,16 +195,10 @@ void TutorialScene::Update()
 			for (const auto& spawn : spawns_) {
 				allTargets.push_back(spawn.get());
 			}
-
 			lockOnSystem_->DetectEnemiesRaw(allTargets);
 			lockOnSystem_->UpdateRaw(allTargets);
-			//// 敵の検出
-			// lockOnSystem_->DetectEnemies(enemies_);
-			// lockOnSystem_->DetectEnemies(spawns_);
-			//// ロックオン更新
-			// lockOnSystem_->Update(enemies_);
-			// lockOnSystem_->Update(spawns_);
 		}
+
 
 		//---------------------------------------
 		// 当たり判定
@@ -530,7 +520,9 @@ void TutorialScene::Draw()
 
 		//========================================
 		// HUD
-		hud_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
+		if (tutorialPhase_ == TutorialPhase::kPlay) {
+			hud_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
+		}
 
 		DrawForegroundSprite();
 
@@ -613,7 +605,7 @@ void TutorialScene::Draw()
 		//========================================
 		// LockOn
 		// 🔽 LockOnの描画処理を追加
-		if (lockOnSystem_) {
+		if (tutorialPhase_ == TutorialPhase::kPlay && lockOnSystem_) {
 			lockOnSystem_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 				*directionalLight.get(),
 				*pointLight.get(),
