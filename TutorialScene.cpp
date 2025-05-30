@@ -88,11 +88,11 @@ void TutorialScene::Initialize()
 
 	//========================================
 	// Enemy
-	auto groundEnemy = std::make_unique<GroundTypeEnemy>();
-	groundEnemy->Initialize();
-	groundEnemy->SetPosition({ 0.0f, 0.0f, 0.0f }); // 好きな座標に配置
-	groundEnemy->SetTarget(player_->GetWorldTransform());
-	enemies_.push_back(std::move(groundEnemy));
+	//auto groundEnemy = std::make_unique<GroundTypeEnemy>();
+	//groundEnemy->Initialize();
+	//groundEnemy->SetPosition({ 0.0f, 0.0f, 0.0f }); // 好きな座標に配置
+	//groundEnemy->SetTarget(player_->GetWorldTransform());
+	//enemies_.push_back(std::move(groundEnemy));
 
 	tutorialPhase_ = TutorialPhase::kExplain;
 }
@@ -259,6 +259,20 @@ void TutorialScene::Update()
 
 			if (allTrue) {
 				tutorialPhase_ = TutorialPhase::kPlay;
+
+				// ★この中で敵を5体生成して停止させる
+				for (int i = 0; i < 5; ++i) {
+					auto enemy = std::make_unique<GroundTypeEnemy>();
+
+					enemy->Initialize();
+					// 適当に間隔を開けて配置（例えば横並び）
+					enemy->SetPosition({ float(i * 10), 0.0f, 0.0f });
+					// プレイヤーをターゲットにしない（＝動かない）
+					enemy->SetTarget(nullptr);
+					enemy->SetVelocity(Vector3{ 0.0f, 0.0f, 0.0f }); // 動かないように設定
+					// 敵のHPを設定
+					enemies_.push_back(std::move(enemy));
+				}
 			}
 
 			// プレイヤーの操作説明

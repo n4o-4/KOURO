@@ -82,6 +82,7 @@ private:
 	//=========================================
 	// フェーズ
 	TutorialPhase tutorialPhase_;
+	bool allTrue = true;// 全てのミッションが達成されたかどうか
 
 	// ミッションフラグ群
 	bool missionFlags_[6] = { false };

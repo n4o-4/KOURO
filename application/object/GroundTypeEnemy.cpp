@@ -22,6 +22,14 @@ void GroundTypeEnemy::Initialize() {
 
 void GroundTypeEnemy::Update() {
 	
+
+	if (!canMove_) {
+		velocity_ = { 0.0f, 0.0f, 0.0f };
+		return;
+	}
+
+
+
 	if (hp_ > 0) {
 		// 状態の更新
 		UpdateActionState();

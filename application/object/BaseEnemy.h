@@ -50,6 +50,10 @@ public:
 	void SetVelocityY(float y) {
 		velocity_.y = y;
 	}
+
+	void SetVelocity(const Vector3& velocity) {
+		velocity_ = velocity;
+	}
 	/**----------------------------------------------------------------------------
 	 * \brief  GetHp HPを取得
 	 * \return HP
