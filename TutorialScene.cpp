@@ -8,20 +8,60 @@ void TutorialScene::Initialize()
 
 	//========================================
 	// テクスチャの読み込み
-
+	TextureManager::GetInstance()->LoadTexture("Resources/white.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/operation2.png");
 	TextureManager::GetInstance()->LoadTexture("Resources/CheckBox.png");
 
-	checkBox_ = std::make_unique<Sprite>();
-	checkBox_->Initialize(SpriteCommon::GetInstance(),"Resources/CheckBox.png");
+	//========================================
+	// 背景
 
-	checkBox_->SetPosition({ 1200.0f, 100.0f });
+	backGround = std::make_unique<Sprite>();
+	backGround->Initialize(SpriteCommon::GetInstance(), "Resources/white.png");
+	backGround->SetPosition({ 840.0f, 0.0f });
+	backGround->SetTexSize({ 1.0f, 1.0f });   // テクスチャの描画範囲
+	backGround->SetSize({ 1280.0f, 720.0f });        // 描画サイズ
 
-	checkBox_->SetTexSize({ 128.0f, 128.0f });
+	backGround->SetColor({ 1.0f,1.0f,1.0f,0.5f });
 
-	checkBox_->SetSize({ 48.0f, 48.0f });
+	backGround->Update();
+
+	//========================================
+	// 説明
+	explanation = std::make_unique<Sprite>();
+	explanation->Initialize(SpriteCommon::GetInstance(), "Resources/operation2.png");
+	explanation->SetPosition({ 700.0f, 0.0f });
+	explanation->SetTexSize({ 1280.0f, 720.0f });   // テクスチャの描画範囲
+	explanation->SetSize({ 1280.0f, 720.0f });        // 描画サイズ
+
+	explanation->Update();
+
+	//========================================
+	// checkBoxのスプライトを生成
+	//checkBox0_ = std::make_unique<Sprite>();
+	//checkBox0_->Initialize(SpriteCommon::GetInstance(),"Resources/CheckBox.png");
+	//checkBox0_->SetPosition({ 880.0f, 160.0f });
+	//checkBox0_->SetTexSize({ 128.0f, 128.0f });   // テクスチャの描画範囲
+	//checkBox0_->SetSize({ 48.0f, 48.0f });        // 描画サイズ
 
 
-	checkBox_->Update();
+	for (int i = 0; i < 6; ++i) {
+		checkBox_[i] = std::make_unique<Sprite>();
+		checkBox_[i]->Initialize(SpriteCommon::GetInstance(), "Resources/CheckBox.png");
+		checkBox_[i]->SetPosition({ 880.0f, 160.0f + (i * 76.0f) });
+		checkBox_[i]->SetTexSize({ 128.0f, 128.0f });   // テクスチャの描画範囲
+		checkBox_[i]->SetSize({ 48.0f, 48.0f });        // 描画サイズ
+		checkBox_[i]->Update();
+	}
+
+	for (int i = 0; i < 6; ++i) {
+		checkMark_[i] = std::make_unique<Sprite>();
+		checkMark_[i]->Initialize(SpriteCommon::GetInstance(), "Resources/checkMark.png");
+		checkMark_[i]->SetPosition({ 880.0f, 160.0f + (i * 76.0f) });
+		checkMark_[i]->SetTexSize({ 128.0f, 128.0f });   // テクスチャの描画範囲
+		checkMark_[i]->SetSize({ 48.0f, 48.0f });        // 描画サイズ
+		checkMark_[i]->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f }); // 初期は透明
+		checkMark_[i]->Update();
+	}
 
 	//========================================
 	// ライト
@@ -547,7 +587,21 @@ void TutorialScene::Draw()
 			DrawForegroundSprite();
 			/// 前景スプライト描画
 
-			checkBox_->Draw();
+			backGround->Draw();
+
+			explanation->Draw();
+
+			for (int i = 0; i < 6; ++i) {
+				checkBox_[i]->Draw();
+			}
+
+			for (int i = 0; i < 6; ++i) {
+				if (missionFlags_[i]) {
+					checkMark_[i]->Draw();
+				}
+
+				checkMark_[i]->Draw();
+			}
 
 			break;
 		case TutorialPhase::kPlay:

@@ -152,7 +152,13 @@ private:
 		MissionFireMissile();
 	}
 
-	std::unique_ptr<Sprite> checkBox_ = nullptr; // チェックボックスのスプライト
+	std::unique_ptr<Sprite> backGround = nullptr;
+
+	std::unique_ptr<Sprite> explanation = nullptr; // 説明のスプライト
+
+	std::unique_ptr<Sprite> checkBox_[6] = { nullptr }; // チェックボックスのスプライト配列
+
+	std::unique_ptr<Sprite> checkMark_[6] = { nullptr }; // チェックマークのスプライト配列
 
 public: // メンバ関数
 	// 初期化
