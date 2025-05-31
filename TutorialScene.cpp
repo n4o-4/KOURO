@@ -11,7 +11,7 @@ void TutorialScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture("Resources/white.png");
 	TextureManager::GetInstance()->LoadTexture("Resources/operation2.png");
 	TextureManager::GetInstance()->LoadTexture("Resources/CheckBox.png");
-
+	TextureManager::GetInstance()->LoadTexture("Resources/checkMark.png");
 	//========================================
 	// 背景
 
@@ -599,8 +599,6 @@ void TutorialScene::Draw()
 				if (missionFlags_[i]) {
 					checkMark_[i]->Draw();
 				}
-
-				checkMark_[i]->Draw();
 			}
 
 			break;

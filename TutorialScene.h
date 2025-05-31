@@ -98,7 +98,7 @@ private:
 	{
 		// カメラを動かしたらtrue
 
-		Vector2 vec2 = Input::GetInstance()->GetLeftStick();
+		Vector2 vec2 = Input::GetInstance()->GetRightStick();
 
 		float length = std::sqrt(vec2.x * vec2.x + vec2.y * vec2.y);
 
