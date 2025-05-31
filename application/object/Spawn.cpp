@@ -25,7 +25,8 @@ void Spawn::Update() {
 	
 	//if (spawnHp_ > 0) {
 	//spawnWorldTransform_->UpdateMatrix();
-	//spawnModel_->SetLocalMatrix(MakeIdentity4x4());
+	//spawnModel_->
+	// (MakeIdentity4x4());
 	//spawnModel_->Update();
 }
 

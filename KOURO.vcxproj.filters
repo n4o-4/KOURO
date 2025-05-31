@@ -109,6 +109,7 @@
     <ClCompile Include="Gritch.cpp" />
     <ClCompile Include="GroundTypeEnemy4.cpp" />
     <ClCompile Include="TutorialScene.cpp" />
+    <ClCompile Include="TutorialEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\collision\BaseObject.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Gritch.h" />
     <ClInclude Include="GroundTypeEnemy4.h" />
     <ClInclude Include="TutorialScene.h" />
+    <ClInclude Include="TutorialEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

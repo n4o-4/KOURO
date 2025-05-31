@@ -115,7 +115,8 @@ void LockOnMarker::Update(const Vector3& playerPosition, const Vector3& markerPo
 
     // 行列を更新
     //multilockOnWorldTransform_->UpdateMatrix();
-    //multiLockOn_->SetLocalMatrix(MakeIdentity4x4());
+    //multiLockOn_->
+    // (MakeIdentity4x4());
     //multiLockOn_->Update();
 }
 

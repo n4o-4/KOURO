@@ -95,6 +95,7 @@
     <ClCompile Include="application\object\Spawn.cpp" />
     <ClCompile Include="engine\effect\Vignette.cpp" />
     <ClCompile Include="engine\effect\MotionBlur.cpp" />
+    <ClCompile Include="TutorialEnemy.cpp" />
     <ClCompile Include="TutorialScene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +190,7 @@
     <ClInclude Include="Gritch.h" />
     <ClInclude Include="GroundTypeEnemy4.h" />
     <ClInclude Include="Hud.h" />
+    <ClInclude Include="TutorialEnemy.h" />
     <ClInclude Include="TutorialScene.h" />
   </ItemGroup>
   <ItemGroup>

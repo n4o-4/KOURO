@@ -165,8 +165,8 @@ public: // メンバ関数
 	// 毎フレーム更新
 	void Update() override;
 
-	// 描画
-	void Draw() override;
+	void Draw();
+
 
 
 };
