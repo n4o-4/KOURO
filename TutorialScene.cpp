@@ -327,6 +327,7 @@ void TutorialScene::Update()
 					collisionManager_->AddCollider(bullet.get());
 				}
 			}
+			collisionManager_->Update();
 
 			break;
 		}
