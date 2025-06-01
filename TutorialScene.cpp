@@ -1,5 +1,6 @@
 ﻿#include "TutorialScene.h"
 #include "TutorialEnemy.h"
+#include <cstdlib>
 
 void TutorialScene::Initialize()
 {
@@ -96,6 +97,8 @@ void TutorialScene::Initialize()
 	//enemies_.push_back(std::move(groundEnemy));
 
 	tutorialPhase_ = TutorialPhase::kExplain;
+
+	srand(static_cast<unsigned int>(time(nullptr)));
 }
 
 void TutorialScene::Finalize()
@@ -261,12 +264,18 @@ void TutorialScene::Update()
 			if (allTrue) {
 				tutorialPhase_ = TutorialPhase::kPlay;
 
-				for (int i = 0; i < 5; ++i) {
+				for (int i = 0; i < 10; ++i) {
 					auto enemy = std::make_unique<TutorialEnemy>();
 					enemy->Initialize(ModelManager::GetInstance()->FindModel("enemy/kumo/kumo.obj"));
-					enemy->SetPosition({ float(i * 10), 0.0f, 0.0f });
+
+					// XZ平面上にランダムにばらけて配置（例: -50〜50の範囲）
+					float x = static_cast<float>(rand() % 101 - 50); // -50〜+50
+					float z = static_cast<float>(rand() % 101 - 50); // -50〜+50
+
+					enemy->SetPosition({ x, 0.0f, z });
 					enemy->SetTarget(nullptr);
 					enemy->SetVelocity({ 0.0f, 0.0f, 0.0f });
+
 					enemies_.push_back(std::move(enemy));
 				}
 			}

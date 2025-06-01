@@ -27,12 +27,12 @@ void TutorialEnemy::Draw(ViewProjection viewProjection,
 void TutorialEnemy::OnCollisionEnter(BaseObject* other) {
 	if (dynamic_cast<PlayerMissile*>(other)) {
 		//se1_->SoundPlay("Resources/se/爆発1.mp3", 0);
-		--hp_;
+		//--hp_;
 		//HitJump();
 		particleEmitter_->Emit();
 	}
 	if (dynamic_cast<PlayerMachineGun*>(other)) {
-		--hp_;
+		//--hp_;
 		//HitJump();
 		particleEmitter_->Emit();
 	}
