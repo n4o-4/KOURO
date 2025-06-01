@@ -1,4 +1,6 @@
 ﻿#include "TutorialScene.h"
+#include "TutorialEnemy.h"
+#include <cstdlib>
 
 void TutorialScene::Initialize()
 {
@@ -128,13 +130,15 @@ void TutorialScene::Initialize()
 
 	//========================================
 	// Enemy
-	auto groundEnemy = std::make_unique<GroundTypeEnemy>();
-	groundEnemy->Initialize();
-	groundEnemy->SetPosition({ 0.0f, 0.0f, 0.0f }); // 好きな座標に配置
-	groundEnemy->SetTarget(player_->GetWorldTransform());
-	enemies_.push_back(std::move(groundEnemy));
+	//auto groundEnemy = std::make_unique<GroundTypeEnemy>();
+	//groundEnemy->Initialize();
+	//groundEnemy->SetPosition({ 0.0f, 0.0f, 0.0f }); // 好きな座標に配置
+	//groundEnemy->SetTarget(player_->GetWorldTransform());
+	//enemies_.push_back(std::move(groundEnemy));
 
 	tutorialPhase_ = TutorialPhase::kExplain;
+
+	srand(static_cast<unsigned int>(time(nullptr)));
 }
 
 void TutorialScene::Finalize()
@@ -218,18 +222,14 @@ void TutorialScene::Update()
 		// 地面
 		ground_->Update();
 
-		
+
 
 		//---------------------------------------
 		// ロックオンの処理追加
-		if (lockOnSystem_) {
-			// プレイヤーの位置をロックオンシステムにセット
+		if (lockOnSystem_ && tutorialPhase_ == TutorialPhase::kPlay) {
 			lockOnSystem_->SetPosition(player_->GetPosition());
-
-			// カメラがFollowCameraの場合、視点方向を設定
 			auto activeCamera = cameraManager_->GetActiveCamera();
 			if (auto followCamera = dynamic_cast<FollowCamera*>(activeCamera)) {
-				// カメラからの視点方向をロックオンシステムに設定
 				lockOnSystem_->SetViewDirection(followCamera->GetForwardDirection());
 			}
 			std::vector<BaseEnemy*> allTargets;
@@ -239,16 +239,10 @@ void TutorialScene::Update()
 			for (const auto& spawn : spawns_) {
 				allTargets.push_back(spawn.get());
 			}
-
 			lockOnSystem_->DetectEnemiesRaw(allTargets);
 			lockOnSystem_->UpdateRaw(allTargets);
-			//// 敵の検出
-			// lockOnSystem_->DetectEnemies(enemies_);
-			// lockOnSystem_->DetectEnemies(spawns_);
-			//// ロックオン更新
-			// lockOnSystem_->Update(enemies_);
-			// lockOnSystem_->Update(spawns_);
 		}
+
 
 		//---------------------------------------
 		// 当たり判定
@@ -292,14 +286,14 @@ void TutorialScene::Update()
 		//----------------------------------------
 		// Tutorialフェーズ
 		switch (tutorialPhase_) {
-		// 説明フェーズ
+			// 説明フェーズ
 		case TutorialPhase::kExplain:
 
 			//playerが動いたらtrue
 
 			CheckMissions();
 
-			
+
 			for (int i = 0; i < 6; ++i) {
 				if (!missionFlags_[i]) {
 					allTrue = false;
@@ -309,6 +303,21 @@ void TutorialScene::Update()
 
 			if (allTrue) {
 				tutorialPhase_ = TutorialPhase::kPlay;
+
+				for (int i = 0; i < 10; ++i) {
+					auto enemy = std::make_unique<TutorialEnemy>();
+					enemy->Initialize(ModelManager::GetInstance()->FindModel("enemy/kumo/kumo.obj"));
+
+					// XZ平面上にランダムにばらけて配置（例: -50〜50の範囲）
+					float x = static_cast<float>(rand() % 101 - 50); // -50〜+50
+					float z = static_cast<float>(rand() % 101 - 50); // -50〜+50
+
+					enemy->SetPosition({ x, 0.0f, z });
+					enemy->SetTarget(nullptr);
+					enemy->SetVelocity({ 0.0f, 0.0f, 0.0f });
+
+					enemies_.push_back(std::move(enemy));
+				}
 			}
 
 			// プレイヤーの操作説明
@@ -316,7 +325,7 @@ void TutorialScene::Update()
 				tutorialPhase_ = TutorialPhase::kPlay;
 			}*/
 			break;
-		// プレイフェーズ
+			// プレイフェーズ
 		case TutorialPhase::kPlay:
 
 			// 敵リスト
@@ -367,6 +376,7 @@ void TutorialScene::Update()
 					collisionManager_->AddCollider(bullet.get());
 				}
 			}
+			collisionManager_->Update();
 
 			break;
 		}
@@ -543,12 +553,12 @@ void TutorialScene::Draw()
 		}
 		//========================================
 		// 敵
-		/*for (const auto& enemy : enemies_) {
+		for (const auto& enemy : enemies_) {
 			enemy->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 				*directionalLight.get(),
 				*pointLight.get(),
 				*spotLight.get());
-		}*/
+		}
 		//========================================
 		// プレイヤーの描画
 		player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
@@ -570,7 +580,9 @@ void TutorialScene::Draw()
 
 		//========================================
 		// HUD
-		hud_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
+		if (tutorialPhase_ == TutorialPhase::kPlay) {
+			hud_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
+		}
 
 		DrawForegroundSprite();
 
@@ -603,12 +615,25 @@ void TutorialScene::Draw()
 
 			break;
 		case TutorialPhase::kPlay:
+
+			DrawBackgroundSprite();
+			/// 背景スプライト描画
+
+			DrawObject();
+			/// オブジェクト描画
+
 			for (const auto& enemy : enemies_) {
 				enemy->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 					*directionalLight.get(),
 					*pointLight.get(),
 					*spotLight.get());
 			}
+
+			DrawForegroundSprite();
+			/// 前景スプライト描画
+
+
+
 			break;
 		}
 
@@ -652,7 +677,7 @@ void TutorialScene::Draw()
 		//========================================
 		// LockOn
 		// 🔽 LockOnの描画処理を追加
-		if (lockOnSystem_) {
+		if (tutorialPhase_ == TutorialPhase::kPlay && lockOnSystem_) {
 			lockOnSystem_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
 				*directionalLight.get(),
 				*pointLight.get(),

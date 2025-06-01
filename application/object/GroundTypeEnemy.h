@@ -97,6 +97,9 @@ public:
 	//弾の取得
 	std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
 
+	//
+	void SetCanMove(bool canMove) { canMove_ = canMove; }
+
 private:
 
 	void RandomWanderMove();
@@ -137,5 +140,7 @@ private:
 	
 	float modelScale_ = 5.0f;
 	std::unique_ptr<Audio> se1_ = nullptr;
+
+	bool canMove_ = true;
 };
 

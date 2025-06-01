@@ -82,6 +82,7 @@ private:
 	//=========================================
 	// フェーズ
 	TutorialPhase tutorialPhase_;
+	bool allTrue = true;// 全てのミッションが達成されたかどうか
 
 	// ミッションフラグ群
 	bool missionFlags_[6] = { false };
@@ -170,8 +171,8 @@ public: // メンバ関数
 	// 毎フレーム更新
 	void Update() override;
 
-	// 描画
-	void Draw() override;
+	void Draw();
+
 
 
 };
