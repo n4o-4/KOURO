@@ -206,6 +206,10 @@ public:
 		return missileCooldownMax_;
 	}
 
+	Vector3 GetVelocity() const {
+		return velocity_;
+	}
+
 private:
 	//========================================
 	// 3Dオブジェクト
