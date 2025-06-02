@@ -166,4 +166,8 @@ private:
 	float assistRampUpTime_ = 0.15f;			 // アシスト強度が上がるまでの時間 - 高速化
 	float targetSwitchCooldown_ = 0.0f;			 // ターゲット切り替えのクールダウン
 	float targetSwitchCooldownTime_ = 0.3f;		 // ターゲット切り替えクールダウン時間
+
+public:
+
+	bool enableUpdate_ = true; 
 };

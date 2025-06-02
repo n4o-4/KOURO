@@ -33,6 +33,11 @@ void FollowCamera::Update() {
 		assert(0);
 	}
 
+	if (!enableUpdate_)
+	{
+		return;
+	}
+
 	// エイムアシスト処理
 	UpdateAimAssist();
 

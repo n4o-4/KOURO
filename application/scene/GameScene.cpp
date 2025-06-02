@@ -231,6 +231,79 @@ void GameScene::Initialize() {
 	// 敵とスポーンの情報を最新に保つ
 	hud_->SetEnemiesAndSpawns(&enemies_, &spawns_);
 	hud_->Initialize(cameraManager_->GetFollowCamera(), player_.get(), lockOnSystem_.get());
+
+	TextureManager::GetInstance()->LoadTexture("Resources/white.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/operation2.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/contGame.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/returnTitle.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/xbox_dpad_round_vertical.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/xbox_button_menu_outline.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/pose.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/pointer.png");
+	//========================================
+	// 背景
+
+	backGround = std::make_unique<Sprite>();
+	backGround->Initialize(SpriteCommon::GetInstance(), "Resources/white.png");
+	backGround->SetPosition({ 0.0f, 0.0f });
+	backGround->SetTexSize({ 1.0f, 1.0f });   // テクスチャの描画範囲
+	backGround->SetSize({ 1280.0f, 720.0f });        // 描画サイズ
+
+	backGround->SetColor({ 0.5f,0.5f,0.5f,0.5f });
+
+	backGround->Update();
+
+	//========================================
+	// 説明
+	explanation = std::make_unique<Sprite>();
+	explanation->Initialize(SpriteCommon::GetInstance(), "Resources/operation2.png");
+	explanation->SetPosition({ 550.0f, 0.0f });
+	explanation->SetTexSize({ 1280.0f, 720.0f });   // テクスチャの描画範囲
+	explanation->SetSize({ 1280.0f, 720.0f });        // 描画サイズ
+
+	explanation->Update();
+
+
+	contGame = std::make_unique<Sprite>();
+	contGame->Initialize(SpriteCommon::GetInstance(), "Resources/contGame.png");
+	contGame->SetAnchorPoint({ 0.5f, 0.5f }); // アンカーポイントを中央に設定
+	contGame->SetPosition({ 300.0f, 180.0f });
+	contGame->SetTexSize({ 512.0f, 128.0f });   // テクスチャの描画範囲
+	contGame->SetSize({ 512.0f, 256.0f });        // 描画サイズ
+	contGame->Update();
+
+	returnTitle = std::make_unique<Sprite>();
+	returnTitle->Initialize(SpriteCommon::GetInstance(), "Resources/returnTitle.png");
+	returnTitle->SetAnchorPoint({ 0.5f, 0.5f }); // アンカーポイントを中央に設定
+	returnTitle->SetPosition({ 300.0f, 540.0f });
+	returnTitle->SetTexSize({ 512.0f, 128.0f });   // テクスチャの描画範囲
+	returnTitle->SetSize({ 512.0f, 256.0f });        // 描画サイズ
+	returnTitle->Update();
+
+
+	menuBotton = std::make_unique<Sprite>();
+	menuBotton->Initialize(SpriteCommon::GetInstance(), "Resources/xbox_button_menu_outline.png");
+	menuBotton->SetPosition({ 50.0f, 50.0f });
+	menuBotton->SetTexSize({ 64.0f, 64.0f });   // テクスチャの描画範囲
+	menuBotton->SetSize({ 64.0f, 64.0f });        // 描画サイズ
+
+	menuBotton->Update();
+
+	pose = std::make_unique<Sprite>();
+	pose->Initialize(SpriteCommon::GetInstance(), "Resources/pose.png");
+	pose->SetPosition({ 150.0f, 50.0f });
+	pose->SetTexSize({ 256.0f, 64.0f });   // テクスチャの描画範囲
+	pose->SetSize({ 256.0f, 64.0f });        // 描画サイズ
+
+	pose->Update();
+
+	pointer = std::make_unique<Sprite>();
+	pointer->Initialize(SpriteCommon::GetInstance(), "Resources/pointer.png");
+	pointer->SetAnchorPoint({ 0.5f,0.5f });
+	pointer->SetPosition({ 640.0f, 360.0f });
+	pointer->SetTexSize({ 64.0f, 64.0f });   // テクスチャの描画範囲
+	pointer->SetSize({ 64.0f, 64.0f });        // 描画サイズ
+	pointer->Update();
 }
 ///=============================================================================
 ///						終了処理
@@ -532,6 +605,15 @@ void GameScene::Update() {
 			}
 		}
 
+		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::START))
+		{
+			phase_ = Phase::kPose;
+
+			cameraManager_->GetFollowCamera()->enableUpdate_ = false; // カメラの更新を無効化
+
+			pointer->SetPosition({ 640.0f, 360.0f }); // ポインターの位置を中央にリセット
+		}
+
 		//========================================
 		// フェードアウト
 		break;
@@ -552,9 +634,9 @@ void GameScene::Update() {
 			}
 		}
 
-		//---------------------------------------
-		// プレイヤーの更新
-		player_->Update();
+		////---------------------------------------
+		//// プレイヤーの更新
+		//player_->Update();
 
 		//---------------------------------------
 		// 天球
@@ -572,6 +654,53 @@ void GameScene::Update() {
 	case Phase::kMain:
 		break;
 	case Phase::kPose:
+
+	    Vector2 pointerPos = pointer->GetPosition();
+
+	    Vector2 vect = Input::GetInstance()->GetLeftStick();
+ 
+		pointerPos = { pointerPos.x + vect.x * 2.0f , pointerPos.y + -vect.y * 2.0f};
+
+	    pointer->SetPosition(pointerPos);
+
+		if (pointerPos.x < 640)
+		{
+			if (pointerPos.y < 360)
+			{
+				contGame->SetSize({ 665.6f, 166.4f });
+				returnTitle->SetSize({ 512.0f, 128.0f });
+
+				if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
+				{
+					phase_ = Phase::kPlay;
+
+					cameraManager_->GetFollowCamera()->enableUpdate_ = true; // カメラの更新を有効化
+				}
+			}
+			else if (pointerPos.y > 360)
+			{
+				returnTitle->SetSize({ 665.6f, 166.4f });
+				contGame->SetSize({ 512.0f, 128.0f });
+
+				if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
+				{
+					SceneManager::GetInstance()->ChangeScene("TITLE");
+
+					cameraManager_->GetFollowCamera()->enableUpdate_ = true; // カメラの更新を有効化
+				}
+			}
+		}
+		else
+		{
+			contGame->SetSize({ 512.0f, 128.0f });
+			returnTitle->SetSize({ 512.0f, 128.0f });
+		}
+
+		contGame->Update();
+		returnTitle->Update();
+
+		pointer->Update();
+
 		break;
 	}
 
@@ -780,6 +909,10 @@ void GameScene::Draw() {
 			wave3_->Draw();
 		}
 
+		menuBotton->Draw();
+
+		pose->Draw();
+
 		break;
 		///=============================================================================
 	case Phase::kFadeOut:
@@ -841,6 +974,85 @@ void GameScene::Draw() {
 		break;
 		///=============================================================================
 	case Phase::kPose:
+
+		DrawBackgroundSprite();
+		/// 背景スプライト描画
+
+		DrawObject();
+		/// オブジェクト描画
+		//========================================
+		// 天球
+		skyDome_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
+		//========================================
+		// 地面
+		ground_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
+		//========================================
+		// spawnの描画
+		for (const auto& Spawn : spawns_) {
+			Spawn->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+				*directionalLight.get(),
+				*pointLight.get(),
+				*spotLight.get());
+		}
+		//========================================
+		// 敵
+		for (const auto& enemy : enemies_) {
+			enemy->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+				*directionalLight.get(),
+				*pointLight.get(),
+				*spotLight.get());
+		}
+		//========================================
+		// プレイヤーの描画
+		player_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+			*directionalLight.get(),
+			*pointLight.get(),
+			*spotLight.get());
+		//========================================
+		// LockOn
+		// 🔽 LockOnの描画処理を追加
+		// if(lockOnSystem_) {
+		//	lockOnSystem_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(),
+		//		*directionalLight.get(),
+		//		*pointLight.get(),
+		//		*spotLight.get());
+		//}
+		//========================================
+		// 当たり判定マネージャ
+		collisionManager_->Draw();
+
+		//========================================
+		// HUD
+		//hud_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
+
+		DrawForegroundSprite();
+		/// 前景スプライト描画
+
+		if (currentWaveImageIndex_ == 1 && wave1_) {
+			wave1_->Draw();
+		}
+		else if (currentWaveImageIndex_ == 2 && wave2_) {
+			wave2_->Draw();
+		}
+		else if (currentWaveImageIndex_ == 3 && wave3_) {
+			wave3_->Draw();
+		}
+
+		backGround->Draw();
+
+		explanation->Draw();
+
+		contGame->Draw();
+
+		returnTitle->Draw();
+
+		pointer->Draw();
 
 		break;
 	}
