@@ -579,8 +579,10 @@ void TitleScene::UpdateSequence() {
 	case SequenceState::Done:
 	
 		select();
-		
-
+		const float amplitude = 0.08f;     
+		const float speed = 2.0f;          
+		selectFloatTimer_ += 1.0f / 60.0f;
+		textTransform_->transform.translate.y = 0.2f + amplitude * sinf(selectFloatTimer_ * speed);
 		break;
 	}
 
