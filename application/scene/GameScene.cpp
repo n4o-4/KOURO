@@ -397,6 +397,7 @@ void GameScene::Update() {
 			player_->Update(); 
 			cameraManager_->GetFollowCamera()->enableUpdate_ = true;
 		} else {
+			player_->StopMachineGunSound();
 			cameraManager_->GetFollowCamera()->enableUpdate_ = false;
 		}
 
@@ -438,6 +439,7 @@ void GameScene::Update() {
 						   }),
 			spawns_.end());
 		if (spawns_.empty() && waveReady_) {
+			player_->StopMachineGunSound();
 			enemies_.clear();
 
 			waveIndex_++;
