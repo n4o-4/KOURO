@@ -438,6 +438,7 @@ void Player::UpdateMissiles() {
 		(Input::GetInstance()->Triggerkey(DIK_RETURN) ||
 			Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::RIGHT_SHOULDER))) {
 		se1_->SoundPlay("Resources/se/missile.mp3", 0);
+		se1_->SetVolume(0.5f); 
 		Shoot();
 		missileCooldown_ = missileCooldownMax_; // クールタイム開始
 
@@ -498,6 +499,7 @@ void Player::UpdateMachineGunAndHeat() {
 		ShootMachineGun();
 		if (!machineGunSoundPlayed_) {
 			se3_->SoundPlay("Resources/se/999DCD4E5D2A205C05.mp3", 9999);
+			se3_->SetVolume(0.5f);
 			machineGunSoundPlayed_ = true;
 		}
 		heatLevel_ += heatPerShot_;
@@ -600,6 +602,7 @@ bool Player::HandleBoost() {
         quickBoostActivatedThisFrame = HandleQuickBoostActivation();
 		if (quickBoostActivatedThisFrame) {
 			se2_->SoundPlay("Resources/se/高速移動.mp3", 0);  
+			se2_->SetVolume(0.5f);
 		}
     }
 
@@ -903,4 +906,10 @@ void Player::HandleDamageAndInvincibility() {
 		invincibleTimer_ = kInvincibleDuration_; // 定数使用
 		isVisible_ = true; // 無敵開始時は必ず表示
 	}
+}
+
+void Player::StopMachineGunSound() {
+	isShootingMachineGun_ = false;
+	machineGunSoundPlayed_ = false;
+	se3_->SoundStop("Resources/se/999DCD4E5D2A205C05.mp3");
 }

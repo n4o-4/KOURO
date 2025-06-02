@@ -22,13 +22,17 @@ void GameOver::Initialize() {
 	AudioManager::GetInstance()->Initialize();
 	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/gameOVER.mp3");
 	AudioManager::GetInstance()->SoundLoadFile("Resources/se/tin.mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/se/select.mp3");
 	overBGM_ = std::make_unique<Audio>();
 	overBGM_->Initialize();
 	overBGM_->SoundPlay("Resources/bgm/gameOVER.mp3", 9999);
-
+	overBGM_->SetVolume(0.6f);
 
 	mwTinSE_ = std::make_unique<Audio>();
 	mwTinSE_->Initialize();
+
+	mwSE_ = std::make_unique<Audio>();
+	mwSE_->Initialize();
 
 	// ƒ‰ƒCƒg
 	// ŽwŒü«
@@ -298,6 +302,8 @@ void GameOver::Update() {
 
 		if (!isStartClose_ && showButtonA_ &&
 			(Input::GetInstance()->Triggerkey(DIK_RETURN) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))) {
+			mwSE_->SoundPlay("Resources/se/select.mp3", 0);
+			mwSE_->SetVolume(0.5f);
 			isStartClose_ = true;
 		}
 
@@ -392,6 +398,7 @@ void GameOver::OpenMwdoor() {
 		if (mvTransforms_[2]->transform.rotate.y >= 15.64f) {
 			mvTransforms_[2]->transform.rotate.y = 15.64f;
 			mwTinSE_->SoundPlay("Resources/se/tin.mp3", 0);
+			mwTinSE_->SetVolume(1.3f);
 			isOver_ = false;
 		}
 	}

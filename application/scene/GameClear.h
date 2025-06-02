@@ -46,10 +46,9 @@ private:
 	std::unique_ptr<Sprite> clear_ = nullptr;
 
 	std::unique_ptr<Audio> clearBGM_ = nullptr;
-	std::unique_ptr<Audio> explosionSE_ = nullptr;
 	std::unique_ptr<Audio> mwSE_ = nullptr;
-	std::unique_ptr<Audio> mwdoorSE_ = nullptr;
 	std::unique_ptr<Audio> mwTinSE_ = nullptr;
+	std::array<std::unique_ptr<Audio>, 4> explosionSE_;
 
 	// ライトクラス
 	std::unique_ptr<DirectionalLight> directionalLight = nullptr;

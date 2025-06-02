@@ -198,10 +198,13 @@ void GameScene::Initialize() {
 
 	if (easy_) {
 		easyBGM_->SoundPlay("Resources/bgm/easy.mp3", 9999);
+		easyBGM_->SetVolume(0.6f); 
 	} else if (nomal_) {
 		nomalBGM_->SoundPlay("Resources/bgm/nomal.mp3", 9999);
+		nomalBGM_->SetVolume(0.6f);
 	} else if (hard_) {
 		hardBGM_->SoundPlay("Resources/bgm/hard.mp3", 9999);
+		hardBGM_->SetVolume(0.6f);
 	}
 
 	//wave sprite
@@ -441,12 +444,14 @@ void GameScene::Update() {
 
 					player_->GetBullets().clear();
 					player_->GetMachineGunBullets().clear();
+					player_->StopMachineGunSound();
 
 					LoadEnemyPopData(waveIndex_);
 					waveReady_ = false;
 				} else {
 					player_->GetBullets().clear();
 					player_->GetMachineGunBullets().clear();
+					player_->StopMachineGunSound();
 					isGameClear_ = true;
 				}
 			} else if (nomal_) {
@@ -457,12 +462,14 @@ void GameScene::Update() {
 
 					player_->GetBullets().clear();
 					player_->GetMachineGunBullets().clear();
+					player_->StopMachineGunSound();
 
 					LoadEnemyPopData(waveIndex_);
 					waveReady_ = false;
 				} else {
 					player_->GetBullets().clear();
 					player_->GetMachineGunBullets().clear();
+					player_->StopMachineGunSound();
 					isGameClear_ = true;
 				}
 			} else if (hard_) {
@@ -473,12 +480,14 @@ void GameScene::Update() {
 
 					player_->GetBullets().clear();
 					player_->GetMachineGunBullets().clear();
+					player_->StopMachineGunSound();
 
 					LoadEnemyPopData(waveIndex_);
 					waveReady_ = false;
 				} else {
 					player_->GetBullets().clear();
 					player_->GetMachineGunBullets().clear();
+					player_->StopMachineGunSound();
 					isGameClear_ = true;
 				}
 			}

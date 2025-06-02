@@ -56,18 +56,24 @@ void GameClear::Initialize() {
 	AudioManager::GetInstance()->Initialize();
 	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/gameCLEAR.mp3");
 	AudioManager::GetInstance()->SoundLoadFile("Resources/se/tin.mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/se/select.mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/se/explosion.mp3");
+
 	clearBGM_ = std::make_unique<Audio>();
 	clearBGM_->Initialize();
 	clearBGM_->SoundPlay("Resources/bgm/gameCLEAR.mp3", 9999);
+	clearBGM_->SetVolume(0.6f);
 
-	explosionSE_ = std::make_unique<Audio>();
-	explosionSE_->Initialize();
+	for (int i = 0; i < 4; ++i) {
+
+		explosionSE_[i] = std::make_unique<Audio>();
+		explosionSE_[i]->Initialize();
+	}
+
+	
 
 	mwSE_ = std::make_unique<Audio>();
 	mwSE_->Initialize();
-
-	mwdoorSE_ = std::make_unique<Audio>();
-	mwdoorSE_->Initialize();
 
 	mwTinSE_ = std::make_unique<Audio>();
 	mwTinSE_->Initialize();
@@ -418,6 +424,8 @@ void GameClear::Update() {
 #endif
 		if (!isStartClose_ && showButtonA_ &&
 			(Input::GetInstance()->Triggerkey(DIK_RETURN) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))) {
+			mwSE_->SoundPlay("Resources/se/select.mp3", 0);
+			mwSE_->SetVolume(0.5f);
 			isStartClose_ = true;
 		}
 
@@ -554,6 +562,8 @@ void GameClear::UpdateMissileFlight() {
 			isVisible_[i] = false;
 			explosionEmitter_[i]->SetPosition(endPos);
 			explosionEmitter_[i]->Emit();
+			explosionSE_[i]->SoundPlay("Resources/se/explosion.mp3", 0);
+			explosionSE_[i]->SetVolume(0.5f);
 		}
 	}
 
@@ -565,6 +575,7 @@ void GameClear::UpdateMoveClear() {
 	if (mwdishTransform_->transform.rotate.y >= 12.45) {
 		mwdishTransform_->transform.rotate.y = 12.45f;
 		mwTinSE_->SoundPlay("Resources/se/tin.mp3", 0);
+		mwTinSE_->SetVolume(1.3f);
 		isClear_ = false;
 		}
 	}
@@ -644,6 +655,7 @@ void GameClear::UpdateCloseDoor() {
 		isMove_ = true;
 	}
 	if (isMove_) {
+		
 		fade_->Start(Fade::Status::FadeOut, fadeTime_);
 		phase_ = Phase::kFadeOut;
 	}

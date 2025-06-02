@@ -79,6 +79,8 @@ private:
 	//
 	bool music = false;
 	std::unique_ptr<Audio> se1_ = nullptr;
+	std::unique_ptr<Audio> se2_ = nullptr;
+	std::unique_ptr<Audio> se3_ = nullptr;
 	std::unique_ptr<Audio> tin_ = nullptr;
 	std::unique_ptr<Audio> bgm_ = nullptr;
 
