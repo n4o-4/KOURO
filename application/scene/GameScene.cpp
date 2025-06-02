@@ -392,7 +392,10 @@ void GameScene::Update() {
 
 		//---------------------------------------
 		// プレイヤーの更新
-		player_->Update();
+		//player_->Update();
+		if (waveDisplayTimer_ <= 0) {
+			player_->Update(); 
+		}
 
 		//---------------------------------------
 		// 天球
