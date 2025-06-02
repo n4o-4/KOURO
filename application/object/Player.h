@@ -88,6 +88,9 @@ private:
 
 	void HandleDamageAndInvincibility(); // ダメージ処理と無敵化の共通処理
 
+
+	
+
 	///--------------------------------------------------------------
 	///							入出力関数
 public:
@@ -209,6 +212,8 @@ public:
 	Vector3 GetVelocity() const {
 		return velocity_;
 	}
+
+	void StopMachineGunSound();
 
 private:
 	//========================================

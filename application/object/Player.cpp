@@ -904,3 +904,9 @@ void Player::HandleDamageAndInvincibility() {
 		isVisible_ = true; // 無敵開始時は必ず表示
 	}
 }
+
+void Player::StopMachineGunSound() {
+	isShootingMachineGun_ = false;
+	machineGunSoundPlayed_ = false;
+	se3_->SoundStop("Resources/se/999DCD4E5D2A205C05.mp3");
+}

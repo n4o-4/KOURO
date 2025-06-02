@@ -146,19 +146,27 @@ void TitleScene::Initialize()
 
 	AudioManager::GetInstance()->Initialize();
 	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/title.mp3");
-	AudioManager::GetInstance()->SoundLoadFile("Resources/se/47.mp3");
 	AudioManager::GetInstance()->SoundLoadFile("Resources/se/tin.mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/se/電子レンジ_[cut_0sec].mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/se/電子レンジを開ける.mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/se/電子レンジを閉める.mp3");
 
 	bgm_ = std::make_unique<Audio>();
 	se1_ = std::make_unique<Audio>();
+	se2_ = std::make_unique<Audio>();
+	se3_ = std::make_unique<Audio>();
 	tin_ = std::make_unique<Audio>();
 
 	bgm_->Initialize();
 	se1_->Initialize();
+	se2_->Initialize();
+	se3_->Initialize();
 	tin_->Initialize();
 
-	bgm_->SoundPlay("Resources/bgm/title.mp3", 10000);
+	
 
+	bgm_->SoundPlay("Resources/bgm/title.mp3", 10000);
+	bgm_->SetVolume(0.6f);
 
 	cameraManager_->GetActiveCamera()->GetViewProjection().Initialize();
 
@@ -311,7 +319,7 @@ void TitleScene::Update() {
 		}
 		
 
-			if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
+			if (sequenceState_ == SequenceState::Done && Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 				if (selectNum != 0) {
 
 				
@@ -424,12 +432,16 @@ void TitleScene::select() {
 	Vector2 stickInput = Input::GetInstance()->GetLeftStick();
 
 		if (stickInput.x > 0.5f && stickReleased_) {
+			se1_->SoundPlay("Resources/se/電子レンジ_[cut_0sec].mp3", 0);
+			se1_->SetVolume(0.5f);
 			selectNum++;
 			stickReleased_ = false;
 			mvTransforms_[5]->transform.rotate.z += 0.4f;
 		}
 
 		else if (stickInput.x < -0.5f && stickReleased_) {
+			se1_->SoundPlay("Resources/se/電子レンジ_[cut_0sec].mp3", 0);
+			se1_->SetVolume(0.5f);
 			selectNum--;
 			stickReleased_ = false;
 			mvTransforms_[5]->transform.rotate.z -= 0.4f;
@@ -448,7 +460,8 @@ void TitleScene::select() {
 	if (selectNum == 1) {
 			textTransform_->transform.translate = { 1.0f, 0.1f , 0.0f };
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-			se1_->SoundPlay("Resources/se/47.mp3", 0);
+			se1_->SoundPlay("Resources/se/電子レンジ_[cut_0sec].mp3", 0);
+			se1_->SetVolume(0.5f);
 			mvTransforms_[4]->transform.translate.z -= 0.04f;
 			tutorial = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = false;
@@ -459,7 +472,8 @@ void TitleScene::select() {
 	if (selectNum == 2) {
 			textTransform_->transform.translate = { 1.0f, 0.2f , 0.0f };
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-			se1_->SoundPlay("Resources/se/47.mp3", 0);
+			se1_->SoundPlay("Resources/se/電子レンジ_[cut_0sec].mp3", 0);
+			se1_->SetVolume(0.5f);
 			mvTransforms_[4]->transform.translate.z -= 0.04f;
 			easy = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = true;
@@ -470,7 +484,8 @@ void TitleScene::select() {
 	if (selectNum == 3) {
 			textTransform_->transform.translate = { 1.0f, 0.2f , 0.0f };
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-			se1_->SoundPlay("Resources/se/47.mp3", 0);
+			se1_->SoundPlay("Resources/se/電子レンジ_[cut_0sec].mp3", 0);
+			se1_->SetVolume(0.5f);
 			mvTransforms_[4]->transform.translate.z -= 0.04f;
 			nomal = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = false;
@@ -481,7 +496,8 @@ void TitleScene::select() {
 	if (selectNum == 4) {
 			textTransform_->transform.translate = { 1.0f, 0.2f , 0.0f };
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-			se1_->SoundPlay("Resources/se/47.mp3", 0);
+			se1_->SoundPlay("Resources/se/電子レンジ_[cut_0sec].mp3", 0);
+			se1_->SetVolume(0.5f);
 			mvTransforms_[4]->transform.translate.z -= 0.04f;
 			hard = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = false;
@@ -501,12 +517,15 @@ void TitleScene::UpdateSequence() {
 		if (dishAngle_ >= 6.28f) {
 			mvTransforms_[2]->transform.rotate.y = 6.28f;
 			tin_->SoundPlay("Resources/se/tin.mp3", 0);
+			tin_->SetVolume(1.3f);
 			sequenceState_ = SequenceState::RotateDoor;
 		}
 		break;
 
 	case SequenceState::RotateDoor:
+		
 		if (mvTransforms_[1]->transform.rotate.y < 2.7f) {
+			
 			mvTransforms_[1]->transform.rotate.y += 0.05f;
 		} else {
 			mvTransforms_[1]->transform.rotate.y = 2.7f;

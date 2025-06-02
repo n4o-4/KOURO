@@ -368,12 +368,14 @@ void GameScene::Update() {
 
 					player_->GetBullets().clear();
 					player_->GetMachineGunBullets().clear();
+					player_->StopMachineGunSound();
 
 					LoadEnemyPopData(waveIndex_);
 					waveReady_ = false;
 				} else {
 					player_->GetBullets().clear();
 					player_->GetMachineGunBullets().clear();
+					player_->StopMachineGunSound();
 					isGameClear_ = true;
 				}
 			} else if (nomal_) {
@@ -384,12 +386,14 @@ void GameScene::Update() {
 
 					player_->GetBullets().clear();
 					player_->GetMachineGunBullets().clear();
+					player_->StopMachineGunSound();
 
 					LoadEnemyPopData(waveIndex_);
 					waveReady_ = false;
 				} else {
 					player_->GetBullets().clear();
 					player_->GetMachineGunBullets().clear();
+					player_->StopMachineGunSound();
 					isGameClear_ = true;
 				}
 			} else if (hard_) {
@@ -400,12 +404,14 @@ void GameScene::Update() {
 
 					player_->GetBullets().clear();
 					player_->GetMachineGunBullets().clear();
+					player_->StopMachineGunSound();
 
 					LoadEnemyPopData(waveIndex_);
 					waveReady_ = false;
 				} else {
 					player_->GetBullets().clear();
 					player_->GetMachineGunBullets().clear();
+					player_->StopMachineGunSound();
 					isGameClear_ = true;
 				}
 			}
