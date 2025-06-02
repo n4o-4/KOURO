@@ -328,7 +328,7 @@ void TitleScene::Update() {
 
 		if (fade_->IsFinished()) {
 
-			if (selectNum == 0) {
+			if (selectNum == 1) {
 
 				SceneManager::GetInstance()->ChangeScene("TUTORIAL");
 
