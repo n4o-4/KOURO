@@ -20,6 +20,7 @@
 #include "SkyDome.h"
 #include "SkyTypeEnemy.h"
 #include "Spawn.h"
+#include <queue> // 追加
 #include <random>
 
 #include <algorithm>
@@ -119,6 +120,15 @@ private: // 静的メンバ関数
 
 	std::string currentSpawnType_;
 
+	// フレーム分散召喚用の新しいメンバ変数
+	struct DelayedSpawnData {
+		Vector3 position;
+		int hp;
+		std::string type;
+	};
+	std::queue<DelayedSpawnData> delayedSpawnQueue_;
+	int spawnPerFrame_ = 1; // 1フレームあたりの最大召喚数
+
 	void AvoidOverlap(std::vector<BaseEnemy *> &allEnemies, float avoidRadius);
 
 	// private: //csv
@@ -157,6 +167,4 @@ private:
 	std::unique_ptr<Audio> easyBGM_ = nullptr;
 	std::unique_ptr<Audio> nomalBGM_ = nullptr;
 	std::unique_ptr<Audio> hardBGM_ = nullptr;
-
-
 };
