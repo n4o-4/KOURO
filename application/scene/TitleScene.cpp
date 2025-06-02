@@ -147,7 +147,7 @@ void TitleScene::Initialize()
 	AudioManager::GetInstance()->Initialize();
 	AudioManager::GetInstance()->SoundLoadFile("Resources/bgm/title.mp3");
 	AudioManager::GetInstance()->SoundLoadFile("Resources/se/tin.mp3");
-	AudioManager::GetInstance()->SoundLoadFile("Resources/se/電子レンジ_[cut_0sec].mp3");
+	AudioManager::GetInstance()->SoundLoadFile("Resources/se/select.mp3");
 	AudioManager::GetInstance()->SoundLoadFile("Resources/se/電子レンジを開ける.mp3");
 	AudioManager::GetInstance()->SoundLoadFile("Resources/se/電子レンジを閉める.mp3");
 
@@ -460,7 +460,7 @@ void TitleScene::select() {
 	if (selectNum == 1) {
 			textTransform_->transform.translate = { 1.0f, 0.1f , 0.0f };
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-			se1_->SoundPlay("Resources/se/電子レンジ_[cut_0sec].mp3", 0);
+			se1_->SoundPlay("Resources/se/select.mp3", 0);
 			se1_->SetVolume(0.5f);
 			mvTransforms_[4]->transform.translate.z -= 0.04f;
 			tutorial = true;
@@ -472,7 +472,7 @@ void TitleScene::select() {
 	if (selectNum == 2) {
 			textTransform_->transform.translate = { 1.0f, 0.2f , 0.0f };
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-			se1_->SoundPlay("Resources/se/電子レンジ_[cut_0sec].mp3", 0);
+			se1_->SoundPlay("Resources/se/select.mp3", 0);
 			se1_->SetVolume(0.5f);
 			mvTransforms_[4]->transform.translate.z -= 0.04f;
 			easy = true;
@@ -484,7 +484,7 @@ void TitleScene::select() {
 	if (selectNum == 3) {
 			textTransform_->transform.translate = { 1.0f, 0.2f , 0.0f };
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-			se1_->SoundPlay("Resources/se/電子レンジ_[cut_0sec].mp3", 0);
+			se1_->SoundPlay("Resources/se/select.mp3", 0);
 			se1_->SetVolume(0.5f);
 			mvTransforms_[4]->transform.translate.z -= 0.04f;
 			nomal = true;
@@ -496,7 +496,7 @@ void TitleScene::select() {
 	if (selectNum == 4) {
 			textTransform_->transform.translate = { 1.0f, 0.2f , 0.0f };
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
-			se1_->SoundPlay("Resources/se/電子レンジ_[cut_0sec].mp3", 0);
+			se1_->SoundPlay("Resources/se/select.mp3", 0);
 			se1_->SetVolume(0.5f);
 			mvTransforms_[4]->transform.translate.z -= 0.04f;
 			hard = true;

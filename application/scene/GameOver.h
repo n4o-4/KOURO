@@ -43,6 +43,7 @@ private:
 
 	std::unique_ptr<Audio> overBGM_ = nullptr;
 	std::unique_ptr<Audio> mwTinSE_ = nullptr;
+	std::unique_ptr<Audio> mwSE_ = nullptr;
 
 	// light class
 	std::unique_ptr<DirectionalLight> directionalLight = nullptr;
