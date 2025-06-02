@@ -222,14 +222,17 @@ void TutorialScene::Update()
 		// 地面
 		ground_->Update();
 
-
+		
 
 		//---------------------------------------
 		// ロックオンの処理追加
 		if (lockOnSystem_ && tutorialPhase_ == TutorialPhase::kPlay) {
 			lockOnSystem_->SetPosition(player_->GetPosition());
+
+			// カメラがFollowCameraの場合、視点方向を設定
 			auto activeCamera = cameraManager_->GetActiveCamera();
 			if (auto followCamera = dynamic_cast<FollowCamera*>(activeCamera)) {
+				// カメラからの視点方向をロックオンシステムに設定
 				lockOnSystem_->SetViewDirection(followCamera->GetForwardDirection());
 			}
 			std::vector<BaseEnemy*> allTargets;
@@ -239,8 +242,15 @@ void TutorialScene::Update()
 			for (const auto& spawn : spawns_) {
 				allTargets.push_back(spawn.get());
 			}
+
 			lockOnSystem_->DetectEnemiesRaw(allTargets);
 			lockOnSystem_->UpdateRaw(allTargets);
+			//// 敵の検出
+			// lockOnSystem_->DetectEnemies(enemies_);
+			// lockOnSystem_->DetectEnemies(spawns_);
+			//// ロックオン更新
+			// lockOnSystem_->Update(enemies_);
+			// lockOnSystem_->Update(spawns_);
 		}
 
 
@@ -286,14 +296,14 @@ void TutorialScene::Update()
 		//----------------------------------------
 		// Tutorialフェーズ
 		switch (tutorialPhase_) {
-			// 説明フェーズ
+		// 説明フェーズ
 		case TutorialPhase::kExplain:
 
 			//playerが動いたらtrue
 
 			CheckMissions();
 
-
+			
 			for (int i = 0; i < 6; ++i) {
 				if (!missionFlags_[i]) {
 					allTrue = false;
@@ -325,7 +335,7 @@ void TutorialScene::Update()
 				tutorialPhase_ = TutorialPhase::kPlay;
 			}*/
 			break;
-			// プレイフェーズ
+		// プレイフェーズ
 		case TutorialPhase::kPlay:
 
 			// 敵リスト
@@ -581,7 +591,7 @@ void TutorialScene::Draw()
 		//========================================
 		// HUD
 		if (tutorialPhase_ == TutorialPhase::kPlay) {
-			hud_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
+		hud_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
 		}
 
 		DrawForegroundSprite();

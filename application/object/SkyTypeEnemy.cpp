@@ -3,8 +3,8 @@
 #include <PlayerMachineGun.h>
 
 void SkyTypeEnemy::Initialize() {
-	ModelManager::GetInstance()->LoadModel("enemy/bat/bat.obj");
-	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/bat/bat.obj"));
+	ModelManager::GetInstance()->LoadModel("enemy/Iron/Iron.obj");
+	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/Iron/Iron.obj"));
 
 	worldTransform_->transform.scale = (Vector3(modelScale_, modelScale_, modelScale_));
 

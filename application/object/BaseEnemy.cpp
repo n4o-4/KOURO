@@ -36,6 +36,10 @@ void BaseEnemy::Initialize(Model *model) {
 	particleEmitter_->SetLifeTimeRange(ParticleManager::Range({1.0f, 1.5f}));
 	particleEmitter_->SetVelocityRange(ParticleManager::Vec3Range({-10.0f, -10.0f, -10.0f}, {10.0f, 10.0f, 10.0f}));
 
+	particleEmitter_->SetFinishColorRange({ { 0.56f,0.0f,0.0f,0.0f }, { 1.0f,0.37f,0.19f,0.0f } });
+
+	ParticleManager::GetInstance()->GetParticleGroup("missileSmoke")->enableBillboard = true;
+
 	avoidanceVelocity_ = {0.0f, 0.0f, 0.0f};
 	otherEnemies_ = nullptr;
 }

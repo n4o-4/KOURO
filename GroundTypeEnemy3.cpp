@@ -6,8 +6,8 @@
 #include <cmath>
 
 void GroundTypeEnemy3::Initialize() {
-	ModelManager::GetInstance()->LoadModel("enemy/chair/chair.obj");
-	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/chair/chair.obj"));
+	ModelManager::GetInstance()->LoadModel("enemy/cp/cp.obj");
+	BaseEnemy::Initialize(ModelManager::GetInstance()->FindModel("enemy/cp/cp.obj"));
 
 	worldTransform_->transform.scale = (Vector3(modelScale_, modelScale_, modelScale_));
 

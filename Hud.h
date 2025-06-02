@@ -1,10 +1,10 @@
 #pragma once
-#include "LineManager.h"
 #include "FollowCamera.h"
-#include "Player.h"
+#include "LineManager.h"
 #include "LockOn.h"
 #include "Matrixs.h"
 #include "MyMath.h"
+#include "Player.h"
 
 ///=============================================================================
 ///						Hudクラス
@@ -29,10 +29,8 @@ public:
 
 	// 敵コンテナとスポーンブロックの設定
 	void SetEnemiesAndSpawns(const std::vector<std::unique_ptr<BaseEnemy>> *enemies,
-		const std::vector<std::unique_ptr<BaseEnemy>> *spawns);
+							 const std::vector<std::unique_ptr<BaseEnemy>> *spawns);
 
-///=============================================================================
-///                        静的メンバ関数
 private:
 	// 照準の描画
 	void DrawCrosshair(ViewProjection viewProjection);
@@ -40,11 +38,11 @@ private:
 	// ロックオンの描画
 	void DrawLockOn(ViewProjection viewProjection);
 
-	// レーダーディスプレイの描画
-	void DrawRadarDisplay(ViewProjection viewProjection);
-
-	// 3D球体ミニマップの描画 - このメソッドを追加
+	// 3D球体ミニマップの描画
 	void DrawSphereMap(ViewProjection viewProjection);
+
+	// プレイヤーステータスバーの描画
+	void DrawPlayerStatusBars(ViewProjection viewProjection);
 
 	// カメラに正対する円を描画する補助関数
 	void DrawFacingCircle(const Vector3 &center, float radius, const Vector4 &color, int segments, const Vector3 &cameraForward);
@@ -52,121 +50,117 @@ private:
 	// カメラに正対する四角形を描画する補助関数
 	void DrawFacingSquare(const Vector3 &center, float size, const Vector4 &color, const Vector3 &cameraRight, const Vector3 &cameraUp);
 
-	// カメラに正対する進行度円弧を描画する補助関数
-	void DrawFacingProgressArc(const Vector3 &center, float radius, float startAngle, float endAngle,
-		const Vector4 &color, int segments, const Vector3 &cameraRight, const Vector3 &cameraUp);
-
-// カメラに正対する多角形を描画する補助関数
+	// カメラに正対する多角形を描画する補助関数
 	void DrawFacingPolygon(const Vector3 &center, float size, int segments, const Vector4 &color, const Vector3 &cameraForward);
 
 	// カメラに正対する三角形を描画する補助関数
 	void DrawFacingTriangle(const Vector3 &center, float size, const Vector4 &color, const Vector3 &cameraForward);
 
+	// 2Dステータスバーを描画する補助関数
+	void DrawStatusBar(const Vector3 &center, float width, float height, const Vector4 &color,
+					   const Vector3 &cameraRight, const Vector3 &cameraUp);
+
+	// ステータスバーの背景枠を描画する補助関数
+	void DrawStatusBarFrame(const Vector3 &center, float width, float height, const Vector4 &color,
+							const Vector3 &cameraRight, const Vector3 &cameraUp);
+
 	// 3D球体ミニマップ関連の関数
-	void DrawSphereGrid(const Vector3 &center, float radius, const Vector4 &color, const Vector3 &cameraForward);
 	Vector3 WorldToSpherePosition(const Vector3 &worldPos, const Vector3 &sphereCenter, float radius, float maxRange);
 	void Draw3DTriangle(const Vector3 &center, float size, const Vector4 &color, const Vector3 &direction);
 	void Draw3DHexagon(const Vector3 &center, float size, const Vector4 &color, const Vector3 &direction);
-
-	
+	void DrawSphereGrid(const Vector3 &center, float radius, const Vector4 &color);
 
 	///=============================================================================
 	///                        メンバ変数
 private:
-// 各種ポインタ
+	// 各種ポインタ
 	FollowCamera *followCamera_ = nullptr;
-	// プレイヤー
 	Player *player_ = nullptr;
-	// ロックオンシステム
 	LockOn *lockOnSystem_ = nullptr;
-	// ラインマネージャ
 	LineManager *lineManager_ = nullptr;
-	// 敵のリスト
 	const std::vector<std::unique_ptr<BaseEnemy>> *enemies_ = nullptr;
-	// スポーンのリスト
 	const std::vector<std::unique_ptr<BaseEnemy>> *spawns_ = nullptr;
 
-	// 数学定数
+	// 数学定数  
 	static constexpr float kPi = 3.14159f;
 	static constexpr float kTwoPi = 2.0f * kPi;
 
-	// 戦闘モード
-	bool isCombatMode_ = false;
+	// 戦闘モード制御
+	bool isCombatMode_ = false; // HUD全体の表示/非表示を制御
 
-	// HUDの基本色設定
-	Vector4 hudBaseColor_ = { 0.0f, 1.0f, 0.4f, 0.9f };     // 基本色（緑）
-	Vector4 hudAccentColor_ = { 0.2f, 1.0f, 0.8f, 0.9f };   // アクセント色（シアン系）
-	Vector4 hudEnemyColor_ = { 1.0f, 0.3f, 0.0f, 0.9f };    // 敵標識色（赤橙）
-	Vector4 hudAlertColor_ = { 1.0f, 0.8f, 0.0f, 0.9f };    // 警告色（黄色）
-	Vector4 hudLockColor_ = { 1.0f, 0.0f, 0.0f, 0.9f };     // ロック完了色（赤）
+	// HUDの基本色設定（UI全体の統一感を保つ）
+	Vector4 hudBaseColor_ = {0.0f, 1.0f, 0.4f, 0.9f};	// メイン色（緑系）
+	Vector4 hudAccentColor_ = {0.2f, 1.0f, 0.8f, 0.9f}; // アクセント色（シアン系）
+	Vector4 hudEnemyColor_ = {1.0f, 0.3f, 0.0f, 0.9f};	// 敵マーカー色（赤橙）
+	Vector4 hudAlertColor_ = {1.0f, 0.8f, 0.0f, 0.9f};	// 警告色（黄色）
+	Vector4 hudLockColor_ = {1.0f, 0.0f, 0.0f, 0.9f};	// ロック完了色（赤）
 
-	// 照準関連
-	float crosshairSize_ = 2.5f;                         // 照準の基本サイズ
-	Vector4 crosshairColor_ = hudBaseColor_;             // 照準色を基本色に統一
-	float crosshairDistance_ = 64.0f;                    // プレイヤーから照準までの距離
-	float crosshairGap_ = 8.0f;                          // 中心からのギャップを拡大
-	float crosshairCenterRadius_ = 0.8f;                 // 中央の円の半径を小さく
-	int crosshairCircleSegments_ = 16;                   // 中央の円の分割数
+	// 照準（クロスヘア）関連設定
+	float crosshairSize_ = 2.5f;			 // 照準の基本サイズ
+	Vector4 crosshairColor_ = hudBaseColor_; // 照準の色
+	float crosshairDistance_ = 64.0f;		 // プレイヤーから照準までの表示距離
+	float crosshairGap_ = 8.0f;				 // 中心からマーカーまでのギャップ
+	float crosshairCenterRadius_ = 0.8f;	 // 中央円の半径
+	int crosshairCircleSegments_ = 16;		 // 円の分割数（滑らかさ）
 
-	// ロックオン関連
-	float lockOnSize_ = 5.0f;                           // ロックオン表示の基本サイズ
-	Vector4 lockOnColor_ = hudBaseColor_;               // 基本色（緑）
+	// ロックオン表示関連設定
+	float lockOnSize_ = 5.0f;						   // ロックオンマーカーの基本サイズ
+	Vector4 lockOnColor_ = hudLockColor_;			   // ロックオンマーカーの基本色
+	Vector4 preciseLockonColor_ = hudLockColor_;	   // 精密ロック時の色（赤）
+	Vector4 simpleLockonColor_ = hudAlertColor_;	   // 簡易ロック時の色（黄）
+	Vector4 noLockonColor_ = {0.5f, 0.8f, 0.5f, 0.7f}; // ロックなし時の色（薄緑）
+	Vector4 progressColor_ = hudAccentColor_;		   // ロック進行度の色（シアン）
+	float preciseLockonSizeRatio_ = 0.6f;			   // 精密ロック時のサイズ倍率
+	float simpleLockonSizeRatio_ = 0.4f;			   // 簡易ロック時のサイズ倍率
+	float noLockonSizeRatio_ = 0.2f;				   // ロックなし時のサイズ倍率
+	float lockOnRotation_ = 0.0f;					   // ロックオン表示の回転角度
+	float lockOnRotationSpeed_ = 0.02f;				   // ロックオン表示の回転速度
 
-	// ロックオンのタイプ別設定
-	Vector4 preciseLockonColor_ = hudLockColor_;        // 精密ロックオン色（赤）
-	Vector4 simpleLockonColor_ = hudAlertColor_;        // 簡易ロックオン色（黄）
-	Vector4 noLockonColor_ = { 0.5f, 0.8f, 0.5f, 0.7f };  // ロックオンなし色（薄緑）
-	Vector4 progressColor_ = hudAccentColor_;           // 進捗表示色（シアン）
+	// 3D球体ミニマップ関連設定
+	bool use3DSphereMap_ = true;						   // 3D球体ミニマップの使用フラグ
+	float sphereMapRadius_ = 6.0f;						   // 球体の半径
+	float sphereMapPositionX_ = 13.0f;					   // 球体の表示位置X（右側）
+	float sphereMapPositionY_ = -5.0f;					   // 球体の表示位置Y（下側）
+	float sphereMapPositionZ_ = 30.0f;					   // 球体の表示位置Z（前方）
+	float sphereMapRange_ = 1000.0f;					   // ミニマップの検出範囲
+	float sphereObjectScale_ = 0.4f;					   // 球体上のオブジェクトサイズ
+	Vector4 sphereMapFovColor_ = {0.5f, 0.8f, 1.0f, 0.3f}; // 視界扇形の色
+	float sphereMapFov_ = 60.0f * (kPi / 180.0f);		   // 視界角度（ラジアン）
+	Vector4 enemyDotColor_ = hudEnemyColor_;			   // 敵ドットの色
+	Vector4 spawnBlockColor_ = hudAlertColor_;			   // スポーンブロックの色
+	Vector4 sphereGridColor_ = {0.0f, 0.8f, 0.4f, 0.6f};   // 球体グリッドの色
+	int sphereLongitudeCount_ = 8;						   // 経線の数（縦線）
+	int sphereLatitudeCount_ = 4;						   // 緯線の数（横線）
 
-	float preciseLockonSizeRatio_ = 0.6f;     // 精密ロックオンのサイズ倍率
-	float preciseLockonInnerRatio_ = 0.2f;    // 精密ロックオン内側円の比率
-	float simpleLockonSizeRatio_ = 0.4f;      // 簡易ロックオンの矩形サイズ倍率
-	float noLockonSizeRatio_ = 0.2f;          // ロックオンなしの円サイズ倍率
+	// プレイヤーステータスバー基本設定
+	float screenDistance_ = 65.0f; // HUD表示距離（プレイヤーからの距離）
+	float statusBarWidth_ = 14.0f; // ステータスバーの幅
+	float statusBarHeight_ = 0.8f; // ステータスバーの高さ
 
-	// ロックオン回転
-	float lockOnRotation_ = 0.0f;          // 回転角度
-	float lockOnRotationSpeed_ = 0.02f;    // 回転速度（少し遅く）
+	// ブーストゲージ位置設定（画面左下）
+	float boostBarOffsetX_ = -35.0f;	   // ブーストバーのX位置（左側）
+	float boostBarOffsetY_ = -18.0f;	   // ブーストバーのY位置（下側）
+	float quickBoostChargeSpacing_ = 1.5f; // クイックブーストチャージとの間隔
+	float quickBoostChargeHeight_ = 0.4f;  // クイックブーストチャージの高さ
+	float rechargeSpacing_ = 1.0f;		   // リチャージバーとの間隔
+	float rechargeBarHeight_ = 0.3f;	   // リチャージバーの高さ
 
-	// ミニマップ表示関連
-	bool showMiniMap_ = true;                       // ミニマップを表示するか
-	Vector4 enemyDotColor_ = hudEnemyColor_;        // 敵の色
-	Vector4 spawnBlockColor_ = hudAlertColor_;      // スポーンブロックの色
+	// 武器ゲージ位置設定（画面右下）
+	float mgBarOffsetX_ = 0.0f;			 // マシンガンバーのX位置（右側）
+	float mgBarOffsetY_ = -18.0f;		 // マシンガンバーのY位置（下側）
+	float weaponCooldownSpacing_ = 1.2f; // 武器クールダウンとの間隔
+	float weaponCooldownHeight_ = 0.5f;	 // 武器クールダウンの高さ
+	float missileBarSpacing_ = -3.5f;	 // ミサイルバーとマシンガンバーの間隔
+	float missileReadySpacing_ = 1.0f;	 // ミサイル準備完了表示との間隔
+	float missileReadyHeight_ = 0.3f;	 // ミサイル準備完了表示の高さ
 
-	// レーダー表示関連（追加）
-	bool showRadar_ = true;                       // レーダーを表示するか
-	bool rotateWithCamera_ = false;                // カメラの向きに合わせてレーダーを回転するか
-	bool use3DSphereMap_ = true;                  // 3D球体ミニマップを使用するか
-	bool useCircularRadar_ = true;                // 円形レーダーを使用するか
-
-	// レーダーの表示設定（追加）
-	float radarSize_ = 5.0f;                     // レーダーのサイズ
-	float radarPositionX_ = -15.0f;               // レーダーのX座標位置
-	float radarPositionY_ = 10.0f;                // レーダーのY座標位置
-	float radarRange_ = 100.0f;                   // レーダーの検出範囲
-	float radarRotation_ = 0.0f;                  // レーダーの回転角
-	float radarInnerCircleRatio_ = 0.5f;          // 内側の円の比率
-	int radarCircleSegments_ = 32;                // 円の分割数
-	float radarSweepSpeed_ = 0.03f;               // スイープの速度
-	float radarSweepAngle_ = 0.0f;                // スイープの角度
-	bool showRadarSweep_ = true;                  // スイープを表示するか
-	Vector4 radarBorderColor_ = { 0.0f, 1.0f, 0.3f, 0.7f }; // レーダーの枠線の色
-	Vector4 radarGridColor_ = { 0.0f, 1.0f, 0.3f, 0.4f };   // レーダーのグリッドの色
-	Vector4 radarSweepColor_ = { 0.0f, 1.0f, 0.3f, 0.9f };  // レーダーのスイープの色
-	Vector4 radiationLineColor_ = { 0.0f, 1.0f, 0.3f, 0.3f }; // 放射線の色
-	float enemyDotSize_ = 0.4f;                   // 敵のドットサイズ
-	float spawnBlockSize_ = 0.2f;                 // スポーンブロックのサイズ
-
-	// 3D球体ミニマップ関連
-	float sphereMapRadius_ = 6.0f;          // 球体の半径を適切に設定
-	float sphereMapPositionX_ = 10.0f;       // 右側に配置（値を大きく）
-	float sphereMapPositionY_ = -6.0f;       // 上側に配置（値を大きく）
-	float sphereMapPositionZ_ = 27.0f;        // Z軸は0に設定
-	float sphereMapRange_ = 512.0f;          // 検出範囲
-	int sphereLongitudeCount_ = 6;           // 経線の数
-	int sphereLatitudeCount_ = 3;            // 緯線の数
-	float sphereRotationSpeed_ = 0.000f;     // 回転速度
-	float sphereRotationY_ = 0.0f;           // Y軸周りの回転
-	float sphereObjectScale_ = 0.4f;         // オブジェクトのスケール
-	Vector4 sphereMapColor_ = { 0.0f, 0.8f, 0.4f, 0.7f }; // 球体マップの色を追加
-	Vector4 sphereMapLockColor_ = { 1.0f, 0.2f, 0.2f, 0.7f }; // ロック時の色を追加
+	// ゲージ色設定（各種ステータス表示）
+	Vector4 boostGaugeColor_ = {0.2f, 0.8f, 1.0f, 0.8f};	   // ブーストゲージの色（青系）
+	Vector4 quickBoostChargeColor_ = {1.0f, 1.0f, 0.2f, 0.9f}; // クイックブーストチャージの色（黄色）
+	Vector4 weaponReadyColor_ = {0.2f, 1.0f, 0.5f, 0.8f};	   // 武器準備完了時の色（緑）
+	Vector4 weaponReloadColor_ = {1.0f, 0.6f, 0.2f, 0.7f};	   // 武器リロード中の色（橙）
+	Vector4 weaponHeatColor_ = {1.0f, 0.8f, 0.0f, 0.8f};	   // 武器発熱時の色（黄）
+	Vector4 overheatColor_ = {1.0f, 0.2f, 0.1f, 0.9f};		   // オーバーヒート時の色（赤）
+	Vector4 gaugeBorderColor_ = {0.3f, 0.6f, 0.3f, 0.6f};	   // ゲージ背景枠の色
+	float gaugeBorderWidth_ = 0.1f;							   // ゲージ背景枠の幅
 };
