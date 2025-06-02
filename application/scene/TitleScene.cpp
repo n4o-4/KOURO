@@ -432,7 +432,7 @@ void TitleScene::select() {
 	Vector2 stickInput = Input::GetInstance()->GetLeftStick();
 
 		if (stickInput.x > 0.5f && stickReleased_) {
-			se1_->SoundPlay("Resources/se/電子レンジ_[cut_0sec].mp3", 0);
+			se1_->SoundPlay("Resources/se/select.mp3", 0);
 			se1_->SetVolume(0.5f);
 			selectNum++;
 			stickReleased_ = false;
@@ -440,7 +440,7 @@ void TitleScene::select() {
 		}
 
 		else if (stickInput.x < -0.5f && stickReleased_) {
-			se1_->SoundPlay("Resources/se/電子レンジ_[cut_0sec].mp3", 0);
+			se1_->SoundPlay("Resources/se/select.mp3", 0);
 			se1_->SetVolume(0.5f);
 			selectNum--;
 			stickReleased_ = false;
