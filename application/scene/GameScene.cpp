@@ -1109,90 +1109,121 @@ void GameScene::LoadEnemyPopData(int index) {
 ///--------------------------------------------------------------
 ///                        敵の出現データの更新
 void GameScene::UpdateEnemyPopCommands() {
-	if (isWaiting_) {
-		--waitTimer_;
-		if (--waitTimer_ <= 0) {
-			isWaiting_ = false;
-		}
-		return;
-	}
-	std::string line;
+    // まず、遅延召喚キューから敵を召喚
+    int spawnedThisFrame = 0;
+    while (!delayedSpawnQueue_.empty() && spawnedThisFrame < spawnPerFrame_) {
+        DelayedSpawnData spawnData = delayedSpawnQueue_.front();
+        delayedSpawnQueue_.pop();
+        
+        // 実際の召喚処理
+        if (spawnData.type == "KUMO") {
+            SpawnEnemyKumo(spawnData.position, spawnData.hp);
+        } else if (spawnData.type == "BAT") {
+            SpawnEnemyBat(spawnData.position, spawnData.hp);
+        } else if (spawnData.type == "BOMB") {
+            SpawnEnemyBomb(spawnData.position, spawnData.hp);
+        } else if (spawnData.type == "CHAIR") {
+            SpawnEnemyChair(spawnData.position, spawnData.hp);
+        } else if (spawnData.type == "WM") {
+            SpawnEnemyWM(spawnData.position, spawnData.hp);
+        } else {
+            SpawnEnemy(spawnData.position);
+        }
+        
+        spawnedThisFrame++;
+    }
+    
+    // キューに残りがある場合は次のフレームに持ち越し
+    if (!delayedSpawnQueue_.empty()) {
+        return;
+    }
 
-	while (getline(enemyPopCommands, line)) {
+    if (isWaiting_) {
+        --waitTimer_;
+        if (--waitTimer_ <= 0) {
+            isWaiting_ = false;
+        }
+        return;
+    }
+    std::string line;
 
-		std::istringstream line_stream(line);
+    while (getline(enemyPopCommands, line)) {
 
-		std::string word;
+        std::istringstream line_stream(line);
 
-		getline(line_stream, word, ',');
+        std::string word;
 
-		if (word.find("//") == 0) {
-			continue;
-		}
-		if (word.find("POP") == 0) {
-			getline(line_stream, word, ',');
-			float x = (float)std::atof(word.c_str());
+        getline(line_stream, word, ',');
 
-			getline(line_stream, word, ',');
-			float y = (float)std::atof(word.c_str());
+        if (word.find("//") == 0) {
+            continue;
+        }
+        if (word.find("POP") == 0) {
+            getline(line_stream, word, ',');
+            float x = (float)std::atof(word.c_str());
 
-			getline(line_stream, word, ',');
-			float z = (float)std::atof(word.c_str());
-			SpawnSet(Vector3(x, y, z));
+            getline(line_stream, word, ',');
+            float y = (float)std::atof(word.c_str());
 
-			getline(line_stream, word, ',');
-			int hp = std::stoi(word);
+            getline(line_stream, word, ',');
+            float z = (float)std::atof(word.c_str());
+            SpawnSet(Vector3(x, y, z));
 
-			getline(line_stream, word, ',');
-			int num = std::stoi(word);
+            getline(line_stream, word, ',');
+            int hp = std::stoi(word);
 
-			getline(line_stream, word, ',');
-			currentSpawnType_ = word;
+            getline(line_stream, word, ',');
+            int num = std::stoi(word);
 
-			float spawnRangeX = 10.0f;
-			float spawnRangeY = 5.0f;
-			float spawnRangeZ = 10.0f;
+            getline(line_stream, word, ',');
+            currentSpawnType_ = word;
 
-			std::uniform_real_distribution<float> randomX(x - spawnRangeX, x + spawnRangeX);
-			std::uniform_real_distribution<float> randomY(y - spawnRangeY, y + spawnRangeY);
-			std::uniform_real_distribution<float> randomZ(z - spawnRangeZ, z + spawnRangeZ);
+            float spawnRangeX = 10.0f;
+            float spawnRangeY = 5.0f;
+            float spawnRangeZ = 10.0f;
 
-			for (int i = 0; i < num; i++) {
-				if (currentSpawnType_ == "KUMO") {
-					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
-					SpawnEnemyKumo(randomPosition, hp);
-				} else if (currentSpawnType_ == "BAT") {
-					Vector3 randomPosition(randomX(gen), randomY(gen), randomZ(gen));
-					SpawnEnemyBat(randomPosition, hp);
-				} else if (currentSpawnType_ == "BOMB") {
-					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
-					SpawnEnemyBomb(randomPosition, hp);
-				} else if (currentSpawnType_ == "CHAIR") {
-					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
-					SpawnEnemyChair(randomPosition, hp);
-				} else if (currentSpawnType_ == "WM") {
-					Vector3 randomPosition(randomX(gen), y, randomZ(gen));
-					SpawnEnemyWM(randomPosition, hp);
-				} else {
-					SpawnEnemy(Vector3(x, y, z));
-				}
-			}
+            std::uniform_real_distribution<float> randomX(x - spawnRangeX, x + spawnRangeX);
+            std::uniform_real_distribution<float> randomY(y - spawnRangeY, y + spawnRangeY);
+            std::uniform_real_distribution<float> randomZ(z - spawnRangeZ, z + spawnRangeZ);
 
-		} else if (word.find("WAIT") == 0) {
+            // 敵をキューに追加（即座に召喚せず）
+            for (int i = 0; i < num; i++) {
+                DelayedSpawnData spawnData;
+                spawnData.hp = hp;
+                spawnData.type = currentSpawnType_;
+                
+                if (currentSpawnType_ == "KUMO") {
+                    spawnData.position = Vector3(randomX(gen), y, randomZ(gen));
+                } else if (currentSpawnType_ == "BAT") {
+                    spawnData.position = Vector3(randomX(gen), randomY(gen), randomZ(gen));
+                } else if (currentSpawnType_ == "BOMB") {
+                    spawnData.position = Vector3(randomX(gen), y, randomZ(gen));
+                } else if (currentSpawnType_ == "CHAIR") {
+                    spawnData.position = Vector3(randomX(gen), y, randomZ(gen));
+                } else if (currentSpawnType_ == "WM") {
+                    spawnData.position = Vector3(randomX(gen), y, randomZ(gen));
+                } else {
+                    spawnData.position = Vector3(x, y, z);
+                }
+                
+                delayedSpawnQueue_.push(spawnData);
+            }
 
-			getline(line_stream, word, ',');
+        } else if (word.find("WAIT") == 0) {
 
-			int32_t waitTime = atoi(word.c_str());
+            getline(line_stream, word, ',');
 
-			isWaiting_ = true;
-			waitTimer_ = waitTime;
+            int32_t waitTime = atoi(word.c_str());
 
-			break;
-		}
-	}
-	if (enemyPopCommands.eof()) {
-		waveReady_ = true;
-	}
+            isWaiting_ = true;
+            waitTimer_ = waitTime;
+
+            break;
+        }
+    }
+    if (enemyPopCommands.eof()) {
+        waveReady_ = true;
+    }
 }
 ///--------------------------------------------------------------
 ///                        敵の出現
