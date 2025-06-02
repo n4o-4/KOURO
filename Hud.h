@@ -44,6 +44,9 @@ private:
 	// プレイヤーステータスバーの描画
 	void DrawPlayerStatusBars(ViewProjection viewProjection);
 
+	// プレイヤーヘルスバーの描画
+	void DrawPlayerHealthBar(ViewProjection viewProjection);
+
 	// カメラに正対する円を描画する補助関数
 	void DrawFacingCircle(const Vector3 &center, float radius, const Vector4 &color, int segments, const Vector3 &cameraForward);
 
@@ -81,7 +84,7 @@ private:
 	const std::vector<std::unique_ptr<BaseEnemy>> *enemies_ = nullptr;
 	const std::vector<std::unique_ptr<BaseEnemy>> *spawns_ = nullptr;
 
-	// 数学定数  
+	// 数学定数
 	static constexpr float kPi = 3.14159f;
 	static constexpr float kTwoPi = 2.0f * kPi;
 
@@ -138,14 +141,10 @@ private:
 	float statusBarHeight_ = 0.8f; // ステータスバーの高さ
 
 	// ブーストゲージ位置設定（画面左下）
-	float boostBarOffsetX_ = -35.0f;	   // ブーストバーのX位置（左側）
-	float boostBarOffsetY_ = -18.0f;	   // ブーストバーのY位置（下側）
-	float quickBoostChargeSpacing_ = 1.5f; // クイックブーストチャージとの間隔
-	float quickBoostChargeHeight_ = 0.4f;  // クイックブーストチャージの高さ
-	float rechargeSpacing_ = 1.0f;		   // リチャージバーとの間隔
-	float rechargeBarHeight_ = 0.3f;	   // リチャージバーの高さ
+	float boostBarOffsetX_ = -35.0f; // ブーストバーのX位置（左側）
+	float boostBarOffsetY_ = -18.0f; // ブーストバーのY位置（下側）
 
-	// 武器ゲージ位置設定（画面右下）
+	// ミサイルゲージ位置設定（画面右下）
 	float mgBarOffsetX_ = 0.0f;			 // マシンガンバーのX位置（右側）
 	float mgBarOffsetY_ = -18.0f;		 // マシンガンバーのY位置（下側）
 	float weaponCooldownSpacing_ = 1.2f; // 武器クールダウンとの間隔
@@ -154,13 +153,21 @@ private:
 	float missileReadySpacing_ = 1.0f;	 // ミサイル準備完了表示との間隔
 	float missileReadyHeight_ = 0.3f;	 // ミサイル準備完了表示の高さ
 
+	// ヘルスバー位置設定（画面上部）
+	float healthBarOffsetX_ = 0.0f;	 // ヘルスバーのX位置（中央）
+	float healthBarOffsetY_ = 22.0f; // ヘルスバーのY位置（上部）
+	float healthBarWidth_ = 20.0f;	 // ヘルスバーの幅
+	float healthBarHeight_ = 1.2f;	 // ヘルスバーの高さ
+
 	// ゲージ色設定（各種ステータス表示）
-	Vector4 boostGaugeColor_ = {0.2f, 0.8f, 1.0f, 0.8f};	   // ブーストゲージの色（青系）
-	Vector4 quickBoostChargeColor_ = {1.0f, 1.0f, 0.2f, 0.9f}; // クイックブーストチャージの色（黄色）
-	Vector4 weaponReadyColor_ = {0.2f, 1.0f, 0.5f, 0.8f};	   // 武器準備完了時の色（緑）
-	Vector4 weaponReloadColor_ = {1.0f, 0.6f, 0.2f, 0.7f};	   // 武器リロード中の色（橙）
-	Vector4 weaponHeatColor_ = {1.0f, 0.8f, 0.0f, 0.8f};	   // 武器発熱時の色（黄）
-	Vector4 overheatColor_ = {1.0f, 0.2f, 0.1f, 0.9f};		   // オーバーヒート時の色（赤）
-	Vector4 gaugeBorderColor_ = {0.3f, 0.6f, 0.3f, 0.6f};	   // ゲージ背景枠の色
-	float gaugeBorderWidth_ = 0.1f;							   // ゲージ背景枠の幅
+	Vector4 boostGaugeColor_ = {0.2f, 0.8f, 1.0f, 0.8f};   // ブーストゲージの色（青系）
+	Vector4 weaponReadyColor_ = {0.2f, 1.0f, 0.5f, 0.8f};  // 武器準備完了時の色（緑）
+	Vector4 weaponReloadColor_ = {1.0f, 0.6f, 0.2f, 0.7f}; // 武器リロード中の色（橙）
+	Vector4 weaponHeatColor_ = {1.0f, 0.8f, 0.0f, 0.8f};   // 武器発熱時の色（黄）
+	Vector4 overheatColor_ = {1.0f, 0.2f, 0.1f, 0.9f};	   // オーバーヒート時の色（赤）
+	Vector4 healthHighColor_ = {0.2f, 1.0f, 0.4f, 0.9f};   // ヘルス高い時の色（緑）
+	Vector4 healthMidColor_ = {1.0f, 0.8f, 0.2f, 0.9f};	   // ヘルス中程度の色（黄）
+	Vector4 healthLowColor_ = {1.0f, 0.2f, 0.1f, 0.9f};	   // ヘルス低い時の色（赤）
+	Vector4 gaugeBorderColor_ = {0.3f, 0.6f, 0.3f, 0.6f};  // ゲージ背景枠の色
+	float gaugeBorderWidth_ = 0.1f;						   // ゲージ背景枠の幅
 };

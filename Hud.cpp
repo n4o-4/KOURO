@@ -68,6 +68,9 @@ void Hud::Draw(ViewProjection viewProjection) {
 
 	// プレイヤーステータスバーの描画
 	DrawPlayerStatusBars(viewProjection);
+
+	// プレイヤーヘルスバーの描画
+	DrawPlayerHealthBar(viewProjection);
 }
 
 ///=============================================================================
@@ -325,38 +328,6 @@ void Hud::DrawPlayerStatusBars(ViewProjection viewProjection) {
 	DrawStatusBar(boostBarCenter, statusBarWidth_ * boostRatio, statusBarHeight_,
 				  boostGaugeColor_, cameraRight, cameraUp);
 
-	// クイックブーストチャージ表示（ブーストバーの上に小さな四角で表示）
-	int maxCharges = player_->GetMaxQuickBoostUses();
-	int currentCharges = maxCharges - player_->GetQuickBoostUsedCount();
-	float chargeWidth = statusBarWidth_ / maxCharges;
-
-	for (int i = 0; i < maxCharges; ++i) {
-		Vector3 chargePos = boostBarCenter + cameraUp * (statusBarHeight_ + quickBoostChargeSpacing_) +
-							cameraRight * (chargeWidth * (i - maxCharges * 0.5f + 0.5f));
-
-		// チャージの背景枠
-		DrawStatusBarFrame(chargePos, chargeWidth * 0.8f, quickBoostChargeHeight_, gaugeBorderColor_, cameraRight, cameraUp);
-
-		// チャージが利用可能な場合のみゲージを描画
-		if (i < currentCharges) {
-			DrawStatusBar(chargePos, chargeWidth * 0.8f, quickBoostChargeHeight_, quickBoostChargeColor_, cameraRight, cameraUp);
-		}
-	}
-
-	// クイックブーストリチャージ表示（チャージバーの上）
-	if (player_->GetQuickBoostUsedCount() > 0 && player_->GetQuickBoostChargeCooldown() > 0) {
-		float rechargeRatio = 1.0f - (static_cast<float>(player_->GetQuickBoostChargeCooldown()) /
-									  static_cast<float>(player_->GetQuickBoostChargeTime()));
-		Vector3 rechargePos = boostBarCenter + cameraUp * (statusBarHeight_ + quickBoostChargeSpacing_ + quickBoostChargeHeight_ + rechargeSpacing_);
-
-		// リチャージの背景枠
-		DrawStatusBarFrame(rechargePos, statusBarWidth_, rechargeBarHeight_, gaugeBorderColor_, cameraRight, cameraUp);
-
-		// リチャージゲージ（進行度に応じてサイズが変化）
-		DrawStatusBar(rechargePos, statusBarWidth_ * rechargeRatio, rechargeBarHeight_,
-					  hudAlertColor_, cameraRight, cameraUp);
-	}
-
 	// --- マシンガンステータス（画面右下） ---
 	Vector3 mgBarCenter = screenBasePos + cameraRight * mgBarOffsetX_ + cameraUp * mgBarOffsetY_;
 
@@ -427,6 +398,74 @@ void Hud::DrawPlayerStatusBars(ViewProjection viewProjection) {
 	}
 }
 
+///=============================================================================
+///						プレイヤーヘルスバーの描画
+void Hud::DrawPlayerHealthBar(ViewProjection viewProjection) {
+	if (!player_ || !followCamera_) {
+		return;
+	}
+
+	Vector3 playerPos = followCamera_->GetViewProjection().worldPosition_;
+	Vector3 cameraForward = followCamera_->GetForwardDirection();
+	Vector3 cameraRight = followCamera_->GetRightDirection();
+	Vector3 cameraUp = followCamera_->GetUpDirection();
+
+	// 画面上部の基準位置を計算
+	Vector3 healthBarCenter = playerPos + cameraForward * screenDistance_ +
+							  cameraRight * healthBarOffsetX_ +
+							  cameraUp * healthBarOffsetY_;
+
+	// プレイヤーの現在HPを取得
+	int currentHp = player_->GetHp();
+	int maxHp = 10; // プレイヤーの最大HPを定数として設定（Player.hから取得できる場合は変更）
+
+	// HP比率を計算
+	float healthRatio = static_cast<float>(currentHp) / static_cast<float>(maxHp);
+	if (healthRatio < 0.0f)
+		healthRatio = 0.0f;
+	if (healthRatio > 1.0f)
+		healthRatio = 1.0f;
+
+	// HP比率に応じて色を決定
+	Vector4 healthColor;
+	if (healthRatio > 0.7f) {
+		// HP高い（70%以上）：緑色
+		healthColor = healthHighColor_;
+	} else if (healthRatio > 0.3f) {
+		// HP中程度（30%～70%）：黄色
+		healthColor = healthMidColor_;
+	} else {
+		// HP低い（30%未満）：赤色で点滅
+		float blinkFactor = 0.5f + 0.5f * sinf(lockOnRotation_ * 6.0f);
+		healthColor = Vector4{
+			healthLowColor_.x,
+			healthLowColor_.y,
+			healthLowColor_.z,
+			healthLowColor_.w * blinkFactor};
+	}
+
+	// 背景枠を描画（最大サイズ）
+	DrawStatusBarFrame(healthBarCenter, healthBarWidth_, healthBarHeight_,
+					   gaugeBorderColor_, cameraRight, cameraUp);
+
+	// ヘルスバー本体（現在のHPに応じてサイズが変化）
+	DrawStatusBar(healthBarCenter, healthBarWidth_ * healthRatio, healthBarHeight_,
+				  healthColor, cameraRight, cameraUp);
+
+	// セグメント分割線の描画（10分割でHPを視覚的に分かりやすく）
+	for (int i = 1; i < maxHp; ++i) {
+		float segmentX = (static_cast<float>(i) / static_cast<float>(maxHp) - 0.5f) * healthBarWidth_;
+		Vector3 segmentStart = healthBarCenter + cameraRight * segmentX -
+							   cameraUp * (healthBarHeight_ * 0.6f);
+		Vector3 segmentEnd = healthBarCenter + cameraRight * segmentX +
+							 cameraUp * (healthBarHeight_ * 0.6f);
+
+		Vector4 segmentColor = Vector4{gaugeBorderColor_.x, gaugeBorderColor_.y,
+									   gaugeBorderColor_.z, gaugeBorderColor_.w * 0.8f};
+		lineManager_->DrawLine(segmentStart, segmentEnd, segmentColor);
+	}
+}
+
 void Hud::DrawImGui() {
 	ImGui::Begin("HUD Settings");
 
@@ -446,6 +485,13 @@ void Hud::DrawImGui() {
 		ImGui::SliderFloat("Status Bar Width", &statusBarWidth_, 4.0f, 15.0f);
 		ImGui::SliderFloat("Boost Bar Offset X", &boostBarOffsetX_, -30.0f, -10.0f);
 		ImGui::SliderFloat("MG Bar Offset X", &mgBarOffsetX_, 5.0f, 15.0f);
+	}
+
+	if (ImGui::CollapsingHeader("Health Bar Settings")) {
+		ImGui::SliderFloat("Health Bar Offset X", &healthBarOffsetX_, -15.0f, 15.0f);
+		ImGui::SliderFloat("Health Bar Offset Y", &healthBarOffsetY_, 15.0f, 30.0f);
+		ImGui::SliderFloat("Health Bar Width", &healthBarWidth_, 10.0f, 30.0f);
+		ImGui::SliderFloat("Health Bar Height", &healthBarHeight_, 0.5f, 2.0f);
 	}
 
 	ImGui::End();
@@ -803,53 +849,7 @@ void Hud::Draw3DHexagon(const Vector3 &center, float size, const Vector4 &color,
 
 // 球体のグリッドを描画する関数
 void Hud::DrawSphereGrid(const Vector3 &center, float radius, const Vector4 &color) {
-	// 経線（縦線）を描画
-	for (int i = 0; i < sphereLongitudeCount_; i++) {
-		float longitude = i * kTwoPi / sphereLongitudeCount_;
-
-		// 経線を描画（北極から南極へ）
-		for (int j = 0; j < 24; j++) {
-			float lat1 = j * kPi / 24.0f;
-			float lat2 = (j + 1) * kPi / 24.0f;
-
-			Vector3 p1 = {
-				center.x + radius * sinf(lat1) * cosf(longitude),
-				center.y + radius * cosf(lat1),
-				center.z + radius * sinf(lat1) * sinf(longitude)};
-
-			Vector3 p2 = {
-				center.x + radius * sinf(lat2) * cosf(longitude),
-				center.y + radius * cosf(lat2),
-				center.z + radius * sinf(lat2) * sinf(longitude)};
-
-			lineManager_->DrawLine(p1, p2, color);
-		}
-	}
-
-	// 緯線（横線）を描画
-	for (int i = 1; i < sphereLatitudeCount_; i++) {
-		float latitude = i * kPi / sphereLatitudeCount_;
-
-		// 緯線を描画（円周）
-		for (int j = 0; j < 24; j++) {
-			float lon1 = j * kTwoPi / 24.0f;
-			float lon2 = (j + 1) * kTwoPi / 24.0f;
-
-			Vector3 p1 = {
-				center.x + radius * sinf(latitude) * cosf(lon1),
-				center.y + radius * cosf(latitude),
-				center.z + radius * sinf(latitude) * sinf(lon1)};
-
-			Vector3 p2 = {
-				center.x + radius * sinf(latitude) * cosf(lon2),
-				center.y + radius * cosf(latitude),
-				center.z + radius * sinf(latitude) * sinf(lon2)};
-
-			lineManager_->DrawLine(p1, p2, color);
-		}
-	}
-
-	// 赤道を強調表示
+	// 赤道のみを描画（中心の緯線1本だけ）
 	for (int j = 0; j < 48; j++) {
 		float lon1 = j * kTwoPi / 48.0f;
 		float lon2 = (j + 1) * kTwoPi / 48.0f;
