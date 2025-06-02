@@ -881,53 +881,7 @@ void Hud::Draw3DHexagon(const Vector3 &center, float size, const Vector4 &color,
 
 // 球体のグリッドを描画する関数
 void Hud::DrawSphereGrid(const Vector3 &center, float radius, const Vector4 &color) {
-	// 経線（縦線）を描画
-	for (int i = 0; i < sphereLongitudeCount_; i++) {
-		float longitude = i * kTwoPi / sphereLongitudeCount_;
-
-		// 経線を描画（北極から南極へ）
-		for (int j = 0; j < 24; j++) {
-			float lat1 = j * kPi / 24.0f;
-			float lat2 = (j + 1) * kPi / 24.0f;
-
-			Vector3 p1 = {
-				center.x + radius * sinf(lat1) * cosf(longitude),
-				center.y + radius * cosf(lat1),
-				center.z + radius * sinf(lat1) * sinf(longitude)};
-
-			Vector3 p2 = {
-				center.x + radius * sinf(lat2) * cosf(longitude),
-				center.y + radius * cosf(lat2),
-				center.z + radius * sinf(lat2) * sinf(longitude)};
-
-			lineManager_->DrawLine(p1, p2, color);
-		}
-	}
-
-	// 緯線（横線）を描画
-	for (int i = 1; i < sphereLatitudeCount_; i++) {
-		float latitude = i * kPi / sphereLatitudeCount_;
-
-		// 緯線を描画（円周）
-		for (int j = 0; j < 24; j++) {
-			float lon1 = j * kTwoPi / 24.0f;
-			float lon2 = (j + 1) * kTwoPi / 24.0f;
-
-			Vector3 p1 = {
-				center.x + radius * sinf(latitude) * cosf(lon1),
-				center.y + radius * cosf(latitude),
-				center.z + radius * sinf(latitude) * sinf(lon1)};
-
-			Vector3 p2 = {
-				center.x + radius * sinf(latitude) * cosf(lon2),
-				center.y + radius * cosf(latitude),
-				center.z + radius * sinf(latitude) * sinf(lon2)};
-
-			lineManager_->DrawLine(p1, p2, color);
-		}
-	}
-
-	// 赤道を強調表示
+	// 赤道のみを描画（中心の緯線1本だけ）
 	for (int j = 0; j < 48; j++) {
 		float lon1 = j * kTwoPi / 48.0f;
 		float lon2 = (j + 1) * kTwoPi / 48.0f;
