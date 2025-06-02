@@ -395,6 +395,9 @@ void GameScene::Update() {
 		//player_->Update();
 		if (waveDisplayTimer_ <= 0) {
 			player_->Update(); 
+			cameraManager_->GetFollowCamera()->enableUpdate_ = true;
+		} else {
+			cameraManager_->GetFollowCamera()->enableUpdate_ = false;
 		}
 
 		//---------------------------------------
