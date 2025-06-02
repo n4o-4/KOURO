@@ -157,6 +157,8 @@ private:
 
 	std::unique_ptr<Sprite> explanation = nullptr; // 説明のスプライト
 
+	std::unique_ptr<Sprite> B_select = nullptr; 
+
 	std::unique_ptr<Sprite> checkBox_[6] = { nullptr }; // チェックボックスのスプライト配列
 
 	std::unique_ptr<Sprite> checkMark_[6] = { nullptr }; // チェックマークのスプライト配列

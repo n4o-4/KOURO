@@ -14,6 +14,7 @@ void TutorialScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture("Resources/operation2.png");
 	TextureManager::GetInstance()->LoadTexture("Resources/CheckBox.png");
 	TextureManager::GetInstance()->LoadTexture("Resources/checkMark.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/B_select.png");
 	//========================================
 	// 背景
 
@@ -36,6 +37,16 @@ void TutorialScene::Initialize()
 	explanation->SetSize({ 1280.0f, 720.0f });        // 描画サイズ
 
 	explanation->Update();
+
+	//========================================
+	// B_select
+	B_select = std::make_unique<Sprite>();
+	B_select->Initialize(SpriteCommon::GetInstance(), "Resources/B_select.png");
+	B_select->SetTexSize({ 1024.0f, 315.0f });   // ←元画像サイズ
+	B_select->SetSize({ 300.0f, 92.0f });        // ←表示サイズ（画面に合わせて調整）
+	B_select->SetPosition({ 920.0f, 600.0f });   // ←表示位置（画面右下とかにしたいなら）
+
+	B_select->Update();
 
 	//========================================
 	// checkBoxのスプライトを生成
@@ -208,6 +219,11 @@ void TutorialScene::Update()
 		if (isGameClear_) {
 			phase_ = Phase::kFadeOut;
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+		}
+
+		// Bボタンでタイトルに戻る
+		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::B)) {
+			isContinue_ = false;
 		}
 
 		//---------------------------------------
@@ -391,10 +407,6 @@ void TutorialScene::Update()
 			break;
 		}
 
-		break;
-
-		//========================================
-		// フェードアウト
 		break;
 	case Phase::kFadeOut:
 		//---------------------------------------
@@ -596,6 +608,8 @@ void TutorialScene::Draw()
 
 		DrawForegroundSprite();
 
+		B_select->Draw();
+
 		// フェード描画
 		switch (tutorialPhase_) {
 		case TutorialPhase::kExplain:
@@ -612,6 +626,7 @@ void TutorialScene::Draw()
 			backGround->Draw();
 
 			explanation->Draw();
+
 
 			for (int i = 0; i < 6; ++i) {
 				checkBox_[i]->Draw();
