@@ -328,38 +328,6 @@ void Hud::DrawPlayerStatusBars(ViewProjection viewProjection) {
 	DrawStatusBar(boostBarCenter, statusBarWidth_ * boostRatio, statusBarHeight_,
 				  boostGaugeColor_, cameraRight, cameraUp);
 
-	// クイックブーストチャージ表示（ブーストバーの上に小さな四角で表示）
-	int maxCharges = player_->GetMaxQuickBoostUses();
-	int currentCharges = maxCharges - player_->GetQuickBoostUsedCount();
-	float chargeWidth = statusBarWidth_ / maxCharges;
-
-	for (int i = 0; i < maxCharges; ++i) {
-		Vector3 chargePos = boostBarCenter + cameraUp * (statusBarHeight_ + quickBoostChargeSpacing_) +
-							cameraRight * (chargeWidth * (i - maxCharges * 0.5f + 0.5f));
-
-		// チャージの背景枠
-		DrawStatusBarFrame(chargePos, chargeWidth * 0.8f, quickBoostChargeHeight_, gaugeBorderColor_, cameraRight, cameraUp);
-
-		// チャージが利用可能な場合のみゲージを描画
-		if (i < currentCharges) {
-			DrawStatusBar(chargePos, chargeWidth * 0.8f, quickBoostChargeHeight_, quickBoostChargeColor_, cameraRight, cameraUp);
-		}
-	}
-
-	// クイックブーストリチャージ表示（チャージバーの上）
-	if (player_->GetQuickBoostUsedCount() > 0 && player_->GetQuickBoostChargeCooldown() > 0) {
-		float rechargeRatio = 1.0f - (static_cast<float>(player_->GetQuickBoostChargeCooldown()) /
-									  static_cast<float>(player_->GetQuickBoostChargeTime()));
-		Vector3 rechargePos = boostBarCenter + cameraUp * (statusBarHeight_ + quickBoostChargeSpacing_ + quickBoostChargeHeight_ + rechargeSpacing_);
-
-		// リチャージの背景枠
-		DrawStatusBarFrame(rechargePos, statusBarWidth_, rechargeBarHeight_, gaugeBorderColor_, cameraRight, cameraUp);
-
-		// リチャージゲージ（進行度に応じてサイズが変化）
-		DrawStatusBar(rechargePos, statusBarWidth_ * rechargeRatio, rechargeBarHeight_,
-					  hudAlertColor_, cameraRight, cameraUp);
-	}
-
 	// --- マシンガンステータス（画面右下） ---
 	Vector3 mgBarCenter = screenBasePos + cameraRight * mgBarOffsetX_ + cameraUp * mgBarOffsetY_;
 

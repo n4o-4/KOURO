@@ -141,12 +141,8 @@ private:
 	float statusBarHeight_ = 0.8f; // ステータスバーの高さ
 
 	// ブーストゲージ位置設定（画面左下）
-	float boostBarOffsetX_ = -35.0f;	   // ブーストバーのX位置（左側）
-	float boostBarOffsetY_ = -18.0f;	   // ブーストバーのY位置（下側）
-	float quickBoostChargeSpacing_ = 1.5f; // クイックブーストチャージとの間隔
-	float quickBoostChargeHeight_ = 0.4f;  // クイックブーストチャージの高さ
-	float rechargeSpacing_ = 1.0f;		   // リチャージバーとの間隔
-	float rechargeBarHeight_ = 0.3f;	   // リチャージバーの高さ
+	float boostBarOffsetX_ = -35.0f; // ブーストバーのX位置（左側）
+	float boostBarOffsetY_ = -18.0f; // ブーストバーのY位置（下側）
 
 	// ミサイルゲージ位置設定（画面右下）
 	float mgBarOffsetX_ = 0.0f;			 // マシンガンバーのX位置（右側）
@@ -164,15 +160,14 @@ private:
 	float healthBarHeight_ = 1.2f;	 // ヘルスバーの高さ
 
 	// ゲージ色設定（各種ステータス表示）
-	Vector4 boostGaugeColor_ = {0.2f, 0.8f, 1.0f, 0.8f};	   // ブーストゲージの色（青系）
-	Vector4 quickBoostChargeColor_ = {1.0f, 1.0f, 0.2f, 0.9f}; // クイックブーストチャージの色（黄色）
-	Vector4 weaponReadyColor_ = {0.2f, 1.0f, 0.5f, 0.8f};	   // 武器準備完了時の色（緑）
-	Vector4 weaponReloadColor_ = {1.0f, 0.6f, 0.2f, 0.7f};	   // 武器リロード中の色（橙）
-	Vector4 weaponHeatColor_ = {1.0f, 0.8f, 0.0f, 0.8f};	   // 武器発熱時の色（黄）
-	Vector4 overheatColor_ = {1.0f, 0.2f, 0.1f, 0.9f};		   // オーバーヒート時の色（赤）
-	Vector4 healthHighColor_ = {0.2f, 1.0f, 0.4f, 0.9f};	   // ヘルス高い時の色（緑）
-	Vector4 healthMidColor_ = {1.0f, 0.8f, 0.2f, 0.9f};		   // ヘルス中程度の色（黄）
-	Vector4 healthLowColor_ = {1.0f, 0.2f, 0.1f, 0.9f};		   // ヘルス低い時の色（赤）
-	Vector4 gaugeBorderColor_ = {0.3f, 0.6f, 0.3f, 0.6f};	   // ゲージ背景枠の色
-	float gaugeBorderWidth_ = 0.1f;							   // ゲージ背景枠の幅
+	Vector4 boostGaugeColor_ = {0.2f, 0.8f, 1.0f, 0.8f};   // ブーストゲージの色（青系）
+	Vector4 weaponReadyColor_ = {0.2f, 1.0f, 0.5f, 0.8f};  // 武器準備完了時の色（緑）
+	Vector4 weaponReloadColor_ = {1.0f, 0.6f, 0.2f, 0.7f}; // 武器リロード中の色（橙）
+	Vector4 weaponHeatColor_ = {1.0f, 0.8f, 0.0f, 0.8f};   // 武器発熱時の色（黄）
+	Vector4 overheatColor_ = {1.0f, 0.2f, 0.1f, 0.9f};	   // オーバーヒート時の色（赤）
+	Vector4 healthHighColor_ = {0.2f, 1.0f, 0.4f, 0.9f};   // ヘルス高い時の色（緑）
+	Vector4 healthMidColor_ = {1.0f, 0.8f, 0.2f, 0.9f};	   // ヘルス中程度の色（黄）
+	Vector4 healthLowColor_ = {1.0f, 0.2f, 0.1f, 0.9f};	   // ヘルス低い時の色（赤）
+	Vector4 gaugeBorderColor_ = {0.3f, 0.6f, 0.3f, 0.6f};  // ゲージ背景枠の色
+	float gaugeBorderWidth_ = 0.1f;						   // ゲージ背景枠の幅
 };
