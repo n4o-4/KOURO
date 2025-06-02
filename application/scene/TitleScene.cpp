@@ -437,7 +437,7 @@ void TitleScene::select() {
 			textTransform_->transform.translate = { 1.0f, 0.1f , 0.0f };
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 			se1_->SoundPlay("Resources/se/47.mp3", 0);
-			mvTransforms_[4]->transform.translate.z -= 0.2f;
+			mvTransforms_[4]->transform.translate.z -= 0.04f;
 			tutorial = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = false;
 			SceneManager::GetInstance()->GetTransitionData().nomal = false;
@@ -448,7 +448,7 @@ void TitleScene::select() {
 			textTransform_->transform.translate = { 1.0f, 0.2f , 0.0f };
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 			se1_->SoundPlay("Resources/se/47.mp3", 0);
-			mvTransforms_[4]->transform.translate.z -= 0.2f;
+			mvTransforms_[4]->transform.translate.z -= 0.04f;
 			easy = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = true;
 			SceneManager::GetInstance()->GetTransitionData().nomal = false;
@@ -459,7 +459,7 @@ void TitleScene::select() {
 			textTransform_->transform.translate = { 1.0f, 0.2f , 0.0f };
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 			se1_->SoundPlay("Resources/se/47.mp3", 0);
-			mvTransforms_[4]->transform.translate.z -= 0.2f;
+			mvTransforms_[4]->transform.translate.z -= 0.04f;
 			nomal = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = false;
 			SceneManager::GetInstance()->GetTransitionData().nomal = true;
@@ -470,7 +470,7 @@ void TitleScene::select() {
 			textTransform_->transform.translate = { 1.0f, 0.2f , 0.0f };
 		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A)) {
 			se1_->SoundPlay("Resources/se/47.mp3", 0);
-			mvTransforms_[4]->transform.translate.z -= 0.2f;
+			mvTransforms_[4]->transform.translate.z -= 0.04f;
 			hard = true;
 			SceneManager::GetInstance()->GetTransitionData().easy = false;
 			SceneManager::GetInstance()->GetTransitionData().nomal = false;
