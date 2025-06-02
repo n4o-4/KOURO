@@ -170,6 +170,11 @@ void TutorialScene::Update()
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
 		}
 
+		// Bボタンでタイトルに戻る
+		if (Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::B)) {
+			isContinue_ = false;
+		}
+
 		//---------------------------------------
 		// プレイヤーの更新
 		player_->Update();
@@ -341,10 +346,6 @@ void TutorialScene::Update()
 			break;
 		}
 
-		break;
-
-		//========================================
-		// フェードアウト
 		break;
 	case Phase::kFadeOut:
 		//---------------------------------------
