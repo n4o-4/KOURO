@@ -90,6 +90,7 @@ private:
 	SequenceState sequenceState_ = SequenceState::RotateDish;
 	float dishAngle_ = 0.0f;
 
+	float selectFloatTimer_ = 0.0f;
 
 private:
 public: // メンバ関数
