@@ -52,7 +52,6 @@ void GameScene::Initialize() {
 
 	//========================================
 	// アクティブカメラをフォローカメラに設定
-	cameraManager_->useDebugCamera_ = true;
 
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Grayscale); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Vignette); //完
@@ -150,7 +149,10 @@ void GameScene::Initialize() {
 	// マウスの入力受付を有効
 	Input::GetInstance()->SetIsReception(true);
 
+	railCamera_ = std::make_unique<RailCamera>();
+	railCamera_->Initialize();
 
+	cameraManager_->SetActiveCamera(railCamera_.get());
 }
 ///=============================================================================
 ///						終了処理

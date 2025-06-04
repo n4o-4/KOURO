@@ -27,7 +27,6 @@
     <FxCompile Include="Resources\shaders\ColorSpace.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="application\collision\BaseObject.cpp" />
     <ClCompile Include="application\scene\BaseScene.cpp" />
     <ClCompile Include="application\scene\GameScene.cpp" />
     <ClCompile Include="application\scene\SceneFactory.cpp" />
@@ -88,9 +87,9 @@
     <ClCompile Include="engine\3d\ModelDatas.cpp" />
     <ClCompile Include="application\object\BaseCharacter.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RailCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="application\collision\BaseObject.h" />
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
     <ClInclude Include="application\scene\BaseScene.h" />
     <ClInclude Include="application\scene\GameScene.h" />
@@ -157,6 +156,7 @@
     <ClInclude Include="ColorSpace.h" />
     <ClInclude Include="application\object\BaseCharacter.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RailCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

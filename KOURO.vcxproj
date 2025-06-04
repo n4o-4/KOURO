@@ -71,6 +71,7 @@
     <ClCompile Include="engine\effect\Vignette.cpp" />
     <ClCompile Include="engine\effect\MotionBlur.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RailCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -139,6 +140,7 @@
     <ClInclude Include="engine\effect\Vignette.h" />
     <ClInclude Include="engine\effect\MotionBlur.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RailCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

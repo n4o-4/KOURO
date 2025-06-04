@@ -5,7 +5,6 @@
 //========================================
 // アプリケーション
 
-#include "FollowCamera.h"
 #include <random>
 #include "LineDrawerBase.h"
 #include "Player.h"
@@ -49,6 +48,8 @@ private:
 	std::unique_ptr<ParticleEmitter> emitter2_ = nullptr;
 
 	std::unique_ptr<Player> player_ = nullptr;
+
+	std::unique_ptr<RailCamera> railCamera_ = nullptr;
 
 private:
 

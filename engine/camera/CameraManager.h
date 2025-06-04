@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "DebugCamera.h"
 #include "FollowCamera.h"
+#include "RailCamera.h"
 
 class CameraManager
 {
@@ -20,6 +21,11 @@ public: /// メンバ関数
 	void SetFollowCameraTarget(WorldTransform* target) { followCamera_->SetTarget(target); }
 
 	FollowCamera* GetFollowCamera() { return followCamera_.get(); }
+
+	void SetActiveCamera(BaseCamera* camera) {
+		activeCamera_ = camera;
+		ChangeActiveCamera();
+	}
 
 private:
 
