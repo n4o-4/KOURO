@@ -815,8 +815,6 @@ static Quaternion EulerToQuaternion(const Vector3& euler)
 	return qNormalize(q); // 念のため正規化
 }
 
-
-
 static Vector3  QuaternionToEuler(const Quaternion& q) 
 {
 	Vector3 euler;
@@ -873,45 +871,81 @@ static Vector3 CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, con
 
 static Vector3 CatmullRomPosition(const std::vector<Vector3>& points, float t)
 {
-	// 
+	//// 
+	//assert(points.size() >= 4 && "制御点は4点以上必要です");
+
+
+	//// 区間数は制御点の数-1
+	//size_t division = points.size() - 1;
+
+	//// 1区間の長さ
+	//float areaWidth = 1.0f / division;
+
+	//// 区間の始点を0.0f,終点を1.0fとしたときの現在地
+	//float t_2 = std::fmod(t, areaWidth) * division;
+
+	//t_2 = std::clamp(t_2, 0.0f, 1.0f);
+
+	//// 区間のインデックス
+	//size_t index = static_cast<size_t>(t / areaWidth);
+
+
+	//// 制御点のインデックス
+	//size_t index0 = index - 1;
+	//size_t index1 = index;
+	//size_t index2 = index + 1;
+	//size_t index3 = index + 2;
+
+	//// インデックスが範囲外の場合は、最初または最後の点を使用s
+	//// 最初の区間のp0はp1を重複使用
+	//if (index == 0)
+	//{
+	//	index0 = index1;
+	//}
+
+	//if (index >= points.size())
+	//{
+	//	index3 = index2;
+	//}
+
+	//// 4点の座標
+	//const Vector3& p0 = points[index0];
+	//const Vector3& p1 = points[index1];
+	//const Vector3& p2 = points[index2];
+	//const Vector3& p3 = points[index3];
+
+	//// 4点を指定してCatmull-Rom補間
+	//return CatmullRomInterpolation(p0, p1, p2, p3, t_2);
+
 	assert(points.size() >= 4 && "制御点は4点以上必要です");
 
-	if (t > 1.0f)
-	{
-		
-	}
-
-	// 区間数は制御点の数-1
+	// 区間数は制御点の数 - 1
 	size_t division = points.size() - 1;
 
 	// 1区間の長さ
 	float areaWidth = 1.0f / division;
 
-	// 区間の始点を0.0f,終点を1.0fとしたときの現在地
+	// 区間内の補間係数を計算
 	float t_2 = std::fmod(t, areaWidth) * division;
-
 	t_2 = std::clamp(t_2, 0.0f, 1.0f);
 
-	// 区間のインデックス
+	// 区間インデックス
 	size_t index = static_cast<size_t>(t / areaWidth);
 
-	// 制御点のインデックス
-	size_t index0 = index - 1;
-	size_t index1 = index;
-	size_t index2 = index + 1;
-	size_t index3 = index + 2;
-
-	// インデックスが範囲外の場合は、最初または最後の点を使用s
-	// 最初の区間のp0はp1を重複使用
-	if (index == 0)
-	{
-		index0 = index1;
+	// index が points.size() を超えるのを防ぐ
+	if (index >= points.size()) {
+		index = points.size() - 1;
 	}
 
-	if (index3 > points.size())
-	{
-		index3 = index2; // 最後の区間のp3はp2を重複使用
-	}
+	// 制御点インデックス計算（範囲外にならないよう clamp）
+	auto safeIndex = [&](int i) -> size_t {
+		return static_cast<size_t>(std::clamp(i, 0, static_cast<int>(points.size() - 1)));
+		};
+
+	size_t index0 = safeIndex(static_cast<int>(index) - 1);
+	size_t index1 = safeIndex(static_cast<int>(index));
+	size_t index2 = safeIndex(static_cast<int>(index) + 1);
+	size_t index3 = safeIndex(static_cast<int>(index) + 2);
 
 	// 4点の座標
 	const Vector3& p0 = points[index0];
@@ -919,6 +953,6 @@ static Vector3 CatmullRomPosition(const std::vector<Vector3>& points, float t)
 	const Vector3& p2 = points[index2];
 	const Vector3& p3 = points[index3];
 
-	// 4点を指定してCatmull-Rom補間
+	// 補間実行
 	return CatmullRomInterpolation(p0, p1, p2, p3, t_2);
 }

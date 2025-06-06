@@ -24,6 +24,8 @@ void BaseCharacter::Initialize(Model* model)
 	worldTransform_ = std::make_unique<WorldTransform>();
 	worldTransform_->Initialize();
 
+
+	worldTransform_->useQuaternion_ = false;
 	// 初期値の設定
 
 

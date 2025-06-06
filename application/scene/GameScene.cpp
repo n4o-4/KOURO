@@ -52,6 +52,7 @@ void GameScene::Initialize() {
 
 	//========================================
 	// アクティブカメラをフォローカメラに設定
+	//cameraManager_->useDebugCamera_ = true;
 
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Grayscale); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Vignette); //完
@@ -153,6 +154,10 @@ void GameScene::Initialize() {
 	railCamera_->Initialize();
 
 	cameraManager_->SetActiveCamera(railCamera_.get());
+
+	//cameraManager_->Update();
+
+	player_->SetCamera(cameraManager_->GetActiveCamera());
 }
 ///=============================================================================
 ///						終了処理
@@ -169,8 +174,7 @@ void GameScene::Update() {
 	lineDrawer_->SkeletonUpdate(animationManager->GetActiveAnimation("walk.gltf").skeleton);*/
 	//human_->Update();
 	
-	//lineDrawer_->Update();
-	player_->SetCamera(cameraManager_->GetActiveCamera());
+	//lineDrawer_->Update()
 
 	BaseScene::Update();
 

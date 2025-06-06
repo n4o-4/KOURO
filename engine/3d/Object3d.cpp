@@ -26,7 +26,7 @@ void Object3d::Initialize(Object3dCommon* object3dCommon)
 	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	materialData_->enableLighting = true;
+	materialData_->enableLighting = false;
 	materialData_->uvTransform = MakeIdentity4x4();
 
 	materialData_->shininess = 48.3f;
