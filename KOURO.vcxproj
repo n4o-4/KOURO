@@ -50,6 +50,7 @@
     <ClCompile Include="engine\effect\Grayscale.cpp" />
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="engine\effect\LuminanceBasedOutline.cpp" />
+    <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="engine\effect\Random.h" />
     <ClInclude Include="engine\effect\Vignette.h" />
     <ClInclude Include="engine\effect\MotionBlur.h" />
+    <ClInclude Include="LevelLoader.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RailCamera.h" />
   </ItemGroup>
