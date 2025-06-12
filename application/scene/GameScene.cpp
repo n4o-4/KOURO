@@ -153,11 +153,22 @@ void GameScene::Initialize() {
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
 
-	cameraManager_->SetActiveCamera(railCamera_.get());
+	//cameraManager_->SetActiveCamera(railCamera_.get());
+	cameraManager_->useDebugCamera_ = true;
+	cameraManager_->Update();
 
 	//cameraManager_->Update();
 
 	player_->SetCamera(cameraManager_->GetActiveCamera());
+
+	LevelLoader loader;
+
+	levelData_ = loader.LoadLevelFromJson("Resources/TL1.json");
+
+	for (auto& object : levelData_->objects)
+	{
+		object.object3d->SetLocalMatrix(MakeIdentity4x4());
+	}
 }
 ///=============================================================================
 ///						終了処理
@@ -202,6 +213,11 @@ void GameScene::Update() {
 	transform_->UpdateMatrix();
 
 	player_->Update();
+
+	for (auto& object : levelData_->objects)
+	{
+		object.worldTransform->UpdateMatrix();
+	}
 
 #ifdef _DEBUG
 
@@ -261,7 +277,12 @@ void GameScene::Draw()
 
 	//ground_->Draw(*transform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
 
-	player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+	for (auto &object : levelData_->objects)
+	{
+		object.object3d->Draw(*object.worldTransform.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+	}
+
+	//player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
 
 	DrawForegroundSprite();
 	/// 前景スプライト描画

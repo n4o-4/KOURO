@@ -9,6 +9,8 @@
 #include "LineDrawerBase.h"
 #include "Player.h"
 
+#include "LevelLoader.h"
+
 class GameScene : public BaseScene
 {
 private:
@@ -50,6 +52,8 @@ private:
 	std::unique_ptr<Player> player_ = nullptr;
 
 	std::unique_ptr<RailCamera> railCamera_ = nullptr;
+
+	std::unique_ptr<LevelLoader::LevelData> levelData_ = nullptr;
 
 private:
 
