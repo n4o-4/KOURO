@@ -36,19 +36,21 @@ std::unique_ptr<LevelLoader::LevelData> LevelLoader::LoadLevel(nlohmann::json de
 				nlohmann::json& transform = object["transform"];
 
 				// 平行移動
-				objectData.worldTransform->transform.translate.x = (float)transform["translation"][0];
-				objectData.worldTransform->transform.translate.y = (float)transform["translation"][2];
-				objectData.worldTransform->transform.translate.z = (float)transform["translation"][1];
+				objectData.worldTransform->transform.translate.x = (float)transform["translate"][1];
+				objectData.worldTransform->transform.translate.y = (float)transform["translate"][2];
+				objectData.worldTransform->transform.translate.z = -(float)transform["translate"][0];
 
-				// 回転角
-				objectData.worldTransform->transform.rotate.x = (float)transform["rotation"][0];
-				objectData.worldTransform->transform.rotate.y = (float)transform["rotation"][2];
-				objectData.worldTransform->transform.rotate.z = (float)transform["rotation"][1];
+				
+				constexpr float kDeg2Rad = std::numbers::pi / 180.0f;
+
+				objectData.worldTransform->transform.rotate.x = (float)transform["rotate"][1] * kDeg2Rad;
+				objectData.worldTransform->transform.rotate.y = (float)transform["rotate"][2] * kDeg2Rad;
+				objectData.worldTransform->transform.rotate.z = (float)transform["rotate"][0] * kDeg2Rad - std::numbers::pi / 2.0f;
 
 				// スケーリング
-				objectData.worldTransform->transform.scale.x = (float)transform["scalimg"][0];
-				objectData.worldTransform->transform.scale.y = (float)transform["scalimg"][2];
-				objectData.worldTransform->transform.scale.z = (float)transform["scalimg"][1];
+				objectData.worldTransform->transform.scale.x = (float)transform["scale"][1];
+				objectData.worldTransform->transform.scale.y = (float)transform["scale"][2];
+				objectData.worldTransform->transform.scale.z = (float)transform["scale"][0];
 
 				//==================================================
 				/// object3D

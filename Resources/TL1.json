@@ -5,17 +5,17 @@
             "type": "LIGHT",
             "name": "Light",
             "transform": {
-                "translation": [
+                "translate": [
                     4.076245307922363,
                     1.0054539442062378,
                     5.903861999511719
                 ],
-                "rotation": [
+                "rotate": [
                     37.26104736328125,
                     3.1637091636657715,
                     106.93632507324219
                 ],
-                "scalimg": [
+                "scale": [
                     1.0,
                     0.9999999403953552,
                     1.0
@@ -26,17 +26,17 @@
             "type": "CAMERA",
             "name": "Camera",
             "transform": {
-                "translation": [
+                "translate": [
                     7.358891487121582,
                     -6.925790786743164,
                     4.958309173583984
                 ],
-                "rotation": [
+                "rotate": [
                     63.559295654296875,
                     2.2983238068263745e-07,
                     46.69194412231445
                 ],
-                "scalimg": [
+                "scale": [
                     1.0,
                     1.0,
                     1.0
@@ -47,17 +47,17 @@
             "type": "MESH",
             "name": "Plane",
             "transform": {
-                "translation": [
+                "translate": [
                     0.0,
-                    0.0,
+                    10.0,
                     0.0
                 ],
-                "rotation": [
-                    0.0,
+                "rotate": [
+                    -179.99998474121094,
                     -0.0,
                     0.0
                 ],
-                "scalimg": [
+                "scale": [
                     1.0,
                     1.0,
                     1.0
@@ -69,17 +69,17 @@
             "type": "MESH",
             "name": "Plane.001",
             "transform": {
-                "translation": [
+                "translate": [
                     0.0,
-                    0.0,
+                    -10.0,
                     0.0
                 ],
-                "rotation": [
+                "rotate": [
                     0.0,
                     -0.0,
                     0.0
                 ],
-                "scalimg": [
+                "scale": [
                     1.0,
                     1.0,
                     1.0
@@ -91,23 +91,23 @@
             "type": "MESH",
             "name": "Plane.002",
             "transform": {
-                "translation": [
+                "translate": [
                     0.0,
                     0.0,
                     0.0
                 ],
-                "rotation": [
-                    0.0,
+                "rotate": [
+                    90.00000762939453,
                     -0.0,
                     0.0
                 ],
-                "scalimg": [
+                "scale": [
                     1.0,
                     1.0,
                     1.0
                 ]
             },
-            "file_name": "terraion.obj"
+            "file_name": "terrain.obj"
         }
     ]
 }
