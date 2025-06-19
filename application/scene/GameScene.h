@@ -8,6 +8,7 @@
 #include <random>
 #include "LineDrawerBase.h"
 #include "Player.h"
+#include "Enemy.h"
 
 #include "LevelLoader.h"
 
@@ -55,6 +56,7 @@ private:
 
 	std::unique_ptr<LevelLoader::LevelData> levelData_ = nullptr;
 
+	std::vector<std::unique_ptr<Enemy>> enemies_;
 private:
 
 	//std::unique_ptr<SkyDome> skyDome_ = nullptr;

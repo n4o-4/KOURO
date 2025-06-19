@@ -153,8 +153,8 @@ void GameScene::Initialize() {
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
 
-	//cameraManager_->SetActiveCamera(railCamera_.get());
-	cameraManager_->useDebugCamera_ = true;
+	cameraManager_->SetActiveCamera(railCamera_.get());
+    //cameraManager_->useDebugCamera_ = true;
 	cameraManager_->Update();
 
 	//cameraManager_->Update();
@@ -168,6 +168,20 @@ void GameScene::Initialize() {
 	for (auto& object : levelData_->objects)
 	{
 		object.object3d->SetLocalMatrix(MakeIdentity4x4());
+	}
+
+	ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
+
+	for (int i = 0; i < 4; ++i)
+	{
+		std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+		enemy->Initialize(ModelManager::GetInstance()->FindModel("enemy/enemy.obj"));
+
+		enemy->SetPosition(Vector3( 0.0f,1.0f,5 +  i * 40.0f));
+
+		enemy->SetCamera(cameraManager_->GetActiveCamera());
+
+		enemies_.push_back(std::move(enemy));
 	}
 }
 ///=============================================================================
@@ -217,6 +231,11 @@ void GameScene::Update() {
 	for (auto& object : levelData_->objects)
 	{
 		object.worldTransform->UpdateMatrix();
+	}
+
+	for (auto& enemy : enemies_)
+	{
+		enemy->Update();
 	}
 
 #ifdef _DEBUG
@@ -282,7 +301,12 @@ void GameScene::Draw()
 		object.object3d->Draw(*object.worldTransform.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
 	}
 
-	//player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+	player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+
+	for (auto& enemy : enemies_)
+	{
+		enemy->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+	}
 
 	DrawForegroundSprite();
 	/// 前景スプライト描画

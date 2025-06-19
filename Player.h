@@ -13,9 +13,6 @@ public: // 公開メンバ関数
 	// 描画処理
 	void Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) override;
 
-	// カメラを設定
-	void SetCamera(BaseCamera* camera) { camera_ = camera; }
-
 private: // 非公開メンバ関数
 
 	// 移動
