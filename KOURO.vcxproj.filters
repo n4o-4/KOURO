@@ -90,6 +90,7 @@
     <ClCompile Include="RailCamera.cpp" />
     <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="BaseCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="RailCamera.h" />
     <ClInclude Include="LevelLoader.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="BaseCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
