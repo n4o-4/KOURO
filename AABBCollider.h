@@ -11,14 +11,13 @@ public: /// 公開メンバ関数
 	 */
 
 	void Initialize(WorldTransform* worldTransform) override;
+
+	// \brief  Update 更新
+
+	void Update() override;
 	
-
-	/**
-	 * \brief  GetAABB AABBを取得する
-	 * \return AABB
-	 */
-
-	AABB GetAABB() const { return aabb_; }
+	///================================================================================
+	///                                        setter
 
 	/**
 	 * \brief AABBの情報を設定する
@@ -27,29 +26,17 @@ public: /// 公開メンバ関数
 
 	void SetAABB(const AABB& aabb) { aabb_ = aabb; }
 
-	/**
-	 * \brief  GetCollisionAttribute コリジョン属性を取得する
+	///================================================================================
+	///                                        getter
+	
+	/**================================================================================
+	 * \brief  GetAABB AABBを取得する
 	 * \return AABB
 	 */
 
-	uint32_t GetCollisionAttribute() const { return collisionAttribute_; }
-
-	/**
-	 * \brief  SetCollisionAttribute コリジョン属性を設定する
-	 * \parma  CollisionAttribute コリジョン属性
-	 */
-
-	void SetCollisionAttribute(uint32_t collisionAttribute) { collisionAttribute_ = collisionAttribute; }
-
-	/**
-	 * \brief  SetCollisionMask コリジョンマスクを設定する
-	 * \parma  CollisionMask コリジョンマスク
-	 */
-
-	void SetCollisionMask(uint32_t collisionMask) { collisionMask_ = collisionMask; }
+	AABB GetAABB() const { return aabb_; }
 
 private: /// 非公開メンバ関数
-
 
 public: /// 公開メンバ変数
 

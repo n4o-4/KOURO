@@ -18,7 +18,7 @@ public:
 		Vector3 max; // 最大座標
 	};
 
-public:
+public: /// 公開メンバ関数
 
 	/**
 	 * \brief  Initialize 初期化
@@ -33,11 +33,43 @@ public:
 
 	virtual void Update() = 0;
 
-private: // メンバ変数
+	///================================================================================
+	///                                        setter
 
-	WorldTransform* worldTransform_ = nullptr; // ワールドトランスフォーム
+	/**================================================================================
+	 * \brief  SetCollisionAttribute コリジョン属性を設定する
+	 * \return collisionAttribute(コリジョン属性)
+	 */
+
+	void SetCollisionAttribute(uint32_t collisionAttribute) { collisionAttribute_ = collisionAttribute; }
+
+	/**================================================================================
+	 * \brief  SetCollisionMask コリジョンマスクを設定する
+	 * \parma  CollisionMask コリジョンマスク
+	 */
+
+	void SetCollisionMask(uint32_t collisionMask) { collisionMask_ = collisionMask; }
+
+	///================================================================================
+	///                                        getter
+
+	/**================================================================================
+	 * \brief  GetCollisionAttribute コリジョン属性を取得する
+	 * \return AABB
+	 */
+
+	uint32_t GetCollisionAttribute() const { return collisionAttribute_; }
+
+	/**================================================================================
+	 * \brief  GetCollisionMask コリジョンマスクを取得する
+	 * \return collisionMask(コリジョンマスク)
+	 */
+
+	uint32_t GetCollisionMask() const { return collisionMask_; }	
 
 protected:
+
+	WorldTransform* worldTransform_ = nullptr; // ワールドトランスフォーム
 
 	uint32_t collisionAttribute_ = 0; // コリジョン属性
 
