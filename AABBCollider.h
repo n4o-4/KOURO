@@ -5,30 +5,36 @@ class AABBCollider : public BaseCollider
 {
 public: /// 公開メンバ関数
 
-	// 初期化
+	/**
+	 * \brief  Initialize 初期化
+	 * \param  worldTransform ワールド変形情報
+	 */
 
 	void Initialize(WorldTransform* worldTransform) override;
 	
 
 	/**
-    * @brief AABBの情報を取得する
-    *
-    * @return AABBの情報
-    */
+	 * \brief  GetAABB AABBを取得する
+	 * \return AABB
+	 */
 
 	AABB GetAABB() const { return aabb_; }
 
 	/**
-	 * @brief AABBの情報を設定する
+	 * \brief AABBの情報を設定する
+	 * \parma AABB AABBの最小座標と最大座標
 	*/
 
 	void SetAABB(const AABB& aabb) { aabb_ = aabb; }
 
-	// collisionAttributeを設定
+	/**
+	 * \brief  SetCollisionAttribute コリジョン属性を設定する
+	 * \parma  CollisionAttribute コリジョン属性
+	 */
 
 	void SetCollisionAttribute(uint32_t collisionAttribute) { collisionAttribute_ = collisionAttribute; }
 
-	// collisionMaskを設定
+	
 
 	void SetCollisionMask(uint32_t collisionMask) { collisionMask_ = collisionMask; }
 

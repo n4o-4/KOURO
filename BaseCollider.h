@@ -20,8 +20,18 @@ public:
 
 public:
 
-	// 初期化
+	/**
+	 * \brief  Initialize 初期化
+	 * \param worldTransform ワールド変形情報
+	 */
+
 	virtual void Initialize(WorldTransform* worldTransform);
+	
+	/**
+	 * \brief  Update 更新
+	 */
+
+	virtual void Update() = 0;
 
 private: // メンバ変数
 
