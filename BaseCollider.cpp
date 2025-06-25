@@ -1,8 +1,8 @@
 #include "BaseCollider.h"
 
-void BaseCollider::Initialize(WorldTransform* worldTransform, ColliderType type)
+void BaseCollider::Initialize(WorldTransform* worldTransform)
 {
-	worldTransform_ = worldTransform;
+	// コライダーに関連付けるワールド変換情報を設定する
 
-	type_ = type;
+	worldTransform_ = worldTransform;
 }

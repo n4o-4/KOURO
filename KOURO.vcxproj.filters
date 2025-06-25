@@ -91,6 +91,8 @@
     <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="BaseCollider.cpp" />
+    <ClCompile Include="SphereCollider.cpp" />
+    <ClCompile Include="AABBCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -163,6 +165,8 @@
     <ClInclude Include="LevelLoader.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="BaseCollider.h" />
+    <ClInclude Include="SphereCollider.h" />
+    <ClInclude Include="AABBCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

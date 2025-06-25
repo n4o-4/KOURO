@@ -18,29 +18,19 @@ public:
 		Vector3 max; // 最大座標
 	};
 
-	enum class ColliderType
-	{
-		kNone = -1,               // コライダーなし
-		kSphere,                  // 球
-		kAABB,                    // 軸平行境界ボックス
-		//kOBB,
-		//kCapsule,
-		//kPlane,
-		kCountOfColliderType,
-	};
-
 public:
 
 	// 初期化
-	void Initialize(WorldTransform* worldTransform, ColliderType type);
-
-	
+	virtual void Initialize(WorldTransform* worldTransform);
 
 private: // メンバ変数
 
-
 	WorldTransform* worldTransform_ = nullptr; // ワールドトランスフォーム
 
-	ColliderType type_ = ColliderType::kNone; // コライダーの種類
+protected:
+
+	uint32_t collisionAttribute_ = 0; // コリジョン属性
+
+	uint32_t collisionMask_ = 0; // コリジョンマスク
 };
 
