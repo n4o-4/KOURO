@@ -104,4 +104,6 @@ void Player::Move()
 	{
 		velocity_.z -= 0.1f;
 	}
+
+
 }

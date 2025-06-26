@@ -3,6 +3,4 @@
 
 class SphereCollider : public BaseCollider
 {
-
 };
-

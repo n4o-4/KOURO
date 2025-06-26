@@ -25,16 +25,26 @@ public: /// 公開メンバ関数
 
 	/**
 	 * \brief  Initialize 初期化
-	 * \param worldTransform ワールド変形情報
+	 * \param  worldTransform ワールド変形情報
 	 */
 
 	virtual void Initialize(WorldTransform* worldTransform);
 	
-	/**
-	 * \brief  Update 更新
-	 */
+	// \brief  Update 更新
 
 	virtual void Update() = 0;
+
+	
+	// \brief  PrevCollisionsClear 前回の衝突情報をクリアする
+
+	void PrevCollisionsClear();
+
+	/**
+	 * \brief  AddPrevCollision 前回の衝突情報にコライダーを追加する
+	 * \param  collider コライダー
+	 */
+
+	void AddPrevCollision(BaseCollider* collider);
 
 	///================================================================================
 	///                                        setter
@@ -70,8 +80,9 @@ public: /// 公開メンバ関数
 
 	uint32_t GetCollisionMask() const { return collisionMask_; }	
 
+	///================================================================================
+	///                                        当たり判定
 
-	
 	// \brief  OnCollisionEnter 衝突開始時の処理
 
 	virtual void OnCollisionEnter(BaseCollider* other) = 0;
