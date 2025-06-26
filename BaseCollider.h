@@ -1,6 +1,9 @@
 #pragma once
+#include <unordered_set>
+
 // Engine
 #include "Kouro.h"
+
 
 class BaseCollider
 {
@@ -55,7 +58,7 @@ public: /// 公開メンバ関数
 
 	/**================================================================================
 	 * \brief  GetCollisionAttribute コリジョン属性を取得する
-	 * \return AABB
+	 * \return collisionAttribute(コリジョン属性)
 	 */
 
 	uint32_t GetCollisionAttribute() const { return collisionAttribute_; }
@@ -67,6 +70,20 @@ public: /// 公開メンバ関数
 
 	uint32_t GetCollisionMask() const { return collisionMask_; }	
 
+
+	
+	// \brief  OnCollisionEnter 衝突開始時の処理
+
+	virtual void OnCollisionEnter(BaseCollider* other) = 0;
+
+	// \brief  OnCollisionStay 衝突中の処理
+
+	virtual void OnCollisionStay(BaseCollider* other) = 0;
+
+	// \brief  OnCollisionExit 衝突終了時の処理
+
+	virtual void OnCollisionExit(BaseCollider* other) = 0;
+
 protected:
 
 	WorldTransform* worldTransform_ = nullptr; // ワールドトランスフォーム
@@ -74,5 +91,7 @@ protected:
 	uint32_t collisionAttribute_ = 0; // コリジョン属性
 
 	uint32_t collisionMask_ = 0; // コリジョンマスク
+
+	std::unordered_set<BaseCollider*> prevCollisions_; // 衝突していたコライダーのセット
 };
 
