@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "BaseCamera.h"
 
 #include "MyMath.h"
@@ -7,19 +7,19 @@ class RailCamera : public BaseCamera
 {
 public:
 
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	void Initialize() override;
 
-	// XV
+	// æ›´æ–°
 	void Update() override;
 
 private:
 
-	std::vector<Vector3> controlPoints_; //!< ƒJƒƒ‰‚Ì§Œä“_
+	std::vector<Vector3> controlPoints_; //!< ã‚«ãƒ¡ãƒ©ã®åˆ¶å¾¡ç‚¹
 
 	const float kMoveTime = 10.0f;
 
-	float moveTimer_ = 0.0f; //!< ƒJƒƒ‰‚ÌˆÚ“®ŠÔ
+	float moveTimer_ = 0.0f; //!< ã‚«ãƒ¡ãƒ©ã®ç§»å‹•æ™‚é–“
 
 };
 

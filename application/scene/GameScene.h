@@ -57,6 +57,9 @@ private:
 	std::unique_ptr<LevelLoader::LevelData> levelData_ = nullptr;
 
 	std::vector<std::unique_ptr<Enemy>> enemies_;
+
+	std::unique_ptr<ColliderManager> colliderManager_ = nullptr;
+
 private:
 
 	//std::unique_ptr<SkyDome> skyDome_ = nullptr;

@@ -1,18 +1,20 @@
-#pragma once
+ï»¿#pragma once
 #include "BaseCollider.h"
+
+class SphereCollider; // å‰æ–¹å®£è¨€
 
 class AABBCollider : public BaseCollider
 {
-public: /// ŒöŠJƒƒ“ƒoŠÖ”
+public: /// å…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	/**
-	 * \brief  Initialize ‰Šú‰»
-	 * \param  worldTransform ƒ[ƒ‹ƒh•ÏŒ`î•ñ
+	 * \brief  Initialize åˆæœŸåŒ–
+	 * \param  worldTransform ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰å½¢æƒ…å ±
 	 */
 
 	void Initialize(WorldTransform* worldTransform) override;
 
-	// \brief  Update XV
+	// \brief  Update æ›´æ–°
 
 	void Update() override;
 	
@@ -20,8 +22,8 @@ public: /// ŒöŠJƒƒ“ƒoŠÖ”
 	///                                        setter
 
 	/**
-	 * \brief AABB‚Ìî•ñ‚ğİ’è‚·‚é
-	 * \parma AABB AABB‚ÌÅ¬À•W‚ÆÅ‘åÀ•W
+	 * \brief AABBã®æƒ…å ±ã‚’è¨­å®šã™ã‚‹
+	 * \parma AABB AABBã®æœ€å°åº§æ¨™ã¨æœ€å¤§åº§æ¨™
 	*/
 
 	void SetAABB(const AABB& aabb) { aabb_ = aabb; }
@@ -30,21 +32,38 @@ public: /// ŒöŠJƒƒ“ƒoŠÖ”
 	///                                        getter
 	
 	/**================================================================================
-	 * \brief  GetAABB AABB‚ğæ“¾‚·‚é
+	 * \brief  GetAABB AABBã‚’å–å¾—ã™ã‚‹
 	 * \return AABB
 	 */
 
 	AABB GetAABB() const { return aabb_; }
 
-private: /// ”ñŒöŠJƒƒ“ƒoŠÖ”
+	///================================================================================
+	///                                        å½“ãŸã‚Šåˆ¤å®šè¨ˆç®—
+	///                                        visitorãƒ‘ã‚¿ãƒ¼ãƒ³ãŠè©¦ã—
 
-public: /// ŒöŠJƒƒ“ƒo•Ï”
+	/**================================================================================
+	 * \brief  CheckCollision
+	 * \return
+	 */
 
-private: /// ”ñŒöŠJƒƒ“ƒo•Ï”
+	bool CheckCollision(BaseCollider* other) override;
+
+	bool CheckCollisionWithAABB(AABBCollider* other) override;
+
+	bool CheckCollisionWithSphere(SphereCollider* other)override;
+
+private: /// éå…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
+
+public: /// å…¬é–‹ãƒ¡ãƒ³ãƒå¤‰æ•°
+
+private: /// éå…¬é–‹ãƒ¡ãƒ³ãƒå¤‰æ•°
 	
-	// AABB‚ÌÅ¬À•W‚ÆÅ‘åÀ•W
+	// AABBã®æœ€å°åº§æ¨™ã¨æœ€å¤§åº§æ¨™
 
 	AABB aabb_ = {};
+
+	Vector3 center_ = { 0.0f, 0.0f, 0.0f }; //!< AABBã®ä¸­å¿ƒåº§æ¨™
 
 };
 

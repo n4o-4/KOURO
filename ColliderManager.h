@@ -1,22 +1,39 @@
-#pragma once
+ï»¿#pragma once
 #include "Kouro.h"
 
 #include "BaseCollider.h"
+#include "AABBCollider.h"
+#include "SphereCollider.h"
 
 class ColliderManager
 {
-public:  /// ŒöŠJƒƒ“ƒoŠÖ”
+public:  /// å…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 	
-	
-	// \brief  Update XV
+	// \brief  Update æ›´æ–°
 
 	void Update();
 
+	/**
+	 * \brief  AddCollider ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’è¿½åŠ ã™ã‚‹
+	 * \param  collider ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
+	 */
 
-private: /// ”ñŒöŠJƒƒ“ƒoŠÖ”
-public:  /// ŒöŠJƒƒ“ƒo•Ï”
-private: /// ”ñŒöŠJƒƒ“ƒo•Ï”
+	void AddCollider(BaseCollider* collider) { colliders_.push_back(collider); }
 
-	std::vector<BaseCollider*> colliders_; // ƒRƒ‰ƒCƒ_[‚ÌƒŠƒXƒg
+private: /// éå…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
+
 	
+	
+	// \brief  ClearColliders ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ãƒªã‚¹ãƒˆã‚’ã‚¯ãƒªã‚¢ã™ã‚‹
+	void ClearColliders() { colliders_.clear(); }
+
+	void ScanColliders();
+
+	void CheckCollision(BaseCollider* a, BaseCollider* b);
+
+private: /// éå…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
+public:  /// å…¬é–‹ãƒ¡ãƒ³ãƒå¤‰æ•°
+private: /// éå…¬é–‹ãƒ¡ãƒ³ãƒå¤‰æ•°
+
+	std::vector<BaseCollider*> colliders_; // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ãƒªã‚¹ãƒˆ
 };

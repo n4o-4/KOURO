@@ -1,33 +1,52 @@
-#include "Enemy.h"
+ï»¿#include "Enemy.h"
 
 void Enemy::Initialize(Model* model)
 {
 	///=========================================
-	/// eƒNƒ‰ƒX
+	/// è¦ªã‚¯ãƒ©ã‚¹
 
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	BaseCharacter::Initialize(model);
 
 	worldTransform_->useQuaternion_ = false;
 
 	worldTransform_->quaternionTransform.scale = { 5.0f,5.0f,5.0f };
 	worldTransform_->transform.scale = { 1.0f,1.0f,1.0f };
+
+	BaseCollider::Initialize(worldTransform_.get());
+
+	SetCollisionAttribute(0b1 << 1); // ã‚³ãƒªã‚¸ãƒ§ãƒ³å±žæ€§ã‚’è¨­å®š
+	SetCollisionMask(0xffffff0f); // ã‚³ãƒªã‚¸ãƒ§ãƒ³ãƒžã‚¹ã‚¯ã‚’è¨­å®š
 }
 
 void Enemy::Update()
 {
 	///=========================================
-	/// eƒNƒ‰ƒX
+	/// è¦ªã‚¯ãƒ©ã‚¹
 
-	// XV
+	// æ›´æ–°
 	BaseCharacter::Update();
+
+	AABBCollider::Update();
 }
 
 void Enemy::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 {
 	///=========================================
-	/// eƒNƒ‰ƒX
+	/// è¦ªã‚¯ãƒ©ã‚¹
 
-	// •`‰æ
+	// æç”»
 	BaseCharacter::Draw(directionalLight, pointLight, spotLight);
+}
+
+void Enemy::OnCollisionEnter(BaseCollider* other)
+{
+}
+
+void Enemy::OnCollisionStay(BaseCollider* other)
+{
+}
+
+void Enemy::OnCollisionExit(BaseCollider* other)
+{
 }

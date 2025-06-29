@@ -1,4 +1,4 @@
-#include "RailCamera.h"
+ï»¿#include "RailCamera.h"
 
 void RailCamera::Initialize()
 {
@@ -41,18 +41,18 @@ void RailCamera::Update()
 
 	Vector3 viewTarget = CatmullRomPosition(controlPoints_, nextT);
 
-	// Œ»ÝˆÊ’u
+	// ç¾åœ¨ä½ç½®
 	Vector3 position = viewProjection_->transform.translate;
-	// ŽŸ‚ÌˆÊ’u
+	// æ¬¡ã®ä½ç½®
 	Vector3 target = viewTarget;
 
-	// forwardƒxƒNƒgƒ‹iis•ûŒüj
+	// forwardãƒ™ã‚¯ãƒˆãƒ«ï¼ˆé€²è¡Œæ–¹å‘ï¼‰
 	Vector3 forward = Normalize(target - position);
 
-	// YŽ²‚ðã•ûŒü‚Æ‰¼’è‚µAforward‚©‚çƒIƒCƒ‰[Šp‚ðŽZo
+	// Yè»¸ã‚’ä¸Šæ–¹å‘ã¨ä»®å®šã—ã€forwardã‹ã‚‰ã‚ªã‚¤ãƒ©ãƒ¼è§’ã‚’ç®—å‡º
 	float yaw = std::atan2(forward.x, forward.z);
 	float pitch = std::asin(-forward.y);
-	float roll = 0.0f; // •K—v‚É‰ž‚¶‚Ä
+	float roll = 0.0f; // å¿…è¦ã«å¿œã˜ã¦
 
 	viewProjection_->transform.rotate = { pitch, yaw, roll };
 

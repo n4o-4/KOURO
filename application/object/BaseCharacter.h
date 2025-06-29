@@ -38,5 +38,6 @@ protected: // 派生用メンバ変数
 	bool isActive_ = true;
 
 	BaseCamera* camera_ = nullptr;
+
 };
 

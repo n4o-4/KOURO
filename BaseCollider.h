@@ -1,64 +1,52 @@
-#pragma once
+ï»¿#pragma once
 #include <unordered_set>
 
 // Engine
-#include "Kouro.h"
+#include "WorldTransform.h"
+#include "CollisionMath.h"
 
+class AABBCollider; // å‰æ–¹å®£è¨€
+class SphereCollider; // å‰æ–¹å®£è¨€
 
 class BaseCollider
 {
-public:
-
-	struct Sphere
-	{
-		Vector3 center; // ’†S
-		float radius; // ”¼Œa
-	};
-
-	struct AABB
-	{
-		Vector3 min; // Å¬À•W
-		Vector3 max; // Å‘åÀ•W
-	};
-
-public: /// ŒöŠJƒƒ“ƒoŠÖ”
+public: /// å…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	/**
-	 * \brief  Initialize ‰Šú‰»
-	 * \param  worldTransform ƒ[ƒ‹ƒh•ÏŒ`î•ñ
+	 * \brief  Initialize åˆæœŸåŒ–
+	 * \param  worldTransform ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰å½¢æƒ…å ±
 	 */
 
 	virtual void Initialize(WorldTransform* worldTransform);
 	
-	// \brief  Update XV
+	// \brief  Update æ›´æ–°
 
 	virtual void Update() = 0;
 
-	
-	// \brief  PrevCollisionsClear ‘O‰ñ‚ÌÕ“Ëî•ñ‚ğƒNƒŠƒA‚·‚é
-
-	void PrevCollisionsClear();
-
 	/**
-	 * \brief  AddPrevCollision ‘O‰ñ‚ÌÕ“Ëî•ñ‚ÉƒRƒ‰ƒCƒ_[‚ğ’Ç‰Á‚·‚é
-	 * \param  collider ƒRƒ‰ƒCƒ_[
+	 * \brief  AddPrevCollision å‰å›ã®è¡çªæƒ…å ±ã«ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’è¿½åŠ ã™ã‚‹
+	 * \param  collider ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
 	 */
 
-	void AddPrevCollision(BaseCollider* collider);
+	void AddCollision(BaseCollider* collider);
+
+
+	void UpdateCollisionStates();
+
 
 	///================================================================================
 	///                                        setter
 
 	/**================================================================================
-	 * \brief  SetCollisionAttribute ƒRƒŠƒWƒ‡ƒ“‘®«‚ğİ’è‚·‚é
-	 * \return collisionAttribute(ƒRƒŠƒWƒ‡ƒ“‘®«)
+	 * \brief  SetCollisionAttribute ã‚³ãƒªã‚¸ãƒ§ãƒ³å±æ€§ã‚’è¨­å®šã™ã‚‹
+	 * \return collisionAttribute(ã‚³ãƒªã‚¸ãƒ§ãƒ³å±æ€§)
 	 */
 
 	void SetCollisionAttribute(uint32_t collisionAttribute) { collisionAttribute_ = collisionAttribute; }
 
 	/**================================================================================
-	 * \brief  SetCollisionMask ƒRƒŠƒWƒ‡ƒ“ƒ}ƒXƒN‚ğİ’è‚·‚é
-	 * \parma  CollisionMask ƒRƒŠƒWƒ‡ƒ“ƒ}ƒXƒN
+	 * \brief  SetCollisionMask ã‚³ãƒªã‚¸ãƒ§ãƒ³ãƒã‚¹ã‚¯ã‚’è¨­å®šã™ã‚‹
+	 * \parma  CollisionMask ã‚³ãƒªã‚¸ãƒ§ãƒ³ãƒã‚¹ã‚¯
 	 */
 
 	void SetCollisionMask(uint32_t collisionMask) { collisionMask_ = collisionMask; }
@@ -67,42 +55,60 @@ public: /// ŒöŠJƒƒ“ƒoŠÖ”
 	///                                        getter
 
 	/**================================================================================
-	 * \brief  GetCollisionAttribute ƒRƒŠƒWƒ‡ƒ“‘®«‚ğæ“¾‚·‚é
-	 * \return collisionAttribute(ƒRƒŠƒWƒ‡ƒ“‘®«)
+	 * \brief  GetCollisionAttribute ã‚³ãƒªã‚¸ãƒ§ãƒ³å±æ€§ã‚’å–å¾—ã™ã‚‹
+	 * \return collisionAttribute(ã‚³ãƒªã‚¸ãƒ§ãƒ³å±æ€§)
 	 */
 
 	uint32_t GetCollisionAttribute() const { return collisionAttribute_; }
 
 	/**================================================================================
-	 * \brief  GetCollisionMask ƒRƒŠƒWƒ‡ƒ“ƒ}ƒXƒN‚ğæ“¾‚·‚é
-	 * \return collisionMask(ƒRƒŠƒWƒ‡ƒ“ƒ}ƒXƒN)
+	 * \brief  GetCollisionMask ã‚³ãƒªã‚¸ãƒ§ãƒ³ãƒã‚¹ã‚¯ã‚’å–å¾—ã™ã‚‹
+	 * \return collisionMask(ã‚³ãƒªã‚¸ãƒ§ãƒ³ãƒã‚¹ã‚¯)
 	 */
 
 	uint32_t GetCollisionMask() const { return collisionMask_; }	
 
 	///================================================================================
-	///                                        “–‚½‚è”»’è
+	///                                        å½“ãŸã‚Šåˆ¤å®šè¨ˆç®—
+	///                                        visitorãƒ‘ã‚¿ãƒ¼ãƒ³ãŠè©¦ã—
+	
+	/**================================================================================
+	 * \brief  CheckCollision 
+	 * \return 
+	 */
 
-	// \brief  OnCollisionEnter Õ“ËŠJn‚Ìˆ—
+	virtual bool CheckCollision(BaseCollider* other) = 0;
+
+	virtual bool CheckCollisionWithAABB(AABBCollider* other) = 0;
+
+	virtual bool CheckCollisionWithSphere(SphereCollider* other) = 0;
+
+	///================================================================================
+	///                                        å½“ãŸã‚Šåˆ¤å®š
+
+	// \brief  OnCollisionEnter è¡çªé–‹å§‹æ™‚ã®å‡¦ç†
 
 	virtual void OnCollisionEnter(BaseCollider* other) = 0;
 
-	// \brief  OnCollisionStay Õ“Ë’†‚Ìˆ—
+	// \brief  OnCollisionStay è¡çªä¸­ã®å‡¦ç†
 
 	virtual void OnCollisionStay(BaseCollider* other) = 0;
 
-	// \brief  OnCollisionExit Õ“ËI—¹‚Ìˆ—
+	// \brief  OnCollisionExit è¡çªçµ‚äº†æ™‚ã®å‡¦ç†
 
 	virtual void OnCollisionExit(BaseCollider* other) = 0;
 
 protected:
 
-	WorldTransform* worldTransform_ = nullptr; // ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+	WorldTransform* colliderTransform_ = nullptr; // ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
 
-	uint32_t collisionAttribute_ = 0; // ƒRƒŠƒWƒ‡ƒ“‘®«
+	uint32_t collisionAttribute_ = 0; // ã‚³ãƒªã‚¸ãƒ§ãƒ³å±æ€§
 
-	uint32_t collisionMask_ = 0; // ƒRƒŠƒWƒ‡ƒ“ƒ}ƒXƒN
+	uint32_t collisionMask_ = 0; // ã‚³ãƒªã‚¸ãƒ§ãƒ³ãƒã‚¹ã‚¯
 
-	std::unordered_set<BaseCollider*> prevCollisions_; // Õ“Ë‚µ‚Ä‚¢‚½ƒRƒ‰ƒCƒ_[‚ÌƒZƒbƒg
+	std::unordered_set<BaseCollider*> prevCollisions_; // å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã§è¡çªã—ã¦ã„ãŸã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ã‚»ãƒƒãƒˆ
+
+	std::unordered_set<BaseCollider*> currentCollisions_; // ç¾ãƒ•ãƒ¬ãƒ¼ãƒ ã§è¡çªã—ã¦ã„ã‚‹ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ã‚»ãƒƒãƒˆ
+
 };
 

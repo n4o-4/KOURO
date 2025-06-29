@@ -1,22 +1,37 @@
-#include "BaseCollider.h"
+ï»¿#include "BaseCollider.h"
 
 void BaseCollider::Initialize(WorldTransform* worldTransform)
 {
-	// ƒRƒ‰ƒCƒ_[‚ÉŠÖ˜A•t‚¯‚éƒ[ƒ‹ƒh•ÏŠ·î•ñ‚ğİ’è‚·‚é
+	// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã«é–¢é€£ä»˜ã‘ã‚‹ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›æƒ…å ±ã‚’è¨­å®šã™ã‚‹
 
-	worldTransform_ = worldTransform;
+	colliderTransform_ = worldTransform;
 }
 
-void BaseCollider::PrevCollisionsClear()
+void BaseCollider::AddCollision(BaseCollider* collider)
 {
-	// Õ“Ë‚µ‚Ä‚¢‚½ƒRƒ‰ƒCƒ_[‚ÌƒZƒbƒg‚ğƒNƒŠƒA
+	// å‰å›ã®è¡çªæƒ…å ±ã«ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’è¿½åŠ 
 
-	prevCollisions_.clear();
+	currentCollisions_.insert(collider);
 }
 
-void BaseCollider::AddPrevCollision(BaseCollider* collider)
+void BaseCollider::UpdateCollisionStates()
 {
-	// ‘O‰ñ‚ÌÕ“Ëî•ñ‚ÉƒRƒ‰ƒCƒ_[‚ğ’Ç‰Á
-
-	prevCollisions_.insert(collider);
+	// Enter & Stay
+	for (BaseCollider* other : currentCollisions_) {
+		if (prevCollisions_.count(other)) {
+			OnCollisionStay(other);
+		}
+		else {
+			OnCollisionEnter(other);
+		}
+	}
+	// Exit
+	for (BaseCollider* other : prevCollisions_) {
+		if (!currentCollisions_.count(other)) {
+			OnCollisionExit(other);
+		}
+	}
+	// æ¬¡ãƒ•ãƒ¬ãƒ¼ãƒ ç”¨ã«ã‚»ãƒƒãƒˆã‚’å…¥ã‚Œæ›¿ãˆ
+	prevCollisions_ = std::move(currentCollisions_);
+	currentCollisions_.clear();
 }

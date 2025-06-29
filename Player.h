@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "BaseCharacter.h"
-class Player : public BaseCharacter
+class Player : public BaseCharacter, public AABBCollider
 {
 public: // 公開メンバ関数
 
@@ -12,6 +12,21 @@ public: // 公開メンバ関数
 
 	// 描画処理
 	void Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) override;
+
+private: 
+
+
+	// \brief  OnCollisionEnter 衝突開始時の処理
+
+	void OnCollisionEnter(BaseCollider* other) override;
+
+	// \brief  OnCollisionStay 衝突中の処理
+
+	void OnCollisionStay(BaseCollider* other) override;
+
+	// \brief  OnCollisionExit 衝突終了時の処理
+
+	void OnCollisionExit(BaseCollider* other) override;
 
 private: // 非公開メンバ関数
 
@@ -36,5 +51,11 @@ private: // 非公開メンバ関数
 		{10.0f,0.0f,180.0f},
 		{0.0f,0.0f,200.0f}
 	};
+
+
+
+public:
+
+	
 };
 

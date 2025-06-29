@@ -1,13 +1,13 @@
-#pragma once
+ï»¿#pragma once
 #include "BaseCharacter.h"
-class Enemy : public BaseCharacter
+class Enemy : public BaseCharacter, public AABBCollider
 {
-public: // ŒöŠJƒƒ“ƒoŠÖ”
-	// ‰Šú‰»ˆ—
+public: // å…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
+	// åˆæœŸåŒ–å‡¦ç†
 	void Initialize(Model* model) override;
-	// XVˆ—
+	// æ›´æ–°å‡¦ç†
 	void Update() override;
-	// •`‰æˆ—
+	// æç”»å‡¦ç†
 	void Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) override;
 
 	void SetPosition(const Vector3& position) {
@@ -20,9 +20,19 @@ public: // ŒöŠJƒƒ“ƒoŠÖ”
 		worldTransform_->UpdateMatrix();
 	}
 
-private: // ”ñŒöŠJƒƒ“ƒoŠÖ”
+private: // éå…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 
-	
+	// \brief  OnCollisionEnter è¡çªé–‹å§‹æ™‚ã®å‡¦ç†
+
+	void OnCollisionEnter(BaseCollider* other) override;
+
+	// \brief  OnCollisionStay è¡çªä¸­ã®å‡¦ç†
+
+	void OnCollisionStay(BaseCollider* other) override;
+
+	// \brief  OnCollisionExit è¡çªçµ‚äº†æ™‚ã®å‡¦ç†
+
+	void OnCollisionExit(BaseCollider* other) override;
 
 };
 

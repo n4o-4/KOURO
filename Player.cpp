@@ -10,14 +10,20 @@ void Player::Initialize(Model* model)
 
 	worldTransform_->useQuaternion_ = false;
 
-	worldTransform_->quaternionTransform.scale = { 50.0f,50.0f,50.0f };
-	worldTransform_->transform.scale = { 50.0f,50.0f,50.0f };
+	worldTransform_->quaternionTransform.scale = { 1.0f,1.0f,1.0f };
+	worldTransform_->transform.scale = { 1.0f,1.0f,1.0f };
+
+	BaseCollider::Initialize(worldTransform_.get());
+
+	SetCollisionAttribute(0b1); // コリジョン属性を設定
+
+	SetCollisionMask(0xfffffff0);
 }
 
 void Player::Update()
 {
 	// 移動
-	//Move();
+	Move();
 
 	//worldTransform_->deltaRotate_ = { 0.01f,0.0f,0.0f };
 
@@ -61,6 +67,8 @@ void Player::Update()
 	// 更新
 	BaseCharacter::Update();
 
+	AABBCollider::Update();
+
 #ifdef _DEBUG
 
 
@@ -82,6 +90,20 @@ void Player::Draw(DirectionalLight directionalLight, PointLight pointLight, Spot
 	
 	// 描画
 	BaseCharacter::Draw(directionalLight,pointLight,spotLight);
+}
+
+void Player::OnCollisionEnter(BaseCollider* other)
+{
+	int a = 0;
+}
+
+void Player::OnCollisionStay(BaseCollider* other)
+{
+	int a = 0;
+}
+
+void Player::OnCollisionExit(BaseCollider* other)
+{
 }
 
 void Player::Move()

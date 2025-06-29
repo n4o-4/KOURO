@@ -172,6 +172,8 @@ void GameScene::Initialize() {
 
 	ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
 
+	colliderManager_ = std::make_unique<ColliderManager>();
+
 	for (int i = 0; i < 4; ++i)
 	{
 		std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
@@ -181,8 +183,12 @@ void GameScene::Initialize() {
 
 		enemy->SetCamera(cameraManager_->GetActiveCamera());
 
+		colliderManager_->AddCollider(enemy.get());
+
 		enemies_.push_back(std::move(enemy));
 	}
+
+	colliderManager_->AddCollider(player_.get());
 }
 ///=============================================================================
 ///						終了処理
@@ -237,6 +243,8 @@ void GameScene::Update() {
 	{
 		enemy->Update();
 	}
+
+	colliderManager_->Update();
 
 #ifdef _DEBUG
 

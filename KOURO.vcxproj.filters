@@ -94,6 +94,7 @@
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="AABBCollider.cpp" />
     <ClCompile Include="ColliderManager.cpp" />
+    <ClCompile Include="CollisionMath.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="AABBCollider.h" />
     <ClInclude Include="ColliderManager.h" />
+    <ClInclude Include="CollisionMath.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

@@ -10,9 +10,16 @@
 const float kDeltaTime = 1.0f / 60.0f;
 
 struct AABB {
+	Vector3 center; //!< 中心座標
 	Vector3 min; //!< 最小点
 	Vector3 max; //!< 最大点
 };
+
+struct Sphere {
+	Vector3 center; //!< 中心
+	float radius; //!< 半径
+};
+
 
 inline Vector3 Normalize(Vector3 v)
 {
