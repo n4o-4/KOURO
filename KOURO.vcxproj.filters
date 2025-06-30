@@ -83,17 +83,17 @@
     <ClCompile Include="engine\effect\Random.cpp" />
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="engine\effect\MotionBlur.cpp" />
-    <ClCompile Include="ColorSpace.cpp" />
+    <ClCompile Include="engine\effect\ColorSpace.cpp" />
     <ClCompile Include="engine\3d\ModelDatas.cpp" />
     <ClCompile Include="application\object\BaseCharacter.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="RailCamera.cpp" />
+    <ClCompile Include="application\object\Player.cpp" />
+    <ClCompile Include="application\camera\RailCamera.cpp" />
     <ClCompile Include="LevelLoader.cpp" />
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="BaseCollider.cpp" />
-    <ClCompile Include="SphereCollider.cpp" />
-    <ClCompile Include="AABBCollider.cpp" />
-    <ClCompile Include="ColliderManager.cpp" />
+    <ClCompile Include="application\object\Enemy.cpp" />
+    <ClCompile Include="application\object\BaseCollider.cpp" />
+    <ClCompile Include="application\object\SphereCollider.cpp" />
+    <ClCompile Include="application\object\AABBCollider.cpp" />
+    <ClCompile Include="application\object\ColliderManager.cpp" />
     <ClCompile Include="CollisionMath.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -160,16 +160,16 @@
     <ClInclude Include="engine\effect\Random.h" />
     <ClInclude Include="engine\effect\LinearFog.h" />
     <ClInclude Include="engine\effect\MotionBlur.h" />
-    <ClInclude Include="ColorSpace.h" />
+    <ClInclude Include="engine\effect\ColorSpace.h" />
     <ClInclude Include="application\object\BaseCharacter.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="RailCamera.h" />
+    <ClInclude Include="application\object\Player.h" />
+    <ClInclude Include="application\camera\RailCamera.h" />
     <ClInclude Include="LevelLoader.h" />
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="BaseCollider.h" />
-    <ClInclude Include="SphereCollider.h" />
-    <ClInclude Include="AABBCollider.h" />
-    <ClInclude Include="ColliderManager.h" />
+    <ClInclude Include="application\object\Enemy.h" />
+    <ClInclude Include="application\object\BaseCollider.h" />
+    <ClInclude Include="application\object\SphereCollider.h" />
+    <ClInclude Include="application\object\AABBCollider.h" />
+    <ClInclude Include="application\object\ColliderManager.h" />
     <ClInclude Include="CollisionMath.h" />
   </ItemGroup>
   <ItemGroup>

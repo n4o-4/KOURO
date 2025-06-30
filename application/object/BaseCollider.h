@@ -102,9 +102,9 @@ protected:
 
 	WorldTransform* colliderTransform_ = nullptr; // ワールドトランスフォーム
 
-	uint32_t collisionAttribute_ = 0; // コリジョン属性
+	uint32_t collisionAttribute_ = 0xffffffff; // コリジョン属性
 
-	uint32_t collisionMask_ = 0; // コリジョンマスク
+	uint32_t collisionMask_ = 0xffffffff; // コリジョンマスク
 
 	std::unordered_set<BaseCollider*> prevCollisions_; // 前フレームで衝突していたコライダーのセット
 

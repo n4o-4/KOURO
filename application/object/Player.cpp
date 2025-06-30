@@ -13,11 +13,13 @@ void Player::Initialize(Model* model)
 	worldTransform_->quaternionTransform.scale = { 1.0f,1.0f,1.0f };
 	worldTransform_->transform.scale = { 1.0f,1.0f,1.0f };
 
-	BaseCollider::Initialize(worldTransform_.get());
+	AABBCollider::Initialize(worldTransform_.get());
 
 	SetCollisionAttribute(0b1); // コリジョン属性を設定
 
-	SetCollisionMask(0xfffffff0);
+	SetCollisionMask(0b1 << 1);
+
+	SetAABB(AABB({}, { -1.0f,-1.0f,-1.0f }, {1.0f,1.0f,1.0f}));
 }
 
 void Player::Update()

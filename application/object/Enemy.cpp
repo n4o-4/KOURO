@@ -13,10 +13,10 @@ void Enemy::Initialize(Model* model)
 	worldTransform_->quaternionTransform.scale = { 5.0f,5.0f,5.0f };
 	worldTransform_->transform.scale = { 1.0f,1.0f,1.0f };
 
-	BaseCollider::Initialize(worldTransform_.get());
+	AABBCollider::Initialize(worldTransform_.get());
 
 	SetCollisionAttribute(0b1 << 1); // コリジョン属性を設定
-	SetCollisionMask(0xffffff0f); // コリジョンマスクを設定
+	SetCollisionMask(0b1); // コリジョンマスクを設定
 }
 
 void Enemy::Update()

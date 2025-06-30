@@ -8,6 +8,7 @@ void AABBCollider::Initialize(WorldTransform* worldTransform)
 
 	// AABBの初期化
 	aabb_ = {
+        {},
 		Vector3(-0.5f, -0.5f, -0.5f), // 最小点
 		Vector3(0.5f, 0.5f, 0.5f)  // 最大点
 	};
