@@ -11,13 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="application\object\AABBCollider.cpp" />
     <ClCompile Include="application\scene\BaseScene.cpp" />
     <ClCompile Include="application\scene\GameScene.cpp" />
     <ClCompile Include="application\scene\SceneFactory.cpp" />
     <ClCompile Include="application\scene\SceneManager.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
     <ClCompile Include="application\object\BaseCharacter.cpp" />
-    <ClCompile Include="ColorSpace.cpp" />
+    <ClCompile Include="application\object\BaseCollider.cpp" />
+    <ClCompile Include="application\object\ColliderManager.cpp" />
+    <ClCompile Include="BaseBullet.cpp" />
+    <ClCompile Include="CollisionMath.cpp" />
+    <ClCompile Include="engine\effect\ColorSpace.cpp" />
+    <ClCompile Include="application\object\Enemy.cpp" />
     <ClCompile Include="engine\3d\ModelDatas.cpp" />
     <ClCompile Include="engine\effect\BaseEffect.cpp" />
     <ClCompile Include="engine\effect\BoxFilter.cpp" />
@@ -50,6 +56,7 @@
     <ClCompile Include="engine\effect\Grayscale.cpp" />
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="engine\effect\LuminanceBasedOutline.cpp" />
+    <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\ModelCommon.cpp" />
@@ -70,9 +77,13 @@
     <ClCompile Include="engine\effect\Random.cpp" />
     <ClCompile Include="engine\effect\Vignette.cpp" />
     <ClCompile Include="engine\effect\MotionBlur.cpp" />
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="application\object\Player.cpp" />
+    <ClCompile Include="application\camera\RailCamera.cpp" />
+    <ClCompile Include="application\object\SphereCollider.cpp" />
+    <ClCompile Include="PlayerBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="application\object\AABBCollider.h" />
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
     <ClInclude Include="application\scene\BaseScene.h" />
     <ClInclude Include="application\scene\GameScene.h" />
@@ -80,7 +91,12 @@
     <ClInclude Include="application\scene\SceneManager.h" />
     <ClInclude Include="application\scene\TitleScene.h" />
     <ClInclude Include="application\object\BaseCharacter.h" />
-    <ClInclude Include="ColorSpace.h" />
+    <ClInclude Include="application\object\BaseCollider.h" />
+    <ClInclude Include="application\object\ColliderManager.h" />
+    <ClInclude Include="BaseBullet.h" />
+    <ClInclude Include="CollisionMath.h" />
+    <ClInclude Include="engine\effect\ColorSpace.h" />
+    <ClInclude Include="application\object\Enemy.h" />
     <ClInclude Include="engine\effect\BaseEffect.h" />
     <ClInclude Include="engine\effect\BoxFilter.h" />
     <ClInclude Include="engine\effect\DepthBasedOutline.h" />
@@ -138,7 +154,11 @@
     <ClInclude Include="engine\effect\Random.h" />
     <ClInclude Include="engine\effect\Vignette.h" />
     <ClInclude Include="engine\effect\MotionBlur.h" />
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="LevelLoader.h" />
+    <ClInclude Include="application\object\Player.h" />
+    <ClInclude Include="application\camera\RailCamera.h" />
+    <ClInclude Include="application\object\SphereCollider.h" />
+    <ClInclude Include="PlayerBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

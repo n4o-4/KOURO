@@ -1,17 +1,25 @@
 ﻿#pragma once
 #include "Structs.h"
-#include <math.h>
 #include <cmath>
 #include <algorithm>
 #include <numbers>
+#include <cassert>
+#include <vector>
 
 
 const float kDeltaTime = 1.0f / 60.0f;
 
 struct AABB {
+	Vector3 center; //!< 中心座標
 	Vector3 min; //!< 最小点
 	Vector3 max; //!< 最大点
 };
+
+struct Sphere {
+	Vector3 center; //!< 中心
+	float radius; //!< 半径
+};
+
 
 inline Vector3 Normalize(Vector3 v)
 {
@@ -804,7 +812,8 @@ static Vector3 qCross(const Quaternion& q1, const Quaternion& q2)
 	);
 }
 
-static Quaternion EulerToQuaternion(const Vector3& euler) {
+static Quaternion EulerToQuaternion(const Vector3& euler) 
+{
 	float cx = std::cos(euler.x * 0.5f);
 	float sx = std::sin(euler.x * 0.5f);
 	float cy = std::cos(euler.y * 0.5f);
@@ -821,9 +830,8 @@ static Quaternion EulerToQuaternion(const Vector3& euler) {
 	return qNormalize(q); // 念のため正規化
 }
 
-
-
-static Vector3  QuaternionToEuler(const Quaternion& q) {
+static Vector3  QuaternionToEuler(const Quaternion& q) 
+{
 	Vector3 euler;
 
 	// X (Pitch)
@@ -850,4 +858,116 @@ namespace Vect4
 	{
 		return a * (1.0f - t) + b * t;
 	}
+}
+
+
+///==============================================================
+// rail
+///==============================================================
+
+// Catmull-Rom補間を使用して、4つの制御点(p0, p1, p2, p3)を通る曲線上の点を計算する関数
+static Vector3 CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t)
+{
+	const float s = 0.5f; // Catmull-Romの係数	
+
+	float t2 = t * t; // tの2乗
+
+	float t3 = t2 * t; // tの3乗
+
+	Vector3 e3 = -p0 + 3.0f * p1 - 3.0f * p2 + p3;
+	Vector3 e2 = 2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3;
+	Vector3 e1 = -p0 + p2;
+	Vector3 e0 = 2.0f * p1;
+
+	return s * (e3 * t3 + e2 * t2 + e1 * t + e0);
+}
+
+// 曲線全体の中での位置計算
+
+static Vector3 CatmullRomPosition(const std::vector<Vector3>& points, float t)
+{
+	//// 
+	//assert(points.size() >= 4 && "制御点は4点以上必要です");
+
+
+	//// 区間数は制御点の数-1
+	//size_t division = points.size() - 1;
+
+	//// 1区間の長さ
+	//float areaWidth = 1.0f / division;
+
+	//// 区間の始点を0.0f,終点を1.0fとしたときの現在地
+	//float t_2 = std::fmod(t, areaWidth) * division;
+
+	//t_2 = std::clamp(t_2, 0.0f, 1.0f);
+
+	//// 区間のインデックス
+	//size_t index = static_cast<size_t>(t / areaWidth);
+
+
+	//// 制御点のインデックス
+	//size_t index0 = index - 1;
+	//size_t index1 = index;
+	//size_t index2 = index + 1;
+	//size_t index3 = index + 2;
+
+	//// インデックスが範囲外の場合は、最初または最後の点を使用s
+	//// 最初の区間のp0はp1を重複使用
+	//if (index == 0)
+	//{
+	//	index0 = index1;
+	//}
+
+	//if (index >= points.size())
+	//{
+	//	index3 = index2;
+	//}
+
+	//// 4点の座標
+	//const Vector3& p0 = points[index0];
+	//const Vector3& p1 = points[index1];
+	//const Vector3& p2 = points[index2];
+	//const Vector3& p3 = points[index3];
+
+	//// 4点を指定してCatmull-Rom補間
+	//return CatmullRomInterpolation(p0, p1, p2, p3, t_2);
+
+	assert(points.size() >= 4 && "制御点は4点以上必要です");
+
+	// 区間数は制御点の数 - 1
+	size_t division = points.size() - 1;
+
+	// 1区間の長さ
+	float areaWidth = 1.0f / division;
+
+	// 区間内の補間係数を計算
+	float t_2 = std::fmod(t, areaWidth) * division;
+	t_2 = std::clamp(t_2, 0.0f, 1.0f);
+
+	// 区間インデックス
+	size_t index = static_cast<size_t>(t / areaWidth);
+
+	// index が points.size() を超えるのを防ぐ
+	if (index >= points.size()) {
+		index = points.size() - 1;
+	}
+
+	// 制御点インデックス計算（範囲外にならないよう clamp）
+	auto safeIndex = [&](int i) -> size_t {
+		return static_cast<size_t>(std::clamp(i, 0, static_cast<int>(points.size() - 1)));
+		};
+
+	size_t index0 = safeIndex(static_cast<int>(index) - 1);
+	size_t index1 = safeIndex(static_cast<int>(index));
+	size_t index2 = safeIndex(static_cast<int>(index) + 1);
+	size_t index3 = safeIndex(static_cast<int>(index) + 2);
+
+	// 4点の座標
+	const Vector3& p0 = points[index0];
+	const Vector3& p1 = points[index1];
+	const Vector3& p2 = points[index2];
+	const Vector3& p3 = points[index3];
+
+	// 補間実行
+	return CatmullRomInterpolation(p0, p1, p2, p3, t_2);
 }

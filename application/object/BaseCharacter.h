@@ -16,6 +16,8 @@ public: // 公開メンバ関数
 	// 描画処理
 	virtual void Draw(DirectionalLight directionalLight,PointLight pointLight,SpotLight spotLight);
 
+	// カメラを設定
+	void SetCamera(BaseCamera* camera) { camera_ = camera; }
 
 protected: // 派生用メンバ関数
 
@@ -36,5 +38,6 @@ protected: // 派生用メンバ変数
 	bool isActive_ = true;
 
 	BaseCamera* camera_ = nullptr;
+
 };
 

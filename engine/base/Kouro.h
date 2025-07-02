@@ -13,3 +13,9 @@
 #include "SceneManager.h"
 #include "WorldTransform.h"
 #include "AnimationManager.h"
+#include "CollisionMath.h"
+#include "ColliderManager.h"
+#include "BaseCollider.h"
+#include "AABBCollider.h"
+#include "SphereCollider.h"
+

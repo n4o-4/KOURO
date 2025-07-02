@@ -1,48 +1,48 @@
-ï»¿#include "BaseCharacter.h"
+#include "BaseBullet.h"
 
-void BaseCharacter::Initialize(Model* model)
+void BaseBullet::Initialize(Model* model)
 {
 	///========================================
-	/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ3D
-	
-	// ç”Ÿæˆã¨åˆæœŸåŒ–
+	/// ƒIƒuƒWƒFƒNƒg3D
+
+	// ¶¬‚Æ‰Šú‰»
 	object3d_ = std::make_unique<Object3d>();
 	object3d_->Initialize(Object3dCommon::GetInstance());
 
-	// ãƒ¢ãƒ‡ãƒ«ã‚’è¨­å®š
+	// ƒ‚ƒfƒ‹‚ğİ’è
 	object3d_->SetModel(model);
 
-	// ãƒ­ãƒ¼ã‚«ãƒ«è¡Œåˆ—ã®åˆæœŸåŒ–
+	// ƒ[ƒJƒ‹s—ñ‚Ì‰Šú‰»
 	object3d_->SetLocalMatrix(MakeIdentity4x4());
 
 
 
 	///========================================
-	/// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
-	
-	// ç”Ÿæˆã¨åˆæœŸåŒ–
+	/// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+
+	// ¶¬‚Æ‰Šú‰»
 	worldTransform_ = std::make_unique<WorldTransform>();
 	worldTransform_->Initialize();
 
 
 	worldTransform_->useQuaternion_ = false;
-	// åˆæœŸå€¤ã®è¨­å®š
+	// ‰Šú’l‚Ìİ’è
 
 
 	///========================================
-	/// ãã®ä»–å¤‰æ•°
-	
-	// é€Ÿåº¦ã®åˆæœŸåŒ–
+	/// ‚»‚Ì‘¼•Ï”
+
+	// ‘¬“x‚Ì‰Šú‰»
 	velocity_ = { 0.0f,0.0f,0.0f };
 
-	// æœ‰åŠ¹ãƒ•ãƒ©ã‚°ã®åˆæœŸåŒ–
+	// —LŒøƒtƒ‰ƒO‚Ì‰Šú‰»
 	isActive_ = true;
 }
 
-void BaseCharacter::Update()
+void BaseBullet::Update()
 {
 	///========================================
-	/// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
+	/// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
 
 	if (worldTransform_->useQuaternion_)
 	{
@@ -53,29 +53,15 @@ void BaseCharacter::Update()
 		worldTransform_->transform.translate += velocity_;
 	}
 
-	// æ›´æ–°
+	// XV
 	worldTransform_->UpdateMatrix();
 }
 
-void BaseCharacter::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
+void BaseBullet::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 {
 	///========================================
-	/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ3D
+	/// ƒIƒuƒWƒFƒNƒg3D
 
-	// æç”»
+	// •`‰æ
 	object3d_->Draw(*worldTransform_.get(), camera_->GetViewProjection(), directionalLight, pointLight, spotLight);
-}
-
-void BaseCharacter::DrawImGui()
-{
-#ifdef _DEBUG
-
-	ImGui::Begin("Character Status");
-
-	ImGui::DragFloat3("scale", &worldTransform_->transform.scale.x, 0.01f);
-	ImGui::DragFloat3("rotate", &worldTransform_->transform.rotate.x, 0.01f);
-	ImGui::DragFloat3("translate", &worldTransform_->transform.translate.x, 0.01f);
-
-#endif 
-
 }

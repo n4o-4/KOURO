@@ -29,6 +29,9 @@ void GameScene::Initialize() {
 	//========================================
 	// テクスチャの読み込み
 	
+	ModelManager::GetInstance()->LoadModel("terrain.obj");
+
+	ModelManager::GetInstance()->LoadModel("playerbullet/playerbullet.obj");
 
 	//========================================
 	// ライト
@@ -52,7 +55,7 @@ void GameScene::Initialize() {
 
 	//========================================
 	// アクティブカメラをフォローカメラに設定
-	cameraManager_->useDebugCamera_ = true;
+	//cameraManager_->useDebugCamera_ = true;
 
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Grayscale); //完
 	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Vignette); //完
@@ -208,17 +211,53 @@ void GameScene::Initialize() {
 	player_ = std::make_unique<Player>();
 	player_->Initialize((ModelManager::GetInstance()->FindModel("terrain.obj")));
 
-	
-
 	///========================================
 	/// 入力
 
 	// マウスの入力受付を有効
 	Input::GetInstance()->SetIsReception(true);
 
+	railCamera_ = std::make_unique<RailCamera>();
+	railCamera_->Initialize();
+
+	//cameraManager_->SetActiveCamera(railCamera_.get());
+    cameraManager_->useDebugCamera_ = true;
 	cameraManager_->Update();
 
-	cameraManager_->GetActiveCamera()->GetViewProjection().transform.rotate = { 0.0f,0.78f,0.0f };
+	//cameraManager_->Update();
+
+	player_->SetCamera(cameraManager_->GetActiveCamera());
+
+	LevelLoader loader;
+
+	levelData_ = loader.LoadLevelFromJson("Resources/TL1.json");
+
+	for (auto& object : levelData_->objects)
+	{
+		object.object3d->SetLocalMatrix(MakeIdentity4x4());
+	}
+
+	ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
+
+	colliderManager_ = std::make_unique<ColliderManager>();
+
+	for (int i = 0; i < 4; ++i)
+	{
+		std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+		enemy->Initialize(ModelManager::GetInstance()->FindModel("enemy/enemy.obj"));
+
+		enemy->SetPosition(Vector3( 0.0f,1.0f,5 +  i * 40.0f));
+
+		enemy->SetCamera(cameraManager_->GetActiveCamera());
+
+		colliderManager_->AddCollider(enemy.get());
+
+		enemies_.push_back(std::move(enemy));
+	}
+
+	colliderManager_->AddCollider(player_.get());
+
+	player_->SetColliderManager(colliderManager_.get());
 }
 ///=============================================================================
 ///						終了処理
@@ -235,8 +274,7 @@ void GameScene::Update() {
 	lineDrawer_->SkeletonUpdate(animationManager->GetActiveAnimation("walk.gltf").skeleton);*/
 	//human_->Update();
 	
-	//lineDrawer_->Update();
-	player_->SetCamera(cameraManager_->GetActiveCamera());
+	//lineDrawer_->Update()
 
 	BaseScene::Update();
 
@@ -264,6 +302,18 @@ void GameScene::Update() {
 	transform_->UpdateMatrix();
 
 	player_->Update();
+
+	for (auto& object : levelData_->objects)
+	{
+		object.worldTransform->UpdateMatrix();
+	}
+
+	for (auto& enemy : enemies_)
+	{
+		enemy->Update();
+	}
+
+	colliderManager_->Update();
 
 #ifdef _DEBUG
 
@@ -325,7 +375,17 @@ void GameScene::Draw()
 
 	//ground_->Draw(*transform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
 
-	//player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+	for (auto &object : levelData_->objects)
+	{
+		object.object3d->Draw(*object.worldTransform.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+	}
+
+	player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+
+	for (auto& enemy : enemies_)
+	{
+		enemy->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+	}
 
 	DrawForegroundSprite();
 	/// 前景スプライト描画
