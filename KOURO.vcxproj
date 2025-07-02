@@ -20,6 +20,7 @@
     <ClCompile Include="application\object\BaseCharacter.cpp" />
     <ClCompile Include="application\object\BaseCollider.cpp" />
     <ClCompile Include="application\object\ColliderManager.cpp" />
+    <ClCompile Include="BaseBullet.cpp" />
     <ClCompile Include="CollisionMath.cpp" />
     <ClCompile Include="engine\effect\ColorSpace.cpp" />
     <ClCompile Include="application\object\Enemy.cpp" />
@@ -79,6 +80,7 @@
     <ClCompile Include="application\object\Player.cpp" />
     <ClCompile Include="application\camera\RailCamera.cpp" />
     <ClCompile Include="application\object\SphereCollider.cpp" />
+    <ClCompile Include="PlayerBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\AABBCollider.h" />
@@ -91,6 +93,7 @@
     <ClInclude Include="application\object\BaseCharacter.h" />
     <ClInclude Include="application\object\BaseCollider.h" />
     <ClInclude Include="application\object\ColliderManager.h" />
+    <ClInclude Include="BaseBullet.h" />
     <ClInclude Include="CollisionMath.h" />
     <ClInclude Include="engine\effect\ColorSpace.h" />
     <ClInclude Include="application\object\Enemy.h" />
@@ -155,6 +158,7 @@
     <ClInclude Include="application\object\Player.h" />
     <ClInclude Include="application\camera\RailCamera.h" />
     <ClInclude Include="application\object\SphereCollider.h" />
+    <ClInclude Include="PlayerBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

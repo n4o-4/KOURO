@@ -15,11 +15,11 @@ void ColliderManager::Update()
         colliders_.end()
     );
 
-    // コライダーの更新処理
-    for (BaseCollider* collider : colliders_)
-    {
-        collider->Update();
-    }
+    //// コライダーの更新処理
+    //for (BaseCollider* collider : colliders_)
+    //{
+    //    collider->Update();
+    //}
 
     ScanColliders();
 }

@@ -29,6 +29,9 @@ void GameScene::Initialize() {
 	//========================================
 	// テクスチャの読み込み
 	
+	ModelManager::GetInstance()->LoadModel("terrain.obj");
+
+	ModelManager::GetInstance()->LoadModel("playerbullet/playerbullet.obj");
 
 	//========================================
 	// ライト
@@ -142,8 +145,6 @@ void GameScene::Initialize() {
 	player_ = std::make_unique<Player>();
 	player_->Initialize((ModelManager::GetInstance()->FindModel("terrain.obj")));
 
-	
-
 	///========================================
 	/// 入力
 
@@ -189,6 +190,8 @@ void GameScene::Initialize() {
 	}
 
 	colliderManager_->AddCollider(player_.get());
+
+	player_->SetColliderManager(colliderManager_.get());
 }
 ///=============================================================================
 ///						終了処理

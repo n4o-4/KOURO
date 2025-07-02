@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include "BaseCharacter.h"
+
+#include "PlayerBullet.h"
+
 class Player : public BaseCharacter, public AABBCollider
 {
 public: // 公開メンバ関数
@@ -13,8 +16,17 @@ public: // 公開メンバ関数
 	// 描画処理
 	void Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) override;
 
-private: 
+	void SetColliderManager(ColliderManager* colliderManager) { colliderManager_ = colliderManager; }
 
+private: // 非公開メンバ関数
+
+	// \brief  Move 移動処理
+
+	void Move();
+
+	// \brief  Fire 弾を発射する
+
+	void Fire();
 
 	// \brief  OnCollisionEnter 衝突開始時の処理
 
@@ -28,10 +40,9 @@ private:
 
 	void OnCollisionExit(BaseCollider* other) override;
 
-private: // 非公開メンバ関数
+private: // 非公開メンバ変数
 
-	// 移動
-	void Move();
+	std::vector<std::unique_ptr<PlayerBullet>> bullets_; //!< 弾のリスト
 
 	const float kMoveTime = 10.0f;
 
@@ -52,10 +63,10 @@ private: // 非公開メンバ関数
 		{0.0f,0.0f,200.0f}
 	};
 
+	ColliderManager* colliderManager_ = nullptr; //!< コライダーマネージャ
 
-
-public:
-
+private: 
+	
 	
 };
 

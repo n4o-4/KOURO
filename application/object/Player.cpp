@@ -27,6 +27,11 @@ void Player::Update()
 	// 移動
 	Move();
 
+	if (Input::GetInstance()->Triggerkey(DIK_SPACE))
+	{
+		Fire();
+	}
+
 	//worldTransform_->deltaRotate_ = { 0.01f,0.0f,0.0f };
 
 
@@ -62,6 +67,10 @@ void Player::Update()
 
 	//worldTransform_->transform.rotate = { pitch, yaw, roll };
 
+	for (auto& bullet : bullets_)
+	{
+		bullet->Update();
+	}
 
 	///=========================================
 	/// 親クラス
@@ -72,7 +81,6 @@ void Player::Update()
 	AABBCollider::Update();
 
 #ifdef _DEBUG
-
 
 	ImGui::Begin("Player Transform");
 	
@@ -87,25 +95,16 @@ void Player::Update()
 
 void Player::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 {
+	for (auto& bullet : bullets_)
+	{
+		bullet->Draw(directionalLight, pointLight, spotLight);
+	}
+
 	///=========================================
 	/// 親クラス
 	
 	// 描画
 	BaseCharacter::Draw(directionalLight,pointLight,spotLight);
-}
-
-void Player::OnCollisionEnter(BaseCollider* other)
-{
-	int a = 0;
-}
-
-void Player::OnCollisionStay(BaseCollider* other)
-{
-	int a = 0;
-}
-
-void Player::OnCollisionExit(BaseCollider* other)
-{
 }
 
 void Player::Move()
@@ -128,6 +127,33 @@ void Player::Move()
 	{
 		velocity_.z -= 0.1f;
 	}
+}
 
+void Player::Fire()
+{
+	// 弾の生成
+	std::unique_ptr<PlayerBullet> bullet = std::make_unique<PlayerBullet>();
 
+	// 初期化
+	bullet->Initialize(ModelManager::GetInstance()->FindModel("playerbullet/playerbullet.obj"));
+
+	bullet->SetCamera(camera_);
+
+	bullet->SetVelocity({ 0.0f,0.0f,1.0f });
+
+	colliderManager_->AddCollider(bullet.get());
+
+	bullets_.push_back(std::move(bullet));
+}
+
+void Player::OnCollisionEnter(BaseCollider* other)
+{
+}
+
+void Player::OnCollisionStay(BaseCollider* other)
+{
+}
+
+void Player::OnCollisionExit(BaseCollider* other)
+{
 }

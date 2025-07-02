@@ -17,7 +17,7 @@ private:
 
 	std::vector<Vector3> controlPoints_; //!< カメラの制御点
 
-	const float kMoveTime = 10.0f;
+	const float kMoveTime = 40.0f;
 
 	float moveTimer_ = 0.0f; //!< カメラの移動時間
 
