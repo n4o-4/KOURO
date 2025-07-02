@@ -351,13 +351,13 @@ void GameScene::Update() {
 	
 #endif
 
-	emitter1_->Update();
+	//emitter1_->Update();
 
-	emitter2_->Update();
+	//emitter2_->Update();
 
-	emitter3_->Update();
+	//emitter3_->Update();
 
-	emitter4_->Update();
+	//emitter4_->Update();
 
 	lineDrawer_->Update();
 }
