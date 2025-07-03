@@ -26,6 +26,8 @@ void ColliderManager::Update()
 
 void ColliderManager::ScanColliders()
 {
+	int checkCount = 0;
+
     // コライダー同士の当たり判定
     const size_t count = colliders_.size();
     for (size_t i = 0; i < count; ++i)
@@ -39,8 +41,22 @@ void ColliderManager::ScanColliders()
             BaseCollider* b = colliders_[j];
 
             CheckCollision(a, b);
+
+            ++checkCount;
         }
     }
+
+#ifdef _DEBUG
+
+	ImGui::Begin("Collider Manager");
+
+	ImGui::Text("Collider checkCount: %zu", checkCount);
+
+	ImGui::Text("Collider count: %zu", count);
+
+    ImGui::End();
+
+#endif
 
     for (size_t i = 0; i < count; ++i)
     {

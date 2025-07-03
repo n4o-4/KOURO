@@ -43,8 +43,6 @@ void TextureManager::LoadTexture(const std::string& filePath)
 		return;
 	}
 
-	
-
 	assert(srvManager_->CheckSrvCount());
 
 	// テクスチャ枚数上限チェック
@@ -53,8 +51,20 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	// テクスチャファイルを読んでプログラムで扱えるようにする
 	DirectX::ScratchImage image{};
 	std::wstring filePathW = StringUtility::ConvertString(filePath);
-	HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
-	assert(SUCCEEDED(hr));
+
+	HRESULT hr;
+
+	if (filePathW.ends_with(L".dds"))
+	{
+		// DDSファイルの読み込み
+		hr = DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
+	}
+	else
+	{
+		hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+		assert(SUCCEEDED(hr));
+	}
+
 
 	// ミニマップの生成
 	DirectX::ScratchImage mipImages{};
@@ -75,7 +85,14 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	textureData.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData.srvIndex);
 	textureData.srvHandleGPU = srvManager_->GetGPUDescriptorHandle(textureData.srvIndex);
 
-	srvManager_->CreateSRVforTexture2D(textureData.srvIndex, textureData.resource.Get(), textureData.metadata.format, textureData.metadata.mipLevels);
+	if (textureData.metadata.IsCubemap())
+	{
+		srvManager_->CreateSRVforCubeMap(textureData.metadata.format);
+	}
+	else
+	{
+		srvManager_->CreateSRVforTexture2D(textureData.srvIndex, textureData.resource.Get(), textureData.metadata.format, textureData.metadata.mipLevels);
+	}
 }
 
 uint32_t TextureManager::GetTextureIndexByFilePath(const std::string& filePath)
