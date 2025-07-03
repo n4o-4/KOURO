@@ -1,11 +1,11 @@
 #include "PlayerBullet.h"
 
-void PlayerBullet::Initialize(Model* model)
+void PlayerBullet::Initialize(Model* model,Vector3 spawnPos)
 {
 	
 	// eƒNƒ‰ƒX‚Ì‰Šú‰»
 
-	BaseBullet::Initialize(model);
+	BaseBullet::Initialize(model,spawnPos);
 	
 	// Collider‚Ì‰Šú‰»‚Æİ’è
 

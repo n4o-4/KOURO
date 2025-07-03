@@ -30,7 +30,7 @@ void GameScene::Initialize() {
 	// テクスチャの読み込み
 	
 	ModelManager::GetInstance()->LoadModel("terrain.obj");
-
+	ModelManager::GetInstance()->LoadModel("player/player.obj");
 	ModelManager::GetInstance()->LoadModel("playerbullet/playerbullet.obj");
 
 	//========================================
@@ -209,7 +209,7 @@ void GameScene::Initialize() {
 	
 	// 初期化と生成
 	player_ = std::make_unique<Player>();
-	player_->Initialize((ModelManager::GetInstance()->FindModel("terrain.obj")));
+	player_->Initialize((ModelManager::GetInstance()->FindModel("player/player.obj")));
 
 	///========================================
 	/// 入力

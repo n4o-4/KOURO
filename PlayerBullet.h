@@ -8,7 +8,7 @@ public: // 公開メンバ関数
 	 * \param  model モデル
 	 */
 
-	void Initialize(Model* model) override;
+	void Initialize(Model* model,Vector3 spawnPos) override;
 
 	// \brief  Update 更新
 

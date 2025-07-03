@@ -11,7 +11,7 @@ public: // 公開メンバ関数
 	 * \param  model モデル
 	 */
 
-	virtual void Initialize(Model* model);
+	virtual void Initialize(Model* model, Vector3 spawnPos);
 
 	// \brief  Update 更新
 

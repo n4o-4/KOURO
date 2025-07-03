@@ -1,6 +1,6 @@
 #include "BaseBullet.h"
 
-void BaseBullet::Initialize(Model* model)
+void BaseBullet::Initialize(Model* model, Vector3 spawnPos)
 {
 	///========================================
 	/// オブジェクト3D
@@ -28,6 +28,7 @@ void BaseBullet::Initialize(Model* model)
 	worldTransform_->useQuaternion_ = false;
 	// 初期値の設定
 
+	worldTransform_->transform.translate = spawnPos;
 
 	///========================================
 	/// その他変数

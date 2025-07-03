@@ -11,7 +11,7 @@ void Player::Initialize(Model* model)
 	worldTransform_->useQuaternion_ = false;
 
 	worldTransform_->quaternionTransform.scale = { 1.0f,1.0f,1.0f };
-	worldTransform_->transform.scale = { 1.0f,1.0f,1.0f };
+	worldTransform_->transform.scale = { 0.5f,0.5f,0.5f };
 
 	AABBCollider::Initialize(worldTransform_.get());
 
@@ -135,7 +135,7 @@ void Player::Fire()
 	std::unique_ptr<PlayerBullet> bullet = std::make_unique<PlayerBullet>();
 
 	// 初期化
-	bullet->Initialize(ModelManager::GetInstance()->FindModel("playerbullet/playerbullet.obj"));
+	bullet->Initialize(ModelManager::GetInstance()->FindModel("playerbullet/playerbullet.obj"),worldTransform_->transform.translate);
 
 	bullet->SetCamera(camera_);
 
