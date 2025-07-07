@@ -24,6 +24,17 @@ void TextureManager::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager)
 	srvManager_ = srvManager;
 
 	CreateRenderTextureMetaData();
+
+	HRESULT hr;
+
+	// 初期値0でFenceを作る
+	fenceValue = 0;
+	hr = dxCommon_->GetDevice()->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+	assert(SUCCEEDED(hr));
+
+	// FenceのSignalを持つためのイベントを作成する
+	fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+	assert(fenceEvent != nullptr);
 }
 
 void TextureManager::Finalize()
@@ -58,6 +69,7 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	{
 		// DDSファイルの読み込み
 		hr = DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
+		assert(SUCCEEDED(hr));
 	}
 	else
 	{
@@ -65,11 +77,18 @@ void TextureManager::LoadTexture(const std::string& filePath)
 		assert(SUCCEEDED(hr));
 	}
 
-
 	// ミニマップの生成
 	DirectX::ScratchImage mipImages{};
-	hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
-	assert(SUCCEEDED(hr));
+
+	if (DirectX::IsCompressed(image.GetMetadata().format)) // 圧縮フォーマットか調べる
+	{
+		mipImages = std::move(image);
+	}
+	else
+	{
+		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 4, mipImages);
+		assert(SUCCEEDED(hr));
+	}	
 
 	TextureData& textureData = textureDatas[filePath];
 	
@@ -79,7 +98,37 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	std::wstring wFilePath = std::wstring(filePath.begin(), filePath.end());
 	textureData.resource->SetName((L"TextureResource_" + wFilePath).c_str());
 
-	dxCommon_->UploadTextureData(textureData.resource, mipImages);
+	Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = std::move(dxCommon_->UploadTextureData(textureData.resource, mipImages));
+
+
+	// コマンドリストの内容を確定させる。すべてのコマンドを積んでからCloseすること
+	hr = dxCommon_->GetCommandList()->Close();
+	assert(SUCCEEDED(hr));
+
+	// GPUにコマンドリストの実行を行わせる
+	Microsoft::WRL::ComPtr<ID3D12CommandList> commandLists[] = { dxCommon_->GetCommandList().Get()};
+	dxCommon_->GetCommandQueue()->ExecuteCommandLists(1, commandLists->GetAddressOf());
+
+	// GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入するようにSignalを送る
+	dxCommon_->GetCommandQueue()->Signal(fence.Get(), ++fenceValue);
+
+	// GPUの作業が完了するのを待つ
+	if (fence->GetCompletedValue() < fenceValue)
+	{
+		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+		// 指定したSignalにたどり着いてないので、たどり着くまで待つようにイベントを設定する
+		fence->SetEventOnCompletion(fenceValue, event);
+
+		// イベントを待つ
+		WaitForSingleObject(event, INFINITE);
+		CloseHandle(event);
+	}
+
+	// 次のフレーム用のコマンドリストを準備
+	hr = dxCommon_->GetCommandAllocator()->Reset();
+	assert(SUCCEEDED(hr));
+	hr = dxCommon_->GetCommandList()->Reset(dxCommon_->GetCommandAllocator().Get(), nullptr);
+	assert(SUCCEEDED(hr));
 
 	textureData.srvIndex = srvManager_->Allocate();
 	textureData.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData.srvIndex);
@@ -87,7 +136,7 @@ void TextureManager::LoadTexture(const std::string& filePath)
 
 	if (textureData.metadata.IsCubemap())
 	{
-		srvManager_->CreateSRVforCubeMap(textureData.metadata.format);
+		srvManager_->CreateSRVforCubeMap(textureData.metadata.format, textureData.srvIndex, textureData.resource.Get());
 	}
 	else
 	{

@@ -9,8 +9,8 @@
 
 #include "externals/DirectXTex/DirectXTex.h"
 #include <unordered_map>
-
-
+#include "externals//DirectXTex/d3dx12.h"
+#include <vector>
 // テクスチャマネージャー
 class TextureManager
 {
@@ -67,5 +67,11 @@ private:
 
 	// SRVインデックスの開始番号
 	static uint32_t kSRVIndexTop;
+
+	Microsoft::WRL::ComPtr<ID3D12Fence> fence = nullptr;
+
+	HANDLE fenceEvent = nullptr;
+
+	uint32_t fenceValue;
 };
 

@@ -14,6 +14,8 @@
 
 #include "PostEffect.h"
 
+#include "Skybox.h"
+
 class SceneManager;
 
 // シーン基底クラス
@@ -86,6 +88,7 @@ protected:
 
 	bool isContinue = true;
 
+	std::unique_ptr<Skybox> skybox_ = nullptr;
 
 private:
 

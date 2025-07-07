@@ -38,7 +38,7 @@ struct SpotLight
 };
 
 
-struct CameraDirection
+struct Direction
 {
     float3 direction;
 };
@@ -52,7 +52,7 @@ ConstantBuffer<PointLight> gPointLight : register(b2);
 
 ConstantBuffer<SpotLight> gSpotLight : register(b3);
 
-ConstantBuffer<CameraDirection> gCameraDirection : register(b4);
+ConstantBuffer<Direction> gDirection : register(b4);
 
 TextureCube<float4> gTexture : register(t0);
 
@@ -67,7 +67,8 @@ PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
     
-    float4 textureColor = gTexture.Sample(gSampler, gCameraDirection.direction);
+    float4 textureColor = gTexture.Sample(gSampler,input.texcoord);
+    
     output.color = textureColor * gMaterial.color;
     
     return output;

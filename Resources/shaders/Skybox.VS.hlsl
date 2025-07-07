@@ -19,19 +19,27 @@ ConstantBuffer<WorldMatrix> gWorldMatrix : register(b1);
 struct VertexShaderInput
 {
     float4 position : POSITION0;
-    float2 texcoord : TEXCOORD0;
-    float3 normal : NORMAL0;
+    float3 texcoord : TEXCOORD0;
+    //float3 normal : NORMAL0;
     
 };
 
 VertexShaderOutput main(VertexShaderInput input)
 {
     VertexShaderOutput output;
+   
+    float4x4 viewProj = gViewProjection.ViewProjection;
+
+    // •½sˆÚ“®¬•ª‚ğíœ
+    //viewProj[0][3] = 0.0f;
+    //viewProj[1][3] = 0.0f;
+    //viewProj[2][3] = 0.0f;
     
-    float4x4 WVP = mul(gWorldMatrix.World, gViewProjection.ViewProjection); // ‰‹}ˆ’u
+    float4x4 WVP = mul(gWorldMatrix.World, viewProj); // ‰‹}ˆ’u
     
-    output.position = mul(input.position, WVP).xyzw; // ‰‹}ˆ’u
-    output.texcoord = input.texcoord;
+    output.position = mul(input.position, WVP).xyww; 
+  
+    output.texcoord = input.position.xyz;
     
     return output;
     

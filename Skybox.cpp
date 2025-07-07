@@ -1,11 +1,12 @@
 #include "Skybox.h"
 
-void Skybox::Initialize(const std::string& filePath)
+void Skybox::Initialize(DirectXCommon* dxCommon,const std::string& filePath)
 {
-	TextureManager::GetInstance()->LoadTexture(filePath);
+	dxCommon_ = dxCommon;
 
-	TextureManager::GetInstance()->GetTextureIndexByFilePath(filePath);
+	filePath_ = filePath;
 
+	TextureManager::GetInstance()->LoadTexture(filePath_);
 
 	vertexResource_ = dxCommon_->CreateBufferResource(sizeof(VertexData) * 24);
 
@@ -56,8 +57,6 @@ void Skybox::Initialize(const std::string& filePath)
 	// 書き込むためのアドレスを取得
 	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 
-	
-
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData_->enableLighting = false;
 	materialData_->uvTransform = MakeIdentity4x4();
@@ -73,27 +72,52 @@ void Skybox::Initialize(const std::string& filePath)
 
 	worldTransform_->Initialize();
 
+	worldTransform_->transform.scale = { 100.0f, 100.0f, 100.0f};	
+
+	worldTransform_->UpdateMatrix();
+
+	directionResource_ = dxCommon_->CreateBufferResource(sizeof(Direction));
+	directionResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&directionData_));
+
+	InitializeIndexBuffer();
+
 	CreateGraphicsPipeline();
 }
 
 void Skybox::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 {
+	directionData_->direction = viewProjection.transform.rotate;
+
+	// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけばいい
+	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+
+	dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineState.Get());  // PSOを設定
+
+	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);  // VBVを設定
+
+	dxCommon_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
+
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_.Get()->GetGPUVirtualAddress());
 
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, viewProjection.GetViewProjectionResource()->GetGPUVirtualAddress());
 
+	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(filePath_));
+
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLight.GetDirectionalLightResource()->GetGPUVirtualAddress());
+
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(4, worldTransform_->GetTransformResource()->GetGPUVirtualAddress());
 
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(5, pointLight.GetPointLightResource()->GetGPUVirtualAddress());
 
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(6, spotLight.GetSpotLightResource()->GetGPUVirtualAddress());
 
-	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);  // VBVを設定
-
-	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU());
-
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(7, directionResource_.Get()->GetGPUVirtualAddress());
 	
-	dxCommon_->GetCommandList()->DrawInstanced(UINT(24), 1, 0, 0);
+	//dxCommon_->GetCommandList()->DrawInstanced(24, 1, 0, 0);
+
+	dxCommon_->GetCommandList()->DrawIndexedInstanced(36, 1, 0, 0, 0); // インデックスバッファを使う場合はこっち
 }
 
 void Skybox::CreateRootSignature()
@@ -190,7 +214,7 @@ void Skybox::CreateGraphicsPipeline()
 
 	inputElementDescs[1].SemanticName = "TEXCOORD";
 	inputElementDescs[1].SemanticIndex = 0;
-	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+	inputElementDescs[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
 	//inputElementDescs[2].SemanticName = "NORMAL";
@@ -239,7 +263,7 @@ void Skybox::CreateGraphicsPipeline()
 	depthStencilDesc.DepthEnable = true;
 
 	// 書き込みします
-	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 
 	// 比較関数はLessEqual。近ければ描画される
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
@@ -271,5 +295,50 @@ void Skybox::CreateGraphicsPipeline()
 	graphicsPipelineState = nullptr;
 	hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
 	assert(SUCCEEDED(hr));
+}
+
+void Skybox::InitializeIndexBuffer()
+{
+	indexResource_ = dxCommon_->CreateBufferResource(sizeof(uint32_t) * 36);
+
+	indexBufferView_.BufferLocation = indexResource_.Get()->GetGPUVirtualAddress();
+
+	indexBufferView_.SizeInBytes = sizeof(uint32_t) * 36;
+
+	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+
+	indexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
+	// 右面
+	indexData_[0] = 0;  indexData_[1] = 2;  indexData_[2] = 1;
+	indexData_[3] = 1;  indexData_[4] = 2;  indexData_[5] = 3;
+
+	// 左面
+	indexData_[6] = 4;  indexData_[7] = 5;  indexData_[8] = 6;
+	indexData_[9] = 5;  indexData_[10] = 7; indexData_[11] = 6;
+
+	// 前面
+	//indexData_[12] = 8;  indexData_[13] = 10; indexData_[14] = 9;
+	//indexData_[15] = 9;  indexData_[16] = 10; indexData_[17] = 11;
+	indexData_[12] = 8;  indexData_[13] = 9;  indexData_[14] = 10;
+	indexData_[15] = 9;  indexData_[16] = 11; indexData_[17] = 10;
+
+	// 後面
+	//indexData_[18] = 12; indexData_[19] = 13; indexData_[20] = 14;
+	//indexData_[21] = 13; indexData_[22] = 15; indexData_[23] = 14;
+
+	indexData_[18] = 12; indexData_[19] = 14; indexData_[20] = 13;
+	indexData_[21] = 13; indexData_[22] = 14; indexData_[23] = 15;
+
+	// 上面
+	//indexData_[24] = 16; indexData_[25] = 18; indexData_[26] = 17;
+	//indexData_[27] = 17; indexData_[28] = 18; indexData_[29] = 19;
+	indexData_[24] = 16; indexData_[25] = 17; indexData_[26] = 18;
+	indexData_[27] = 17; indexData_[28] = 19; indexData_[29] = 18;
+
+	// 下面
+	//indexData_[30] = 20; indexData_[31] = 21; indexData_[32] = 22;
+	//indexData_[33] = 21; indexData_[34] = 23; indexData_[35] = 22;
+	indexData_[30] = 20; indexData_[31] = 22; indexData_[32] = 21;
+	indexData_[33] = 21; indexData_[34] = 22; indexData_[35] = 23;
 }
 

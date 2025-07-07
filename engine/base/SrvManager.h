@@ -42,7 +42,7 @@ public:
 	// SRV生成(Structure Buffer用)
 	void CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource* pResource, UINT numElements, UINT structureByteStride);
 
-	void CreateSRVforCubeMap(DXGI_FORMAT format);
+	void CreateSRVforCubeMap(DXGI_FORMAT format, uint32_t srvIndex, ID3D12Resource* pResource);
 
 	void PreDraw();
 

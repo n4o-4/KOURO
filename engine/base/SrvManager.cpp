@@ -86,7 +86,7 @@ void SrvManager::CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource*
 	dxCommon_->GetDevice()->CreateShaderResourceView(pResource, &srvDesc, GetCPUDescriptorHandle(srvIndex));
 }
 
-void SrvManager::CreateSRVforCubeMap(DXGI_FORMAT format)
+void SrvManager::CreateSRVforCubeMap(DXGI_FORMAT format, uint32_t srvIndex, ID3D12Resource* pResource)
 {
 	// SRV の記述子を設定する
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -96,6 +96,9 @@ void SrvManager::CreateSRVforCubeMap(DXGI_FORMAT format)
 	srvDesc.TextureCube.MostDetailedMip = 0; // 最も詳細なミップレベル
 	srvDesc.TextureCube.MipLevels = UINT_MAX;
 	srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+
+	// デバイスを使って SRV を作成する
+    dxCommon_->GetDevice()->CreateShaderResourceView(pResource, &srvDesc, GetCPUDescriptorHandle(srvIndex));
 }
 
 void SrvManager::PreDraw()

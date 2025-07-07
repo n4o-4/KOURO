@@ -25,6 +25,9 @@ void BaseScene::Initialize()
 	ParticleManager::GetInstance()->Initialize(sceneManager_->GetDxCommon(), srvManager_);
 
 	ParticleManager::GetInstance()->SetCameraManager(cameraManager_.get());
+
+	skybox_ = std::make_unique<Skybox>();
+	skybox_->Initialize(sceneManager_->GetDxCommon(),"Resources/rostock_laage_airport_4k.dds");
 }
 
 void BaseScene::Finalize()

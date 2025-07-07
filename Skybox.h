@@ -25,7 +25,7 @@ public:
 
 public: // 公開メンバ関数
 	
-	void Initialize(const std::string& filePath);
+	void Initialize(DirectXCommon* dxCommon, const std::string& filePath);
 
 	void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
@@ -35,7 +35,7 @@ private:
 
 	void CreateGraphicsPipeline();
 
-
+	void InitializeIndexBuffer();
 
 private:
 
@@ -63,8 +63,16 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionResource_; //!< 頂点リソース
 
-	VertexData* directionData_; //!< 頂点データ
+	Direction* directionData_; //!< 頂点データ
 
 	std::unique_ptr<WorldTransform> worldTransform_; //!< ワールドトランスフォーム
+
+	std::string filePath_; //!< ファイルパス
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_; //!< インデックスリソース
+
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_; //!< インデックスバッファビュー
+
+	int32_t* indexData_;
 };
 

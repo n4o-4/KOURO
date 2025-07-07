@@ -366,6 +366,7 @@ void GameScene::Update() {
 ///						描画
 void GameScene::Draw() 
 {
+	skybox_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
 
 	DrawBackgroundSprite();
 	/// 背景スプライト描画
