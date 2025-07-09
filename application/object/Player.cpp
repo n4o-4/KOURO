@@ -12,6 +12,7 @@ void Player::Initialize(Model* model)
 
 	worldTransform_->quaternionTransform.scale = { 1.0f,1.0f,1.0f };
 	worldTransform_->transform.scale = { 0.5f,0.5f,0.5f };
+	worldTransform_->transform.translate.z = 10.0f; // 初期位置を設定
 
 	AABBCollider::Initialize(worldTransform_.get());
 
@@ -121,11 +122,11 @@ void Player::Move()
 	}
 	if (Input::GetInstance()->PushKey(DIK_W))
 	{
-		velocity_.z += 0.1f;
+		velocity_.y += 0.1f;
 	}
 	if (Input::GetInstance()->PushKey(DIK_S))
 	{
-		velocity_.z -= 0.1f;
+		velocity_.y -= 0.1f;
 	}
 }
 
@@ -135,11 +136,13 @@ void Player::Fire()
 	std::unique_ptr<PlayerBullet> bullet = std::make_unique<PlayerBullet>();
 
 	// 初期化
-	bullet->Initialize(ModelManager::GetInstance()->FindModel("playerbullet/playerbullet.obj"),worldTransform_->transform.translate);
+	bullet->Initialize(ModelManager::GetInstance()->FindModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
 
 	bullet->SetCamera(camera_);
 
-	bullet->SetVelocity({ 0.0f,0.0f,1.0f });
+	Vector3 velocity = TransformNormal({ 0.0f,0.0f,5.0f }, worldTransform_->matWorld_);
+
+	bullet->SetVelocity(velocity);
 
 	colliderManager_->AddCollider(bullet.get());
 

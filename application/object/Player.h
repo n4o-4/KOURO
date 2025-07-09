@@ -18,6 +18,8 @@ public: // 公開メンバ関数
 
 	void SetColliderManager(ColliderManager* colliderManager) { colliderManager_ = colliderManager; }
 
+	void SetParentTransform(WorldTransform* parent) { worldTransform_->SetParent(parent); }
+
 private: // 非公開メンバ関数
 
 	// \brief  Move 移動処理
@@ -67,6 +69,6 @@ private: // 非公開メンバ変数
 
 private: 
 	
-	
+
 };
 

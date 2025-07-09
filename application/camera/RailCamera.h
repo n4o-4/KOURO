@@ -3,6 +3,8 @@
 
 #include "MyMath.h"
 
+#include "WorldTransform.h"
+
 class RailCamera : public BaseCamera
 {
 public:
@@ -13,7 +15,12 @@ public:
 	// 更新
 	void Update() override;
 
+	//getter
+	WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
+
 private:
+
+	std::unique_ptr<WorldTransform> worldTransform_ = nullptr; //!< ワールド変形情報
 
 	std::vector<Vector3> controlPoints_; //!< カメラの制御点
 

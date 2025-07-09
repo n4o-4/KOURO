@@ -2,7 +2,7 @@
 
 std::unique_ptr<TextureManager> TextureManager::instance = nullptr;
 
-// ImGuiで0番目を使用するため、1晩から使用
+// ImGuiで0番目を使用するため、1番から使用
 uint32_t TextureManager::kSRVIndexTop = 1;
 
 TextureManager* TextureManager::GetInstance()

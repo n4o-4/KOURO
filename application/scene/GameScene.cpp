@@ -220,13 +220,16 @@ void GameScene::Initialize() {
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
 
-	//cameraManager_->SetActiveCamera(railCamera_.get());
-    cameraManager_->useDebugCamera_ = true;
+	cameraManager_->SetActiveCamera(railCamera_.get());
+    //cameraManager_->useDebugCamera_ = true;
 	cameraManager_->Update();
 
 	//cameraManager_->Update();
 
 	player_->SetCamera(cameraManager_->GetActiveCamera());
+
+	player_->SetParentTransform(railCamera_->GetWorldTransform());
+
 
 	LevelLoader loader;
 

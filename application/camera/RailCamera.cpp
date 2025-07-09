@@ -4,6 +4,11 @@ void RailCamera::Initialize()
 {
 	BaseCamera::Initialize();
 
+	worldTransform_ = std::make_unique<WorldTransform>();
+	worldTransform_->Initialize();
+	worldTransform_->useQuaternion_ = false;
+
+
 	controlPoints_ =
 	{
 		{0.0f,1.0f,0.0f},
@@ -49,13 +54,16 @@ void RailCamera::Update()
 	// forwardベクトル（進行方向）
 	Vector3 forward = Normalize(target - position);
 
-	// Y軸を上方向と仮定し、forwardからオイラー角を算出
+	// forwardからオイラー角を算出
 	float yaw = std::atan2(forward.x, forward.z);
 	float pitch = std::asin(-forward.y);
 	float roll = 0.0f; // 必要に応じて
 
 	viewProjection_->transform.rotate = { pitch, yaw, roll };
 
+	worldTransform_->transform = viewProjection_->transform;
+
+	worldTransform_->UpdateMatrix();
 
 #ifdef _DEBUG
 
