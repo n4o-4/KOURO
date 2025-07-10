@@ -59,7 +59,8 @@ public: // メンバ関数
 	void SetLocalMatrix(Matrix4x4 localMatrix) { this->localMatrix = localMatrix; }
 
 	void SetColor(Vector4 color) { materialData_->color = color; }
-
+	
+	void SetEnableLighting(bool enable) { materialData_->enableLighting = enable; }
 private:
 
 	

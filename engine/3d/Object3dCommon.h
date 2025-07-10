@@ -23,6 +23,8 @@ public: // メンバ関数
 
 	Camera* GetDefaultCamera() const { return defaultCamera_.get(); }
 
+	void SetEnvironmentMapPath(const std::string& path) { environmentMapPath_ = path; }
+
 private:
 
 	static std::unique_ptr<Object3dCommon> instance;
@@ -54,5 +56,7 @@ private: // メンバ変数
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 
 	std::unique_ptr<Camera> defaultCamera_ = nullptr;
+
+	std::string environmentMapPath_;
 };
 

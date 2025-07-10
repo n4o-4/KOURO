@@ -378,14 +378,14 @@ void GameScene::Draw()
 
 	for (auto &object : levelData_->objects)
 	{
-		object.object3d->Draw(*object.worldTransform.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+		//object.object3d->Draw(*object.worldTransform.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
 	}
 
 	player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
 
 	for (auto& enemy : enemies_)
 	{
-		enemy->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+		//enemy->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
 	}
 
 	DrawForegroundSprite();

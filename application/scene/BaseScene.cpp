@@ -28,6 +28,8 @@ void BaseScene::Initialize()
 
 	skybox_ = std::make_unique<Skybox>();
 	skybox_->Initialize(sceneManager_->GetDxCommon(),"Resources/rostock_laage_airport_4k.dds");
+
+	Object3dCommon::GetInstance()->SetEnvironmentMapPath("Resources/rostock_laage_airport_4k.dds");
 }
 
 void BaseScene::Finalize()
