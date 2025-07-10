@@ -97,6 +97,7 @@
     <ClCompile Include="CollisionMath.cpp" />
     <ClCompile Include="BaseBullet.cpp" />
     <ClCompile Include="PlayerBullet.cpp" />
+    <ClCompile Include="OBBCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="CollisionMath.h" />
     <ClInclude Include="BaseBullet.h" />
     <ClInclude Include="PlayerBullet.h" />
+    <ClInclude Include="OBBCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

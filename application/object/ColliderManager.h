@@ -1,9 +1,20 @@
 ﻿#pragma once
+
+#include <variant>
+
 #include "Kouro.h"
 
 #include "BaseCollider.h"
 #include "AABBCollider.h"
 #include "SphereCollider.h"
+#include "OBBCollider.h"
+
+using ColliderVariant = std::variant <
+	AABBCollider*,
+	SphereCollider*,
+	OBBCollider*
+>;
+	
 
 class ColliderManager
 {
@@ -18,7 +29,7 @@ public:  /// 公開メンバ関数
 	 * \param  collider コライダー
 	 */
 
-	void AddCollider(BaseCollider* collider) { colliders_.push_back(collider); }
+	void AddCollider(ColliderVariant collider) { colliders_.push_back(collider); }
 
 private: /// 非公開メンバ関数
 
@@ -29,11 +40,11 @@ private: /// 非公開メンバ関数
 
 	void ScanColliders();
 
-	void CheckCollision(BaseCollider* a, BaseCollider* b);
+	void CheckCollision(ColliderVariant a, ColliderVariant b);
 
 private: /// 非公開メンバ関数
 public:  /// 公開メンバ変数
 private: /// 非公開メンバ変数
 
-	std::vector<BaseCollider*> colliders_; // コライダーのリスト
+	std::vector<ColliderVariant> colliders_; // コライダーのリスト
 };

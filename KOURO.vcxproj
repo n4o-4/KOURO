@@ -80,6 +80,7 @@
     <ClCompile Include="application\object\Player.cpp" />
     <ClCompile Include="application\camera\RailCamera.cpp" />
     <ClCompile Include="application\object\SphereCollider.cpp" />
+    <ClCompile Include="OBBCollider.cpp" />
     <ClCompile Include="PlayerBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +159,7 @@
     <ClInclude Include="application\object\Player.h" />
     <ClInclude Include="application\camera\RailCamera.h" />
     <ClInclude Include="application\object\SphereCollider.h" />
+    <ClInclude Include="OBBCollider.h" />
     <ClInclude Include="PlayerBullet.h" />
   </ItemGroup>
   <ItemGroup>

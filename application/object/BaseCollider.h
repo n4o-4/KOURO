@@ -69,21 +69,6 @@ public: /// 公開メンバ関数
 	uint32_t GetCollisionMask() const { return collisionMask_; }	
 
 	///================================================================================
-	///                                        当たり判定計算
-	///                                        visitorパターンお試し
-	
-	/**================================================================================
-	 * \brief  CheckCollision 
-	 * \return 
-	 */
-
-	virtual bool CheckCollision(BaseCollider* other) = 0;
-
-	virtual bool CheckCollisionWithAABB(AABBCollider* other) = 0;
-
-	virtual bool CheckCollisionWithSphere(SphereCollider* other) = 0;
-
-	///================================================================================
 	///                                        当たり判定
 
 	// \brief  OnCollisionEnter 衝突開始時の処理

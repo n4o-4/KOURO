@@ -38,21 +38,6 @@ public: /// 公開メンバ関数
 
 	Sphere GetSphere() const { return sphere_; }
 
-	///================================================================================
-	///                                        当たり判定計算
-	///                                        visitorパターンお試し
-
-	/**================================================================================
-	 * \brief  CheckCollision
-	 * \return
-	 */
-
-	bool CheckCollision(BaseCollider* other) override;
-
-	bool CheckCollisionWithAABB(AABBCollider* other) override;
-
-	bool CheckCollisionWithSphere(SphereCollider* other)override;
-
 private: /// 非公開メンバ関数
 
 public: /// 公開メンバ変数

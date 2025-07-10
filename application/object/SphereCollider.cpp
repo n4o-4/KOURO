@@ -22,21 +22,3 @@ void SphereCollider::Update()
 		colliderTransform_->matWorld_.m[3][2]
 	);
 }
-
-bool SphereCollider::CheckCollision(BaseCollider* other)
-{
-	// otherの型に応じた衝突判定を呼び出す
-	return other->CheckCollisionWithSphere(this);
-}
-
-bool SphereCollider::CheckCollisionWithAABB(AABBCollider* other)
-{
-	// otherのAABBと自身の球で衝突判定
-	return IsAABBSphereCollision(other->GetAABB(), sphere_);
-}
-
-bool SphereCollider::CheckCollisionWithSphere(SphereCollider* other)
-{
-	// 自身の球とotherの球で衝突判定
-	return IsSphereCollision(sphere_, other->GetSphere());
-}
