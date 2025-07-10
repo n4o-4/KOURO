@@ -23,22 +23,13 @@ void Model::Initialize(ModelCommon* modelCommon, const std::string& directoryPat
 	vertexResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	std::memcpy(vertexData, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size());
 
-	//materialResource = this->modelCommon_->GetDxCommon()->CreateBufferResource(sizeof(Material));
+	indexResource = modelCommon_->GetDxCommon()->CreateBufferResource(sizeof(uint32_t) * modelData.indices.size());
+	indexBufferView.BufferLocation = indexResource.Get()->GetGPUVirtualAddress();
+	indexBufferView.SizeInBytes = UINT(sizeof(uint32_t) * modelData.indices.size());
+	indexBufferView.Format = DXGI_FORMAT_R32_UINT;
 
-	//// 書き込むためのアドレスを取得
-	//materialResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-
-	//materialData->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	//materialData->enableLighting = true;
-	//materialData->uvTransform = MakeIdentity4x4();
-
-	//materialData->shininess = 48.3f;
-
-	//materialData->specularColor = { 1.0f,1.0f,1.0f };
-
-	/*TextureManager::GetInstance()->LoadTexture(modelData.material.textureFilePath);
-
-	modelData.material.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(modelData.material.textureFilePath);*/
+	indexResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
+	std::memcpy(indexData, modelData.indices.data(), sizeof(uint32_t) * modelData.indices.size());
 }
 
 void Model::Draw(WorldTransform worldTransform)
@@ -49,11 +40,15 @@ void Model::Draw(WorldTransform worldTransform)
 
 	modelCommon_->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);  // VBVを設定
 
+	modelCommon_->GetDxCommon()->GetCommandList()->IASetIndexBuffer(&indexBufferView);
+
 	modelCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData.material.textureFilePath));
 
 	modelCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(4, worldTransform.GetTransformResource()->GetGPUVirtualAddress());
 
-	modelCommon_->GetDxCommon()->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
+	//modelCommon_->GetDxCommon()->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
+
+	modelCommon_->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(UINT(modelData.indices.size()), 1, 0, 0, 0);
 }
 
 MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
@@ -104,29 +99,58 @@ ModelData Model::LoadModelFile(const std::string& directoryPath, const std::stri
 		assert(mesh->HasTextureCoords(0)); // TexcoordがないMesh
 		// ここからMeshの中身(Face)の解析を行っていく
 
+		//for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex)
+		//{
+		//	aiFace& face = mesh->mFaces[faceIndex];
+
+		//	assert(face.mNumIndices == 3); // 三角形のみサポート
+		//	// ここからFaceの中身(Vertex)の解析を行っていく
+
+		//	for (uint32_t element = 0; element < face.mNumIndices; ++element)
+		//	{
+		//		uint32_t vertexIndex = face.mIndices[element];
+
+		//		modelData.indices.push_back(vertexIndex);
+
+		//		aiVector3D& position = mesh->mVertices[vertexIndex];
+		//		aiVector3D& normal = mesh->mNormals[vertexIndex];
+		//		aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+		//		VertexData vertex;
+		//		vertex.position = { position.x,position.y,position.z,1.0f };
+		//		vertex.normal = { normal.x,normal.y,normal.z };
+		//		vertex.texcoord = { texcoord.x,texcoord.y };
+		//		// 
+		//		vertex.position.x *= -1.0f;
+		//		vertex.normal.x *= -1.0f;
+
+		//		modelData.vertices.push_back(vertex);
+		//	}
+		//}
+
 		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex)
 		{
 			aiFace& face = mesh->mFaces[faceIndex];
-
-			assert(face.mNumIndices == 3); // 三角形のみサポート
-			// ここからFaceの中身(Vertex)の解析を行っていく
+			assert(face.mNumIndices == 3); // 三角形のみ対応
 
 			for (uint32_t element = 0; element < face.mNumIndices; ++element)
 			{
 				uint32_t vertexIndex = face.mIndices[element];
+
 				aiVector3D& position = mesh->mVertices[vertexIndex];
 				aiVector3D& normal = mesh->mNormals[vertexIndex];
 				aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+
 				VertexData vertex;
-				vertex.position = { position.x,position.y,position.z,1.0f };
-				vertex.normal = { normal.x,normal.y,normal.z };
-				vertex.texcoord = { texcoord.x,texcoord.y };
-				// 
-				vertex.position.x *= -1.0f;
-				vertex.normal.x *= -1.0f;
+				vertex.position = { -position.x, position.y, position.z, 1.0f }; // 左右反転
+				vertex.normal = { -normal.x, normal.y, normal.z };              // 法線も反転
+				vertex.texcoord = { texcoord.x, texcoord.y };
+
+				// index用に現在の頂点数を取得
+				uint32_t currentIndex = static_cast<uint32_t>(modelData.vertices.size());
+				modelData.indices.push_back(currentIndex);
+
 				modelData.vertices.push_back(vertex);
 			}
-
 		}
 	}
 

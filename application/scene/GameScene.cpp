@@ -264,6 +264,13 @@ void GameScene::Initialize() {
 	colliderManager_->AddCollider(player_.get());
 
 	player_->SetColliderManager(colliderManager_.get());
+
+	ModelManager::GetInstance()->LoadModel("human/walk.gltf");
+
+	human_ = std::make_unique<Object3d>();
+	human_->Initialize(Object3dCommon::GetInstance());
+	human_->SetModel(ModelManager::GetInstance()->FindModel("human/walk.gltf"));
+	human_->SetLocalMatrix(MakeIdentity4x4());
 }
 ///=============================================================================
 ///						終了処理
@@ -278,7 +285,7 @@ void GameScene::Finalize()
 void GameScene::Update() {
 	animationManager->Update();
 	lineDrawer_->SkeletonUpdate(animationManager->GetActiveAnimation("walk.gltf").skeleton);
-	//human_->Update();
+	human_->Update();
 
 	BaseScene::Update();
 
@@ -386,6 +393,8 @@ void GameScene::Draw()
 	}
 
 	player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+
+	human_->Draw(*transform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
 
 	for (auto& enemy : enemies_)
 	{

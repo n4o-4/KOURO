@@ -74,6 +74,8 @@ private:
 
 	std::unique_ptr<ColliderManager> colliderManager_ = nullptr;
 
+	std::unique_ptr<Object3d> human_ = nullptr;
+
 private:
 
 public: // メンバ関数
