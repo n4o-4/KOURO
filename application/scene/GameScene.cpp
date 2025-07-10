@@ -71,11 +71,17 @@ void GameScene::Initialize() {
 	sceneManager_->GetPostEffect()->ApplyEffect("colorSpace",PostEffect::EffectType::ColorSpace);
 
 	///========================================
+	///	    アニメーション
+	animationManager = std::make_unique<AnimationManager>();
+	animationManager->LoadAnimationFile("./Resources/human", "walk.gltf");
+	animationManager->StartAnimation("walk.gltf",0);
+
+	///========================================
 	///		ライン描画
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
 	lineDrawer_->Initialize(sceneManager_->GetDxCommon(),sceneManager_->GetSrvManager());
-
 	lineDrawer_->CreateLineObject(LineDrawerBase::Type::Grid, nullptr);
+	lineDrawer_->CreateSkeletonObject(animationManager->GetActiveAnimation("walk.gltf").skeleton,nullptr);
 
 	ModelManager::GetInstance()->LoadModel("terrain.obj");
 
@@ -270,11 +276,9 @@ void GameScene::Finalize()
 ///=============================================================================
 ///						更新
 void GameScene::Update() {
-	/*animationManager->Update();
-	lineDrawer_->SkeletonUpdate(animationManager->GetActiveAnimation("walk.gltf").skeleton);*/
+	animationManager->Update();
+	lineDrawer_->SkeletonUpdate(animationManager->GetActiveAnimation("walk.gltf").skeleton);
 	//human_->Update();
-	
-	//lineDrawer_->Update()
 
 	BaseScene::Update();
 
@@ -398,5 +402,5 @@ void GameScene::Draw()
 	//パーティクルの描画
 	ParticleManager::GetInstance()->Draw("Resources/circle.png");	
 
-	//lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
+	lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
 }

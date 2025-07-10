@@ -15,7 +15,9 @@ void LineDrawerBase::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	worldTransform_ = std::make_unique<WorldTransform>();
 	worldTransform_->Initialize();
 	
-	worldTransform_->transform.scale = { 10.0f,10.0f,10.0f };
+	worldTransform_->useQuaternion_ = false;
+
+	worldTransform_->transform.scale = { 0.5f,0.5f,0.5f };
 	worldTransform_->transform.translate = { 0.0f,0.0f,0.0f };
 
 	worldTransform_->UpdateMatrix();
@@ -23,6 +25,8 @@ void LineDrawerBase::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 
 void LineDrawerBase::Update()
 {
+	worldTransform_->UpdateMatrix();
+
 	for (std::list<std::unique_ptr<LineObject>>::iterator iterator = lineObjects_.begin(); iterator != lineObjects_.end();)
 	{
 		//if (iterator->get()->type == Type::Skeleton)
