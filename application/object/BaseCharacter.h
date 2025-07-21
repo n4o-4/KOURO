@@ -19,6 +19,8 @@ public: // 公開メンバ関数
 	// カメラを設定
 	void SetCamera(BaseCamera* camera) { camera_ = camera; }
 
+	WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
+
 protected: // 派生用メンバ関数
 
 	void DrawImGui();

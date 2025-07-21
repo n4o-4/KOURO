@@ -1,16 +1,16 @@
-#include "PlayerBullet.h"
+#include "EnemyBullet.h"
 
-void PlayerBullet::Initialize(Model* model,Vector3 spawnPos)
+void EnemyBullet::Initialize(Model* model, Vector3 spawnPos)
 {
 	// 親クラスの初期化
 
-	BaseBullet::Initialize(model,spawnPos);
-	
+	BaseBullet::Initialize(model, spawnPos);
+
 	// Colliderの初期化と設定
 
 	SphereCollider::Initialize(worldTransform_.get());
-	SetCollisionAttribute(0b1); // コリジョン属性を設定
-	SetCollisionMask(0b1 << 1);
+	SetCollisionAttribute(0b1 << 1); // コリジョン属性を設定
+	SetCollisionMask(0b1); // コリジョンマスクを設定
 	SetSphere(Sphere({}, 1.0f));
 
 	// パーティクルエミッターの初期化
@@ -30,7 +30,7 @@ void PlayerBullet::Initialize(Model* model,Vector3 spawnPos)
 	emitter_->SetFrequency(1.0f);
 }
 
-void PlayerBullet::Update()
+void EnemyBullet::Update()
 {
 	// 親クラスの更新
 
@@ -41,23 +41,21 @@ void PlayerBullet::Update()
 	SphereCollider::Update();
 }
 
-void PlayerBullet::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
+void EnemyBullet::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 {
 	// 親クラスの描画
 
 	BaseBullet::Draw(directionalLight, pointLight, spotLight);
 }
 
-void PlayerBullet::OnCollisionEnter(BaseCollider* other)
-{
-	emitter_->SetPosition(worldTransform_->transform.translate);
-	emitter_->Emit();
-}
-
-void PlayerBullet::OnCollisionStay(BaseCollider* other)
+void EnemyBullet::OnCollisionEnter(BaseCollider* other)
 {
 }
 
-void PlayerBullet::OnCollisionExit(BaseCollider* other)
+void EnemyBullet::OnCollisionStay(BaseCollider* other)
+{
+}
+
+void EnemyBullet::OnCollisionExit(BaseCollider* other)
 {
 }

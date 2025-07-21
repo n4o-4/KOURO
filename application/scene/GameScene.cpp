@@ -220,11 +220,9 @@ void GameScene::Initialize() {
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
 
-	cameraManager_->SetActiveCamera(railCamera_.get());
-    //cameraManager_->useDebugCamera_ = true;
+	//cameraManager_->SetActiveCamera(railCamera_.get());
+    cameraManager_->useDebugCamera_ = true;
 	cameraManager_->Update();
-
-	//cameraManager_->Update();
 
 	player_->SetCamera(cameraManager_->GetActiveCamera());
 
@@ -252,6 +250,10 @@ void GameScene::Initialize() {
 		enemy->SetPosition(Vector3( 0.0f,1.0f,5 +  i * 40.0f));
 
 		enemy->SetCamera(cameraManager_->GetActiveCamera());
+
+		enemy->SetTarget(player_.get());
+
+		enemy->SetColliderManager(colliderManager_.get());
 
 		colliderManager_->AddCollider(enemy.get());
 
@@ -361,6 +363,8 @@ void GameScene::Update() {
 	//emitter3_->Update();
 
 	//emitter4_->Update();
+
+	railCamera_->Update();
 
 	lineDrawer_->Update();
 }

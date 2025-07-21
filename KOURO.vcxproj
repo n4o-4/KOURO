@@ -22,6 +22,7 @@
     <ClCompile Include="application\object\ColliderManager.cpp" />
     <ClCompile Include="BaseBullet.cpp" />
     <ClCompile Include="CollisionMath.cpp" />
+    <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="engine\effect\ColorSpace.cpp" />
     <ClCompile Include="application\object\Enemy.cpp" />
     <ClCompile Include="engine\3d\ModelDatas.cpp" />
@@ -95,6 +96,7 @@
     <ClInclude Include="application\object\ColliderManager.h" />
     <ClInclude Include="BaseBullet.h" />
     <ClInclude Include="CollisionMath.h" />
+    <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="engine\effect\ColorSpace.h" />
     <ClInclude Include="application\object\Enemy.h" />
     <ClInclude Include="engine\effect\BaseEffect.h" />
