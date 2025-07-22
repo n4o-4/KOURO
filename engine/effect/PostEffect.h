@@ -115,6 +115,7 @@ public:
 private:
 
 	void DrawImGui();
+
 private: // メンバ変数
 	
 	DirectXCommon* dxCommon_ = nullptr;
@@ -122,8 +123,6 @@ private: // メンバ変数
 	SrvManager* srvManager_ = nullptr;
 
 	CameraManager* cameraManager_ = nullptr;
-
-	//std::list<std::unique_ptr<ActiveEffect>> activeEffects_;
 
 	std::unordered_map<std::string, std::unique_ptr<ActiveEffect>> activeEffects_;
 };

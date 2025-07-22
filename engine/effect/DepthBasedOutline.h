@@ -56,5 +56,7 @@ private: // メンバ変数
 
 	//
 	CameraManager* cameraManager_ = nullptr;
+
+	float edgeStrength = 6.0f;
 };
 

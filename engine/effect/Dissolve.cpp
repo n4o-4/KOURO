@@ -49,7 +49,7 @@ void Dissolve::Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex)
 	dxCommon_->GetCommandList()->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(renderTextureIndex), false, nullptr);
 
 	// 指定した色で画面全体をクリアする
-	float clearColor[] = { 1.0f,0.0f,0.0f,1.0f }; // 青っぽい色 RGBAの順
+	float clearColor[] = { 0.0f,0.0f,0.0f,1.0f }; // 青っぽい色 RGBAの順
 	dxCommon_->GetInstance()->GetCommandList()->ClearRenderTargetView(*DirectXCommon::GetInstance()->GetRTVHandle(renderTextureIndex), clearColor, 0, nullptr);
 
 	// ルートシグネチャの設定	
@@ -251,10 +251,10 @@ void Dissolve::DrawImGui()
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
 
-		ImGui::ColorEdit3("edgeColor", &data_->edgeColor.x, 0.01f);
-	    ImGui::DragFloat("threshold", &data_->threshold, 0.01f);
-	    ImGui::DragFloat("thresholdWidth", &data_->thresholdWidth, 0.01f);
-	    ImGui::DragFloat("mask", &data_->mask, 0.01f);
+		ImGui::ColorEdit3("edgeColor", &edgeColor.x, 0.01f);
+	    ImGui::DragFloat("threshold", &threshold, 0.01f);
+	    ImGui::DragFloat("thresholdWidth", &thresholdWidth, 0.01f);
+	    ImGui::DragFloat("mask", &mask, 0.01f);
 
 		ImGui::TreePop();
 	}
