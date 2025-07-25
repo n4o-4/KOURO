@@ -17,24 +17,28 @@ void DebugCamera::Update()
    /// デバッグカメラ特有の処理  
 
    // 計算用のオフセット  
-   Vector3 offSet = {};  
+   Vector3 offSet = {0.0f,0.0f,0.0f};  
 
-   if (Input::GetInstance()->mouseState.lZ != 0)  
+   if (Input::GetInstance()->mouseState.lZ != 0.0f)  
    {  
+	   float scrollAmount = static_cast<float>(Input::GetInstance()->mouseState.lZ) * 0.01f;
+
        // マウスホイールの回転量でオフセットを変更  
-       offset.z += static_cast<float>(Input::GetInstance()->mouseState.lZ) * 0.01f;  
+       offset.z += scrollAmount;
 
        offset.z = std::clamp(offset.z, -100.0f, -1.0f); // 修正: float 型のリテラルに変更
+
+       Input::GetInstance()->mouseState.lZ == 0.0f;
    }  
 
     // カメラの角度から回転行列を計算  
-       Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);  
+    Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);  
 
-       // オフセットをカメラの回転に合わせて回転  
-       offSet = TransformNormal(offset, rotateMatrix);  
+    // オフセットをカメラの回転に合わせて回転  
+    offSet = TransformNormal(offset, rotateMatrix);  
 
-       // カメラの位置をターゲットの位置からオフセット分ずらす  
-       viewProjection_->transform.translate = targetTransform_->transform.translate + offSet;  
+    // カメラの位置をターゲットの位置からオフセット分ずらす  
+    viewProjection_->transform.translate = targetTransform_->transform.translate + offSet;  
 
 #ifdef _DEBUG
 

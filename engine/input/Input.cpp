@@ -144,12 +144,21 @@ void Input::MouseUpdate()
 {
 	HRESULT result;
 
-	// マウスの入力状態を取得
+	// デバイスがフォーカスを失っている場合は再取得
 	result = mouse->Acquire();
-	if (SUCCEEDED(result)) {
-		mouse->GetDeviceState(sizeof(DIMOUSESTATE2), &mouseState);
+	if (FAILED(result)) {
+		return; // デバイスが使えないなら更新しない
 	}
 
+	// 入力状態を取得
+	result = mouse->GetDeviceState(sizeof(DIMOUSESTATE2), &mouseState);
+	if (FAILED(result)) {
+		// 一部の環境ではここで E_INPUTLOST や DIERR_NOTACQUIRED が返る
+		ZeroMemory(&mouseState, sizeof(mouseState)); // 安全対策
+		return;
+	}
+
+	// マウス座標の取得
 	GetCursorPos(&mousePos);
 	ScreenToClient(winApp->GetHWND(), &mousePos);
 }
