@@ -35,6 +35,13 @@ public: /// 公開メンバ関数
 
 	OBB GetOBB() const { return obb_; }
 
+	/**================================================================================
+	 * \brief  colorを取得する
+	 * \return color
+	 */
+
+	Vector4 GetColor() const { return color_; }
+
 private: /// 非公開メンバ関数
 
 public: /// 公開メンバ変数

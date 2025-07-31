@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AABBLineObject.cpp" />
     <ClCompile Include="application\object\AABBCollider.cpp" />
     <ClCompile Include="application\scene\BaseScene.cpp" />
     <ClCompile Include="application\scene\GameScene.cpp" />
@@ -21,6 +22,7 @@
     <ClCompile Include="application\object\BaseCollider.cpp" />
     <ClCompile Include="application\object\ColliderManager.cpp" />
     <ClCompile Include="BaseBullet.cpp" />
+    <ClCompile Include="BaseLineObject.cpp" />
     <ClCompile Include="CollisionMath.cpp" />
     <ClCompile Include="engine\effect\ColorSpace.cpp" />
     <ClCompile Include="application\object\Enemy.cpp" />
@@ -81,9 +83,11 @@
     <ClCompile Include="application\camera\RailCamera.cpp" />
     <ClCompile Include="application\object\SphereCollider.cpp" />
     <ClCompile Include="OBBCollider.cpp" />
+    <ClCompile Include="OBBLineObject.cpp" />
     <ClCompile Include="PlayerBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABBLineObject.h" />
     <ClInclude Include="application\object\AABBCollider.h" />
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
     <ClInclude Include="application\scene\BaseScene.h" />
@@ -95,6 +99,7 @@
     <ClInclude Include="application\object\BaseCollider.h" />
     <ClInclude Include="application\object\ColliderManager.h" />
     <ClInclude Include="BaseBullet.h" />
+    <ClInclude Include="BaseLineObject.h" />
     <ClInclude Include="CollisionMath.h" />
     <ClInclude Include="engine\effect\ColorSpace.h" />
     <ClInclude Include="application\object\Enemy.h" />
@@ -160,6 +165,7 @@
     <ClInclude Include="application\camera\RailCamera.h" />
     <ClInclude Include="application\object\SphereCollider.h" />
     <ClInclude Include="OBBCollider.h" />
+    <ClInclude Include="OBBLineObject.h" />
     <ClInclude Include="PlayerBullet.h" />
   </ItemGroup>
   <ItemGroup>

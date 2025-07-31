@@ -95,5 +95,7 @@ protected:
 
 	std::unordered_set<BaseCollider*> currentCollisions_; // 現フレームで衝突しているコライダーのセット
 
+	Vector4 color_ = { 1.0f, 1.0f, 1.0f, 1.0f }; //!< コライダーの色（白色）
+
 };
 

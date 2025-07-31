@@ -38,6 +38,13 @@ public: /// 公開メンバ関数
 
 	AABB GetAABB() const { return aabb_; }
 
+	/**================================================================================
+	 * \brief  colorを取得する
+	 * \return color
+	 */
+
+	Vector4 GetColor() const { return color_; }
+
 private: /// 非公開メンバ関数
 
 public: /// 公開メンバ変数
@@ -49,6 +56,5 @@ private: /// 非公開メンバ変数
 	AABB aabb_ = {};
 
 	Vector3 center_ = { 0.0f, 0.0f, 0.0f }; //!< AABBの中心座標
-
 };
 
