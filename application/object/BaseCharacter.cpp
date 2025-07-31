@@ -20,6 +20,8 @@ void BaseCharacter::Initialize(Model* model)
 
 	object3d_->SetEnableEnvironmentMap(true);
 
+	object3d_->SetEnableEnvironmentMap(true);
+
 	///========================================
 	/// ワールドトランスフォーム
 	

@@ -2,14 +2,14 @@
 
 struct ViewProjection
 {
-    float3 worldPosition;
-    float4x4 ViewProjection;
+    float3 worldPosition;    // ワールド空間でのカメラ位置
+    float4x4 ViewProjection; // ビュー投影行列
 };
 
 struct WorldMatrix
 {
-    float4x4 World;
-    float4x4 WorldInversTranspose;
+    float4x4 World;                // ワールド行列
+    float4x4 WorldInversTranspose; // ワールド行列の逆転置行列
 };
 
 ConstantBuffer<ViewProjection> gViewProjection : register(b0);
@@ -26,10 +26,9 @@ struct VertexShaderInput
 VertexShaderOutput main(VertexShaderInput input)
 {
     VertexShaderOutput output;
-    float4x4 WVP = mul(gWorldMatrix.World, gViewProjection.ViewProjection); // 応急処置
+    float4x4 WVP = mul(gWorldMatrix.World, gViewProjection.ViewProjection);
     output.position = mul(input.position, WVP);
     output.texcoord = input.texcoord;
-    //output.normal = normalize(mul(input.normal, (float3x3) gWorldMatrix.World));
     output.normal = normalize(mul(input.normal, (float3x3) gWorldMatrix.WorldInversTranspose));
     output.worldPosition = mul(input.position, gWorldMatrix.World).xyz;
     output.cameraPosition = gViewProjection.worldPosition;

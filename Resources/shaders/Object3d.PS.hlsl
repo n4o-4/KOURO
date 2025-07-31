@@ -2,40 +2,40 @@
 
 struct Material
 {
-    float4 color;
-    int enableLighting;
-    int enableEnvironmentMap;
-    float4x4 uvTransform;
-    float shininess;
-    float3 specularColor;
+    float4 color;             // 色
+    int enableLighting;       // ライティングの有効化フラグ
+    int enableEnvironmentMap; // 環境マップの有効化フラグ
+    float4x4 uvTransform;     // UV変換行列
+    float shininess;          // 鏡面反射の強さ
+    float3 specularColor;     // 鏡面反射の色
 };
 
 struct DirectionLight
 {
-    float4 color;
-    float3 direction;
-    float intensity;
+    float4 color;     // 色
+    float3 direction; // 方向
+    float intensity;  // 強度
 };
 
 struct PointLight
 {
-    float4 color; //    色
+    float4 color;    // 色
     float3 position; // 位置
     float intensity; // 強度
-    float radius; //    影響範囲
-    float decay; //     減衰率
+    float radius;    // 影響範囲
+    float decay;     // 減衰率
 };
 
 struct SpotLight
 {
-    float4 color; // ���C�g�̐F
-    float3 position; // ���C�g�̈ʒu
-    float intensity; // �P�x
-    float3 direction; // ���C�g�̕���
-    float distance; // ���C�g�̓͂��ő勗��
-    float decay; // ������
-    float cosAngle; // �X�|�b�g���C�g�̗]��
-    float cosFalloffStart;
+    float4 color;          // 色 
+    float3 position;       // 位置
+    float intensity;       // 強度
+    float3 direction;      // 方向
+    float distance;        // 影響範囲
+    float decay;           // 減衰率
+    float cosAngle;        // スポットライトの角度
+    float cosFalloffStart; // スポットライトの角度の開始位置
 };
 
 ConstantBuffer<Material> gMaterial : register(b0);
@@ -57,6 +57,7 @@ struct PixelShaderOutput
     float4 color : SV_TARGET0;
 };
 
+// 平行光源計算
 float3 CalculationDirectionalLight(VertexShaderOutput input)
 {
     float3 resultColor;
@@ -66,40 +67,18 @@ float3 CalculationDirectionalLight(VertexShaderOutput input)
     
     float3 toEye = normalize(input.cameraPosition - input.worldPosition);
     
-    
-         // Phong Reflection��������������������������������������������������������������������������������������������������������������
-        
-        //float3 reflectLight = reflect(gDirectionalLight.direction, normalize(input.normal));
-        
-        //float RdotE = dot(reflectLight, toEye);
-        
-        //float specularPow = pow(saturate(RdotE), gMaterial.shininess);
-        
-        // Phong Reflection����������������������������������������������������������������������������������������������������������������
-        
-        
-        
-        // BlinnPhong Reflection��������������������������������������������������������������������������������������������������������������
-
     float3 halfVector = normalize(-gDirectionalLight.direction + toEye);
         
     float NDotH = dot(normalize(input.normal), halfVector);
         
     float specularPow = pow(saturate(NDotH), gMaterial.shininess);
-        
-        // BlinnPhong Reflection����������������������������������������������������������������������������������������������������������������
-        
+    
     float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
         
     float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
-        
-        //output.color = gMaterial.color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity;  
-        
-        
-        // �g�U����
+
     float3 directionalLight_Diffuse = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
-        
-        // ���ʔ���
+    
     float3 directionalLight_Specular = gDirectionalLight.color.rgb * gDirectionalLight.intensity * specularPow * gMaterial.specularColor;
     
     resultColor = directionalLight_Diffuse + directionalLight_Specular;
@@ -107,6 +86,7 @@ float3 CalculationDirectionalLight(VertexShaderOutput input)
     return resultColor;
 }
 
+// 点光源計算
 float3 CalculationPointLight(VertexShaderOutput input)
 {
     float3 resultColor;
@@ -115,7 +95,6 @@ float3 CalculationPointLight(VertexShaderOutput input)
     float4 textureColor = gTexture.Sample(gSampler, transformedUV.xy);
     float3 toEye = normalize(input.cameraPosition - input.worldPosition);
   
-        
     float distance = length(gPointLight.position - input.worldPosition);
         
     float factor = pow(saturate(-distance / gPointLight.radius + 1.0), gPointLight.decay);
@@ -132,10 +111,8 @@ float3 CalculationPointLight(VertexShaderOutput input)
         
     float pointLight_Cos = pow(pointLight_NDotL * 0.5 + 0.5f, 2.0f);
        
-        // �g�U����
     float3 pointLight_Diffuse = gMaterial.color.rgb * textureColor.rgb * gPointLight.color.rgb * pointLight_Cos * gPointLight.intensity * factor;
-        
-        // ���ʔ���
+    
     float3 pointLight_Specular = gPointLight.color.rgb * gPointLight.intensity * pointLight_SpecularPow * factor * gMaterial.specularColor;
     
     resultColor = pointLight_Diffuse + pointLight_Specular;
@@ -143,6 +120,7 @@ float3 CalculationPointLight(VertexShaderOutput input)
     return resultColor;
 }
 
+// スポットライト計算
 float3 CalculationSpottLight(VertexShaderOutput input)
 {
     float3 resultColor;
@@ -151,7 +129,6 @@ float3 CalculationSpottLight(VertexShaderOutput input)
     float4 textureColor = gTexture.Sample(gSampler, transformedUV.xy);
     float3 toEye = normalize(input.cameraPosition - input.worldPosition);
    
-        
     float spotLight_Distance = length(gSpotLight.position - input.worldPosition); // �|�C���g���C�g�ւ̋���
         
     float attenuationFactor = pow(saturate(-spotLight_Distance / gSpotLight.distance + 1.0), gSpotLight.decay);
@@ -171,11 +148,9 @@ float3 CalculationSpottLight(VertexShaderOutput input)
     float spotLight_NdotL = dot(normalize(input.normal), -gSpotLight.direction);
         
     float spotLight_Cos = pow(spotLight_NdotL * 0.5f + 0.5f, 2.0f);
-        
-        // �g�U����
+    
     float3 spotLight_Diffuse = gMaterial.color.rgb * textureColor.rgb * gSpotLight.color.rgb * gSpotLight.intensity * falloffFactor * attenuationFactor * spotLight_Cos;
-        
-        // ���ʔ���
+    
     float3 spotLight_Specular = gSpotLight.color.rgb * gSpotLight.intensity * spotLight_SpecularPow * falloffFactor * attenuationFactor * gMaterial.specularColor;
     
     resultColor = spotLight_Diffuse + spotLight_Specular;
@@ -189,25 +164,33 @@ PixelShaderOutput main(VertexShaderOutput input)
     float4 transformedUV = mul(float4(input.texcoord,0.0f, 1.0f), gMaterial.uvTransform);
     float4 textureColor = gTexture.Sample(gSampler, transformedUV.xy);
     
+    // ライティングが有効なら計算を行う
     if (gMaterial.enableLighting != 0)
     {
+        // カメラ位置からのベクトルを計算
         float3 toEye = normalize(input.cameraPosition - input.worldPosition);
         
+        // 平行光源の計算
         float3 directionalLightColor = CalculationDirectionalLight(input);
         
+        // 点光源の計算
         float3 pointLightColor = CalculationPointLight(input);
         
+        // スポットライトの計算
         float3 spotLightColor = CalculationSpottLight(input);
        
+        // 最終的な色の合成
         output.color.rgb = directionalLightColor + pointLightColor + spotLightColor;
         
         output.color.a = gMaterial.color.a * textureColor.a;
     }
-    else
+    else // ライティングが無効なら、テクスチャの色をそのまま使用
     {
+        
         output.color = gMaterial.color * textureColor;
     }
     
+    // 環境マップが有効なら、反射ベクトルを計算して環境マップから色を取得
     if (gMaterial.enableEnvironmentMap != 0)
     {
         float3 cameraPosition = normalize(input.worldPosition - input.cameraPosition);
@@ -217,7 +200,7 @@ PixelShaderOutput main(VertexShaderOutput input)
         output.color.rgb += environmentColor.rgb;
     }
     
-    
+    // 最終的な色を出力
     return output;
 }
 
