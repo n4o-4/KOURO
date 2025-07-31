@@ -13,6 +13,7 @@
 #include <thread>
 #include <memory>
 #include "externals/DirectXTex/DirectXTex.h"
+#include "externals/DirectXTex/d3dx12.h"
 #include <dxgidebug.h>
 
 #include "Structs.h"
@@ -68,7 +69,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
 
 	// データを転送するUploadTextureData関数
-	void UploadTextureData(Microsoft::WRL::ComPtr<ID3D12Resource> texture, const DirectX::ScratchImage& mipImages);
+	Microsoft::WRL::ComPtr<ID3D12Resource> UploadTextureData(Microsoft::WRL::ComPtr<ID3D12Resource> texture, const DirectX::ScratchImage& mipImages);
 
 	// Textureデータを読み込む関数
 	DirectX::ScratchImage LoadTexture(const std::string& filePath);

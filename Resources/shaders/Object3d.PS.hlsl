@@ -45,8 +45,9 @@ ConstantBuffer<PointLight> gPointLight : register(b2);
 
 ConstantBuffer<SpotLight> gSpotLight : register(b3);
 
-
 Texture2D<float4> gTexture : register(t0);
+
+TextureCube<float4> gEnvironmentTexture : register(t1);
 
 SamplerState gSampler : register(s0);
 
@@ -198,6 +199,12 @@ PixelShaderOutput main(VertexShaderOutput input)
         float3 spotLightColor = CalculationSpottLight(input);
        
         output.color.rgb = directionalLightColor + pointLightColor + spotLightColor;
+        
+        float3 cameraPosition = normalize(input.worldPosition - input.cameraPosition);
+        float3 reflectionVector = reflect(cameraPosition, normalize(input.normal));
+        float4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectionVector);
+        
+        output.color.rgb += environmentColor.rgb;
         
         output.color.a = gMaterial.color.a * textureColor.a;
     }

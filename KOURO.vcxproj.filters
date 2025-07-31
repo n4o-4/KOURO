@@ -25,6 +25,8 @@
     <FxCompile Include="Resources\shaders\Ocean.HS.hlsl" />
     <FxCompile Include="Resources\shaders\Ocean.DS.hlsl" />
     <FxCompile Include="Resources\shaders\ColorSpace.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\Skybox.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\Skybox.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\scene\BaseScene.cpp" />
@@ -98,6 +100,8 @@
     <ClCompile Include="application\object\BaseBullet.cpp" />
     <ClCompile Include="application\object\PlayerBullet.cpp" />
     <ClCompile Include="application\object\EnemyBullet.cpp" />
+    <ClCompile Include="CollisionMath.cpp" />
+    <ClCompile Include="Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -177,6 +181,8 @@
     <ClInclude Include="application\object\BaseBullet.h" />
     <ClInclude Include="application\object\PlayerBullet.h" />
     <ClInclude Include="application\object\EnemyBullet.h" />
+    <ClInclude Include="CollisionMath.h" />
+    <ClInclude Include="Skybox.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -186,5 +192,6 @@
     <None Include="Resources\shaders\Sprite.hlsli" />
     <None Include="Resources\shaders\Fullscreen.hlsli" />
     <None Include="Resources\shaders\RadialBlur.PS.hlsl" />
+    <None Include="Resources\shaders\Skybox.hlsli" />
   </ItemGroup>
 </Project>

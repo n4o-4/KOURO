@@ -15,7 +15,7 @@ void BaseCharacter::Initialize(Model* model)
 	// ローカル行列の初期化
 	object3d_->SetLocalMatrix(MakeIdentity4x4());
 
-
+	object3d_->SetEnableLighting(true); // ライティングを有効にする
 
 	///========================================
 	/// ワールドトランスフォーム

@@ -28,7 +28,7 @@ void Player::Update()
 	// 移動
 	Move();
 
-	if (Input::GetInstance()->Triggerkey(DIK_SPACE))
+	if (Input::GetInstance()->PushKey/*Triggerkey*/(DIK_SPACE))
 	{
 		Fire();
 	}

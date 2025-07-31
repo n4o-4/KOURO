@@ -24,6 +24,7 @@ private:
 	//========================================
 	// アニメーションマネージャ
 	std::unique_ptr<AnimationManager> animationManager = nullptr;
+
 	//========================================
 	// ゲームの状態
 	// ゲームクリア
@@ -74,10 +75,6 @@ private:
 	std::unique_ptr<ColliderManager> colliderManager_ = nullptr;
 
 private:
-
-	//std::unique_ptr<SkyDome> skyDome_ = nullptr;
-	//std::unique_ptr<Object3d> skyDomeObj_ = nullptr;
-
 
 public: // メンバ関数
 
