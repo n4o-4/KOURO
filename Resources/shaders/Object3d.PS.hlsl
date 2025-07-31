@@ -4,6 +4,7 @@ struct Material
 {
     float4 color;
     int enableLighting;
+    int enableEnvironmentMap;
     float4x4 uvTransform;
     float shininess;
     float3 specularColor;
@@ -18,11 +19,11 @@ struct DirectionLight
 
 struct PointLight
 {
-    float4 color; // ���C�g�̐F
-    float3 position; // ���C�g�̐F
-    float intensity; // �P�x
-    float radius; // ���C�g�̓͂��ő勗��
-    float decay; // ������
+    float4 color; //    色
+    float3 position; // 位置
+    float intensity; // 強度
+    float radius; //    影響範囲
+    float decay; //     減衰率
 };
 
 struct SpotLight
@@ -200,17 +201,20 @@ PixelShaderOutput main(VertexShaderOutput input)
        
         output.color.rgb = directionalLightColor + pointLightColor + spotLightColor;
         
-        float3 cameraPosition = normalize(input.worldPosition - input.cameraPosition);
-        float3 reflectionVector = reflect(cameraPosition, normalize(input.normal));
-        float4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectionVector);
-        
-        output.color.rgb += environmentColor.rgb;
-        
         output.color.a = gMaterial.color.a * textureColor.a;
     }
     else
     {
         output.color = gMaterial.color * textureColor;
+    }
+    
+    if (gMaterial.enableEnvironmentMap != 0)
+    {
+        float3 cameraPosition = normalize(input.worldPosition - input.cameraPosition);
+        float3 reflectionVector = reflect(cameraPosition, normalize(input.normal));
+        float4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectionVector);
+        
+        output.color.rgb += environmentColor.rgb;
     }
     
     

@@ -61,6 +61,8 @@ public: // メンバ関数
 	void SetColor(Vector4 color) { materialData_->color = color; }
 	
 	void SetEnableLighting(bool enable) { materialData_->enableLighting = enable; }
+
+	void SetEnableEnvironmentMap(bool enable) { materialData_->enableEnvironmentMap = enable; }
 private:
 
 	

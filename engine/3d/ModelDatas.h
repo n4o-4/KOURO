@@ -26,8 +26,9 @@ struct MaterialData
 
 struct Material {
 	Vector4 color;
-	int enableLighting;
-	float padding[3];
+	int enableLighting = false;
+	int enableEnvironmentMap = false;
+	float padding[2];
 	Matrix4x4 uvTransform;
 	float shininess;
 	Vector3 specularColor;
