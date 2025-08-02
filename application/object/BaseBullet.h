@@ -27,7 +27,12 @@ public: // 公開メンバ関数
 
 	virtual void Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
+	/**
+	 * \brief  GetIsAlive
+	 * \return	isAlive 生存フラグ
+	 */
 
+	bool GetIsAlive() const { return isActive_; }
 
 protected: // 派生用メンバ変数
 
@@ -44,5 +49,10 @@ protected: // 派生用メンバ変数
 	bool isActive_ = true;
 
 	BaseCamera* camera_ = nullptr;
+
+	// 寿命定数
+	const float kLifeTime_ = 5.0f; //!< 弾の寿命
+
+	float lifeTimer_ = 0.0f; //!< 弾の寿命タイマー
 };
 

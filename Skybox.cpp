@@ -72,7 +72,7 @@ void Skybox::Initialize(DirectXCommon* dxCommon,const std::string& filePath)
 
 	worldTransform_->Initialize();
 
-	worldTransform_->transform.scale = { 100.0f, 100.0f, 100.0f};	
+	worldTransform_->transform.scale = { 1000.0f, 1000.0f, 1000.0f};	
 
 	worldTransform_->UpdateMatrix();
 

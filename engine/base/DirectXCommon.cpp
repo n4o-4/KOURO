@@ -660,7 +660,7 @@ void DirectXCommon::PostDraw()
 	//std::swap(renderTargetIndex_, renderResourceIndex_);
 
 	// コマンドリストの内容を確定させる。すべてのコマンドを積んでからCloseすること
-	hr = commandList->Close();
+ 	hr = commandList->Close();
 	assert(SUCCEEDED(hr));
 
 	// GPUにコマンドリストの実行を行わせる

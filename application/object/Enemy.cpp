@@ -39,6 +39,26 @@ void Enemy::Update()
 		bullet->Update();
 	}
 
+	std::vector<BaseCollider*>& colliders = colliderManager_->GetColliders();
+
+	bullets_.erase(
+		std::remove_if(bullets_.begin(), bullets_.end(),
+			[&](const std::unique_ptr<EnemyBullet>& bullet) {
+				if (!bullet || !bullet->GetIsAlive()) {
+					// colliderManager のコライダーリストからも削除
+					colliders.erase(
+						std::remove_if(colliders.begin(), colliders.end(),
+							[&](const BaseCollider* c) {
+								return c == bullet.get();
+							}),
+						colliders.end());
+
+					return true;
+				}
+				return false;
+			}),
+		bullets_.end());
+
 	///=========================================
 	/// 親クラス
 
@@ -54,6 +74,8 @@ void Enemy::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotL
 	{
 		bullet->Draw(directionalLight,pointLight,spotLight);
 	}
+
+	
 
 	///=========================================
 	/// 親クラス

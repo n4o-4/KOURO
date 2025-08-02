@@ -56,6 +56,12 @@ void BaseBullet::Update()
 
 	// XV
 	worldTransform_->UpdateMatrix();
+
+	lifeTimer_ += 1.0f / 60.0f;
+	if (lifeTimer_ >= kLifeTime_)
+	{
+ 		isActive_ = false; // õ–½‚ªs‚«‚½‚ç–³Œø‰»
+	}
 }
 
 void BaseBullet::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)

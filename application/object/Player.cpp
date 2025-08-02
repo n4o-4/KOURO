@@ -12,7 +12,8 @@ void Player::Initialize(Model* model)
 
 	worldTransform_->quaternionTransform.scale = { 1.0f,1.0f,1.0f };
 	worldTransform_->transform.scale = { 0.5f,0.5f,0.5f };
-	worldTransform_->transform.translate.z = 10.0f; // 初期位置を設定
+	worldTransform_->transform.translate.z = 25.0f; // 初期位置を設定
+	worldTransform_->transform.translate.y = -5.0f; // 初期位置を設定
 
 	AABBCollider::Initialize(worldTransform_.get());
 
@@ -28,7 +29,7 @@ void Player::Update()
 	// 移動
 	Move();
 
-	if (Input::GetInstance()->PushKey/*Triggerkey*/(DIK_SPACE))
+	if (Input::GetInstance()->/*PushKey*/Triggerkey(DIK_SPACE))
 	{
 		Fire();
 	}
@@ -72,6 +73,26 @@ void Player::Update()
 	{
 		bullet->Update();
 	}
+
+	std::vector<BaseCollider*>& colliders = colliderManager_->GetColliders();
+
+	bullets_.erase(
+		std::remove_if(bullets_.begin(), bullets_.end(),
+			[&](const std::unique_ptr<PlayerBullet>& bullet) {
+				if (!bullet || !bullet->GetIsAlive()) {
+					// colliderManager のコライダーリストからも削除
+					colliders.erase(
+						std::remove_if(colliders.begin(), colliders.end(),
+							[&](const BaseCollider* c) {
+								return c == bullet.get();
+							}),
+						colliders.end());
+
+					return true;
+				}
+				return false;
+			}),
+		bullets_.end());
 
 	///=========================================
 	/// 親クラス

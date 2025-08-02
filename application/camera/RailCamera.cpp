@@ -8,10 +8,10 @@ void RailCamera::Initialize()
 	worldTransform_->Initialize();
 	worldTransform_->useQuaternion_ = false;
 
-
+	
 	controlPoints_ =
 	{
-		{0.0f,1.0f,0.0f},
+		/*{0.0f,1.0f,0.0f},
 		{10.0f,10.0f,20.0f},
 		{0.0f,1.0f,40.0f},
 		{-10.0f,10.0f,60.0f},
@@ -21,7 +21,16 @@ void RailCamera::Initialize()
 		{-10.0f,10.0f,140.0f},
 		{0.0f,1.0f,160.0f},
 		{10.0f,10.0f,180.0f},
-		{0.0f,1.0f,200.0f}
+		{0.0f,1.0f,200.0f}*/
+		  {   0.0f, 1.0f,    0.0f },   // 開始点
+	{   0.0f, 1.0f,  100.0f },   // Z+方向
+	{ 100.0f, 1.0f,  100.0f },   // X+方向
+	{ 100.0f, 1.0f,    0.0f },   // Z-方向
+	{   0.0f, 1.0f,    0.0f },   // X-方向（戻ってくる）
+
+	// 以下は Catmull-Rom のループ補完用
+	{   0.0f, 1.0f,  100.0f },
+	{ 100.0f, 1.0f,  100.0f }
 	};
 
 }
