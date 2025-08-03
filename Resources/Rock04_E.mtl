@@ -1,0 +1,9 @@
+# Created with Anim8or 1.00
+# Object "Rock04_E":
+
+newmtl Rock_04
+Ka 0.141 0.141 0.141
+Kd 0.349 0.349 0.349
+Ks 0.216 0.216 0.216
+Ns 752.6
+map_Kd Rock04_Base_Diffuse.png

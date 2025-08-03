@@ -237,7 +237,7 @@ void GameScene::Initialize() {
 
 	LevelLoader loader;
 
-	levelData_ = loader.LoadLevelFromJson("Resources/TL1.json");
+	levelData_ = loader.LoadLevelFromJson("Resources/TL1_scene.json");
 
 	for (auto& object : levelData_->objects)
 	{
@@ -392,11 +392,11 @@ void GameScene::Draw()
 		object.object3d->Draw(*object.worldTransform.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
 	}
 
-	player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+	//player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
 
 	for (auto& enemy : enemies_)
 	{
-		enemy->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+		//enemy->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
 	}
 
 	DrawForegroundSprite();
@@ -409,5 +409,5 @@ void GameScene::Draw()
 	//パーティクルの描画
 	ParticleManager::GetInstance()->Draw("Resources/circle.png");	
 
-	lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
+	//lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
 }
