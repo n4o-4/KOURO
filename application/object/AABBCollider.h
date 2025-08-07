@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include "BaseCollider.h"
 
-class SphereCollider; // 前方宣言
-
 class AABBCollider : public BaseCollider
 {
 public: /// 公開メンバ関数

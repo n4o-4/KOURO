@@ -7,11 +7,11 @@ void ColliderManager::Update()
         std::remove_if(
             colliders_.begin(),
             colliders_.end(),
-            [](BaseCollider* collider) {
-                // nullptr 
-                return collider == nullptr;
-            }
-        ),
+            [](const ColliderVariant& var) {
+                return std::visit([](auto* ptr) {
+                    return ptr == nullptr;
+                    }, var);
+            }),
         colliders_.end()
     );
 

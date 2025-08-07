@@ -43,7 +43,7 @@ bool IsCollision(const AABB& aabb, const Sphere& sphere);
  * \return 衝突していればtrue
  */
 
-bool IsCollision(const Sphere& sphere, const AABB& aabb) { return IsCollision(aabb, sphere); }
+bool IsCollision(const Sphere& sphere, const AABB& aabb);
 
 /**================================================================================
  * \brief  IsCollision
@@ -61,7 +61,7 @@ bool IsCollision(const Sphere& sphere, const OBB& obb);
  * \return 衝突していればtrue
  */
 
-bool IsCollision(const OBB& obb, const Sphere& sphere) { return IsCollision(sphere, obb); }
+bool IsCollision(const OBB& obb, const Sphere& sphere);
 
 /**================================================================================
  * \brief  IsCollision
@@ -79,4 +79,4 @@ bool IsCollision(const AABB& aabb, const OBB& obb);
  * \return 衝突していればtrue
  */
 
-bool IsCollision(const OBB& obb, const AABB& aabb) { return IsCollision(aabb, obb); }
+bool IsCollision(const OBB& obb, const AABB& aabb);

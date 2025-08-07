@@ -1,5 +1,4 @@
 ﻿#include "SphereCollider.h"
-#include "AABBCollider.h"
 
 void SphereCollider::Initialize(WorldTransform* worldTransform)
 {

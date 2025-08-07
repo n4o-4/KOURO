@@ -70,6 +70,11 @@ bool IsCollision(const AABB& aabb, const Sphere& sphere)
 	return distanceSq <= (sphere.radius * sphere.radius);
 }
 
+bool IsCollision(const Sphere& sphere, const AABB& aabb)
+{
+    return IsCollision(aabb, sphere);
+}
+
 bool IsCollision(const Sphere& sphere, const OBB& obb)
 {
     Vector3 d = sphere.center - obb.center;
@@ -90,6 +95,11 @@ bool IsCollision(const Sphere& sphere, const OBB& obb)
 
     Vector3 v = closest - sphere.center;
     return LengthSq(v) <= sphere.radius * sphere.radius;
+}
+
+bool IsCollision(const OBB& obb, const Sphere& sphere)
+{
+	return IsCollision(sphere, obb);
 }
 
 bool IsCollision(const AABB& aabb, const OBB& obb)
@@ -169,4 +179,9 @@ bool IsCollision(const AABB& aabb, const OBB& obb)
 
     // 全軸で分離できなかった → 衝突している
     return true;
+}
+
+bool IsCollision(const OBB& obb, const AABB& aabb)
+{
+	return IsCollision(aabb, obb);
 }
