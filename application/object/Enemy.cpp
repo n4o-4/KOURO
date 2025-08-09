@@ -39,7 +39,7 @@ void Enemy::Update()
 		bullet->Update();
 	}
 
-	std::vector<BaseCollider*>& colliders = colliderManager_->GetColliders();
+	std::vector<ColliderVariant> colliders = colliderManager_->GetColliders();
 
 	bullets_.erase(
 		std::remove_if(bullets_.begin(), bullets_.end(),
@@ -48,8 +48,14 @@ void Enemy::Update()
 					// colliderManager のコライダーリストからも削除
 					colliders.erase(
 						std::remove_if(colliders.begin(), colliders.end(),
-							[&](const BaseCollider* c) {
-								return c == bullet.get();
+							[&](const auto& colliderVariant) {
+								BaseCollider* collider = std::visit(
+									[](auto* ptr) -> BaseCollider* {
+										return dynamic_cast<BaseCollider*>(ptr);
+									},
+									colliderVariant
+								);
+								return collider == bullet.get();
 							}),
 						colliders.end());
 
@@ -60,7 +66,7 @@ void Enemy::Update()
 		bullets_.end());
 
 	///=========================================
-	/// 親クラス
+	/// 親クラスA
 
 	// 更新
 	BaseCharacter::Update();

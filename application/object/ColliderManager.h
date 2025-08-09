@@ -31,7 +31,7 @@ public:  /// 公開メンバ関数
 
 	void AddCollider(ColliderVariant collider) { colliders_.push_back(collider); }
 
-	std::vector<BaseCollider*>& GetColliders() { return colliders_; }
+	std::vector<ColliderVariant> GetColliders() { return colliders_; }
 
 private: /// 非公開メンバ関数
 
