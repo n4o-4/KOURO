@@ -99,8 +99,10 @@
     <ClCompile Include="engine\math\CollisionMath.cpp" />
     <ClCompile Include="application\object\BaseBullet.cpp" />
     <ClCompile Include="application\object\PlayerBullet.cpp" />
-    <ClCompile Include="application\object\EnemyBullet.cpp" />
-    <ClCompile Include="CollisionMath.cpp" />
+    <ClCompile Include="OBBCollider.cpp" />
+    <ClCompile Include="BaseLineObject.cpp" />
+    <ClCompile Include="AABBLineObject.cpp" />
+    <ClCompile Include="OBBLineObject.cpp" />
     <ClCompile Include="Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -180,8 +182,10 @@
     <ClInclude Include="engine\math\CollisionMath.h" />
     <ClInclude Include="application\object\BaseBullet.h" />
     <ClInclude Include="application\object\PlayerBullet.h" />
-    <ClInclude Include="application\object\EnemyBullet.h" />
-    <ClInclude Include="CollisionMath.h" />
+    <ClInclude Include="OBBCollider.h" />
+    <ClInclude Include="BaseLineObject.h" />
+    <ClInclude Include="AABBLineObject.h" />
+    <ClInclude Include="OBBLineObject.h" />
     <ClInclude Include="Skybox.h" />
   </ItemGroup>
   <ItemGroup>

@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AABBLineObject.cpp" />
     <ClCompile Include="application\object\AABBCollider.cpp" />
     <ClCompile Include="application\scene\BaseScene.cpp" />
     <ClCompile Include="application\scene\GameScene.cpp" />
@@ -23,6 +24,7 @@
     <ClCompile Include="application\object\BaseBullet.cpp" />
     <ClCompile Include="engine\math\CollisionMath.cpp" />
     <ClCompile Include="application\object\EnemyBullet.cpp" />
+    <ClCompile Include="BaseLineObject.cpp" />
     <ClCompile Include="engine\effect\ColorSpace.cpp" />
     <ClCompile Include="application\object\Enemy.cpp" />
     <ClCompile Include="engine\3d\ModelDatas.cpp" />
@@ -83,8 +85,11 @@
     <ClCompile Include="application\object\SphereCollider.cpp" />
     <ClCompile Include="application\object\PlayerBullet.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="OBBCollider.cpp" />
+    <ClCompile Include="OBBLineObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABBLineObject.h" />
     <ClInclude Include="application\object\AABBCollider.h" />
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
     <ClInclude Include="application\scene\BaseScene.h" />
@@ -98,6 +103,7 @@
     <ClInclude Include="application\object\BaseBullet.h" />
     <ClInclude Include="engine\math\CollisionMath.h" />
     <ClInclude Include="application\object\EnemyBullet.h" />
+    <ClInclude Include="BaseLineObject.h" />
     <ClInclude Include="engine\effect\ColorSpace.h" />
     <ClInclude Include="application\object\Enemy.h" />
     <ClInclude Include="engine\effect\BaseEffect.h" />
@@ -163,6 +169,8 @@
     <ClInclude Include="application\object\SphereCollider.h" />
     <ClInclude Include="application\object\PlayerBullet.h" />
     <ClInclude Include="Skybox.h" />
+    <ClInclude Include="OBBCollider.h" />
+    <ClInclude Include="OBBLineObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

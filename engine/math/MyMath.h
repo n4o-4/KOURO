@@ -20,6 +20,12 @@ struct Sphere {
 	float radius; //!< 半径
 };
 
+struct OBB
+{
+	Vector3 center; //!< 中心座標
+	Vector3 halfSize; //!< 半分のサイズ（半径）
+	Vector3 axes[3]; //!< OBBの軸（X, Y, Z方向の単位ベクトル）
+};
 
 inline Vector3 Normalize(Vector3 v)
 {
@@ -54,6 +60,11 @@ inline float Dot(const Vector3& v1, const Vector3& v2) {
 
 inline float Length(const Vector3& v) {
 	return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+}
+
+inline float LengthSq(const Vector3& v)
+{
+	return v.x * v.x + v.y * v.y + v.z * v.z;
 }
 
 inline Vector3 Perpendicular(const Vector3& v) {

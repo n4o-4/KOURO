@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include "BaseCollider.h"
 
-class SphereCollider; // 前方宣言
-
 class AABBCollider : public BaseCollider
 {
 public: /// 公開メンバ関数
@@ -38,20 +36,12 @@ public: /// 公開メンバ関数
 
 	AABB GetAABB() const { return aabb_; }
 
-	///================================================================================
-	///                                        当たり判定計算
-	///                                        visitorパターンお試し
-
 	/**================================================================================
-	 * \brief  CheckCollision
-	 * \return
+	 * \brief  colorを取得する
+	 * \return color
 	 */
 
-	bool CheckCollision(BaseCollider* other) override;
-
-	bool CheckCollisionWithAABB(AABBCollider* other) override;
-
-	bool CheckCollisionWithSphere(SphereCollider* other)override;
+	Vector4 GetColor() const { return color_; }
 
 private: /// 非公開メンバ関数
 
@@ -64,6 +54,5 @@ private: /// 非公開メンバ変数
 	AABB aabb_ = {};
 
 	Vector3 center_ = { 0.0f, 0.0f, 0.0f }; //!< AABBの中心座標
-
 };
 
