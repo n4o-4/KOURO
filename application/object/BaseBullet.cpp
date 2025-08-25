@@ -1,49 +1,49 @@
-#include "BaseBullet.h"
+ï»¿#include "BaseBullet.h"
 
 void BaseBullet::Initialize(Model* model, Vector3 spawnPos)
 {
 	///========================================
-	/// ƒIƒuƒWƒFƒNƒg3D
+	/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ3D
 
-	// ¶¬‚Æ‰Šú‰»
+	// ç”Ÿæˆã¨åˆæœŸåŒ–
 	object3d_ = std::make_unique<Object3d>();
 	object3d_->Initialize(Object3dCommon::GetInstance());
 
-	// ƒ‚ƒfƒ‹‚ğİ’è
+	// ãƒ¢ãƒ‡ãƒ«ã‚’è¨­å®š
 	object3d_->SetModel(model);
 
-	// ƒ[ƒJƒ‹s—ñ‚Ì‰Šú‰»
+	// ãƒ­ãƒ¼ã‚«ãƒ«è¡Œåˆ—ã®åˆæœŸåŒ–
 	object3d_->SetLocalMatrix(MakeIdentity4x4());
 
 
 
 	///========================================
-	/// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+	/// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
 
-	// ¶¬‚Æ‰Šú‰»
+	// ç”Ÿæˆã¨åˆæœŸåŒ–
 	worldTransform_ = std::make_unique<WorldTransform>();
 	worldTransform_->Initialize();
 
 
 	worldTransform_->useQuaternion_ = false;
-	// ‰Šú’l‚Ìİ’è
+	// åˆæœŸå€¤ã®è¨­å®š
 
 	worldTransform_->transform.translate = spawnPos;
 
 	///========================================
-	/// ‚»‚Ì‘¼•Ï”
+	/// ãã®ä»–å¤‰æ•°
 
-	// ‘¬“x‚Ì‰Šú‰»
+	// é€Ÿåº¦ã®åˆæœŸåŒ–
 	velocity_ = { 0.0f,0.0f,0.0f };
 
-	// —LŒøƒtƒ‰ƒO‚Ì‰Šú‰»
-	isActive_ = true;
+	// æœ‰åŠ¹ãƒ•ãƒ©ã‚°ã®åˆæœŸåŒ–
+	isAlive_ = true;
 }
 
 void BaseBullet::Update()
 {
 	///========================================
-	/// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+	/// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
 
 	if (worldTransform_->useQuaternion_)
 	{
@@ -54,21 +54,21 @@ void BaseBullet::Update()
 		worldTransform_->transform.translate += velocity_;
 	}
 
-	// XV
+	// æ›´æ–°
 	worldTransform_->UpdateMatrix();
 
 	lifeTimer_ += 1.0f / 60.0f;
 	if (lifeTimer_ >= kLifeTime_)
 	{
- 		isActive_ = false; // õ–½‚ªs‚«‚½‚ç–³Œø‰»
+ 		isAlive_ = false; // å¯¿å‘½ãŒå°½ããŸã‚‰ç„¡åŠ¹åŒ–
 	}
 }
 
 void BaseBullet::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 {
 	///========================================
-	/// ƒIƒuƒWƒFƒNƒg3D
+	/// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ3D
 
-	// •`‰æ
+	// æç”»
 	object3d_->Draw(*worldTransform_.get(), camera_->GetViewProjection(), directionalLight, pointLight, spotLight);
 }

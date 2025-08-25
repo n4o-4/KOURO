@@ -1,36 +1,36 @@
-#include "OBBLineObject.h"
+ï»¿#include "OBBLineObject.h"
 
-static const uint32_t kMaxVertexNum = 24; // AABB‚Ì8’¸“_ * 3•Ó = 24ƒ‰ƒCƒ“
+static const uint32_t kMaxVertexNum = 24; // AABBã®8é ‚ç‚¹ * 3è¾º = 24ãƒ©ã‚¤ãƒ³
 
 void OBBLineObject::Initialize(DirectXCommon* dxCommon)
 {
-	///	‰Šú‰»ˆ—
+	///	åˆæœŸåŒ–å‡¦ç†
 
-	// DirectXCommon‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğƒƒ“ƒo•Ï”‚É‹L˜^
+	// DirectXCommonã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ãƒ¡ãƒ³ãƒå¤‰æ•°ã«è¨˜éŒ²
 	dxCommon_ = dxCommon;
 
-	// vertexResource_‚ğ¶¬
+	// vertexResource_ã‚’ç”Ÿæˆ
 	CreateVertexResource();
 
-	// vertexBufferView_‚ğ¶¬
+	// vertexBufferView_ã‚’ç”Ÿæˆ
 	CreateVertexBufferView();
 }
 
 void OBBLineObject::Update()
 {
     if (!obbCollider_) {
-        return; // OBB‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Í‰½‚à‚µ‚È‚¢
+        return; // OBBãŒè¨­å®šã•ã‚Œã¦ã„ãªã„å ´åˆã¯ä½•ã‚‚ã—ãªã„
     }
 
     const OBB& obb = obbCollider_->GetOBB();
     const Vector3& center = obb.center;
 
-    // ‰ñ“]²
-    const Vector3& xAxis = obb.axes[0]; // X²•ûŒüƒxƒNƒgƒ‹
-    const Vector3& yAxis = obb.axes[1]; // Y²•ûŒüƒxƒNƒgƒ‹
-    const Vector3& zAxis = obb.axes[2]; // Z²•ûŒüƒxƒNƒgƒ‹
+    // å›è»¢è»¸
+    const Vector3& xAxis = obb.axes[0]; // Xè»¸æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
+    const Vector3& yAxis = obb.axes[1]; // Yè»¸æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
+    const Vector3& zAxis = obb.axes[2]; // Zè»¸æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
 
-    // ƒ[ƒJƒ‹‹óŠÔ‚Å‚Ì8’¸“_
+    // ãƒ­ãƒ¼ã‚«ãƒ«ç©ºé–“ã§ã®8é ‚ç‚¹
     Vector3 localVertices[8] = {
         { +obb.halfSize.x, +obb.halfSize.y, +obb.halfSize.z }, // v0
         { +obb.halfSize.x, +obb.halfSize.y, -obb.halfSize.z }, // v1
@@ -42,18 +42,18 @@ void OBBLineObject::Update()
         { -obb.halfSize.x, -obb.halfSize.y, -obb.halfSize.z }  // v7
     };
 
-    // ƒ‰ƒCƒ“•`‰æ—pƒCƒ“ƒfƒbƒNƒX
+    // ãƒ©ã‚¤ãƒ³æç”»ç”¨ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
     constexpr int lineIndices[24] = {
-        0, 1, 1, 3, 3, 2, 2, 0, // ’ê–Ê
-        4, 5, 5, 7, 7, 6, 6, 4, // ã–Ê
-        0, 4, 1, 5, 2, 6, 3, 7  // ‘¤–Ê
+        0, 1, 1, 3, 3, 2, 2, 0, // åº•é¢
+        4, 5, 5, 7, 7, 6, 6, 4, // ä¸Šé¢
+        0, 4, 1, 5, 2, 6, 3, 7  // å´é¢
     };
 
-    // ’¸“_•ÏŠ·‚ÆŠi”[
+    // é ‚ç‚¹å¤‰æ›ã¨æ ¼ç´
     for (int i = 0; i < 24; ++i) {
         const Vector3& local = localVertices[lineIndices[i]];
 
-        // ƒ[ƒJƒ‹À•W‚ğƒ[ƒ‹ƒh‹óŠÔ‚É•ÏŠ·iŒX‚«“K—pj
+        // ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰ç©ºé–“ã«å¤‰æ›ï¼ˆå‚¾ãé©ç”¨ï¼‰
         Vector3 world =
             xAxis * local.x +
             yAxis * local.y +
@@ -61,7 +61,7 @@ void OBBLineObject::Update()
             center;
 
         vertexData_[i].position = { world.x, world.y, world.z, 1.0f };
-        vertexData_[i].color = obbCollider_->GetColor(); // OBB‚ÌF‚ğg—p
+        vertexData_[i].color = obbCollider_->GetColor(); // OBBã®è‰²ã‚’ä½¿ç”¨
     }
 }
 
@@ -71,16 +71,16 @@ void OBBLineObject::Draw(const ViewProjection& viewProjection)
 
 void OBBLineObject::CreateVertexResource()
 {
-    // ’¸“_ƒf[ƒ^‚ÌŠm•Û
+    // é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®ç¢ºä¿
     vertexResource_ = dxCommon_->CreateBufferResource(sizeof(LineDrawer::VertexData) * kMaxVertexNum);
 
-    // ’¸“_ƒf[ƒ^‚Ìƒ}ƒbƒsƒ“ƒO
+    // é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®ãƒãƒƒãƒ”ãƒ³ã‚°
     vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
 }
 
 void OBBLineObject::CreateVertexBufferView()
 {
-    // VertexBufferView‚Ì¶¬
+    // VertexBufferViewã®ç”Ÿæˆ
     vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 
     vertexBufferView_.SizeInBytes = UINT(sizeof(LineDrawer::VertexData) * kMaxVertexNum);

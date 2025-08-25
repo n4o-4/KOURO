@@ -19,17 +19,6 @@ class TitleScene : public BaseScene
 {
 private:
 
-	std::unique_ptr<Sprite> sprite = nullptr;
-
-	//std::unique_ptr<Object3d> object3d = nullptr;
-
-	std::unique_ptr<ParticleEmitter> particleEmitter_1 = nullptr;
-
-	std::unique_ptr<Audio> audio = nullptr;
-
-
-	std::unique_ptr<Sprite> title_ = nullptr;
-
 private:
 public: // メンバ関数
 

@@ -22,6 +22,7 @@
     <ClCompile Include="application\object\BaseCollider.cpp" />
     <ClCompile Include="application\object\ColliderManager.cpp" />
     <ClCompile Include="application\object\BaseBullet.cpp" />
+    <ClCompile Include="BaseEntity.cpp" />
     <ClCompile Include="engine\math\CollisionMath.cpp" />
     <ClCompile Include="application\object\EnemyBullet.cpp" />
     <ClCompile Include="BaseLineObject.cpp" />
@@ -101,6 +102,7 @@
     <ClInclude Include="application\object\BaseCollider.h" />
     <ClInclude Include="application\object\ColliderManager.h" />
     <ClInclude Include="application\object\BaseBullet.h" />
+    <ClInclude Include="BaseEntity.h" />
     <ClInclude Include="engine\math\CollisionMath.h" />
     <ClInclude Include="application\object\EnemyBullet.h" />
     <ClInclude Include="BaseLineObject.h" />

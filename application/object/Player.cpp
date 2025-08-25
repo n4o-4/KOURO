@@ -15,7 +15,7 @@ void Player::Initialize(Model* model)
 	worldTransform_->transform.translate.z = 25.0f; // 初期位置を設定
 	worldTransform_->transform.translate.y = -5.0f; // 初期位置を設定
 
-	AABBCollider::Initialize(worldTransform_.get());
+	AABBCollider::Initialize(worldTransform_.get(),this);
 
 	SetCollisionAttribute(0b1); // コリジョン属性を設定
 
@@ -76,29 +76,11 @@ void Player::Update()
 
 	std::vector<ColliderVariant> colliders = colliderManager_->GetColliders();
 
-	bullets_.erase(
-		std::remove_if(bullets_.begin(), bullets_.end(),
-			[&](const std::unique_ptr<PlayerBullet>& bullet) {
-				if (!bullet || !bullet->GetIsAlive()) {
-					// colliderManager のコライダーリストからも削除
-					colliders.erase(
-						std::remove_if(colliders.begin(), colliders.end(),
-							[&](const auto& colliderVariant) {
-								BaseCollider* collider = std::visit(
-									[](auto* ptr) -> BaseCollider* {
-										return dynamic_cast<BaseCollider*>(ptr);
-									},
-									colliderVariant
-								);
-								return collider == bullet.get();
-							}),
-						colliders.end());
-
-					return true;
-				}
-				return false;
-			}),
-		bullets_.end());
+	std::erase_if(bullets_, [](const ColliderVariant& collider) {
+		return std::visit([](auto& ptr) {
+			return ptr && !ptr->GetIsAlive();
+			}, collider);
+		});
 
 	///=========================================
 	/// 親クラス
@@ -160,7 +142,7 @@ void Player::Move()
 void Player::Fire()
 {
 	// 弾の生成
-	std::unique_ptr<PlayerBullet> bullet = std::make_unique<PlayerBullet>();
+	std::shared_ptr<PlayerBullet> bullet = std::make_shared<PlayerBullet>();
 
 	// 初期化
 	bullet->Initialize(ModelManager::GetInstance()->FindModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
@@ -171,7 +153,7 @@ void Player::Fire()
 
 	bullet->SetVelocity(velocity);
 
-	colliderManager_->AddCollider(bullet.get());
+	colliderManager_->AddCollider(bullet);
 
 	bullets_.push_back(std::move(bullet));
 }

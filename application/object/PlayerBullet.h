@@ -1,24 +1,24 @@
-#pragma once
+ï»¿#pragma once
 #include "BaseBullet.h"
 class PlayerBullet : public BaseBullet, public SphereCollider
 {
-public: // ŒöŠJƒƒ“ƒoŠÖ”
+public: // å…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 	/**
-	 * \brief  Initialize ‰Šú‰»
-	 * \param  model ƒ‚ƒfƒ‹
+	 * \brief  Initialize åˆæœŸåŒ–
+	 * \param  model ãƒ¢ãƒ‡ãƒ«
 	 */
 
 	void Initialize(Model* model,Vector3 spawnPos) override;
 
-	// \brief  Update XV
+	// \brief  Update æ›´æ–°
 
 	void Update() override;
 
 	/**
-	 * \brief  Draw •`‰æ
-	 * \param  directionalLight ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒg
-	 * \param  pointLight ƒ|ƒCƒ“ƒgƒ‰ƒCƒg
-	 * \param  spotLight ƒXƒ|ƒbƒgƒ‰ƒCƒg
+	 * \brief  Draw æç”»
+	 * \param  directionalLight ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆ
+	 * \param  pointLight ãƒã‚¤ãƒ³ãƒˆãƒ©ã‚¤ãƒˆ
+	 * \param  spotLight ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆ
 	 */
 
 	void Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) override;
@@ -27,36 +27,36 @@ public: // ŒöŠJƒƒ“ƒoŠÖ”
 	 ///                                        setter
 
 	/**
-	 * \brief  SetCamera ƒJƒƒ‰‚ğİ’è
-	 * \param  camera ƒJƒƒ‰
+	 * \brief  SetCamera ã‚«ãƒ¡ãƒ©ã‚’è¨­å®š
+	 * \param  camera ã‚«ãƒ¡ãƒ©
 	*/
 
 	void SetCamera(BaseCamera* camera) { camera_ = camera; }
 
 	/**
-	 * \brief  SetVelocity ‘¬“x‚ğİ’è
-	 * \param  velocity ‘¬“x
+	 * \brief  SetVelocity é€Ÿåº¦ã‚’è¨­å®š
+	 * \param  velocity é€Ÿåº¦
 	*/
 
 	void SetVelocity(const Vector3& velocity) { velocity_ = velocity; }
 
-private: // ”ñŒöŠJƒƒ“ƒoŠÖ”
+private: // éå…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 
-	// \brief  OnCollisionEnter Õ“ËŠJn‚Ìˆ—
+	// \brief  OnCollisionEnter è¡çªé–‹å§‹æ™‚ã®å‡¦ç†
 
 	void OnCollisionEnter(BaseCollider* other) override;
 
-	// \brief  OnCollisionStay Õ“Ë’†‚Ìˆ—
+	// \brief  OnCollisionStay è¡çªä¸­ã®å‡¦ç†
 
 	void OnCollisionStay(BaseCollider* other) override;
 
-	// \brief  OnCollisionExit Õ“ËI—¹‚Ìˆ—
+	// \brief  OnCollisionExit è¡çªçµ‚äº†æ™‚ã®å‡¦ç†
 
 	void OnCollisionExit(BaseCollider* other) override;
 
-private: // ”ñŒöŠJƒƒ“ƒo•Ï”
+private: // éå…¬é–‹ãƒ¡ãƒ³ãƒå¤‰æ•°
 
-	std::unique_ptr<ParticleEmitter> emitter_; //!< ƒp[ƒeƒBƒNƒ‹ƒGƒ~ƒbƒ^[
+	std::unique_ptr<ParticleEmitter> emitter_; //!< ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚¨ãƒŸãƒƒã‚¿ãƒ¼
 
 };
 

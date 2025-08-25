@@ -1,10 +1,19 @@
 ﻿#include "BaseCollider.h"
 
-void BaseCollider::Initialize(WorldTransform* worldTransform)
+#include "BaseEntity.h"
+
+void BaseCollider::Initialize(WorldTransform* worldTransform, BaseEntity* owner)
 {
 	// コライダーに関連付けるワールド変換情報を設定する
 
 	colliderTransform_ = worldTransform;
+
+	owner_ = owner;
+}
+
+void BaseCollider::Update()
+{
+	isAlive_ = owner_->isAlive_;
 }
 
 void BaseCollider::AddCollision(BaseCollider* collider)
@@ -18,10 +27,12 @@ void BaseCollider::UpdateCollisionStates()
 {
 	// Enter & Stay
 	for (BaseCollider* other : currentCollisions_) {
-		if (prevCollisions_.count(other)) {
+		if (prevCollisions_.count(other))
+		{
 			OnCollisionStay(other);
 		}
-		else {
+		else
+		{
 			OnCollisionEnter(other);
 		}
 	}

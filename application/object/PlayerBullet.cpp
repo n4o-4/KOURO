@@ -1,19 +1,20 @@
-#include "PlayerBullet.h"
+ï»¿#include "PlayerBullet.h"
+#include "Enemy.h"
 
 void PlayerBullet::Initialize(Model* model,Vector3 spawnPos)
 {
-	// eƒNƒ‰ƒX‚Ì‰Šú‰»
+	// è¦ªã‚¯ãƒ©ã‚¹ã®åˆæœŸåŒ–
 
 	BaseBullet::Initialize(model,spawnPos);
 	
-	// Collider‚Ì‰Šú‰»‚Æİ’è
+	// Colliderã®åˆæœŸåŒ–ã¨è¨­å®š
 
-	SphereCollider::Initialize(worldTransform_.get());
-	SetCollisionAttribute(0b1); // ƒRƒŠƒWƒ‡ƒ“‘®«‚ğİ’è
+	SphereCollider::Initialize(worldTransform_.get(),this);
+	SetCollisionAttribute(0b1); // ã‚³ãƒªã‚¸ãƒ§ãƒ³å±æ€§ã‚’è¨­å®š
 	SetCollisionMask(0b1 << 1);
 	SetSphere(Sphere({}, 1.0f));
 
-	// ƒp[ƒeƒBƒNƒ‹ƒGƒ~ƒbƒ^[‚Ì‰Šú‰»
+	// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚¨ãƒŸãƒƒã‚¿ãƒ¼ã®åˆæœŸåŒ–
 
 	emitter_ = std::make_unique<ParticleEmitter>();
 
@@ -32,24 +33,35 @@ void PlayerBullet::Initialize(Model* model,Vector3 spawnPos)
 
 void PlayerBullet::Update()
 {
-	// eƒNƒ‰ƒX‚ÌXV
+	// è¦ªã‚¯ãƒ©ã‚¹ã®æ›´æ–°
 
 	BaseBullet::Update();
 
-	// Collider‚ÌXV
+	// Colliderã®æ›´æ–°
 
 	SphereCollider::Update();
 }
 
 void PlayerBullet::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 {
-	// eƒNƒ‰ƒX‚Ì•`‰æ
+	// è¦ªã‚¯ãƒ©ã‚¹ã®æç”»
 
 	BaseBullet::Draw(directionalLight, pointLight, spotLight);
 }
 
 void PlayerBullet::OnCollisionEnter(BaseCollider* other)
 {
+	// è¡çªã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒEnemyã¾ãŸã¯EnemyBulletã®å ´åˆã€å¼¾ã‚’æ¶ˆã™
+	if (Enemy* enemy = dynamic_cast<Enemy*>(other))
+	{
+		BaseEntity::isAlive_ = false; // å¼¾ã‚’æ¶ˆã™
+	}
+
+	if(EnemyBullet* enemyBullet = dynamic_cast<EnemyBullet*>(other))
+	{
+		BaseEntity::isAlive_ = false; // å¼¾ã‚’æ¶ˆã™
+	}
+
 	emitter_->SetPosition(worldTransform_->transform.translate);
 	emitter_->Emit();
 }

@@ -1,57 +1,57 @@
-#pragma once
+ï»¿#pragma once
 #include "BaseLineObject.h"
 
 #include "OBBCollider.h"
 
 class OBBLineObject : public BaseLineObject
 {
-public: // ŒöŠJƒƒ“ƒoŠÖ”
+public: // å…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	~OBBLineObject() override = default;
 
 	/**
-	 * \brief  Initialize ‰Šú‰»
+	 * \brief  Initialize åˆæœŸåŒ–
 	 */
 
 	void Initialize(DirectXCommon* dxCommon)override;
 
 	/**
-	 * \brief  Update XV
+	 * \brief  Update æ›´æ–°
 	 */
 
 	void Update()override;
 
 	/**
-	 * \brief  Draw •`‰æ
-	 * \param  viewProjection ƒrƒ…[ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ
+	 * \brief  Draw æç”»
+	 * \param  viewProjection ãƒ“ãƒ¥ãƒ¼ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—
 	 */
 
 	void Draw(const ViewProjection& viewProjection)override;
 
 	/**
-	 * \brief  SetAABBCollider AABBCollider‚ğİ’è‚·‚é
-	 * \param  aabbCollider AABBCollider‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	 * \brief  SetAABBCollider AABBColliderã‚’è¨­å®šã™ã‚‹
+	 * \param  aabbCollider AABBColliderã¸ã®ãƒã‚¤ãƒ³ã‚¿
 	 */
 
 	void SetOBBCollider(OBBCollider* obbCollider) { obbCollider_ = obbCollider; }
 
-private: // ”ñŒöŠJƒƒ“ƒoŠÖ”
+private: // éå…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	/**
-	 * \brief  CreateVertexResource ’¸“_ƒŠƒ\[ƒX‚ğ¶¬‚·‚é
+	 * \brief  CreateVertexResource é ‚ç‚¹ãƒªã‚½ãƒ¼ã‚¹ã‚’ç”Ÿæˆã™ã‚‹
 	 */
 
 	void CreateVertexResource();
 
 	/**
-	 * \brief  CreateVertexBufferView ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚ğ¶¬‚·‚é
+	 * \brief  CreateVertexBufferView é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã‚’ç”Ÿæˆã™ã‚‹
 	 */
 
 	void CreateVertexBufferView();
 
-private: // ”ñŒöŠJƒƒ“ƒo•Ï”
+private: // éå…¬é–‹ãƒ¡ãƒ³ãƒå¤‰æ•°
 
-	OBBCollider* obbCollider_ = nullptr; //!< AABBCollider‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	OBBCollider* obbCollider_ = nullptr; //!< AABBColliderã¸ã®ãƒã‚¤ãƒ³ã‚¿
 
 };
 

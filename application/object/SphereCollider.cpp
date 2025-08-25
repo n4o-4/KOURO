@@ -1,9 +1,9 @@
 ﻿#include "SphereCollider.h"
 
-void SphereCollider::Initialize(WorldTransform* worldTransform)
+void SphereCollider::Initialize(WorldTransform* worldTransform, BaseEntity* owner)
 {
 	// 基底クラスの初期化
-	BaseCollider::Initialize(worldTransform);
+	BaseCollider::Initialize(worldTransform, owner);
 
 	// 球の初期化
 	sphere_ = {
@@ -14,6 +14,8 @@ void SphereCollider::Initialize(WorldTransform* worldTransform)
 
 void SphereCollider::Update()
 {
+	BaseCollider::Update();
+
 	// ワールド座標系での球の中心座標を更新
 	sphere_.center = Vector3(
 		colliderTransform_->matWorld_.m[3][0],

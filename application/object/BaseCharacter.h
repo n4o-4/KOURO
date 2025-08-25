@@ -1,9 +1,9 @@
 ﻿#pragma once
 // Engine
 #include "Kouro.h"
+#include "BaseEntity.h"
 
-
-class BaseCharacter
+class BaseCharacter : protected BaseEntity
 {
 public: // 公開メンバ関数
 
@@ -30,14 +30,8 @@ protected: // 派生用メンバ変数
 	// 3Dモデル
 	std::unique_ptr<Object3d> object3d_;
 
-	// ワールドトランスフォーム
-	std::unique_ptr<WorldTransform> worldTransform_;
-
 	// 速度
 	Vector3 velocity_ = { 0.0f,0.0f,0.0f };
-
-	// 有効フラグ
-	bool isActive_ = true;
 
 	BaseCamera* camera_ = nullptr;
 

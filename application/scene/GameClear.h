@@ -34,13 +34,5 @@ public:
 
 private:
 
-	std::unique_ptr<Audio> audio = nullptr;
-
-	std::unique_ptr<Sprite> clear_ = nullptr;
-
-
-
-
-
 };
 

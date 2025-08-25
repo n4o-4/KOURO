@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "DirectXCommon.h"
 #include "SrvManager.h"
@@ -7,35 +7,35 @@
 
 namespace LineDrawer
 {
-	struct VertexData // ƒ‰ƒCƒ“•`‰æ—p‚ÌVertexData
+	struct VertexData // ãƒ©ã‚¤ãƒ³æç”»ç”¨ã®VertexData
 	{
-		Vector4 position; // ’¸“_ˆÊ’u
-		Vector4 color; // ’¸“_ƒJƒ‰[
+		Vector4 position; // é ‚ç‚¹ä½ç½®
+		Vector4 color; // é ‚ç‚¹ã‚«ãƒ©ãƒ¼
 	};
 }
 
-class BaseLineObject // ƒ‰ƒCƒ“ƒIƒuƒWƒFƒNƒg‚ÌŠî’êƒNƒ‰ƒX
+class BaseLineObject // ãƒ©ã‚¤ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åŸºåº•ã‚¯ãƒ©ã‚¹
 {
-public: // ŒöŠJƒƒ“ƒoŠÖ”
+public: // å…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	virtual ~BaseLineObject() = default;
 
 	/**
-	 * \brief  Initialize ‰Šú‰»
-	 * \param  dxCommon DirectXCommon‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
+	 * \brief  Initialize åˆæœŸåŒ–
+	 * \param  dxCommon DirectXCommonã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	 */
 
 	virtual void Initialize(DirectXCommon* dxCommon);
 
 	/**
-	 * \brief  Update XV
+	 * \brief  Update æ›´æ–°
 	 */
 
 	virtual void Update();
 
 	/**
-	 * \brief  Draw •`‰æ
-	 * \param  viewProjection ƒrƒ…[ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ
+	 * \brief  Draw æç”»
+	 * \param  viewProjection ãƒ“ãƒ¥ãƒ¼ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—
 	 */
 
 	virtual void Draw(const ViewProjection& viewProjection);

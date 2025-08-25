@@ -1,18 +1,18 @@
-#pragma once
+ï»¿#pragma once
 #include "BaseCollider.h"
 
 class OBBCollider : public BaseCollider
 {
-public: /// ŒöŠJƒƒ“ƒoŠÖ”
+public: /// å…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	/**
-	 * \brief  Initialize ‰Šú‰»
-	 * \param  worldTransform ƒ[ƒ‹ƒh•ÏŒ`î•ñ
+	 * \brief  Initialize åˆæœŸåŒ–
+	 * \param  worldTransform ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰å½¢æƒ…å ±
 	 */
 
-	void Initialize(WorldTransform* worldTransform) override;
+	void Initialize(WorldTransform* worldTransform, BaseEntity* owner) override;
 
-	// \brief  Update XV
+	// \brief  Update æ›´æ–°
 
 	void Update() override;
 
@@ -20,8 +20,8 @@ public: /// ŒöŠJƒƒ“ƒoŠÖ”
 	///                                        setter
 
 	/**
-	 * \brief OBB‚Ìî•ñ‚ğİ’è‚·‚é
-	 * \parma OBB OBB‚ÌÅ¬À•W‚ÆÅ‘åÀ•W
+	 * \brief OBBã®æƒ…å ±ã‚’è¨­å®šã™ã‚‹
+	 * \parma OBB OBBã®æœ€å°åº§æ¨™ã¨æœ€å¤§åº§æ¨™
 	*/
 
 	void SetOBB(const OBB& obb) { obb_ = obb; }
@@ -30,26 +30,26 @@ public: /// ŒöŠJƒƒ“ƒoŠÖ”
 	///                                        getter
 
 	/**================================================================================
-	 * \brief  GetOBB‚ğæ“¾‚·‚é
+	 * \brief  GetOBBã‚’å–å¾—ã™ã‚‹
 	 * \return OBB
 	 */
 
 	OBB GetOBB() const { return obb_; }
 
 	/**================================================================================
-	 * \brief  color‚ğæ“¾‚·‚é
+	 * \brief  colorã‚’å–å¾—ã™ã‚‹
 	 * \return color
 	 */
 
 	Vector4 GetColor() const { return color_; }
 
-private: /// ”ñŒöŠJƒƒ“ƒoŠÖ”
+private: /// éå…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 
-public: /// ŒöŠJƒƒ“ƒo•Ï”
+public: /// å…¬é–‹ãƒ¡ãƒ³ãƒå¤‰æ•°
 
-private: /// ”ñŒöŠJƒƒ“ƒo•Ï”
+private: /// éå…¬é–‹ãƒ¡ãƒ³ãƒå¤‰æ•°
 
-	// AABB‚ÌÅ¬À•W‚ÆÅ‘åÀ•W
+	// AABBã®æœ€å°åº§æ¨™ã¨æœ€å¤§åº§æ¨™
 
 	OBB obb_ = {};
 };

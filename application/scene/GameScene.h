@@ -64,13 +64,13 @@ private:
 	std::unique_ptr<ParticleEmitter> hitEffect2_Circle1_ = nullptr;
 	std::unique_ptr<ParticleEmitter> hitEffect2_Circle2_ = nullptr;
 
-	std::unique_ptr<Player> player_ = nullptr;
+	std::shared_ptr<Player> player_ = nullptr;
 
 	std::unique_ptr<RailCamera> railCamera_ = nullptr;
 
 	std::unique_ptr<LevelLoader::LevelData> levelData_ = nullptr;
 
-	std::vector<std::unique_ptr<Enemy>> enemies_;
+	std::vector<std::shared_ptr<Enemy>> enemies_;
 
 	std::unique_ptr<ColliderManager> colliderManager_ = nullptr;
 

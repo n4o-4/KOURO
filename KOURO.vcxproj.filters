@@ -104,6 +104,8 @@
     <ClCompile Include="AABBLineObject.cpp" />
     <ClCompile Include="OBBLineObject.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="application\object\EnemyBullet.cpp" />
+    <ClCompile Include="BaseEntity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -187,6 +189,8 @@
     <ClInclude Include="AABBLineObject.h" />
     <ClInclude Include="OBBLineObject.h" />
     <ClInclude Include="Skybox.h" />
+    <ClInclude Include="application\object\EnemyBullet.h" />
+    <ClInclude Include="BaseEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

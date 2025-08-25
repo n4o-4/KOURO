@@ -40,7 +40,7 @@ private: // 非公開メンバ変数
 	
 	BaseCharacter* target_ = nullptr; //!< ターゲットキャラクター
 
-	std::vector<std::unique_ptr<EnemyBullet>> bullets_; //!< 弾のリスト
+	std::vector<std::shared_ptr<EnemyBullet>> bullets_; //!< 弾のリスト
 
 	const float kFireInterval = 2.0f; //!< 弾の発射間隔
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #pragma once
 #include "Vectors.h"
@@ -19,11 +19,11 @@ public:
 
 	struct Direction
 	{
-		Vector3 direction; //!< •ûŒüƒxƒNƒgƒ‹
-		float padding[1]; //!< ‹­“x
+		Vector3 direction; //!< æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
+		float padding[1]; //!< å¼·åº¦
 	};
 
-public: // ŒöŠJƒƒ“ƒoŠÖ”
+public: // å…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 	
 	void Initialize(DirectXCommon* dxCommon, const std::string& filePath);
 
@@ -39,11 +39,11 @@ private:
 
 private:
 
-	DirectXCommon* dxCommon_; //!< DirectX‹¤’ÊƒNƒ‰ƒX‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	DirectXCommon* dxCommon_; //!< DirectXå…±é€šã‚¯ãƒ©ã‚¹ã¸ã®ãƒã‚¤ãƒ³ã‚¿
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_; //!< ’¸“_ƒŠƒ\[ƒX
+	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_; //!< é ‚ç‚¹ãƒªã‚½ãƒ¼ã‚¹
 
-	VertexData* vertexData_; //!< ’¸“_ƒf[ƒ^
+	VertexData* vertexData_; //!< é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿
 
 
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
@@ -57,21 +57,21 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_; //!< ƒ}ƒeƒŠƒAƒ‹ƒŠƒ\[ƒX
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_; //!< ãƒžãƒ†ãƒªã‚¢ãƒ«ãƒªã‚½ãƒ¼ã‚¹
 
-	Material* materialData_; //!< ƒ}ƒeƒŠƒAƒ‹ƒf[ƒ^
+	Material* materialData_; //!< ãƒžãƒ†ãƒªã‚¢ãƒ«ãƒ‡ãƒ¼ã‚¿
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> directionResource_; //!< ’¸“_ƒŠƒ\[ƒX
+	Microsoft::WRL::ComPtr<ID3D12Resource> directionResource_; //!< é ‚ç‚¹ãƒªã‚½ãƒ¼ã‚¹
 
-	Direction* directionData_; //!< ’¸“_ƒf[ƒ^
+	Direction* directionData_; //!< é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿
 
-	std::unique_ptr<WorldTransform> worldTransform_; //!< ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+	std::unique_ptr<WorldTransform> worldTransform_; //!< ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
 
-	std::string filePath_; //!< ƒtƒ@ƒCƒ‹ƒpƒX
+	std::string filePath_; //!< ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_; //!< ƒCƒ“ƒfƒbƒNƒXƒŠƒ\[ƒX
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_; //!< ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒªã‚½ãƒ¼ã‚¹
 
-	D3D12_INDEX_BUFFER_VIEW indexBufferView_; //!< ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ƒrƒ…[
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_; //!< ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼
 
 	int32_t* indexData_;
 };

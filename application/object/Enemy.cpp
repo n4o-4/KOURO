@@ -1,4 +1,6 @@
 ﻿#include "Enemy.h"
+#include "PlayerBullet.h"
+
 #include "algorithm"
 
 void Enemy::Initialize(Model* model)
@@ -14,7 +16,7 @@ void Enemy::Initialize(Model* model)
 	worldTransform_->quaternionTransform.scale = { 5.0f,5.0f,5.0f };
 	worldTransform_->transform.scale = { 1.0f,1.0f,1.0f };
 
-	AABBCollider::Initialize(worldTransform_.get());
+	AABBCollider::Initialize(worldTransform_.get(),this);
 
 	SetCollisionAttribute(0b1 << 1); // コリジョン属性を設定
 	SetCollisionMask(0b1); // コリジョンマスクを設定
@@ -41,29 +43,11 @@ void Enemy::Update()
 
 	std::vector<ColliderVariant> colliders = colliderManager_->GetColliders();
 
-	bullets_.erase(
-		std::remove_if(bullets_.begin(), bullets_.end(),
-			[&](const std::unique_ptr<EnemyBullet>& bullet) {
-				if (!bullet || !bullet->GetIsAlive()) {
-					// colliderManager のコライダーリストからも削除
-					colliders.erase(
-						std::remove_if(colliders.begin(), colliders.end(),
-							[&](const auto& colliderVariant) {
-								BaseCollider* collider = std::visit(
-									[](auto* ptr) -> BaseCollider* {
-										return dynamic_cast<BaseCollider*>(ptr);
-									},
-									colliderVariant
-								);
-								return collider == bullet.get();
-							}),
-						colliders.end());
-
-					return true;
-				}
-				return false;
-			}),
-		bullets_.end());
+	std::erase_if(bullets_, [](const ColliderVariant& collider) {
+		return std::visit([](auto& ptr) {
+			return ptr && !ptr->GetIsAlive();
+			}, collider);
+		});
 
 	///=========================================
 	/// 親クラスA
@@ -80,8 +64,6 @@ void Enemy::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotL
 	{
 		bullet->Draw(directionalLight,pointLight,spotLight);
 	}
-
-	
 
 	///=========================================
 	/// 親クラス
@@ -104,7 +86,7 @@ void Enemy::SetPosition(const Vector3& position)
 void Enemy::Fire()
 {
 	// 弾の生成
-	std::unique_ptr<EnemyBullet> bullet = std::make_unique<EnemyBullet>();
+	std::shared_ptr<EnemyBullet> bullet = std::make_shared<EnemyBullet>();
 
 	// 初期化
 	bullet->Initialize(ModelManager::GetInstance()->FindModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
@@ -120,17 +102,20 @@ void Enemy::Fire()
 		targetWMatrix.m[3][2] - worldTransform_->matWorld_.m[3][2]
 	});
 
-
-
 	bullet->SetVelocity(velocity);
 
-	colliderManager_->AddCollider(bullet.get());
+	colliderManager_->AddCollider(bullet);
 
 	bullets_.push_back(std::move(bullet));
 }
 
 void Enemy::OnCollisionEnter(BaseCollider* other)
 {
+	// 衝突したオブジェクトがPlayerBulletの場合、弾を消す
+	if (PlayerBullet* playerBullet = dynamic_cast<PlayerBullet*>(other))
+	{
+		BaseEntity::isAlive_ = false; // 弾を消す
+	}
 }
 
 void Enemy::OnCollisionStay(BaseCollider* other)

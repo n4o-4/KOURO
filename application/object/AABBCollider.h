@@ -10,7 +10,7 @@ public: /// 公開メンバ関数
 	 * \param  worldTransform ワールド変形情報
 	 */
 
-	void Initialize(WorldTransform* worldTransform) override;
+	void Initialize(WorldTransform* worldTransform, BaseEntity* owner) override;
 
 	// \brief  Update 更新
 

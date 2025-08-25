@@ -41,7 +41,7 @@ void BaseCharacter::Initialize(Model* model)
 	velocity_ = { 0.0f,0.0f,0.0f };
 
 	// 有効フラグの初期化
-	isActive_ = true;
+	isAlive_ = true;
 }
 
 void BaseCharacter::Update()

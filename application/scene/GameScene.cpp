@@ -214,7 +214,7 @@ void GameScene::Initialize() {
 	///		プレイヤー
 	
 	// 初期化と生成
-	player_ = std::make_unique<Player>();
+	player_ = std::make_shared<Player>();
 	player_->Initialize((ModelManager::GetInstance()->FindModel("player/player.obj")));
 
 	///========================================
@@ -250,7 +250,7 @@ void GameScene::Initialize() {
 
 	for (int i = 0; i < 4; ++i)
 	{
-		std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+		std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
 		enemy->Initialize(ModelManager::GetInstance()->FindModel("enemy/enemy.obj"));
 
 		enemy->SetPosition(Vector3( 0.0f,1.0f,5 +  i * 40.0f));
@@ -261,12 +261,12 @@ void GameScene::Initialize() {
 
 		enemy->SetColliderManager(colliderManager_.get());
 
-		colliderManager_->AddCollider(enemy.get());
+		colliderManager_->AddCollider(enemy);
 
 		enemies_.push_back(std::move(enemy));
 	}
 
-	colliderManager_->AddCollider(player_.get());
+	colliderManager_->AddCollider(player_);
 
 	player_->SetColliderManager(colliderManager_.get());
 }
@@ -321,6 +321,10 @@ void GameScene::Update() {
 	{
 		enemy->Update();
 	}
+
+	std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {
+		return !enemy->GetIsAlive();
+		});
 
 	colliderManager_->Update();
 

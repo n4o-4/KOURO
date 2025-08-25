@@ -1,37 +1,37 @@
-#include "AABBLineObject.h"
+ï»¿#include "AABBLineObject.h"
 
-static const uint32_t kMaxVertexNum = 24; // AABB‚Ì8’¸“_ * 3•Ó = 24ƒ‰ƒCƒ“
+static const uint32_t kMaxVertexNum = 24; // AABBã®8é ‚ç‚¹ * 3è¾º = 24ãƒ©ã‚¤ãƒ³
 
 void AABBLineObject::Initialize(DirectXCommon* dxCommon)
 {
-	///	‰Šú‰»ˆ—
+	///	åˆæœŸåŒ–å‡¦ç†
 
-	// DirectXCommon‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğƒƒ“ƒo•Ï”‚É‹L˜^
+	// DirectXCommonã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ãƒ¡ãƒ³ãƒå¤‰æ•°ã«è¨˜éŒ²
 	dxCommon_ = dxCommon;
 
-	// vertexResource_‚ğ¶¬
+	// vertexResource_ã‚’ç”Ÿæˆ
 	CreateVertexResource();
 
-	// vertexBufferView_‚ğ¶¬
+	// vertexBufferView_ã‚’ç”Ÿæˆ
 	CreateVertexBufferView();
 }
 
 void AABBLineObject::Update()
 {
-	/// XVˆ—
+	/// æ›´æ–°å‡¦ç†
 
 	if (!aabbCollider_) {
-		return; // AABBCollider‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Í‰½‚à‚µ‚È‚¢
+		return; // AABBColliderãŒè¨­å®šã•ã‚Œã¦ã„ãªã„å ´åˆã¯ä½•ã‚‚ã—ãªã„
 	}
 
     const AABB& aabb = aabbCollider_->GetAABB();
     const Vector3& center = aabb.center;
 
-    // min/max ‚ğ center •ª‚¾‚¯‘Š‘ÎˆÊ’u‚É•â³
+    // min/max ã‚’ center åˆ†ã ã‘ç›¸å¯¾ä½ç½®ã«è£œæ­£
     Vector3 min = aabb.min - center;
     Vector3 max = aabb.max - center;
 
-    // AABB‚Ì8’¸“_icenterŒ´“_‚Æ‚·‚éj
+    // AABBã®8é ‚ç‚¹ï¼ˆcenteråŸç‚¹ã¨ã™ã‚‹ï¼‰
     Vector3 vertices[8] = {
         { min.x, min.y, min.z }, // v0
         { max.x, min.y, min.z }, // v1
@@ -43,32 +43,32 @@ void AABBLineObject::Update()
         { min.x, max.y, max.z }  // v7
     };
 
-    // AABB‚Ì•Ó‚ğ\¬‚·‚éƒCƒ“ƒfƒbƒNƒXi24ŒÂ‚Ìƒ‰ƒCƒ“j
+    // AABBã®è¾ºã‚’æ§‹æˆã™ã‚‹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ï¼ˆ24å€‹ã®ãƒ©ã‚¤ãƒ³ï¼‰
     constexpr int lineIndices[24] = {
-        0, 1, 1, 2, 2, 3, 3, 0, // ‰º–Ê
-        4, 5, 5, 6, 6, 7, 7, 4, // ã–Ê
-        0, 4, 1, 5, 2, 6, 3, 7  // ‘¤–Ê
+        0, 1, 1, 2, 2, 3, 3, 0, // ä¸‹é¢
+        4, 5, 5, 6, 6, 7, 7, 4, // ä¸Šé¢
+        0, 4, 1, 5, 2, 6, 3, 7  // å´é¢
     };
 
     for (int i = 0; i < 24; ++i) {
         const Vector3& v = vertices[lineIndices[i]];
         vertexData_[i].position = { v.x, v.y, v.z, 1.0f };
-		vertexData_[i].color = aabbCollider_->GetColor(); // AABBCollider‚ÌF‚ğg—p
+		vertexData_[i].color = aabbCollider_->GetColor(); // AABBColliderã®è‰²ã‚’ä½¿ç”¨
     }
 }
 
 void AABBLineObject::CreateVertexResource()
 {
-    // ’¸“_ƒf[ƒ^‚ÌŠm•Û
+    // é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®ç¢ºä¿
     vertexResource_ = dxCommon_->CreateBufferResource(sizeof(LineDrawer::VertexData) * kMaxVertexNum);
 
-	// ’¸“_ƒf[ƒ^‚Ìƒ}ƒbƒsƒ“ƒO
+	// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®ãƒãƒƒãƒ”ãƒ³ã‚°
     vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
 }
 
 void AABBLineObject::CreateVertexBufferView()
 {
-    // VertexBufferView‚Ì¶¬
+    // VertexBufferViewã®ç”Ÿæˆ
     vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 
     vertexBufferView_.SizeInBytes = UINT(sizeof(LineDrawer::VertexData) * kMaxVertexNum);

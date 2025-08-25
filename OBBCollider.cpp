@@ -1,45 +1,49 @@
-#include "OBBCollider.h"
+ï»¿#include "OBBCollider.h"
 
-void OBBCollider::Initialize(WorldTransform* worldTransform)
+void OBBCollider::Initialize(WorldTransform* worldTransform, BaseEntity* owner)
 {
-	// ƒRƒ‰ƒCƒ_[‚ÉŠÖ˜A•t‚¯‚éƒ[ƒ‹ƒh•ÏŠ·î•ñ‚ðÝ’è‚·‚é
+	BaseCollider::Initialize(worldTransform, owner);
+
+	// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã«é–¢é€£ä»˜ã‘ã‚‹ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›æƒ…å ±ã‚’è¨­å®šã™ã‚‹
 	colliderTransform_ = worldTransform;
-	// OBB‚Ì‰Šú‰»
+	// OBBã®åˆæœŸåŒ–
 	obb_.center = { 0.0f, 0.0f, 0.0f };
 	obb_.halfSize = { 1.0f, 1.0f, 1.0f };
-	obb_.axes[0] = { 0.0f, 0.0f, 0.0f }; // XŽ²
-	obb_.axes[1] = { 0.0f, 0.0f, 0.0f }; // YŽ²
-	obb_.axes[2] = { 0.0f, 0.0f, 0.0f }; // ZŽ²
+	obb_.axes[0] = { 0.0f, 0.0f, 0.0f }; // Xè»¸
+	obb_.axes[1] = { 0.0f, 0.0f, 0.0f }; // Yè»¸
+	obb_.axes[2] = { 0.0f, 0.0f, 0.0f }; // Zè»¸
 }
 
 void OBBCollider::Update()
 {
-    // ƒ[ƒ‹ƒhs—ñ‚©‚çƒXƒP[ƒ‹E‰ñ“]E•½sˆÚ“®‚ð’Šo
+    BaseCollider::Update();
+
+    // ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã‹ã‚‰ã‚¹ã‚±ãƒ¼ãƒ«ãƒ»å›žè»¢ãƒ»å¹³è¡Œç§»å‹•ã‚’æŠ½å‡º
     Matrix4x4 matWorld = colliderTransform_->matWorld_;
 
-    // ’†Siƒ[ƒ‹ƒhÀ•Wjƒ[ƒ‹ƒhs—ñ‚Ì•½sˆÚ“®¬•ª
+    // ä¸­å¿ƒï¼ˆãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ï¼‰ï¼ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®å¹³è¡Œç§»å‹•æˆåˆ†
     obb_.center = {
         matWorld.m[3][0],
         matWorld.m[3][1],
         matWorld.m[3][2]
     };
 
-    // ƒ[ƒ‹ƒhs—ñ‚ÌŠe—ñƒxƒNƒgƒ‹‚©‚çƒ[ƒJƒ‹Ž²•ûŒü‚ÆƒXƒP[ƒ‹‚ðŽæ“¾
+    // ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®å„åˆ—ãƒ™ã‚¯ãƒˆãƒ«ã‹ã‚‰ãƒ­ãƒ¼ã‚«ãƒ«è»¸æ–¹å‘ã¨ã‚¹ã‚±ãƒ¼ãƒ«ã‚’å–å¾—
     Vector3 xAxis = { matWorld.m[0][0], matWorld.m[0][1], matWorld.m[0][2] };
     Vector3 yAxis = { matWorld.m[1][0], matWorld.m[1][1], matWorld.m[1][2] };
     Vector3 zAxis = { matWorld.m[2][0], matWorld.m[2][1], matWorld.m[2][2] };
 
-    // ŠeŽ²‚Ì’·‚³iƒXƒP[ƒ‹j‚ðŒvŽZ
+    // å„è»¸ã®é•·ã•ï¼ˆã‚¹ã‚±ãƒ¼ãƒ«ï¼‰ã‚’è¨ˆç®—
     float scaleX = Length(xAxis);
     float scaleY = Length(yAxis);
     float scaleZ = Length(zAxis);
 
-    // ³‹K‰»‚µ‚ÄŽ²•ûŒüƒxƒNƒgƒ‹‚É‚·‚é
-    obb_.axes[0] = Normalize(xAxis);  // XŽ²
-    obb_.axes[1] = Normalize(yAxis);  // YŽ²
-    obb_.axes[2] = Normalize(zAxis);  // ZŽ²
+    // æ­£è¦åŒ–ã—ã¦è»¸æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã«ã™ã‚‹
+    obb_.axes[0] = Normalize(xAxis);  // Xè»¸
+    obb_.axes[1] = Normalize(yAxis);  // Yè»¸
+    obb_.axes[2] = Normalize(zAxis);  // Zè»¸
 
-    // ƒn[ƒtƒTƒCƒYiƒXƒP[ƒ‹‚Ì”¼•ªj
+    // ãƒãƒ¼ãƒ•ã‚µã‚¤ã‚ºï¼ˆã‚¹ã‚±ãƒ¼ãƒ«ã®åŠåˆ†ï¼‰
     obb_.halfSize = {
         scaleX * 0.5f,
         scaleY * 0.5f,

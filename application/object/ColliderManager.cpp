@@ -2,18 +2,11 @@
 
 void ColliderManager::Update()
 {
-    // 無効な（消えた）コライダーをリストから削除
-    colliders_.erase(
-        std::remove_if(
-            colliders_.begin(),
-            colliders_.end(),
-            [](const ColliderVariant& var) {
-                return std::visit([](auto* ptr) {
-                    return ptr == nullptr;
-                    }, var);
-            }),
-        colliders_.end()
-    );
+    std::erase_if(colliders_, [](const ColliderVariant& collider) {
+        return std::visit([](auto& ptr) {
+            return ptr && !ptr->GetIsAlive();
+            }, collider);
+    });
 
     ScanColliders();
 }
@@ -43,7 +36,7 @@ void ColliderManager::ScanColliders()
 #ifdef _DEBUG
 
 	ImGui::Begin("Collider Manager");
-
+    
 	ImGui::Text("Collider checkCount: %zu", checkCount);
 
 	ImGui::Text("Collider count: %zu", count);
@@ -54,26 +47,31 @@ void ColliderManager::ScanColliders()
 
     for (size_t i = 0; i < count; ++i)
     {
-        std::visit([](auto* collider)
-			{
-                //衝突状態を更新
-                collider->UpdateCollisionStates();
-			}, colliders_[i]);
+        std::visit([](auto& collider)
+            {
+                if (collider) { // nullptr チェック（shared_ptrが空でないか）
+                    collider->UpdateCollisionStates();
+                }
+            }, colliders_[i]);
     }
 }
 
 void ColliderManager::CheckCollision(ColliderVariant a, ColliderVariant b)
 {
-    uint32_t attrA, maskA, attrB, maskB;
+    uint32_t attrA = 0, maskA = 0, attrB = 0, maskB = 0;
 
-    std::visit([&](auto* colA) {
-        attrA = colA->GetCollisionAttribute();
-        maskA = colA->GetCollisionMask();
+    std::visit([&](auto& colA) {
+        if (colA) { // nullptr チェック
+            attrA = colA->GetCollisionAttribute();
+            maskA = colA->GetCollisionMask();
+        }
         }, a);
 
-    std::visit([&](auto* colB) {
-        attrB = colB->GetCollisionAttribute();
-        maskB = colB->GetCollisionMask();
+    std::visit([&](auto& colB) {
+        if (colB) {
+            attrB = colB->GetCollisionAttribute();
+            maskB = colB->GetCollisionMask();
+        }
         }, b);
 
     if ((attrA & maskB) == 0 || (attrB & maskA) == 0) {
@@ -81,8 +79,10 @@ void ColliderManager::CheckCollision(ColliderVariant a, ColliderVariant b)
     }
 
     // 型を分岐して衝突判定
-    std::visit([](auto* colliderA, auto* colliderB)
+    std::visit([](auto& colliderA, auto& colliderB)
         {
+            if (!colliderA || !colliderB) return;
+
             using A = std::decay_t<decltype(*colliderA)>;
             using B = std::decay_t<decltype(*colliderB)>;
 
@@ -116,10 +116,9 @@ void ColliderManager::CheckCollision(ColliderVariant a, ColliderVariant b)
                 isHit = IsCollision(colliderA->GetOBB(), colliderB->GetAABB());
             }
 
-            // 衝突していたらお互いに記録
             if (isHit) {
-                colliderA->AddCollision(colliderB);
-                colliderB->AddCollision(colliderA);
+                colliderA->AddCollision(colliderB.get());
+                colliderB->AddCollision(colliderA.get());
             }
 
         }, a, b);

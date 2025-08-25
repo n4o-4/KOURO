@@ -8,6 +8,8 @@
 class AABBCollider; // 前方宣言
 class SphereCollider; // 前方宣言
 
+class BaseEntity; // 前方宣言
+
 class BaseCollider
 {
 public: /// 公開メンバ関数
@@ -17,11 +19,11 @@ public: /// 公開メンバ関数
 	 * \param  worldTransform ワールド変形情報
 	 */
 
-	virtual void Initialize(WorldTransform* worldTransform);
+	virtual void Initialize(WorldTransform* worldTransform,BaseEntity* owner);
 	
 	// \brief  Update 更新
 
-	virtual void Update() = 0;
+	virtual void Update();
 
 	/**
 	 * \brief  AddPrevCollision 前回の衝突情報にコライダーを追加する
@@ -67,6 +69,8 @@ public: /// 公開メンバ関数
 	 */
 
 	uint32_t GetCollisionMask() const { return collisionMask_; }	
+	
+	bool GetIsAlive() const { return isAlive_; } //!< コライダーが生存しているかどうか
 
 	///================================================================================
 	///                                        当たり判定
@@ -85,6 +89,8 @@ public: /// 公開メンバ関数
 
 protected:
 
+	BaseEntity* owner_ = nullptr; // コライダーの所有者（BaseEntity）
+
 	WorldTransform* colliderTransform_ = nullptr; // ワールドトランスフォーム
 
 	uint32_t collisionAttribute_ = 0xffffffff; // コリジョン属性
@@ -97,5 +103,5 @@ protected:
 
 	Vector4 color_ = { 1.0f, 1.0f, 1.0f, 1.0f }; //!< コライダーの色（白色）
 
+	bool isAlive_ = true; //!< コライダーが生存しているかどうか
 };
-

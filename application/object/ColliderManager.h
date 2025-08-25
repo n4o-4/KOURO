@@ -9,12 +9,11 @@
 #include "SphereCollider.h"
 #include "OBBCollider.h"
 
-using ColliderVariant = std::variant <
-	AABBCollider*,
-	SphereCollider*,
-	OBBCollider*
+using ColliderVariant = std::variant<
+	std::shared_ptr<AABBCollider>,
+	std::shared_ptr<SphereCollider>,
+	std::shared_ptr<OBBCollider>
 >;
-	
 
 class ColliderManager
 {
@@ -29,14 +28,16 @@ public:  /// 公開メンバ関数
 	 * \param  collider コライダー
 	 */
 
-	void AddCollider(ColliderVariant collider) { colliders_.push_back(collider); }
+	template <typename T>
+	void AddCollider(std::shared_ptr<T> collider) 
+	{
+		colliders_.emplace_back(std::move(collider));
+	}
 
 	std::vector<ColliderVariant> GetColliders() { return colliders_; }
 
 private: /// 非公開メンバ関数
 
-	
-	
 	// \brief  ClearColliders コライダーのリストをクリアする
 	void ClearColliders() { colliders_.clear(); }
 

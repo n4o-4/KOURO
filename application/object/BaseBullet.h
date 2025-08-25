@@ -1,58 +1,53 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Kouro.h"
+#include "BaseEntity.h"
 
-class BaseBullet
+class BaseBullet : public BaseEntity
 {
-public: // ŒöŠJƒƒ“ƒoŠÖ”
+public: // å…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 	
 	/**
-	 * \brief  Initialize ‰Šú‰»
-	 * \param  model ƒ‚ƒfƒ‹
+	 * \brief  Initialize åˆæœŸåŒ–
+	 * \param  model ãƒ¢ãƒ‡ãƒ«
 	 */
 
 	virtual void Initialize(Model* model, Vector3 spawnPos);
 
-	// \brief  Update XV
+	// \brief  Update æ›´æ–°
 
 	virtual void Update();
 	
 	
 	/**
-	 * \brief  Draw •`‰æ
-	 * \param  directionalLight ƒfƒBƒŒƒNƒVƒ‡ƒiƒ‹ƒ‰ƒCƒg
-	 * \param  pointLight ƒ|ƒCƒ“ƒgƒ‰ƒCƒg
-	 * \param  spotLight ƒXƒ|ƒbƒgƒ‰ƒCƒg
+	 * \brief  Draw æç”»
+	 * \param  directionalLight ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒŠãƒ«ãƒ©ã‚¤ãƒˆ
+	 * \param  pointLight ãƒã‚¤ãƒ³ãƒˆãƒ©ã‚¤ãƒˆ
+	 * \param  spotLight ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆ
 	 */
 
 	virtual void Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
 	/**
 	 * \brief  GetIsAlive
-	 * \return	isAlive ¶‘¶ƒtƒ‰ƒO
+	 * \return	isAlive ç”Ÿå­˜ãƒ•ãƒ©ã‚°
 	 */
 
-	bool GetIsAlive() const { return isActive_; }
+	bool GetIsAlive() const { return isAlive_; }
 
-protected: // ”h¶—pƒƒ“ƒo•Ï”
+protected: // æ´¾ç”Ÿç”¨ãƒ¡ãƒ³ãƒå¤‰æ•°
 
-	// 3Dƒ‚ƒfƒ‹
+	// 3Dãƒ¢ãƒ‡ãƒ«
 	std::unique_ptr<Object3d> object3d_;
 
-	// ƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
-	std::unique_ptr<WorldTransform> worldTransform_;
-
-	// ‘¬“x
+	// é€Ÿåº¦
 	Vector3 velocity_ = { 0.0f,0.0f,0.0f };
-
-	// —LŒøƒtƒ‰ƒO
-	bool isActive_ = true;
 
 	BaseCamera* camera_ = nullptr;
 
-	// õ–½’è”
-	const float kLifeTime_ = 5.0f; //!< ’e‚Ìõ–½
+	// å¯¿å‘½å®šæ•°
+	const float kLifeTime_ = 5.0f; //!< å¼¾ã®å¯¿å‘½
 
-	float lifeTimer_ = 0.0f; //!< ’e‚Ìõ–½ƒ^ƒCƒ}[
+	float lifeTimer_ = 0.0f; //!< å¼¾ã®å¯¿å‘½ã‚¿ã‚¤ãƒãƒ¼
 };
 
