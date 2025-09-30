@@ -153,8 +153,6 @@ void GameScene::Initialize() {
 	emitter2_->SetLifeTimeRange({ 0.5f,0.5f });
 	emitter2_->SetFrequency(0.2f);
 
-
-
 	///hitEffect1
 
 	ParticleManager::GetInstance()->CreateParticleGroup("spark", "Resources/circle.png", ParticleManager::ParticleType::Normal);
@@ -272,7 +270,8 @@ void GameScene::Finalize()
 }
 ///=============================================================================
 ///						更新
-void GameScene::Update() {
+void GameScene::Update()
+{
 	/*animationManager->Update();
 	lineDrawer_->SkeletonUpdate(animationManager->GetActiveAnimation("walk.gltf").skeleton);*/
 	//human_->Update();

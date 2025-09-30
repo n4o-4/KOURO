@@ -17,6 +17,7 @@ public:
 		Sphere,
 		Grid,
 		Skeleton,
+		CatmullRom,
 	};
 
 private:
@@ -85,9 +86,15 @@ private: // メンバ関数
 
 	void CreatePipellineState();
 
+	std::unique_ptr<LineObject> CreateBaseLineData(Type type);
+
 public:
 
 	void CreateLineObject(Type type, WorldTransform* transform);
+
+	void CeateAABBLine(AABB aabb, WorldTransform* transform);
+
+	void CreateCatmullRomLine(std::vector<Vector3> points, WorldTransform* transform);
 
 	void CreateSkeletonObject(Skeleton skeleton, WorldTransform* transform);
 

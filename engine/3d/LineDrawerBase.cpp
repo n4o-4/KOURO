@@ -287,16 +287,12 @@ void LineDrawerBase::CreatePipellineState()
 	assert(SUCCEEDED(hr));
 }
 
-
-
-void LineDrawerBase::CreateLineObject(Type type, WorldTransform* transform)
+std::unique_ptr<LineDrawerBase::LineObject> LineDrawerBase::CreateBaseLineData(Type type)
 {
 	// 新しいラインオブジェクトの生成と初期化
 	std::unique_ptr<LineObject> newObject = std::make_unique<LineObject>();
 
 	newObject->type = type;
-
-	///----------Vertex----------////
 
 	// vertexResourceの生成
 	newObject->vertexResource = CreateVertexResource();
@@ -305,8 +301,14 @@ void LineDrawerBase::CreateLineObject(Type type, WorldTransform* transform)
 	newObject->vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&newObject->vertexData));
 
 	// VertexBufferViewの生成
-	CreateVertexBufferView(newObject.get());
+	CreateVertexBufferView(newObject.get()); // TODO: typeに応じて変更
 
+	return std::move(newObject);
+}
+
+void LineDrawerBase::CreateLineObject(Type type, WorldTransform* transform)
+{
+	/*
 	WriteLineData(newObject.get());
 
 	CreateLineResource(newObject.get());
@@ -318,6 +320,77 @@ void LineDrawerBase::CreateLineObject(Type type, WorldTransform* transform)
 	else
 	{
 		newObject->transform = transform;
+	}
+
+	lineObjects_.push_back(std::move(newObject));*/
+}
+
+void LineDrawerBase::CeateAABBLine(AABB aabb, WorldTransform* transform)
+{
+	auto newObject = CreateBaseLineData(Type::AABB);
+
+	Vector3 min = aabb.min; // AABBの最小点
+	Vector3 max = aabb.max; // AABBの最大点
+
+	// AABBの8頂点
+	Vector3 vertices[8] = {
+		{ min.x, min.y, min.z }, // v0
+		{ max.x, min.y, min.z }, // v1
+		{ max.x, min.y, max.z }, // v2
+		{ min.x, min.y, max.z }, // v3
+		{ min.x, max.y, min.z }, // v4
+		{ max.x, max.y, min.z }, // v5
+		{ max.x, max.y, max.z }, // v6
+		{ min.x, max.y, max.z }  // v7
+	};
+
+	// AABBのライン（12本）
+	int lineIndices[24] = {
+		0, 1,  1, 2,  2, 3,  3, 0,  // 底面
+		4, 5,  5, 6,  6, 7,  7, 4,  // 上面
+		0, 4,  1, 5,  2, 6,  3, 7   // 側面
+	};
+
+
+	// 頂点データに書き込み
+	for (int i = 0; i < 24; ++i)
+	{
+		newObject.get()->vertexData[i].position = {vertices[lineIndices[i]].x,
+										   vertices[lineIndices[i]].y,
+										   vertices[lineIndices[i]].z, 1.0f };
+
+		newObject.get()->vertexIndex = i;
+	}
+}
+
+void LineDrawerBase::CreateCatmullRomLine(std::vector<Vector3> points, WorldTransform* transform)
+{
+	auto newObject = CreateBaseLineData(Type::Grid);
+	int vertexIndex = 0;
+	// カットムルロム曲線の分割数
+	const int segments = kMaxLines - 1;
+	// 曲線上の点を計算して頂点データに追加
+	for (int i = 0; i < points.size() - 3; ++i)
+	{
+		for (int j = 0; j <= segments; ++j)
+		{
+			float t = static_cast<float>(j) / segments;
+			Vector3 point = CatmullRomPosition({ points[i], points[i + 1], points[i + 2], points[i + 3] }, t);
+			newObject.get()->vertexData[vertexIndex++].position = { point.x, point.y, point.z, 1.0f };
+		}
+	}
+
+	newObject.get()->vertexIndex = vertexIndex;
+
+	CreateLineResource(newObject.get());
+
+	if (transform == nullptr)
+	{
+		newObject.get()->transform = worldTransform_.get();
+	}
+	else
+	{
+		newObject.get()->transform = transform;
 	}
 
 	lineObjects_.push_back(std::move(newObject));
@@ -383,37 +456,7 @@ void LineDrawerBase::WriteLineData(LineObject* object)
 
 	if (object->type == Type::AABB)
 	{
-		Vector3 min = {-0.5f,-0.5f ,-0.5f }; // AABBの最小点
-		Vector3 max = { 0.5f,0.5f ,-.5f }; // AABBの最大点
-
-		// AABBの8頂点
-		Vector3 vertices[8] = {
-			{ min.x, min.y, min.z }, // v0
-			{ max.x, min.y, min.z }, // v1
-			{ max.x, min.y, max.z }, // v2
-			{ min.x, min.y, max.z }, // v3
-			{ min.x, max.y, min.z }, // v4
-			{ max.x, max.y, min.z }, // v5
-			{ max.x, max.y, max.z }, // v6
-			{ min.x, max.y, max.z }  // v7
-		};
-
-		// AABBのライン（12本）
-		int lineIndices[24] = {
-			0, 1,  1, 2,  2, 3,  3, 0,  // 底面
-			4, 5,  5, 6,  6, 7,  7, 4,  // 上面
-			0, 4,  1, 5,  2, 6,  3, 7   // 側面
-		};
-
-		// 頂点データに書き込み
-		for (int i = 0; i < 24; ++i)
-		{
-			object->vertexData[i].position = { vertices[lineIndices[i]].x,
-											   vertices[lineIndices[i]].y,
-											   vertices[lineIndices[i]].z, 1.0f };
-
-			object->vertexIndex = i;
-		}
+		
 	}
 	else if (object->type == Type::Sphere)
 	{
