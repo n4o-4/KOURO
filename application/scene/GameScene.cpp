@@ -159,8 +159,6 @@ void GameScene::Initialize() {
 	emitter2_->SetLifeTimeRange({ 0.5f,0.5f });
 	emitter2_->SetFrequency(0.2f);
 
-
-
 	///hitEffect1
 
 	ParticleManager::GetInstance()->CreateParticleGroup("spark", "Resources/circle.png", ParticleManager::ParticleType::Normal);
