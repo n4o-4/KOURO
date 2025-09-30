@@ -398,6 +398,15 @@ void LineDrawerBase::CreateCatmullRomLine(std::vector<Vector3> points, WorldTran
 	lineObjects_.push_back(std::move(newObject));
 }
 
+void LineDrawerBase::CreateObject3DLine(std::string modelPath, WorldTransform* transform)
+{
+	auto newObject = CreateBaseLineData(Type::Object3D);
+	
+	// モデルの読み込み
+	
+
+}
+
 void LineDrawerBase::CreateSkeletonObject(Skeleton skeleton, WorldTransform* transform)
 {
 	// 新しいラインオブジェクトの生成と初期化

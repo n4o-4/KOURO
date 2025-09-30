@@ -18,6 +18,7 @@ public:
 		Grid,
 		Skeleton,
 		CatmullRom,
+		Object3D
 	};
 
 private:
@@ -95,6 +96,8 @@ public:
 	void CeateAABBLine(AABB aabb, WorldTransform* transform);
 
 	void CreateCatmullRomLine(std::vector<Vector3> points, WorldTransform* transform);
+
+	void CreateObject3DLine(std::string modelPath,  WorldTransform* transform);
 
 	void CreateSkeletonObject(Skeleton skeleton, WorldTransform* transform);
 
