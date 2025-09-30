@@ -17,7 +17,7 @@ void LineDrawerBase::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	
 	worldTransform_->useQuaternion_ = false;
 
-	worldTransform_->transform.scale = { 0.5f,0.5f,0.5f };
+	worldTransform_->transform.scale = { 1.0f,1.0f,1.0f };
 	worldTransform_->transform.translate = { 0.0f,0.0f,0.0f };
 
 	worldTransform_->UpdateMatrix();
@@ -129,7 +129,7 @@ void LineDrawerBase::SkeletonUpdate(Skeleton skeleton)
 void LineDrawerBase::Draw(ViewProjection viewProjection)
 {
 	// プリミティブトポロジーを設定
-	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	// ルートシグネチャを設定
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(pipeline_->rootSignature.Get());
@@ -274,9 +274,9 @@ void LineDrawerBase::CreatePipellineState()
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 
-	// 利用するトポロジー(形状)のタイプ。三角形
+	// 利用するトポロジー(形状)のタイプ。
 	graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
-	
+
 	// どのように画面に色をつけるか
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
@@ -369,27 +369,25 @@ void LineDrawerBase::CeateAABBLine(AABB aabb, WorldTransform* transform)
 
 void LineDrawerBase::CreateCatmullRomLine(std::vector<Vector3> points, WorldTransform* transform)
 {
-	auto newObject = CreateBaseLineData(Type::Grid);
+	auto newObject = CreateBaseLineData(Type::CatmullRom);
 	int vertexIndex = 0;
-	// カットムルロム曲線の分割数
-	const int segments = kMaxLines - 1;
-	// 曲線上の点を計算して頂点データに追加
-	for (int i = 0; i < points.size() - 3; ++i)
+	const int segments = 1024;
+
+	for (uint32_t i = 0; i < segments; ++i)
 	{
-		for (int j = 0; j <= segments; ++j)
-		{
-			float t = static_cast<float>(j) / segments;
-			Vector3 point = CatmullRomPosition({ points[i], points[i + 1], points[i + 2], points[i + 3] }, t);
-			newObject.get()->vertexData[vertexIndex++].position = { point.x, point.y, point.z, 1.0f };
-		}
+		float t = (1.0f / segments) * i;
+
+		Vector3 position = CatmullRomPosition(points, t);
+
+		newObject.get()->vertexData[vertexIndex++].position = { position.x, position.y, position.z, 1.0f };
 	}
 
 	newObject.get()->vertexIndex = vertexIndex;
 
-	CreateLineResource(newObject.get());
+	CreateLineResource(newObject.get()); 
 
 	if (transform == nullptr)
-	{
+	{ 
 		newObject.get()->transform = worldTransform_.get();
 	}
 	else

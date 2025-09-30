@@ -80,8 +80,8 @@ void GameScene::Initialize() {
 	///		ライン描画
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
 	lineDrawer_->Initialize(sceneManager_->GetDxCommon(),sceneManager_->GetSrvManager());
-	lineDrawer_->CreateLineObject(LineDrawerBase::Type::Grid, nullptr);
-	lineDrawer_->CreateSkeletonObject(animationManager->GetActiveAnimation("walk.gltf").skeleton,nullptr);
+	//lineDrawer_->CreateLineObject(LineDrawerBase::Type::Grid, nullptr);
+	//lineDrawer_->CreateSkeletonObject(animationManager->GetActiveAnimation("walk.gltf").skeleton,nullptr);
 
 	ModelManager::GetInstance()->LoadModel("terrain.obj");
 
@@ -267,6 +267,8 @@ void GameScene::Initialize() {
 	colliderManager_->AddCollider(player_);
 
 	player_->SetColliderManager(colliderManager_.get());
+
+	lineDrawer_->CreateCatmullRomLine(railCamera_->GetControlPoints(), nullptr);
 }
 ///=============================================================================
 ///						終了処理
