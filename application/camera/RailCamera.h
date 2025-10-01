@@ -7,6 +7,15 @@
 
 class RailCamera : public BaseCamera
 {
+private:
+
+	struct ArcLengthTable
+	{
+		std::vector<float> lengths; // 各セグメントの長さ
+
+		float totalLength;          // 全体の長さ
+	};
+
 public:
 
 	// 初期化
@@ -18,14 +27,23 @@ public:
 	//getter
 	WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
+	void SetControlPoints(const std::vector<Vector3>& points) { controlPoints_ = points; }
+
+	std::vector<Vector3> GetControlPoints() const { return controlPoints_; }
+
+private:
+
+	void CreateArcLengthTable(int samplePerSegment);
+
 private:
 
 	std::unique_ptr<WorldTransform> worldTransform_ = nullptr; //!< ワールド変形情報
 
 	std::vector<Vector3> controlPoints_; //!< カメラの制御点
 
-	const float kMoveTime = 120.0f;
+	const float kMoveTime = 60.0f;
 
 	float moveTimer_ = 0.0f; //!< カメラの移動時間
-};
 
+	ArcLengthTable arcLengthTable_;
+};

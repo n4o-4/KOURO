@@ -17,7 +17,7 @@ void LineDrawerBase::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	
 	worldTransform_->useQuaternion_ = false;
 
-	worldTransform_->transform.scale = { 0.5f,0.5f,0.5f };
+	worldTransform_->transform.scale = { 1.0f,1.0f,1.0f };
 	worldTransform_->transform.translate = { 0.0f,0.0f,0.0f };
 
 	worldTransform_->UpdateMatrix();
@@ -129,7 +129,7 @@ void LineDrawerBase::SkeletonUpdate(Skeleton skeleton)
 void LineDrawerBase::Draw(ViewProjection viewProjection)
 {
 	// プリミティブトポロジーを設定
-	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	// ルートシグネチャを設定
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(pipeline_->rootSignature.Get());
@@ -274,9 +274,9 @@ void LineDrawerBase::CreatePipellineState()
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 
-	// 利用するトポロジー(形状)のタイプ。三角形
+	// 利用するトポロジー(形状)のタイプ。
 	graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
-	
+
 	// どのように画面に色をつけるか
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
@@ -291,16 +291,12 @@ void LineDrawerBase::CreatePipellineState()
 	assert(SUCCEEDED(hr));
 }
 
-
-
-void LineDrawerBase::CreateLineObject(Type type, WorldTransform* transform)
+std::unique_ptr<LineDrawerBase::LineObject> LineDrawerBase::CreateBaseLineData(Type type)
 {
 	// 新しいラインオブジェクトの生成と初期化
 	std::unique_ptr<LineObject> newObject = std::make_unique<LineObject>();
 
 	newObject->type = type;
-
-	///----------Vertex----------////
 
 	// vertexResourceの生成
 	newObject->vertexResource = CreateVertexResource();
@@ -309,8 +305,14 @@ void LineDrawerBase::CreateLineObject(Type type, WorldTransform* transform)
 	newObject->vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&newObject->vertexData));
 
 	// VertexBufferViewの生成
-	CreateVertexBufferView(newObject.get());
+	CreateVertexBufferView(newObject.get()); // TODO: typeに応じて変更
 
+	return std::move(newObject);
+}
+
+void LineDrawerBase::CreateLineObject(Type type, WorldTransform* transform)
+{
+	/*
 	WriteLineData(newObject.get());
 
 	CreateLineResource(newObject.get());
@@ -324,7 +326,85 @@ void LineDrawerBase::CreateLineObject(Type type, WorldTransform* transform)
 		newObject->transform = transform;
 	}
 
+	lineObjects_.push_back(std::move(newObject));*/
+}
+
+void LineDrawerBase::CeateAABBLine(AABB aabb, WorldTransform* transform)
+{
+	auto newObject = CreateBaseLineData(Type::AABB);
+
+	Vector3 min = aabb.min; // AABBの最小点
+	Vector3 max = aabb.max; // AABBの最大点
+
+	// AABBの8頂点
+	Vector3 vertices[8] = {
+		{ min.x, min.y, min.z }, // v0
+		{ max.x, min.y, min.z }, // v1
+		{ max.x, min.y, max.z }, // v2
+		{ min.x, min.y, max.z }, // v3
+		{ min.x, max.y, min.z }, // v4
+		{ max.x, max.y, min.z }, // v5
+		{ max.x, max.y, max.z }, // v6
+		{ min.x, max.y, max.z }  // v7
+	};
+
+	// AABBのライン（12本）
+	int lineIndices[24] = {
+		0, 1,  1, 2,  2, 3,  3, 0,  // 底面
+		4, 5,  5, 6,  6, 7,  7, 4,  // 上面
+		0, 4,  1, 5,  2, 6,  3, 7   // 側面
+	};
+
+
+	// 頂点データに書き込み
+	for (int i = 0; i < 24; ++i)
+	{
+		newObject.get()->vertexData[i].position = {vertices[lineIndices[i]].x,
+										   vertices[lineIndices[i]].y,
+										   vertices[lineIndices[i]].z, 1.0f };
+
+		newObject.get()->vertexIndex = i;
+	}
+}
+
+void LineDrawerBase::CreateCatmullRomLine(std::vector<Vector3> points, WorldTransform* transform)
+{
+	auto newObject = CreateBaseLineData(Type::CatmullRom);
+	int vertexIndex = 0;
+	const int segments = 1024;
+
+	for (uint32_t i = 0; i < segments; ++i)
+	{
+		float t = (1.0f / segments) * i;
+
+		Vector3 position = CatmullRomPosition(points, t);
+
+		newObject.get()->vertexData[vertexIndex++].position = { position.x, position.y, position.z, 1.0f };
+	}
+
+	newObject.get()->vertexIndex = vertexIndex;
+
+	CreateLineResource(newObject.get()); 
+
+	if (transform == nullptr)
+	{ 
+		newObject.get()->transform = worldTransform_.get();
+	}
+	else
+	{
+		newObject.get()->transform = transform;
+	}
+
 	lineObjects_.push_back(std::move(newObject));
+}
+
+void LineDrawerBase::CreateObject3DLine(std::string modelPath, WorldTransform* transform)
+{
+	auto newObject = CreateBaseLineData(Type::Object3D);
+	
+	// モデルの読み込み
+	
+
 }
 
 void LineDrawerBase::CreateSkeletonObject(Skeleton skeleton, WorldTransform* transform)
@@ -387,37 +467,7 @@ void LineDrawerBase::WriteLineData(LineObject* object)
 
 	if (object->type == Type::AABB)
 	{
-		Vector3 min = {-0.5f,-0.5f ,-0.5f }; // AABBの最小点
-		Vector3 max = { 0.5f,0.5f ,-.5f }; // AABBの最大点
-
-		// AABBの8頂点
-		Vector3 vertices[8] = {
-			{ min.x, min.y, min.z }, // v0
-			{ max.x, min.y, min.z }, // v1
-			{ max.x, min.y, max.z }, // v2
-			{ min.x, min.y, max.z }, // v3
-			{ min.x, max.y, min.z }, // v4
-			{ max.x, max.y, min.z }, // v5
-			{ max.x, max.y, max.z }, // v6
-			{ min.x, max.y, max.z }  // v7
-		};
-
-		// AABBのライン（12本）
-		int lineIndices[24] = {
-			0, 1,  1, 2,  2, 3,  3, 0,  // 底面
-			4, 5,  5, 6,  6, 7,  7, 4,  // 上面
-			0, 4,  1, 5,  2, 6,  3, 7   // 側面
-		};
-
-		// 頂点データに書き込み
-		for (int i = 0; i < 24; ++i)
-		{
-			object->vertexData[i].position = { vertices[lineIndices[i]].x,
-											   vertices[lineIndices[i]].y,
-											   vertices[lineIndices[i]].z, 1.0f };
-
-			object->vertexIndex = i;
-		}
+		
 	}
 	else if (object->type == Type::Sphere)
 	{
