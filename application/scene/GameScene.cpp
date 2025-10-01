@@ -2,6 +2,9 @@
 #include "imgui.h"
 #include <imgui_internal.h>
 
+// 仮
+#include "ApproachState.h"
+
 ///=============================================================================
 ///						マトリックス表示
 static void ShowMatrix4x4(const Matrix4x4 &matrix, const char *label) {
@@ -226,8 +229,8 @@ void GameScene::Initialize() {
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
 
-	cameraManager_->SetActiveCamera(railCamera_.get());
-    //cameraManager_->useDebugCamera_ = true;
+	//cameraManager_->SetActiveCamera(railCamera_.get());
+    cameraManager_->useDebugCamera_ = true;
 	cameraManager_->Update();
 
 	player_->SetCamera(cameraManager_->GetActiveCamera());
@@ -253,13 +256,17 @@ void GameScene::Initialize() {
 		std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
 		enemy->Initialize(ModelManager::GetInstance()->FindModel("enemy/enemy.obj"));
 
-		enemy->SetPosition(Vector3( 0.0f,1.0f,5 +  i * 40.0f));
-
 		enemy->SetCamera(cameraManager_->GetActiveCamera());
 
 		enemy->SetTarget(player_.get());
 
 		enemy->SetColliderManager(colliderManager_.get());
+
+		std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
+
+		enemy->ChangeState(std::move(state));
+
+		enemy->SetPosition(Vector3(0.0f, 1.0f, 5 + i * 40.0f));
 
 		colliderManager_->AddCollider(enemy);
 
@@ -317,9 +324,68 @@ void GameScene::Update() {
 		object.worldTransform->UpdateMatrix();
 	}
 
+	if (Input::GetInstance()->Triggerkey(DIK_E))
+	{
+		std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
+		enemy->Initialize(ModelManager::GetInstance()->FindModel("enemy/enemy.obj"));
+
+		enemy->SetCamera(cameraManager_->GetActiveCamera());
+
+		enemy->SetTarget(player_.get());
+
+		enemy->SetColliderManager(colliderManager_.get());
+
+		std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
+
+		enemy->ChangeState(std::move(state));
+
+		colliderManager_->AddCollider(enemy);
+
+		enemies_.push_back(std::move(enemy));
+	}
+
 	for (auto& enemy : enemies_)
 	{
 		enemy->Update();
+	}
+
+	size_t enemyCount = enemies_.size();
+
+	switch (phase_)
+	{
+	case Phase::kFadeIn:
+
+		if (fade_->IsFinished())
+		{
+			Input::GetInstance()->SetIsReception(true);
+			phase_ = Phase::kMain;
+		}
+
+		break;
+	case Phase::kMain:
+
+		if (enemyCount == 0)
+		{
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+			phase_ = Phase::kFadeOut;
+		}
+
+		break;
+	case Phase::kFadeOut:
+
+		if (fade_->IsFinished())
+		{
+			SceneManager::GetInstance()->ChangeScene("CLEAR");
+
+			return;
+		}
+
+		break;
+
+	case Phase::kPlay:
+		break;
+	case Phase::kPose:
+		break;
 	}
 
 	std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {

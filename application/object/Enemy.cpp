@@ -22,6 +22,8 @@ void Enemy::Initialize(Model* model)
 	SetCollisionMask(0b1); // コリジョンマスクを設定
 
 	fireTimer_ = 0.0f; // 弾の発射タイマー初期化
+
+	hp_ = 5;
 }
 
 void Enemy::Update()
@@ -83,6 +85,21 @@ void Enemy::SetPosition(const Vector3& position)
 	worldTransform_->UpdateMatrix();
 }
 
+void Enemy::ChangeState(std::unique_ptr<EnemyState> state)
+{
+	if (!state_)
+	{
+		state_ = std::move(state);
+		state_->Enter(this);
+	}
+	else
+	{
+		state_->Exit(this);
+		state_ = std::move(state);
+		state_->Enter(this);
+	}
+}
+
 void Enemy::Fire()
 {
 	// 弾の生成
@@ -114,7 +131,19 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 	// 衝突したオブジェクトがPlayerBulletの場合、弾を消す
 	if (PlayerBullet* playerBullet = dynamic_cast<PlayerBullet*>(other))
 	{
-		BaseEntity::isAlive_ = false; // 弾を消す
+		if(hp_ > playerBullet->GetDamage())
+		{
+			hp_ -= playerBullet->GetDamage();
+		}
+		else
+		{
+			hp_ = 0;
+		}
+	}
+
+	if (hp_ == 0)
+	{
+		BaseEntity::isAlive_ = false;
 	}
 }
 

@@ -2,6 +2,9 @@
 #include "BaseCharacter.h"
 #include "EnemyBullet.h"
 
+#include "EnemyState.h"
+#include "ApproachState.h"
+
 class Enemy : public BaseCharacter, public AABBCollider
 {
 public: // 公開メンバ関数
@@ -17,6 +20,10 @@ public: // 公開メンバ関数
 	void SetTarget(BaseCharacter* target) { target_ = target; }
 
 	void SetColliderManager(ColliderManager* colliderManager) { colliderManager_ = colliderManager; }
+
+	BaseCharacter* GetTarget() const { return target_; }
+
+	void ChangeState(std::unique_ptr<EnemyState> state);
 
 private: // 非公開メンバ関数
 
@@ -45,5 +52,7 @@ private: // 非公開メンバ変数
 	const float kFireInterval = 2.0f; //!< 弾の発射間隔
 
 	float fireTimer_ = 0.0f; //!< 弾の発射タイマー
+
+	std::unique_ptr<EnemyState> state_ = nullptr;
 };
 

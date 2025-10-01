@@ -35,5 +35,7 @@ protected: // 派生用メンバ変数
 
 	BaseCamera* camera_ = nullptr;
 
+	uint32_t hp_;
+
 };
 

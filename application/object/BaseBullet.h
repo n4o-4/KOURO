@@ -30,10 +30,17 @@ public: // 公開メンバ関数
 
 	/**
 	 * \brief  GetIsAlive
-	 * \return	isAlive 生存フラグ
+	 * \return isAlive 生存フラグ
 	 */
 
 	bool GetIsAlive() const { return isAlive_; }
+
+	/**
+	 * \brief  GetDamage ダメージ量取得
+	 * \return damage ダメージ量
+	 */
+
+	uint32_t GetDamage() const { return damage_; }
 
 protected: // 派生用メンバ変数
 
@@ -49,5 +56,7 @@ protected: // 派生用メンバ変数
 	const float kLifeTime_ = 5.0f; //!< 弾の寿命
 
 	float lifeTimer_ = 0.0f; //!< 弾の寿命タイマー
+
+	uint32_t damage_ = 5; //!< ダメージ量
 };
 

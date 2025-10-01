@@ -106,6 +106,8 @@
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="application\object\EnemyBullet.cpp" />
     <ClCompile Include="BaseEntity.cpp" />
+    <ClCompile Include="EnemyState.cpp" />
+    <ClCompile Include="ApproachState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -191,6 +193,8 @@
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="application\object\EnemyBullet.h" />
     <ClInclude Include="BaseEntity.h" />
+    <ClInclude Include="EnemyState.h" />
+    <ClInclude Include="ApproachState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

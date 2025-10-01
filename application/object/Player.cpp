@@ -22,6 +22,8 @@ void Player::Initialize(Model* model)
 	SetCollisionMask(0b1 << 1);
 
 	SetAABB(AABB({}, { -1.0f,-1.0f,-1.0f }, {1.0f,1.0f,1.0f}));
+
+	hp_ = 10;
 }
 
 void Player::Update()
