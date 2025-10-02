@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cassert>
 #include <optional>
+
 struct Node
 {
 	QuaternionTransform transform;

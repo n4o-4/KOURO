@@ -276,6 +276,10 @@ void GameScene::Initialize() {
 	player_->SetColliderManager(colliderManager_.get());
 
 	lineDrawer_->CreateCatmullRomLine(railCamera_->GetControlPoints(), nullptr);
+
+	lineDrawer_->CreateObject3DLine("player/player.obj",player_->GetWorldTransform());
+
+	//lineDrawer_->CreateObject3DLine("playerbullet/playerbullet.obj", player_->GetWorldTransform());
 }
 ///=============================================================================
 ///						終了処理

@@ -1,4 +1,6 @@
 #include "LineDrawerBase.h"
+#include "ModelDatas.h"
+#include <algorithm>
 
 void LineDrawerBase::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
@@ -69,10 +71,11 @@ void LineDrawerBase::Update()
 		//		iterator->get()->vertexIndex = vertexIndex;
 		//	}
 		//}
-		
-		Matrix4x4 worldMatrix = MakeAffineMatrix(iterator->get()->transform->transform.scale, iterator->get()->transform->transform.rotate, iterator->get()->transform->transform.translate);
 
-		iterator->get()->lineData->matWorld = worldMatrix;
+
+		iterator->get()->transform->UpdateMatrix();
+
+		iterator->get()->lineData->matWorld = iterator->get()->transform->matWorld_;
 
 		iterator->get()->lineData->color = { 1.0f,1.0f,1.0f,1.0f };
 
@@ -128,6 +131,8 @@ void LineDrawerBase::SkeletonUpdate(Skeleton skeleton)
 
 void LineDrawerBase::Draw(ViewProjection viewProjection)
 {
+	
+
 	// プリミティブトポロジーを設定
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
@@ -139,6 +144,17 @@ void LineDrawerBase::Draw(ViewProjection viewProjection)
 	
 	for (std::list<std::unique_ptr<LineObject>>::iterator iterator = lineObjects_.begin(); iterator != lineObjects_.end();)
 	{
+		if (iterator->get()->type == Type::Object3D)
+		{
+			// プリミティブトポロジーを設定
+			dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+		}
+		else
+		{
+			// プリミティブトポロジーを設定
+			dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		}
+
 		// VBVを設定
 		dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &iterator->get()->vertexBufferView);
 
@@ -398,13 +414,284 @@ void LineDrawerBase::CreateCatmullRomLine(std::vector<Vector3> points, WorldTran
 	lineObjects_.push_back(std::move(newObject));
 }
 
+//void LineDrawerBase::CreateObject3DLine(std::string modelPath, WorldTransform* transform)
+//{
+//	// 新しいラインオブジェクトの生成と初期化
+//	std::unique_ptr<LineObject> newObject = std::make_unique<LineObject>();
+//
+//	newObject->type = Type::Object3D;
+//
+//	newObject->transform = transform;
+//
+//	// モデルの読み込み
+//
+//	std::string directoryPath = "Resources";
+//	
+//	LineModelData modelData;
+//	Assimp::Importer importer;
+//
+//	std::string filePath = directoryPath + "/" + modelPath;
+//
+//	const aiScene* scene = importer.ReadFile(filePath.c_str(),
+//		aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+//
+//	if (!scene) {
+//		std::cerr << "Failed to load model: " << filePath << std::endl;
+//		std::cerr << "Assimp error: " << importer.GetErrorString() << std::endl;
+//		throw std::runtime_error("Model loading failed.");
+//	}
+//
+//	assert(scene->HasMeshes()); // メッシュがないのは対応しない
+//
+//	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
+//		aiMesh* mesh = scene->mMeshes[meshIndex];
+//		assert(mesh->HasNormals());        // 法線がないMeshは非対応
+//		assert(mesh->HasTextureCoords(0)); // TexcoordがないMeshは非対応
+//
+//		// 頂点の追加
+//		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex) {
+//			aiVector3D& position = mesh->mVertices[vertexIndex];
+//			aiVector3D& normal = mesh->mNormals[vertexIndex];
+//			aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+//
+//			VertexData vertex;
+//			vertex.position = { position.x, position.y, position.z, 1.0f };
+//			vertex.normal = { normal.x,   normal.y,   normal.z };
+//			vertex.texcoord = { texcoord.x, texcoord.y };
+//
+//			// 左手系/右手系変換 (必要に応じて)
+//			// vertex.position.x *= -1.0f;
+//			// vertex.normal.x   *= -1.0f;
+//
+//			modelData.vertices.push_back(vertex);
+//		}
+//
+//		// インデックスの追加
+//		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
+//			aiFace& face = mesh->mFaces[faceIndex];
+//			assert(face.mNumIndices == 3); // 三角形のみ対応
+//
+//			for (uint32_t element = 0; element < face.mNumIndices; ++element) {
+//				modelData.indices.push_back(face.mIndices[element]);
+//			}
+//		}
+//	}
+//
+//	// マテリアル
+//	for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex) {
+//		aiMaterial* material = scene->mMaterials[materialIndex];
+//		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
+//			aiString textureFilePath;
+//			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
+//			modelData.material.textureFilePath = directoryPath + "/" + textureFilePath.C_Str();
+//		}
+//	}
+//
+//	std::set<std::pair<int, int>> uniqueEdges;
+//
+//	std::vector<uint32_t> indices = modelData.indices;
+//
+//	for (size_t i = 0; i < indices.size(); i += 3) {
+//		int i0 = indices[i];
+//		int i1 = indices[i + 1];
+//		int i2 = indices[i + 2];
+//
+//		auto AddEdge = [&](int a, int b) {
+//			if (a > b) std::swap(a, b);
+//			uniqueEdges.insert({ a,b });
+//			};
+//
+//		AddEdge(i0, i1);
+//		AddEdge(i1, i2);
+//		AddEdge(i2, i0);
+//	}
+//	//最終的なラインリストを構築
+//
+//	std::vector<LineVertex> lineVertices;
+//
+//	for (auto& [a, b] : uniqueEdges) {
+//		LineVertex va, vb;
+//		va.position = { modelData.vertices[a].position.x,
+//						modelData.vertices[a].position.y,
+//						modelData.vertices[a].position.z,
+//		                1.0f                             };
+//		vb.position = { modelData.vertices[b].position.x,
+//						modelData.vertices[b].position.y,
+//						modelData.vertices[b].position.z,
+//		                1.0f                             };
+//
+//		lineVertices.push_back(va);
+//		lineVertices.push_back(vb);
+//	}
+//
+//	newObject->vertexResource =
+//		dxCommon_->CreateBufferResource(sizeof(LineVertex) * lineVertices.size());
+//
+//	// データをアップロード
+//	newObject->vertexData = nullptr;
+//	newObject->vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&newObject->vertexData));
+//	std::memcpy(newObject->vertexData, lineVertices.data(), sizeof(LineVertex) * lineVertices.size());
+//
+//	// VertexBufferViewの生成
+//	newObject->vertexBufferView.BufferLocation = newObject->vertexResource->GetGPUVirtualAddress();
+//
+//	newObject->vertexBufferView.SizeInBytes = UINT(sizeof(LineVertex) * lineVertices.size());
+//
+//	newObject->vertexBufferView.StrideInBytes = sizeof(LineVertex);
+//
+//	newObject->lineResource = dxCommon_->CreateBufferResource(sizeof(LineForGPU));
+//
+//	newObject->lineResource->Map(0, nullptr, reinterpret_cast<void**>(&newObject->lineData));
+//
+//	newObject->vertexIndex = static_cast<int>(lineVertices.size());
+//
+//	lineObjects_.push_back(std::move(newObject));
+//}
+
 void LineDrawerBase::CreateObject3DLine(std::string modelPath, WorldTransform* transform)
 {
-	auto newObject = CreateBaseLineData(Type::Object3D);
-	
-	// モデルの読み込み
-	
+	// 新しいラインオブジェクトの生成と初期化
+	std::unique_ptr<LineObject> newObject = std::make_unique<LineObject>();
+	newObject->type = Type::Object3D;
+	newObject->transform = transform;
 
+	// モデルの読み込み
+	std::string directoryPath = "Resources";
+	LineModelData modelData;
+	Assimp::Importer importer;
+	std::string filePath = directoryPath + "/" + modelPath;
+
+	/*const aiScene* scene = importer.ReadFile(filePath.c_str(),
+		aiProcess_FlipWindingOrder | aiProcess_FlipUVs);*/
+	const aiScene* scene = importer.ReadFile(filePath.c_str(),
+		aiProcess_FlipWindingOrder |
+		aiProcess_FlipUVs |
+		aiProcess_JoinIdenticalVertices); // ← 追加
+
+	if (!scene) {
+		std::cerr << "Failed to load model: " << filePath << std::endl;
+		std::cerr << "Assimp error: " << importer.GetErrorString() << std::endl;
+		throw std::runtime_error("Model loading failed.");
+	}
+
+	assert(scene->HasMeshes());
+
+	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
+		aiMesh* mesh = scene->mMeshes[meshIndex];
+		assert(mesh->HasNormals());
+
+		// 頂点の追加
+		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex) {
+			aiVector3D& position = mesh->mVertices[vertexIndex];
+			aiVector3D& normal = mesh->mNormals[vertexIndex];
+
+			VertexData vertex;
+			vertex.position = { position.x, position.y, position.z, 1.0f };
+			vertex.normal = { normal.x, normal.y, normal.z };
+			modelData.vertices.push_back(vertex);
+		}
+
+		// インデックス（三角形）を追加
+		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
+			aiFace& face = mesh->mFaces[faceIndex];
+			assert(face.mNumIndices == 3);
+			for (uint32_t element = 0; element < face.mNumIndices; ++element) {
+				modelData.indices.push_back(face.mIndices[element]);
+			}
+		}
+	}
+
+	// ---- 外形エッジを抽出（法線一致なら削除） ----
+	struct EdgeKey {
+		uint32_t v0, v1;
+		bool operator==(const EdgeKey& other) const {
+			return v0 == other.v0 && v1 == other.v1;
+		}
+	};
+	struct EdgeKeyHash {
+		std::size_t operator()(const EdgeKey& e) const {
+			return std::hash<uint32_t>()(e.v0) ^ (std::hash<uint32_t>()(e.v1) << 1);
+		}
+	};
+	struct EdgeData {
+		uint32_t v0, v1;
+		Vector3 normal;
+		bool hasPair = false;
+	};
+
+	std::unordered_map<EdgeKey, EdgeData, EdgeKeyHash> edgeMap;
+
+	for (size_t i = 0; i < modelData.indices.size(); i += 3) {
+		uint32_t i0 = modelData.indices[i];
+		uint32_t i1 = modelData.indices[i + 1];
+		uint32_t i2 = modelData.indices[i + 2];
+
+		// 三角形の法線を計算
+		Vector3 p0 = { modelData.vertices[i0].position.x, modelData.vertices[i0].position.y, modelData.vertices[i0].position.z };
+		Vector3 p1 = { modelData.vertices[i1].position.x, modelData.vertices[i1].position.y, modelData.vertices[i1].position.z };
+		Vector3 p2 = { modelData.vertices[i2].position.x, modelData.vertices[i2].position.y, modelData.vertices[i2].position.z };
+
+		Vector3 n = Normalize(Cross(p1 - p0, p2 - p0));
+
+		uint32_t tri[3] = { i0, i1, i2 };
+		for (int e = 0; e < 3; e++) {
+			uint32_t v0 = tri[e];
+			uint32_t v1 = tri[(e + 1) % 3];
+
+			// v0 < v1 になるように正規化
+			if (v0 > v1) std::swap(v0, v1);
+
+			EdgeKey key{ v0, v1 };
+
+			auto it = edgeMap.find(key);
+			if (it == edgeMap.end()) {
+				// 新しいエッジ
+				edgeMap[key] = EdgeData{ v0, v1, n, false };
+			}
+			else {
+				// 既存エッジと比較
+				EdgeData& ed = it->second;
+				float dot = Dot(Normalize(ed.normal), n);
+				if (dot > 0.999f) {
+					// 同一平面 → 削除（分割線）
+					edgeMap.erase(it);
+				}
+				else {
+					// 異なる面 → 外形として残す
+					ed.hasPair = true;
+				}
+			}
+		}
+	}
+
+	// 外形エッジだけを収集
+	std::vector<LineVertex> lineVertices;
+	for (auto& kv : edgeMap) {
+		LineVertex va, vb;
+		va.position = modelData.vertices[kv.second.v0].position;
+		vb.position = modelData.vertices[kv.second.v1].position;
+		lineVertices.push_back(va);
+		lineVertices.push_back(vb);
+	}
+
+	// ---- VertexBuffer 作成（インデックスは使わない）----
+	newObject->vertexResource =
+		dxCommon_->CreateBufferResource(sizeof(LineVertex) * lineVertices.size());
+
+	newObject->vertexData = nullptr;
+	newObject->vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&newObject->vertexData));
+	std::memcpy(newObject->vertexData, lineVertices.data(), sizeof(LineVertex) * lineVertices.size());
+
+	newObject->vertexBufferView.BufferLocation = newObject->vertexResource->GetGPUVirtualAddress();
+	newObject->vertexBufferView.SizeInBytes = UINT(sizeof(LineVertex) * lineVertices.size());
+	newObject->vertexBufferView.StrideInBytes = sizeof(LineVertex);
+
+	newObject->lineResource = dxCommon_->CreateBufferResource(sizeof(LineForGPU));
+	newObject->lineResource->Map(0, nullptr, reinterpret_cast<void**>(&newObject->lineData));
+
+	newObject->vertexIndex = static_cast<int>(lineVertices.size());
+
+	lineObjects_.push_back(std::move(newObject));
 }
 
 void LineDrawerBase::CreateSkeletonObject(Skeleton skeleton, WorldTransform* transform)
@@ -445,7 +732,7 @@ void LineDrawerBase::CreateSkeletonObject(Skeleton skeleton, WorldTransform* tra
 
 Microsoft::WRL::ComPtr<ID3D12Resource> LineDrawerBase::CreateVertexResource()
 {
-	Microsoft::WRL::ComPtr<ID3D12Resource> resource = dxCommon_->CreateBufferResource(sizeof(VertexData) * kMaxLines);
+	Microsoft::WRL::ComPtr<ID3D12Resource> resource = dxCommon_->CreateBufferResource(sizeof(LineVertex) * kMaxLines);
 
 	return resource;
 }
@@ -456,9 +743,9 @@ void LineDrawerBase::CreateVertexBufferView(LineObject* object)
 	// VertexBufferViewの生成
 	object->vertexBufferView.BufferLocation = object->vertexResource->GetGPUVirtualAddress();
 
-    object->vertexBufferView.SizeInBytes = UINT(sizeof(VertexData) * kMaxLines);
+    object->vertexBufferView.SizeInBytes = UINT(sizeof(LineVertex) * kMaxLines);
 
-	object->vertexBufferView.StrideInBytes = sizeof(VertexData);
+	object->vertexBufferView.StrideInBytes = sizeof(LineVertex);
 }
 
 void LineDrawerBase::WriteLineData(LineObject* object)

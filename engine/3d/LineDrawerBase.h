@@ -1,4 +1,5 @@
 #pragma once
+#define NOMINMAX
 #include "DirectXCommon.h"
 #include "SrvManager.h"
 #include "WorldTransform.h"
@@ -6,6 +7,7 @@
 #include "ModelDatas.h"
 
 
+#include <set>
 
 class LineDrawerBase
 {
@@ -23,6 +25,20 @@ public:
 
 private:
 
+	struct LineModelData {
+		std::vector<VertexData> vertices;
+		MaterialData material;
+		std::vector<uint32_t> indices;
+	};
+
+	struct Triangle {
+		int indices[3];   // 頂点のインデックス
+		Vector3 normal;   // 三角形の法線
+	};
+
+	
+private:
+
 	struct Sphere {
 		Vector3 center;
 		float radius;
@@ -37,7 +53,7 @@ private:
 		Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState;
 	};
 
-	struct VertexData
+	struct LineVertex
 	{
 		Vector4 position;
 	};
@@ -51,7 +67,7 @@ private:
 	struct LineObject
 	{
 		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;
-		VertexData* vertexData = nullptr;
+		LineVertex* vertexData = nullptr;
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 		
 		Microsoft::WRL::ComPtr<ID3D12Resource> lineResource = nullptr;

@@ -116,7 +116,7 @@ void Player::Draw(DirectionalLight directionalLight, PointLight pointLight, Spot
 	/// 親クラス
 	
 	// 描画
-	BaseCharacter::Draw(directionalLight,pointLight,spotLight);
+	//BaseCharacter::Draw(directionalLight,pointLight,spotLight);
 }
 
 void Player::Move()

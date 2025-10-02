@@ -41,6 +41,7 @@ void WorldTransform::UpdateMatrix()
 		matWorld_ = Multiply(matWorld_, parent_->matWorld_);
 	}
 
+
 	matWorldInverse_ = Inverse(matWorld_);
 
 	transformData_->matWorld = matWorld_;

@@ -26,7 +26,7 @@ void DebugCamera::Update()
        // マウスホイールの回転量でオフセットを変更  
        offset.z += scrollAmount;
 
-       offset.z = std::clamp(offset.z, -100.0f, -1.0f); // 修正: float 型のリテラルに変更
+       offset.z = std::clamp(offset.z, -100000.0f, -1.0f); // 修正: float 型のリテラルに変更
 
        Input::GetInstance()->mouseState.lZ == 0.0f;
    }  
