@@ -108,6 +108,7 @@
     <ClCompile Include="BaseEntity.cpp" />
     <ClCompile Include="EnemyState.cpp" />
     <ClCompile Include="ApproachState.cpp" />
+    <ClCompile Include="TitleCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -195,6 +196,7 @@
     <ClInclude Include="BaseEntity.h" />
     <ClInclude Include="EnemyState.h" />
     <ClInclude Include="ApproachState.h" />
+    <ClInclude Include="TitleCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

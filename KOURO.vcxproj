@@ -90,6 +90,7 @@
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="OBBCollider.cpp" />
     <ClCompile Include="OBBLineObject.cpp" />
+    <ClCompile Include="TitleCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABBLineObject.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="OBBCollider.h" />
     <ClInclude Include="OBBLineObject.h" />
+    <ClInclude Include="TitleCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

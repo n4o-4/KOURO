@@ -7,7 +7,7 @@
 
 class RailCamera : public BaseCamera
 {
-private:
+public:
 
 	struct ArcLengthTable
 	{
@@ -40,7 +40,7 @@ private:
 	std::unique_ptr<WorldTransform> worldTransform_ = nullptr; //!< ワールド変形情報
 
 	std::vector<Vector3> controlPoints_; //!< カメラの制御点
-
+	
 	const float kMoveTime = 60.0f;
 
 	float moveTimer_ = 0.0f; //!< カメラの移動時間

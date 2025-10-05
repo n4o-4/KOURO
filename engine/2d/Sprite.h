@@ -54,6 +54,10 @@ public: // メンバ関数
 
 	// setter
 	void SetTexLeftTop(const Vector2& leftTop) { textureLeftTop = leftTop; }
+
+	/*
+	 * \brief  SetTexSize テクスチャの切り出しサイズを設定
+	*/
 	void SetTexSize(const Vector2& TexSize) { textureSize = TexSize; }
 
 private: 
