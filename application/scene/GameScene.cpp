@@ -374,12 +374,18 @@ void GameScene::Update() {
 			phase_ = Phase::kFadeOut;
 		}
 
+		if (Input::GetInstance()->PushKey(DIK_SPACE))
+		{
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+			phase_ = Phase::kFadeOut;
+		}
+
 		break;
 	case Phase::kFadeOut:
 
 		if (fade_->IsFinished())
 		{
-			SceneManager::GetInstance()->ChangeScene("CLEAR");
+			SceneManager::GetInstance()->ChangeScene("TITLE");
 
 			return;
 		}

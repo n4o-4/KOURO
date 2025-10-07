@@ -137,7 +137,7 @@ void TitleScene::Update()
 
 		if (fade_->IsFinished())
 		{
-			SceneManager::GetInstance()->ChangeScene("GAME");
+			SceneManager::GetInstance()->ChangeScene("TITLE");
 
 			return;
 		}
