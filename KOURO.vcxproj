@@ -181,14 +181,6 @@
     <ClInclude Include="application\camera\TitleCamera.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
-      <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
-    </ProjectReference>
-    <ProjectReference Include="imgui\imgui.vcxproj">
-      <Project>{87c2cfc5-8ee5-440c-bda6-c55e1714df48}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include=".editorconfig" />
     <None Include="Resources\shaders\Fullscreen.hlsli" />
     <None Include="Resources\shaders\Object3d.hlsli" />
@@ -357,6 +349,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
+      <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
+    </ProjectReference>
+    <ProjectReference Include="imgui\imgui.vcxproj">
+      <Project>{87c2cfc5-8ee5-440c-bda6-c55e1714df48}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -410,7 +410,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\transition;$(ProjectDir)engine\effect;$(ProjectDir)application\base\baseClass;$(ProjectDir)application\object\base;$(ProjectDir)application\object\enemy;$(ProjectDir)application\object\player;$(ProjectDIr)application\collider;$(ProjectDIr)engine\line;$(ProjectDir)engine\debug;$(ProjectDir)engine\core;$(ProjectDIr)engine\3d\animation;$(ProjectDir)engine\3d\model;$(ProjectDir)engine\3d\object;$(ProjectDir)engine\3d\particle;$(ProjectDir)engine\3d\skybox;$(ProjectDir)engine\3d\transform;$(ProjectDir)engine\rendering;$(ProjectDir)engine\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\transition;$(ProjectDir)engine\effect;$(ProjectDir)application\base\baseClass;$(ProjectDir)application\object\base;$(ProjectDir)application\object\enemy;$(ProjectDir)application\object\player;$(ProjectDIr)application\collider;$(ProjectDIr)engine\line;$(ProjectDir)engine\debug;$(ProjectDir)engine\core;$(ProjectDIr)engine\3d\animation;$(ProjectDir)engine\3d\model;$(ProjectDir)engine\3d\object;$(ProjectDir)engine\3d\particle;$(ProjectDir)engine\3d\skybox;$(ProjectDir)engine\3d\transform;$(ProjectDir)engine\rendering;$(ProjectDir)engine\system;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -435,7 +435,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\transition;$(ProjectDir)engine\effect;$(ProjectDir)application\base\baseClass;$(ProjectDir)application\object\base;$(ProjectDir)application\object\enemy;$(ProjectDir)application\object\player;$(ProjectDIr)application\collider;$(ProjectDIr)engine\line;$(ProjectDir)engine\debug;$(ProjectDir)engine\core;$(ProjectDIr)engine\3d\animation;$(ProjectDir)engine\3d\model;$(ProjectDir)engine\3d\object;$(ProjectDir)engine\3d\particle;$(ProjectDir)engine\3d\skybox;$(ProjectDir)engine\3d\transform;$(ProjectDir)engine\rendering;$(ProjectDir)engine\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\transition;$(ProjectDir)engine\effect;$(ProjectDir)application\base\baseClass;$(ProjectDir)application\object\base;$(ProjectDir)application\object\enemy;$(ProjectDir)application\object\player;$(ProjectDIr)application\collider;$(ProjectDIr)engine\line;$(ProjectDir)engine\debug;$(ProjectDir)engine\core;$(ProjectDIr)engine\3d\animation;$(ProjectDir)engine\3d\model;$(ProjectDir)engine\3d\object;$(ProjectDir)engine\3d\particle;$(ProjectDir)engine\3d\skybox;$(ProjectDir)engine\3d\transform;$(ProjectDir)engine\rendering;$(ProjectDir)engine\system;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
