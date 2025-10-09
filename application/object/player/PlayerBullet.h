@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "BaseBullet.h"
+
 class PlayerBullet : public BaseBullet, public SphereCollider
 {
 public: // 公開メンバ関数

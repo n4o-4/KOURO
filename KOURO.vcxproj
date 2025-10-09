@@ -11,25 +11,25 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AABBLineObject.cpp" />
-    <ClCompile Include="application\object\AABBCollider.cpp" />
+    <ClCompile Include="engine\line\AABBLineObject.cpp" />
+    <ClCompile Include="application\collider\AABBCollider.cpp" />
     <ClCompile Include="application\scene\BaseScene.cpp" />
     <ClCompile Include="application\scene\GameScene.cpp" />
     <ClCompile Include="application\scene\SceneFactory.cpp" />
     <ClCompile Include="application\scene\SceneManager.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
-    <ClCompile Include="application\object\BaseCharacter.cpp" />
-    <ClCompile Include="application\object\BaseCollider.cpp" />
-    <ClCompile Include="application\object\ColliderManager.cpp" />
-    <ClCompile Include="application\object\BaseBullet.cpp" />
-    <ClCompile Include="ApproachState.cpp" />
-    <ClCompile Include="BaseEntity.cpp" />
-    <ClCompile Include="EnemyState.cpp" />
+    <ClCompile Include="application\object\base\BaseCharacter.cpp" />
+    <ClCompile Include="application\collider\BaseCollider.cpp" />
+    <ClCompile Include="application\collider\ColliderManager.cpp" />
+    <ClCompile Include="application\object\base\BaseBullet.cpp" />
+    <ClCompile Include="application\object\enemy\ApproachState.cpp" />
+    <ClCompile Include="application\base\baseClass\BaseEntity.cpp" />
+    <ClCompile Include="application\object\enemy\EnemyState.cpp" />
     <ClCompile Include="engine\math\CollisionMath.cpp" />
-    <ClCompile Include="application\object\EnemyBullet.cpp" />
-    <ClCompile Include="BaseLineObject.cpp" />
+    <ClCompile Include="application\object\enemy\EnemyBullet.cpp" />
+    <ClCompile Include="engine\line\BaseLineObject.cpp" />
     <ClCompile Include="engine\effect\ColorSpace.cpp" />
-    <ClCompile Include="application\object\Enemy.cpp" />
+    <ClCompile Include="application\object\enemy\Enemy.cpp" />
     <ClCompile Include="engine\3d\ModelDatas.cpp" />
     <ClCompile Include="engine\effect\BaseEffect.cpp" />
     <ClCompile Include="engine\effect\BoxFilter.cpp" />
@@ -37,24 +37,24 @@
     <ClCompile Include="engine\effect\Dissolve.cpp" />
     <ClCompile Include="engine\camera\CameraManager.cpp" />
     <ClCompile Include="engine\camera\DebugCamera.cpp" />
-    <ClCompile Include="engine\object\BaseCamera.cpp" />
-    <ClCompile Include="engine\3d\AnimationManager.cpp" />
-    <ClCompile Include="engine\3d\WorldTransform.cpp" />
+    <ClCompile Include="engine\camera\BaseCamera.cpp" />
+    <ClCompile Include="engine\3d\animation\AnimationManager.cpp" />
+    <ClCompile Include="engine\3d\transform\WorldTransform.cpp" />
     <ClCompile Include="engine\audio\Audio.cpp" />
     <ClCompile Include="engine\audio\AudioManager.cpp" />
-    <ClCompile Include="engine\base\OffScreenRendring.cpp" />
-    <ClCompile Include="engine\base\ViewProjection.cpp" />
-    <ClCompile Include="engine\object\Camera.cpp" />
-    <ClCompile Include="engine\base\DirectXCommon.cpp" />
-    <ClCompile Include="engine\base\Framework.cpp" />
-    <ClCompile Include="engine\2d\ImGuiManager.cpp" />
+    <ClCompile Include="engine\rendering\OffScreenRendring.cpp" />
+    <ClCompile Include="engine\camera\ViewProjection.cpp" />
+    <ClCompile Include="engine\camera\Camera.cpp" />
+    <ClCompile Include="engine\core\DirectXCommon.cpp" />
+    <ClCompile Include="engine\core\Framework.cpp" />
+    <ClCompile Include="engine\debug\ImGuiManager.cpp" />
     <ClCompile Include="engine\input\Input.cpp" />
-    <ClCompile Include="engine\base\Logger.cpp" />
+    <ClCompile Include="engine\system\Logger.cpp" />
     <ClCompile Include="engine\object\DirectionalLight.cpp" />
     <ClCompile Include="engine\object\PointLight.cpp" />
     <ClCompile Include="engine\object\SpotLight.cpp" />
-    <ClCompile Include="engine\3d\LineDrawerBase.cpp" />
-    <ClCompile Include="application\effect\Fade.cpp" />
+    <ClCompile Include="engine\line\LineDrawerBase.cpp" />
+    <ClCompile Include="application\transition\Fade.cpp" />
     <ClCompile Include="application\camera\FollowCamera.cpp" />
     <ClCompile Include="application\scene\GameClear.cpp" />
     <ClCompile Include="application\scene\GameOver.cpp" />
@@ -62,102 +62,102 @@
     <ClCompile Include="engine\effect\Grayscale.cpp" />
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="engine\effect\LuminanceBasedOutline.cpp" />
-    <ClCompile Include="engine\base\LevelLoader.cpp" />
+    <ClCompile Include="engine\system\LevelLoader.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="engine\3d\Model.cpp" />
-    <ClCompile Include="engine\3d\ModelCommon.cpp" />
-    <ClCompile Include="engine\3d\ModelManager.cpp" />
-    <ClCompile Include="engine\3d\Object3d.cpp" />
-    <ClCompile Include="engine\3d\Object3dCommon.cpp" />
+    <ClCompile Include="engine\3d\model\Model.cpp" />
+    <ClCompile Include="engine\3d\model\ModelCommon.cpp" />
+    <ClCompile Include="engine\3d\model\ModelManager.cpp" />
+    <ClCompile Include="engine\3d\object\Object3d.cpp" />
+    <ClCompile Include="engine\3d\object\Object3dCommon.cpp" />
     <ClCompile Include="engine\2d\Sprite.cpp" />
     <ClCompile Include="engine\2d\SpriteCommon.cpp" />
-    <ClCompile Include="engine\base\StringUtility.cpp" />
-    <ClCompile Include="engine\base\TextureManager.cpp" />
-    <ClCompile Include="engine\base\WinApp.cpp" />
+    <ClCompile Include="engine\system\StringUtility.cpp" />
+    <ClCompile Include="engine\system\TextureManager.cpp" />
+    <ClCompile Include="engine\core\WinApp.cpp" />
     <ClCompile Include="application\base\MyGame.cpp" />
-    <ClCompile Include="engine\3d\ParticleEmitter.cpp" />
-    <ClCompile Include="engine\3d\ParticleManager.cpp" />
-    <ClCompile Include="engine\base\SrvManager.cpp" />
+    <ClCompile Include="engine\3d\particle\ParticleEmitter.cpp" />
+    <ClCompile Include="engine\3d\particle\ParticleManager.cpp" />
+    <ClCompile Include="engine\system\SrvManager.cpp" />
     <ClCompile Include="engine\effect\PostEffect.cpp" />
     <ClCompile Include="engine\effect\RadialBlur.cpp" />
     <ClCompile Include="engine\effect\Random.cpp" />
     <ClCompile Include="engine\effect\Vignette.cpp" />
     <ClCompile Include="engine\effect\MotionBlur.cpp" />
-    <ClCompile Include="application\object\Player.cpp" />
+    <ClCompile Include="application\object\player\Player.cpp" />
     <ClCompile Include="application\camera\RailCamera.cpp" />
-    <ClCompile Include="application\object\SphereCollider.cpp" />
-    <ClCompile Include="application\object\PlayerBullet.cpp" />
-    <ClCompile Include="Skybox.cpp" />
-    <ClCompile Include="OBBCollider.cpp" />
-    <ClCompile Include="OBBLineObject.cpp" />
-    <ClCompile Include="TitleCamera.cpp" />
+    <ClCompile Include="application\collider\SphereCollider.cpp" />
+    <ClCompile Include="application\object\player\PlayerBullet.cpp" />
+    <ClCompile Include="engine\3d\skybox\Skybox.cpp" />
+    <ClCompile Include="application\collider\OBBCollider.cpp" />
+    <ClCompile Include="engine\line\OBBLineObject.cpp" />
+    <ClCompile Include="application\camera\TitleCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AABBLineObject.h" />
-    <ClInclude Include="application\object\AABBCollider.h" />
+    <ClInclude Include="engine\line\AABBLineObject.h" />
+    <ClInclude Include="application\collider\AABBCollider.h" />
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
     <ClInclude Include="application\scene\BaseScene.h" />
     <ClInclude Include="application\scene\GameScene.h" />
     <ClInclude Include="application\scene\SceneFactory.h" />
     <ClInclude Include="application\scene\SceneManager.h" />
     <ClInclude Include="application\scene\TitleScene.h" />
-    <ClInclude Include="application\object\BaseCharacter.h" />
-    <ClInclude Include="application\object\BaseCollider.h" />
-    <ClInclude Include="application\object\ColliderManager.h" />
-    <ClInclude Include="application\object\BaseBullet.h" />
-    <ClInclude Include="ApproachState.h" />
-    <ClInclude Include="BaseEntity.h" />
-    <ClInclude Include="EnemyState.h" />
+    <ClInclude Include="application\object\base\BaseCharacter.h" />
+    <ClInclude Include="application\collider\BaseCollider.h" />
+    <ClInclude Include="application\collider\ColliderManager.h" />
+    <ClInclude Include="application\object\base\BaseBullet.h" />
+    <ClInclude Include="application\object\enemy\ApproachState.h" />
+    <ClInclude Include="application\base\baseClass\BaseEntity.h" />
+    <ClInclude Include="application\object\enemy\EnemyState.h" />
     <ClInclude Include="engine\math\CollisionMath.h" />
-    <ClInclude Include="application\object\EnemyBullet.h" />
-    <ClInclude Include="BaseLineObject.h" />
+    <ClInclude Include="application\object\enemy\EnemyBullet.h" />
+    <ClInclude Include="engine\line\BaseLineObject.h" />
     <ClInclude Include="engine\effect\ColorSpace.h" />
-    <ClInclude Include="application\object\Enemy.h" />
+    <ClInclude Include="application\object\enemy\Enemy.h" />
     <ClInclude Include="engine\effect\BaseEffect.h" />
     <ClInclude Include="engine\effect\BoxFilter.h" />
     <ClInclude Include="engine\effect\DepthBasedOutline.h" />
     <ClInclude Include="engine\effect\Dissolve.h" />
     <ClInclude Include="engine\camera\CameraManager.h" />
     <ClInclude Include="engine\camera\DebugCamera.h" />
-    <ClInclude Include="engine\object\BaseCamera.h" />
-    <ClInclude Include="engine\3d\AnimationManager.h" />
+    <ClInclude Include="engine\camera\BaseCamera.h" />
+    <ClInclude Include="engine\3d\animation\AnimationManager.h" />
     <ClInclude Include="engine\3d\ModelDatas.h" />
-    <ClInclude Include="engine\3d\WorldTransform.h" />
+    <ClInclude Include="engine\3d\transform\WorldTransform.h" />
     <ClInclude Include="engine\audio\Audio.h" />
     <ClInclude Include="engine\audio\AudioManager.h" />
-    <ClInclude Include="engine\base\Kouro.h" />
-    <ClInclude Include="engine\base\LeakChecker.h" />
-    <ClInclude Include="engine\base\OffScreenRendring.h" />
-    <ClInclude Include="engine\base\Structs.h" />
-    <ClInclude Include="engine\base\ViewProjection.h" />
-    <ClInclude Include="engine\object\Camera.h" />
-    <ClInclude Include="engine\base\DirectXCommon.h" />
-    <ClInclude Include="engine\base\Framework.h" />
-    <ClInclude Include="engine\2d\ImGuiManager.h" />
+    <ClInclude Include="engine\core\Kouro.h" />
+    <ClInclude Include="engine\system\LeakChecker.h" />
+    <ClInclude Include="engine\rendering\OffScreenRendring.h" />
+    <ClInclude Include="engine\core\Structs.h" />
+    <ClInclude Include="engine\camera\ViewProjection.h" />
+    <ClInclude Include="engine\camera\Camera.h" />
+    <ClInclude Include="engine\core\DirectXCommon.h" />
+    <ClInclude Include="engine\core\Framework.h" />
+    <ClInclude Include="engine\debug\ImGuiManager.h" />
     <ClInclude Include="engine\input\Input.h" />
-    <ClInclude Include="engine\base\Logger.h" />
+    <ClInclude Include="engine\system\Logger.h" />
     <ClInclude Include="engine\math\Matrixs.h" />
-    <ClInclude Include="engine\3d\Model.h" />
-    <ClInclude Include="engine\3d\ModelCommon.h" />
-    <ClInclude Include="engine\3d\ModelManager.h" />
+    <ClInclude Include="engine\3d\model\Model.h" />
+    <ClInclude Include="engine\3d\model\ModelCommon.h" />
+    <ClInclude Include="engine\3d\model\ModelManager.h" />
     <ClInclude Include="engine\math\MyMath.h" />
-    <ClInclude Include="engine\3d\Object3d.h" />
-    <ClInclude Include="engine\3d\Object3dCommon.h" />
+    <ClInclude Include="engine\3d\object\Object3d.h" />
+    <ClInclude Include="engine\3d\object\Object3dCommon.h" />
     <ClInclude Include="engine\2d\Sprite.h" />
     <ClInclude Include="engine\2d\SpriteCommon.h" />
-    <ClInclude Include="engine\base\StringUtility.h" />
-    <ClInclude Include="engine\base\TextureManager.h" />
+    <ClInclude Include="engine\system\StringUtility.h" />
+    <ClInclude Include="engine\system\TextureManager.h" />
     <ClInclude Include="engine\math\Vectors.h" />
-    <ClInclude Include="engine\base\WinApp.h" />
+    <ClInclude Include="engine\core\WinApp.h" />
     <ClInclude Include="application\base\MyGame.h" />
-    <ClInclude Include="engine\3d\ParticleEmitter.h" />
-    <ClInclude Include="engine\3d\ParticleManager.h" />
-    <ClInclude Include="engine\base\SrvManager.h" />
+    <ClInclude Include="engine\3d\particle\ParticleEmitter.h" />
+    <ClInclude Include="engine\3d\particle\ParticleManager.h" />
+    <ClInclude Include="engine\system\SrvManager.h" />
     <ClInclude Include="engine\object\DirectionalLight.h" />
     <ClInclude Include="engine\object\PointLight.h" />
     <ClInclude Include="engine\object\SpotLight.h" />
-    <ClInclude Include="engine\3d\LineDrawerBase.h" />
-    <ClInclude Include="application\effect\Fade.h" />
+    <ClInclude Include="engine\line\LineDrawerBase.h" />
+    <ClInclude Include="application\transition\Fade.h" />
     <ClInclude Include="application\camera\FollowCamera.h" />
     <ClInclude Include="application\scene\GameClear.h" />
     <ClInclude Include="application\scene\GameOver.h" />
@@ -170,15 +170,15 @@
     <ClInclude Include="engine\effect\Random.h" />
     <ClInclude Include="engine\effect\Vignette.h" />
     <ClInclude Include="engine\effect\MotionBlur.h" />
-    <ClInclude Include="engine\base\LevelLoader.h" />
-    <ClInclude Include="application\object\Player.h" />
+    <ClInclude Include="engine\system\LevelLoader.h" />
+    <ClInclude Include="application\object\player\Player.h" />
     <ClInclude Include="application\camera\RailCamera.h" />
-    <ClInclude Include="application\object\SphereCollider.h" />
-    <ClInclude Include="application\object\PlayerBullet.h" />
-    <ClInclude Include="Skybox.h" />
-    <ClInclude Include="OBBCollider.h" />
-    <ClInclude Include="OBBLineObject.h" />
-    <ClInclude Include="TitleCamera.h" />
+    <ClInclude Include="application\collider\SphereCollider.h" />
+    <ClInclude Include="application\object\player\PlayerBullet.h" />
+    <ClInclude Include="engine\3d\skybox\Skybox.h" />
+    <ClInclude Include="application\collider\OBBCollider.h" />
+    <ClInclude Include="engine\line\OBBLineObject.h" />
+    <ClInclude Include="application\camera\TitleCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
@@ -410,7 +410,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\object;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\effect;$(ProjectDir)engine\effect;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\transition;$(ProjectDir)engine\effect;$(ProjectDir)application\base\baseClass;$(ProjectDir)application\object\base;$(ProjectDir)application\object\enemy;$(ProjectDir)application\object\player;$(ProjectDIr)application\collider;$(ProjectDIr)engine\line;$(ProjectDir)engine\debug;$(ProjectDir)engine\core;$(ProjectDIr)engine\3d\animation;$(ProjectDir)engine\3d\model;$(ProjectDir)engine\3d\object;$(ProjectDir)engine\3d\particle;$(ProjectDir)engine\3d\skybox;$(ProjectDir)engine\3d\transform;$(ProjectDir)engine\rendering;$(ProjectDir)engine\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -435,7 +435,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\object;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\effect;$(ProjectDir)engine\effect;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\transition;$(ProjectDir)engine\effect;$(ProjectDir)application\base\baseClass;$(ProjectDir)application\object\base;$(ProjectDir)application\object\enemy;$(ProjectDir)application\object\player;$(ProjectDIr)application\collider;$(ProjectDIr)engine\line;$(ProjectDir)engine\debug;$(ProjectDir)engine\core;$(ProjectDIr)engine\3d\animation;$(ProjectDir)engine\3d\model;$(ProjectDir)engine\3d\object;$(ProjectDir)engine\3d\particle;$(ProjectDir)engine\3d\skybox;$(ProjectDir)engine\3d\transform;$(ProjectDir)engine\rendering;$(ProjectDir)engine\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
