@@ -77,6 +77,28 @@ bool Fade::IsFinished() const
 		{
 			return false;
 		}
+
+	case Status::WhiteFadeIn:
+
+		if (counter_ >= duration_)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	case Status::WhiteFadeOut:	
+
+		if (counter_ >= duration_)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	return true;
@@ -99,6 +121,16 @@ void Fade::UpdateFade()
 	case Status::FadeOut:
 		// フェードアウトの更新処理
 		UpdateFadeOut();
+		break;
+
+	case Status::WhiteFadeIn:
+		// フェードインの更新処理
+		UpdateWhiteFadeIn();
+		break;
+
+	case Status::WhiteFadeOut:
+		// フェードアウトの更新処理
+		UpdateWhiteFadeOut();
 		break;
 	}
 }
@@ -133,6 +165,40 @@ void Fade::UpdateFadeOut()
 
 	// 0.0fから1.0fの間で、経過時間がフェード継続時間に近づくほどアルファ値を大きくする
 	curtain_->SetColor(Vector4(0.0f, 0.0f, 0.0f, std::clamp(counter_ / duration_, 0.0f, 1.0f)));
+
+	curtain_->Update();
+}
+
+void Fade::UpdateWhiteFadeIn()
+{
+	// 1フレーム分の秒数をカウント
+	counter_ += 1.0f / 60.0f; // 可変フレームレートに変更予定
+
+	// フェード継続時間に達したら終了
+	if (counter_ >= duration_)
+	{
+		counter_ = duration_;
+	}
+
+	// 0.0fから1.0fの間で、経過時間がフェード継続時間に近づくほどアルファ値を大きくする
+	curtain_->SetColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f - std::clamp(counter_ / duration_, 0.0f, 1.0f)));
+
+	curtain_->Update();
+}
+
+void Fade::UpdateWhiteFadeOut()
+{
+	// 1フレーム分の秒数をカウント
+	counter_ += 1.0f / 60.0f; // 可変フレームレートに変更予定
+
+	// フェード継続時間に達したら終了
+	if (counter_ >= duration_)
+	{
+		counter_ = duration_;
+	}
+
+	// 0.0fから1.0fの間で、経過時間がフェード継続時間に近づくほどアルファ値を大きくする
+	curtain_->SetColor(Vector4(1.0f, 1.0f, 1.0f, std::clamp(counter_ / duration_, 0.0f, 1.0f)));
 
 	curtain_->Update();
 }

@@ -57,4 +57,7 @@ private:
 	}; //!< 
 
 	std::unique_ptr<Sprite> startBotton_ = nullptr;
+
+	float kFadeStartTime = 4.5f;
+	float fadeTimer_ = 0.0f;
 };

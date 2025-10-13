@@ -17,7 +17,9 @@ public:
 	{
 		None,
 		FadeIn,
-		FadeOut
+		FadeOut,
+		WhiteFadeIn,
+		WhiteFadeOut,
 	};
 
 public:
@@ -43,6 +45,10 @@ private:
 	void UpdateFadeIn();
 
 	void UpdateFadeOut();
+
+	void UpdateWhiteFadeIn();
+
+	void UpdateWhiteFadeOut();
 
 private:
 

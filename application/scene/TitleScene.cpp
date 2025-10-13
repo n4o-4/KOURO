@@ -85,8 +85,18 @@ void TitleScene::Update()
 
 			titleCamera_->SetIsDeparture(true);
 
-			fade_->Start(Fade::Status::FadeOut, 5.0f);
-			phase_ = Phase::kFadeOut;
+			fadeTimer_ = 0.0f;
+		}
+
+		if (titleCamera_->GetIsDeparture())
+		{
+			fadeTimer_ += kDeltaTime;
+
+			if (fadeTimer_ >= kFadeStartTime)
+			{
+				fade_->Start(Fade::Status::WhiteFadeOut, 0.5f);
+				phase_ = Phase::kFadeOut;
+			}
 		}
 
 		// 現在の経過時間（秒）
@@ -137,7 +147,7 @@ void TitleScene::Update()
 
 		if (fade_->IsFinished())
 		{
-			SceneManager::GetInstance()->ChangeScene("TITLE");
+			SceneManager::GetInstance()->ChangeScene("GAME");
 
 			return;
 		}

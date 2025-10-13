@@ -16,6 +16,8 @@ public:
 
 	void SetIsDeparture(bool isDeparture) { isDeparture_ = isDeparture; }
 
+	bool GetIsDeparture() const { return isDeparture_; }
+
 private:
 
 	Vector3 CalculationOffset();

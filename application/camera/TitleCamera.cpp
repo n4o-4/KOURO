@@ -38,6 +38,8 @@ void TitleCamera::Update()
     {
         viewProjection_->transform.rotate.y = 0.0f;
 
+		viewProjection_->fovY += 0.008f;
+
 		FollowTarget();
     }
     
@@ -49,8 +51,6 @@ void TitleCamera::Update()
         // 回転の計算
         CalculationTranslate();
     }
-   
-    
 
     // 基底クラスの更新
     BaseCamera::Update();

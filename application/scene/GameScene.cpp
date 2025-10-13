@@ -280,6 +280,8 @@ void GameScene::Initialize() {
 	lineDrawer_->CreateObject3DLine("player/player.obj",player_->GetWorldTransform());
 
 	//lineDrawer_->CreateObject3DLine("playerbullet/playerbullet.obj", player_->GetWorldTransform());
+
+	fade_->Start(Fade::Status::WhiteFadeIn, 1.0f);
 }
 ///=============================================================================
 ///						終了処理
