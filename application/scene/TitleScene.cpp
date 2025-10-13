@@ -33,6 +33,25 @@ void TitleScene::Initialize()
 	cameraManager_->SetActiveCamera(titleCamera_.get());
 
 	startTime = std::chrono::steady_clock::now();
+
+
+	// plane
+	ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+	// ブレンドモードの設定
+	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->blendMode = ParticleManager::BlendMode::kAdd;
+	// billboardを有効
+	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableBillboard = true;
+
+	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableStretch = true;
+
+	// 減速を有効
+
+
+
+	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableDeceleration = false;
+	// パルスを有効
+	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enablePulse = false;
+
 }
 
 void TitleScene::Finalize()
@@ -62,6 +81,7 @@ void TitleScene::Update()
 	static Vector2 texSize;
 	std::chrono::time_point<std::chrono::steady_clock> now;
 	float elapsedTime;
+
 
 	switch (phase_)
 	{

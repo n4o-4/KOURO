@@ -230,6 +230,12 @@ void ParticleManager::Draw(std::string filePath)
 	// 
 	for (std::unordered_map<std::string, ParticleGroup>::iterator particleGroupIterator = particleGroups.begin(); particleGroupIterator != particleGroups.end();) {
 		
+		if (particleGroupIterator->second.kNumInstance == 0)
+		{
+			++particleGroupIterator;
+			continue;
+		}
+
 		// PSOを設定
 		dxCommon_->GetCommandList()->SetPipelineState(sPipeLineStates_[static_cast<int>(particleGroupIterator->second.blendMode)].Get());
 
@@ -246,7 +252,8 @@ void ParticleManager::Draw(std::string filePath)
 
 		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(4, particleGroupIterator->second.flagsResource.Get()->GetGPUVirtualAddress());
 		
-		if (particleGroupIterator->second.type == ParticleType::Normal) {
+		if (particleGroupIterator->second.type == ParticleType::Normal) 
+		{
 			// プリミティブトポロジーを設定
 			dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
 			dxCommon_->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), particleGroupIterator->second.kNumInstance, 0, 0);
