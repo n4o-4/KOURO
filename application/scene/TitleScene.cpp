@@ -45,9 +45,6 @@ void TitleScene::Initialize()
 	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableStretch = true;
 
 	// 減速を有効
-
-
-
 	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableDeceleration = false;
 	// パルスを有効
 	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enablePulse = false;
@@ -106,6 +103,10 @@ void TitleScene::Update()
 			titleCamera_->SetIsDeparture(true);
 
 			fadeTimer_ = 0.0f;
+
+			isMoveActive_ = true;
+
+			lineDrawer_->SetScanActive(false);
 		}
 
 		if (titleCamera_->GetIsDeparture())
@@ -133,6 +134,25 @@ void TitleScene::Update()
 		break;
 	case Phase::kFadeOut:
 
+		if (fade_->IsFinished())
+		{
+			SceneManager::GetInstance()->ChangeScene("GAME");
+
+			return;
+		}
+
+		break;
+
+	case Phase::kPlay:
+		break;
+	case Phase::kPose:
+		break;
+	}
+
+	startBotton_->Update();
+
+	if (isMoveActive_) /// 移動開始フラグが有効なら
+	{
 		if (moveTimer_ < kMoveTime)
 		{
 			moveTimer_ += kDeltaTime;
@@ -164,23 +184,7 @@ void TitleScene::Update()
 		transform_->transform.rotate = { pitch, yaw, roll };
 
 		transform_->UpdateMatrix();
-
-		if (fade_->IsFinished())
-		{
-			SceneManager::GetInstance()->ChangeScene("GAME");
-
-			return;
-		}
-
-		break;
-
-	case Phase::kPlay:
-		break;
-	case Phase::kPose:
-		break;
 	}
-
-	startBotton_->Update();
 
 	transform_->UpdateMatrix();
 

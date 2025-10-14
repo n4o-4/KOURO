@@ -60,4 +60,7 @@ private:
 
 	float kFadeStartTime = 4.5f;
 	float fadeTimer_ = 0.0f;
+
+	// プレイヤーモデルの移動演出のフラグ
+	bool isMoveActive_ = false;
 };

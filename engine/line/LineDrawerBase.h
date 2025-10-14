@@ -36,7 +36,13 @@ private:
 		Vector3 normal;   // 三角形の法線
 	};
 
-	
+	struct ScanEffectCB
+	{
+		float progress;   // 0.0f～1.0f スキャンの進行度
+		float thickness;  // スキャンの厚み
+		bool isRenderScanned; // スキャン部分を描画するかどうか
+	};
+
 private:
 
 	struct Sphere {
@@ -97,6 +103,10 @@ public: // メンバ関数
 	// 描画
 	void Draw(ViewProjection viewProjection);
 
+	void SetIsRenderScanned(bool isRender) { scanEffectData_->isRenderScanned = isRender; }
+
+	void SetScanActive(bool isActive);
+
 private: // メンバ関数
 
 	void CreateRootSignature();
@@ -140,5 +150,13 @@ private: // メンバ変数
 	std::list<std::unique_ptr<LineObject>> lineObjects_;
 
 	std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
+
+	ScanEffectCB* scanEffectData_ = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> scanEffectResource_ = nullptr;
+
+	float scanTime = 6.0f;
+
+	bool isScanActive = true;
 };
 

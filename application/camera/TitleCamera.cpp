@@ -36,9 +36,9 @@ void TitleCamera::Update()
 
     if(isDeparture_)
     {
-        viewProjection_->transform.rotate.y = 0.0f;
+        //viewProjection_->transform.rotate.y = 0.0f;
 
-		viewProjection_->fovY += 0.008f;
+		viewProjection_->fovY += 0.007f;
 
 		FollowTarget();
     }

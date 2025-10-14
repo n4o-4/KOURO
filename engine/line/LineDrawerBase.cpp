@@ -23,11 +23,37 @@ void LineDrawerBase::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 	worldTransform_->transform.translate = { 0.0f,0.0f,0.0f };
 
 	worldTransform_->UpdateMatrix();
+
+	scanEffectResource_ = dxCommon_->CreateBufferResource(sizeof(ScanEffectCB));
+	scanEffectResource_->Map(0, nullptr, reinterpret_cast<void**>(&scanEffectData_));
+
+	scanEffectData_->thickness = 0.05f;
+
+	scanEffectData_->isRenderScanned = false;
 }
+
 
 void LineDrawerBase::Update()
 {
 	worldTransform_->UpdateMatrix();
+
+	if (isScanActive)
+	{
+		float deltaTime = 1.0f / 60.0f;
+
+		scanEffectData_->progress += deltaTime / scanTime; // 5秒で一周
+
+		if (scanEffectData_->progress >= 1.0f)
+		{
+			scanEffectData_->isRenderScanned = true;
+
+			scanTime = 3.0f;
+		}
+
+		scanEffectData_->progress = std::fmod(scanEffectData_->progress, 1.0f);
+	}
+
+
 
 	for (std::list<std::unique_ptr<LineObject>>::iterator iterator = lineObjects_.begin(); iterator != lineObjects_.end();)
 	{
@@ -142,6 +168,8 @@ void LineDrawerBase::Draw(ViewProjection viewProjection)
 	// PSOを設定
 	dxCommon_->GetCommandList()->SetPipelineState(pipeline_->pipelineState.Get());
 	
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(2, scanEffectResource_.Get()->GetGPUVirtualAddress());
+
 	for (std::list<std::unique_ptr<LineObject>>::iterator iterator = lineObjects_.begin(); iterator != lineObjects_.end();)
 	{
 		if (iterator->get()->type == Type::Object3D)
@@ -168,6 +196,21 @@ void LineDrawerBase::Draw(ViewProjection viewProjection)
 	}
 }
 
+void LineDrawerBase::SetScanActive(bool isActive)
+{
+	if (isActive)
+	{
+		scanEffectData_->isRenderScanned = true;
+		scanEffectData_->progress = 1.0f;
+	}
+	else
+	{
+		scanEffectData_->isRenderScanned = true;
+	}
+
+	isScanActive = isActive;
+}
+
 void LineDrawerBase::CreateRootSignature()
 {
 	HRESULT hr;
@@ -178,7 +221,7 @@ void LineDrawerBase::CreateRootSignature()
 
 	
 	
-	D3D12_ROOT_PARAMETER rootParameters[2] = {};
+	D3D12_ROOT_PARAMETER rootParameters[3] = {};
 	
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
@@ -187,6 +230,10 @@ void LineDrawerBase::CreateRootSignature()
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//VertexShaderで使う
 	rootParameters[1].Descriptor.ShaderRegister = 1;//レジスタ番号0とバインド
+
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixelShaderで使う
+	rootParameters[2].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
 
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
