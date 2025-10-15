@@ -282,6 +282,8 @@ void GameScene::Initialize() {
 	//lineDrawer_->CreateObject3DLine("playerbullet/playerbullet.obj", player_->GetWorldTransform());
 
 	fade_->Start(Fade::Status::WhiteFadeIn, 1.0f);
+
+	lineDrawer_->SetScanActive(false);
 }
 ///=============================================================================
 ///						終了処理
@@ -369,6 +371,8 @@ void GameScene::Update() {
 
 		break;
 	case Phase::kMain:
+
+		SceneManager::GetInstance()->ChangeScene("TITLE");
 
 		if (enemyCount == 0)
 		{
