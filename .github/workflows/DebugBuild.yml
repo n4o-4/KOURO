@@ -6,7 +6,7 @@ on:
       - master
 
 env:
-  SOLUTION_FILE_PATH: project/KOURO.sln
+  SOLUTION_FILE_PATH: KOURO.sln
   CONFIGURATION: Debug
 
 jobs:
