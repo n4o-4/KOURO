@@ -2,11 +2,11 @@
 
 void BaseCamera::Initialize()
 {
-	// viewProjectionの初期化
+	// videwProjectionの生成と初期化
 	viewProjection_ = std::make_unique<ViewProjection>();
 	viewProjection_->Initialize();
 
-	viewProjection_->transform.translate = { 0.0f,0.0f,-15.0f };
+	// 初期化後に一度更新しておく
 
 	viewProjection_->Update();
 

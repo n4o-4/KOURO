@@ -63,6 +63,8 @@
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="engine\effect\LuminanceBasedOutline.cpp" />
     <ClCompile Include="engine\system\LevelLoader.cpp" />
+    <ClCompile Include="LineObjectFactory.cpp" />
+    <ClCompile Include="LineObjectManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\model\Model.cpp" />
     <ClCompile Include="engine\3d\model\ModelCommon.cpp" />
@@ -179,6 +181,8 @@
     <ClInclude Include="application\collider\OBBCollider.h" />
     <ClInclude Include="engine\line\OBBLineObject.h" />
     <ClInclude Include="application\camera\TitleCamera.h" />
+    <ClInclude Include="LineObjectFactory.h" />
+    <ClInclude Include="LineObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

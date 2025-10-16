@@ -1,0 +1,11 @@
+#pragma once
+
+/// <summary>
+/// LineObjectÇÃê∂ê¨
+/// </summary>
+
+class LineObjectFactory
+{
+
+};
+

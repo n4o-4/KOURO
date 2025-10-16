@@ -5,20 +5,44 @@
 
 #include "Input.h"
 
+/// <summary>
+/// 追従カメラ
+/// ターゲットを追従するカメラ
+/// </summary>
+
 class FollowCamera : public BaseCamera
 {
 public:
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// 基底クラスの初期化を行い、オフセットの初期化、初期位置の設定を行う
+	/// </summary>
+
 	void Initialize();
-	// 更新
+
+	/// <summary>
+	/// 更新
+	/// ターゲットが設定されていない場合はアサート、オフセットの計算、回転の計算、基底クラスの更新を行う
+	/// </summary>
+
 	void Update();
 
 	void SetTarget(WorldTransform* target) { target_ = target; }
 
 private:
 
+	/// <summary>
+	/// オフセットの計算
+	/// videwProjectionの回転を考慮したオフセットを計算して返す
+	/// </summary>
+	/// <returns></returns>
+
 	Vector3 CalculationOffset();
+
+	/// <summary>
+	/// 
+	/// </summary>
 
 	void CalculationRotate();
 

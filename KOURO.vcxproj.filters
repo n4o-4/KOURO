@@ -319,6 +319,8 @@
     <ClCompile Include="engine\effect\Vignette.cpp">
       <Filter>engine\effect</Filter>
     </ClCompile>
+    <ClCompile Include="LineObjectManager.cpp" />
+    <ClCompile Include="LineObjectFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -579,6 +581,8 @@
     <ClInclude Include="engine\core\Kouro.h">
       <Filter>engine\core</Filter>
     </ClInclude>
+    <ClInclude Include="LineObjectManager.h" />
+    <ClInclude Include="LineObjectFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
