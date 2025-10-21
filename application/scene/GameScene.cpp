@@ -271,6 +271,23 @@ void GameScene::Initialize() {
 		enemies_.push_back(std::move(enemy));
 	}
 
+	for(uint32_t i = 0; i < 3; ++i)
+	{
+		countSprite_[i] = std::make_unique<Sprite>();
+
+		std::string filePath = "Resources/" + std::to_string(i + 1) + ".png";
+
+		TextureManager::GetInstance()->LoadTexture(filePath);
+
+		countSprite_[i]->Initialize(SpriteCommon::GetInstance(), filePath);
+		countSprite_[i]->SetSize({ 360.0f,360.0f });
+		countSprite_[i]->SetPosition({ 640.0f ,360.0f });
+		countSprite_[i]->SetTexSize({ 1536.0f,1024.0f });
+
+		countSprite_[i]->SetAnchorPoint({ 0.5f,0.5f });
+		countSprite_[i]->Update();
+	}
+
 	colliderManager_->AddCollider(player_);
 
 	player_->SetColliderManager(colliderManager_.get());
@@ -283,7 +300,9 @@ void GameScene::Initialize() {
 
 	fade_->Start(Fade::Status::WhiteFadeIn, 1.0f);
 
-	lineDrawer_->SetScanActive(false);
+	//lineDrawer_->SetScanActive(true);
+
+	lineDrawer_->SetIsRenderScanned(false);
 }
 ///=============================================================================
 ///						終了処理
@@ -372,7 +391,34 @@ void GameScene::Update() {
 		break;
 	case Phase::kMain:
 
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		countTimer_ += deltaTime;
+
+		if(countTimer_ < 1.0f)
+		{
+			countSprite_[2]->SetSize({ 360.0f * (1.0f + countTimer_),360.0f * (1.0f + countTimer_) });
+			countSprite_[2]->SetColor({ 1.0f,1.0f,1.0f,1.0f - countTimer_ });
+			countSprite_[2]->SetRotation(countSprite_[2]->GetRotation() + deltaRotation);
+			countSprite_[2]->Update();
+		}
+		else if(countTimer_ < 2.0f)
+		{
+			countSprite_[1]->SetSize({ 360.0f * (1.0f + countTimer_ - 1.0f),360.0f * (1.0f + countTimer_ - 1.0f) });
+			countSprite_[1]->SetColor({ 1.0f,1.0f,1.0f,1.0f - countTimer_ + 1.0f });
+			countSprite_[1]->SetRotation(countSprite_[1]->GetRotation() + deltaRotation);
+			countSprite_[1]->Update();
+		}
+		else if(countTimer_ < 3.0f)
+		{
+			countSprite_[0]->SetSize({ 360.0f * (1.0f + countTimer_ - 2.0f),360.0f * (1.0f + countTimer_ - 2.0f) });
+			countSprite_[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f - countTimer_ + 2.0f });
+			countSprite_[0]->SetRotation(countSprite_[0]->GetRotation() + deltaRotation);
+			countSprite_[0]->Update();
+		}
+
+		if(countTimer_ > 6.0f)
+		{
+			SceneManager::GetInstance()->ChangeScene("TITLE");
+		}
 
 		if (enemyCount == 0)
 		{
@@ -488,6 +534,19 @@ void GameScene::Draw()
 	DrawForegroundSprite();
 	/// 前景スプライト描画
 
+	if (countTimer_ < 1.0f && countTimer_ > 0.0f)
+	{
+		countSprite_[2]->Draw();
+	}
+	else if (countTimer_ < 2.0f && countTimer_ > 1.0f)
+	{
+		countSprite_[1]->Draw();
+	}
+	else if (countTimer_ < 3.0f && countTimer_ > 2.0f)
+	{
+		countSprite_[0]->Draw();
+	}
+	
 	// フェード描画
 	DrawFade();
 

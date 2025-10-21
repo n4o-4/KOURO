@@ -74,6 +74,19 @@ private:
 
 	std::unique_ptr<ColliderManager> colliderManager_ = nullptr;
 
+	std::unique_ptr<Sprite> countSprite_[3];
+
+	float countScale_[3] = { 0.0f, 0.0f, 0.0f };
+	float countRotation_[3] = { 0.0f, 0.0f, 0.0f };
+	float countAlpha_[3] = { 0.0f, 0.0f, 0.0f }; // フェードイン用
+
+
+	float deltaTime = 1.0f / 60.0f;
+
+	float deltaRotation = 6.28f / 60.0f;
+
+	float countTimer_ = 0.0f;
+
 private:
 
 public: // メンバ関数
