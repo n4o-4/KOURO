@@ -321,6 +321,10 @@
     </ClCompile>
     <ClCompile Include="LineObjectManager.cpp" />
     <ClCompile Include="LineObjectFactory.cpp" />
+    <ClCompile Include="EntityManager.cpp" />
+    <ClCompile Include="ECSCoordinator.cpp" />
+    <ClCompile Include="ComponentManager.cpp" />
+    <ClCompile Include="SystemManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -583,6 +587,11 @@
     </ClInclude>
     <ClInclude Include="LineObjectManager.h" />
     <ClInclude Include="LineObjectFactory.h" />
+    <ClInclude Include="engine\core\Entity.h" />
+    <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="ECSCoordinator.h" />
+    <ClInclude Include="ComponentManager.h" />
+    <ClInclude Include="SystemManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
