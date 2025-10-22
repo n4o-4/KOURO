@@ -1,69 +1,55 @@
 #pragma once
-#include <unordered_map>
-#include <memory>
-#include <cassert>
-#include <typeindex>
 
 #include "EntityManager.h"
-
-class IComponentArray 
-{
-public:
-    virtual ~IComponentArray() = default;
-    virtual void EntityDestroyed(Entity entity) = 0;
-};
+#include "ComponentArray.h"
 
 template<typename T>
 
-class ComponentArray : public IComponentArray
-{
+class ComponentManager {
 public:
-    void InsertData(Entity entity, T component) {
-        assert(entityToIndexMap_.find(entity.GetID()) == entityToIndexMap_.end());
-        size_t newIndex = size_;
-        entityToIndexMap_[entity.GetID()] = newIndex;
-        indexToEntityMap_[newIndex] = entity.GetID();
-        componentArray_[newIndex] = component;
-        size_++;
+
+    void RegisterComponent()
+    {
+        std::type_index typeIndex = typeid(T);
+        assert(componentArrays_.find(typeIndex) == componentArrays_.end() &&
+            "Component already registered!");
+        componentArrays_[typeIndex] = std::make_shared<ComponentArray<T>>();
     }
 
-    void RemoveData(Entity entity) {
-        assert(entityToIndexMap_.find(entity.GetID()) != entityToIndexMap_.end());
-        size_t indexOfRemovedEntity = entityToIndexMap_[entity.GetID()];
-        size_t indexOfLast = size_ - 1;
-        componentArray_[indexOfRemovedEntity] = componentArray_[indexOfLast];
-
-        uint32_t entityOfLast = indexToEntityMap_[indexOfLast];
-        entityToIndexMap_[entityOfLast] = indexOfRemovedEntity;
-        indexToEntityMap_[indexOfRemovedEntity] = entityOfLast;
-
-        entityToIndexMap_.erase(entity.GetID());
-        indexToEntityMap_.erase(indexOfLast);
-        size_--;
+    void AddComponent(Entity entity, const T& component)
+    {
+        GetComponentArray<T>()->InsertData(entity, component);
     }
 
-    T& GetData(Entity entity) {
-        assert(entityToIndexMap_.find(entity.GetID()) != entityToIndexMap_.end());
-        return componentArray_[entityToIndexMap_[entity.GetID()]];
+    void RemoveComponent(Entity entity)
+    {
+        GetComponentArray<T>()->RemoveData(entity);
     }
 
-    void EntityDestroyed(Entity entity) override {
-        if (entityToIndexMap_.find(entity.GetID()) != entityToIndexMap_.end()) {
-            RemoveData(entity);
+    T& GetComponent(Entity entity)
+    {
+        return GetComponentArray<T>()->GetData(entity);
+    }
+
+    void EntityDestroyed(Entity entity)
+    {
+        for (auto& [type, componentArray] : componentArrays_) {
+            componentArray->EntityDestroyed(entity);
         }
     }
 
 private:
 
-    std::array<T, MAX_ENTITIES> componentArray_;
-    std::unordered_map<uint32_t, size_t> entityToIndexMap_;
-    std::unordered_map<size_t, uint32_t> indexToEntityMap_;
-    size_t size_ = 0;
+    std::shared_ptr<ComponentArray<T>> GetComponentArray()
+    {
+        std::type_index typeIndex = typeid(T);
+        assert(componentArrays_.find(typeIndex) != componentArrays_.end() &&
+            "Component not registered before use!");
+        return std::static_pointer_cast<ComponentArray<T>>(componentArrays_[typeIndex]);
+    }
 
+private:
+
+    std::unordered_map<std::type_index, std::shared_ptr<IComponentArray>> componentArrays_;
+    
 };
-
-class ComponentManager
-{
-
-};
-

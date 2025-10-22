@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ComponentArray.cpp" />
     <ClCompile Include="ComponentManager.cpp" />
     <ClCompile Include="ECSCoordinator.cpp" />
     <ClCompile Include="engine\line\AABBLineObject.cpp" />
@@ -66,6 +67,7 @@
     <ClCompile Include="engine\effect\LuminanceBasedOutline.cpp" />
     <ClCompile Include="engine\system\LevelLoader.cpp" />
     <ClCompile Include="EntityManager.cpp" />
+    <ClCompile Include="IComponentArray.cpp" />
     <ClCompile Include="LineObjectFactory.cpp" />
     <ClCompile Include="LineObjectManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -96,9 +98,12 @@
     <ClCompile Include="application\collider\OBBCollider.cpp" />
     <ClCompile Include="engine\line\OBBLineObject.cpp" />
     <ClCompile Include="application\camera\TitleCamera.cpp" />
+    <ClCompile Include="MoveSystem.cpp" />
+    <ClCompile Include="System.cpp" />
     <ClCompile Include="SystemManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ComponentArray.h" />
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="ECSCoordinator.h" />
     <ClInclude Include="engine\line\AABBLineObject.h" />
@@ -189,8 +194,11 @@
     <ClInclude Include="application\camera\TitleCamera.h" />
     <ClInclude Include="engine\core\Entity.h" />
     <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="IComponentArray.h" />
     <ClInclude Include="LineObjectFactory.h" />
     <ClInclude Include="LineObjectManager.h" />
+    <ClInclude Include="MoveSystem.h" />
+    <ClInclude Include="System.h" />
     <ClInclude Include="SystemManager.h" />
   </ItemGroup>
   <ItemGroup>

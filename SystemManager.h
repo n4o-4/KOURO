@@ -6,18 +6,16 @@
 #include <typeindex>
 
 #include "EntityManager.h"
+#include "System.h"
 
-class System {
-public:
-    std::set<Entity> entities;
-    virtual ~System() = default;
-};
+template<typename T>
 
 class SystemManager
 {
 public:
-    template<typename T>
-    std::shared_ptr<T> RegisterSystem() {
+    
+    std::shared_ptr<T> RegisterSystem()
+    {
         const char* typeName = typeid(T).name();
         assert(systems_.find(typeName) == systems_.end());
         auto system = std::make_shared<T>();
@@ -25,19 +23,21 @@ public:
         return system;
     }
 
-    template<typename T>
-    void SetSignature(Signature signature) {
+    void SetSignature(Signature signature)
+    {
         const char* typeName = typeid(T).name();
         signatures_.insert({ typeName, signature });
     }
 
-    void EntityDestroyed(Entity entity) {
+    void EntityDestroyed(Entity entity)
+    {
         for (auto const& pair : systems_) {
             pair.second->entities.erase(entity);
         }
     }
 
-    void EntitySignatureChanged(Entity entity, Signature entitySignature) {
+    void EntitySignatureChanged(Entity entity, Signature entitySignature)
+    {
         for (auto const& pair : systems_) {
             const auto& type = pair.first;
             const auto& system = pair.second;
@@ -53,6 +53,7 @@ public:
     }
 
 private:
+
     std::unordered_map<const char*, Signature> signatures_;
     std::unordered_map<const char*, std::shared_ptr<System>> systems_;
 };
