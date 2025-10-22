@@ -1,13 +1,17 @@
 #pragma once
 
 #include <set>
-
 #include "Entity.h"
 
-class System {
+class ECSCoordinator;
+
+class System
+{
 public:
-    std::set<Entity> entities; // このシステムが管理するエンティティ群
+
+    std::set<Entity> entities; // システムが管理するエンティティ群
+
     virtual ~System() = default;
 
-    virtual void Update() = 0;
+    virtual void Update(ECSCoordinator& ecs) = 0;
 };

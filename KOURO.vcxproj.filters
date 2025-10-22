@@ -329,6 +329,8 @@
     <ClCompile Include="ComponentArray.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="MoveSystem.cpp" />
+    <ClCompile Include="TransformComponent.cpp" />
+    <ClCompile Include="InputSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -600,6 +602,8 @@
     <ClInclude Include="ComponentArray.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="MoveSystem.h" />
+    <ClInclude Include="TransformComponent.h" />
+    <ClInclude Include="InputSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
