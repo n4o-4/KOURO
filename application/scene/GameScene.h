@@ -87,6 +87,10 @@ private:
 
 	float countTimer_ = 0.0f;
 
+
+	float randomSpeed = 2.0f;
+	float elapsedTime_ = 0.0f;
+
 private:
 
 public: // メンバ関数

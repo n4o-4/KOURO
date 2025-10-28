@@ -56,22 +56,9 @@ void GameScene::Initialize() {
 	spotLight->distance_ = 40.0f;
 	spotLight->cosAngle_ = 0.5f;
 
-	//========================================
-	// アクティブカメラをフォローカメラに設定
-	//cameraManager_->useDebugCamera_ = true;
+	// postエフェクトの適用
+	sceneManager_->GetPostEffect()->ApplyEffect("dissolve",PostEffect::EffectType::Dissolve);
 
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Grayscale); //完
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Vignette); //完
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::BoxFilter); //完
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::GaussianFilter); //完
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LuminanceBasedOutline); //完
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::DepthBasedOutline); //完
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::RadialBlur); //完
-	//sceneManager_->GetPostEffect()->ApplyEffect("dissolve",PostEffect::EffectType::Dissolve); //完
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::Random); //完
-	//sceneManager_->GetPostEffect()->ApplyEffect(PostEffect::EffectType::LinearFog); //完
-	//sceneManager_->GetPostEffect()->ApplyEffect("Blur",PostEffect::EffectType::MotionBlur);
-	sceneManager_->GetPostEffect()->ApplyEffect("colorSpace",PostEffect::EffectType::ColorSpace);
 
 	///========================================
 	///	    アニメーション
@@ -314,7 +301,8 @@ void GameScene::Finalize()
 }
 ///=============================================================================
 ///						更新
-void GameScene::Update() {
+void GameScene::Update()
+{
 	animationManager->Update();
 	lineDrawer_->SkeletonUpdate(animationManager->GetActiveAnimation("walk.gltf").skeleton);
 	//human_->Update();
@@ -345,6 +333,10 @@ void GameScene::Update() {
 	transform_->UpdateMatrix();
 
 	player_->Update();
+
+	auto* dissolve = static_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
+	dissolve->edgeColor = { 1.0f,0.0f,0.0f };
+	dissolve->threshold += 0.005f;
 
 	for (auto& object : levelData_->objects)
 	{

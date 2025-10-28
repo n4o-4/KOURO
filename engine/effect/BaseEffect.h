@@ -16,6 +16,8 @@ class BaseEffect
 {
 public:
 
+	virtual ~BaseEffect() = default;
+
 	// 初期化
 	virtual void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
