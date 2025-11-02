@@ -20,6 +20,8 @@ public: // 公開メンバ関数
 
 	void SetParentTransform(WorldTransform* parent) { worldTransform_->SetParent(parent); }
 
+	bool GetIsAlive();
+
 private: // 非公開メンバ関数
 
 	// \brief  Move 移動処理

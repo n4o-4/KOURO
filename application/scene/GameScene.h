@@ -76,6 +76,8 @@ private:
 
 	std::unique_ptr<Sprite> countSprite_[3];
 
+	
+
 	float countScale_[3] = { 0.0f, 0.0f, 0.0f };
 	float countRotation_[3] = { 0.0f, 0.0f, 0.0f };
 	float countAlpha_[3] = { 0.0f, 0.0f, 0.0f }; // フェードイン用
@@ -90,6 +92,8 @@ private:
 
 	float randomSpeed = 2.0f;
 	float elapsedTime_ = 0.0f;
+
+	float k = 0.0f;
 
 private:
 

@@ -4,6 +4,7 @@
 
 // 仮
 #include "ApproachState.h"
+#include "Easing.h"
 
 ///=============================================================================
 ///						マトリックス表示
@@ -214,13 +215,13 @@ void GameScene::Initialize() {
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
 
-	cameraManager_->SetActiveCamera(railCamera_.get());
+	//cameraManager_->SetActiveCamera(railCamera_.get());
     //cameraManager_->useDebugCamera_ = true;
 	cameraManager_->Update();
 
 	player_->SetCamera(cameraManager_->GetActiveCamera());
 
-	player_->SetParentTransform(railCamera_->GetWorldTransform());
+	//player_->SetParentTransform(railCamera_->GetWorldTransform());
 
 
 	LevelLoader loader;
@@ -251,7 +252,7 @@ void GameScene::Initialize() {
 
 		enemy->ChangeState(std::move(state));
 
-		enemy->SetPosition(Vector3(0.0f, 1.0f, 5 + i * 40.0f));
+		enemy->SetPosition(Vector3(-20.0f + 5 * i, 0.0f, 40.0f));
 
 		colliderManager_->AddCollider(enemy);
 
@@ -275,6 +276,8 @@ void GameScene::Initialize() {
 		countSprite_[i]->Update();
 	}
 
+	
+
 	colliderManager_->AddCollider(player_);
 
 	player_->SetColliderManager(colliderManager_.get());
@@ -290,7 +293,10 @@ void GameScene::Initialize() {
 	//lineDrawer_->SetScanActive(true);
 
 	lineDrawer_->SetIsRenderScanned(false);
+	auto* dissolve = static_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
+	dissolve->threshold = -0.5;
 }
+
 ///=============================================================================
 ///						終了処理
 void GameScene::Finalize()
@@ -334,9 +340,21 @@ void GameScene::Update()
 
 	player_->Update();
 
-	auto* dissolve = static_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
-	dissolve->edgeColor = { 1.0f,0.0f,0.0f };
-	dissolve->threshold += 0.005f;
+	if (!player_->GetIsAlive())
+	{
+		auto* dissolve = static_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
+		dissolve->edgeColor = { 1.0f,0.0f,0.0f };
+		dissolve->thresholdWidth = 0.25f;
+
+		k += 0.01f;
+
+		dissolve->threshold = Easing::EaseInQuad(k);
+
+		if (dissolve->threshold >= 1.0f)
+		{
+			sceneManager_->ChangeScene("OVER");
+		}
+	}
 
 	for (auto& object : levelData_->objects)
 	{
@@ -363,10 +381,7 @@ void GameScene::Update()
 		enemies_.push_back(std::move(enemy));
 	}
 
-	for (auto& enemy : enemies_)
-	{
-		enemy->Update();
-	}
+	
 
 	size_t enemyCount = enemies_.size();
 
@@ -376,41 +391,52 @@ void GameScene::Update()
 
 		if (fade_->IsFinished())
 		{
-			Input::GetInstance()->SetIsReception(true);
-			phase_ = Phase::kMain;
+
+			countTimer_ += deltaTime;
+
+			if (countTimer_ < 1.0f)
+			{
+				countSprite_[2]->SetSize({ 360.0f * (1.0f + countTimer_),360.0f * (1.0f + countTimer_) });
+				countSprite_[2]->SetColor({ 1.0f,1.0f,1.0f,1.0f - countTimer_ });
+				countSprite_[2]->SetRotation(countSprite_[2]->GetRotation() + deltaRotation);
+				countSprite_[2]->Update();
+			}
+			else if (countTimer_ < 2.0f)
+			{
+				countSprite_[1]->SetSize({ 360.0f * (1.0f + countTimer_ - 1.0f),360.0f * (1.0f + countTimer_ - 1.0f) });
+				countSprite_[1]->SetColor({ 1.0f,1.0f,1.0f,1.0f - countTimer_ + 1.0f });
+				countSprite_[1]->SetRotation(countSprite_[1]->GetRotation() + deltaRotation);
+				countSprite_[1]->Update();
+			}
+			else if (countTimer_ < 3.0f)
+			{
+				countSprite_[0]->SetSize({ 360.0f * (1.0f + countTimer_ - 2.0f),360.0f * (1.0f + countTimer_ - 2.0f) });
+				countSprite_[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f - countTimer_ + 2.0f });
+				countSprite_[0]->SetRotation(countSprite_[0]->GetRotation() + deltaRotation);
+				countSprite_[0]->Update();
+			}
+
+			else if (countTimer_ >= 3.0f)
+			{
+				Input::GetInstance()->SetIsReception(true);
+
+
+				phase_ = Phase::kMain;
+			}
 		}
 
 		break;
 	case Phase::kMain:
 
-		countTimer_ += deltaTime;
+		std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {
+			return !enemy->GetIsAlive();
+			});
 
-		if(countTimer_ < 1.0f)
+		for (auto& enemy : enemies_)
 		{
-			countSprite_[2]->SetSize({ 360.0f * (1.0f + countTimer_),360.0f * (1.0f + countTimer_) });
-			countSprite_[2]->SetColor({ 1.0f,1.0f,1.0f,1.0f - countTimer_ });
-			countSprite_[2]->SetRotation(countSprite_[2]->GetRotation() + deltaRotation);
-			countSprite_[2]->Update();
+			enemy->Update();
 		}
-		else if(countTimer_ < 2.0f)
-		{
-			countSprite_[1]->SetSize({ 360.0f * (1.0f + countTimer_ - 1.0f),360.0f * (1.0f + countTimer_ - 1.0f) });
-			countSprite_[1]->SetColor({ 1.0f,1.0f,1.0f,1.0f - countTimer_ + 1.0f });
-			countSprite_[1]->SetRotation(countSprite_[1]->GetRotation() + deltaRotation);
-			countSprite_[1]->Update();
-		}
-		else if(countTimer_ < 3.0f)
-		{
-			countSprite_[0]->SetSize({ 360.0f * (1.0f + countTimer_ - 2.0f),360.0f * (1.0f + countTimer_ - 2.0f) });
-			countSprite_[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f - countTimer_ + 2.0f });
-			countSprite_[0]->SetRotation(countSprite_[0]->GetRotation() + deltaRotation);
-			countSprite_[0]->Update();
-		}
-
-		if(countTimer_ > 6.0f)
-		{
-			SceneManager::GetInstance()->ChangeScene("TITLE");
-		}
+		
 
 		if (enemyCount == 0)
 		{
@@ -442,10 +468,7 @@ void GameScene::Update()
 		break;
 	}
 
-	std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {
-		return !enemy->GetIsAlive();
-		});
-
+	
 	colliderManager_->Update();
 
 #ifdef _DEBUG
@@ -511,12 +534,12 @@ void GameScene::Draw()
 
 	//ground_->Draw(*transform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
 
-	for (auto &object : levelData_->objects)
+	/*for (auto &object : levelData_->objects)
 	{
 		object.object3d->Draw(*object.worldTransform.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
-	}
+	}*/
 
-	player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+	//player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
 
 	for (auto& enemy : enemies_)
 	{
@@ -538,7 +561,9 @@ void GameScene::Draw()
 	{
 		countSprite_[0]->Draw();
 	}
+
 	
+
 	// フェード描画
 	DrawFade();
 

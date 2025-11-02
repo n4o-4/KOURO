@@ -583,6 +583,7 @@
     </ClInclude>
     <ClInclude Include="LineObjectManager.h" />
     <ClInclude Include="LineObjectFactory.h" />
+    <ClInclude Include="Easing.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

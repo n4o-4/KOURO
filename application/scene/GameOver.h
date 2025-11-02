@@ -32,5 +32,10 @@ public:
 
 
 private:
+
+	std::unique_ptr<Sprite> gameOverSprite_ = nullptr;
+
+	float timer_ = 0.0f;
+
 };
 

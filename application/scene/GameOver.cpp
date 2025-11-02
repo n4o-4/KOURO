@@ -3,6 +3,18 @@
 void GameOver::Initialize()
 {
 	BaseScene::Initialize();
+
+	TextureManager::GetInstance()->LoadTexture("Resources/GameOver.png");
+
+	gameOverSprite_ = std::make_unique<Sprite>();
+	gameOverSprite_->Initialize(SpriteCommon::GetInstance(), "Resources/GameOver.png");
+	gameOverSprite_->SetSize({ 1280.0f,720.0f });
+	gameOverSprite_->SetPosition({ 640.0f,360.0f });
+	gameOverSprite_->SetAnchorPoint({ 0.5f,0.5f });
+	gameOverSprite_->SetTexSize({ 1536.0f,1024.0f });
+	gameOverSprite_->Update();
+
+
 }
 
 void GameOver::Finalize() {
@@ -29,12 +41,20 @@ void GameOver::Update()
 			phase_ = Phase::kFadeOut;
 		}
 
+		timer_ += kDeltaTime;
+
+		if(timer_ > 3.0f)
+		{
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+			phase_ = Phase::kFadeOut;
+		}
+
 		break;
 	case Phase::kFadeOut:
 
 		if (fade_->IsFinished())
 		{
-			SceneManager::GetInstance()->ChangeScene("TITLE");
+			SceneManager::GetInstance()->ChangeScene("GAME");
 
 			return;
 		}
@@ -55,6 +75,8 @@ void GameOver::Draw()
 	DrawBackgroundSprite();
 
 	DrawForegroundSprite();
+
+	gameOverSprite_->Draw();
 
 	fade_->Draw();
 

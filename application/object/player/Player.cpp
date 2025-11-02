@@ -23,7 +23,7 @@ void Player::Initialize(Model* model)
 
 	SetAABB(AABB({}, { -1.0f,-1.0f,-1.0f }, {1.0f,1.0f,1.0f}));
 
-	hp_ = 10;
+	hp_ = 3;
 }
 
 void Player::Update()
@@ -119,6 +119,16 @@ void Player::Draw(DirectionalLight directionalLight, PointLight pointLight, Spot
 	//BaseCharacter::Draw(directionalLight,pointLight,spotLight);
 }
 
+bool Player::GetIsAlive()
+{
+	if (hp_ > 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void Player::Move()
 {
 	velocity_ = { 0.0f,0.0f,0.0f };
@@ -162,6 +172,10 @@ void Player::Fire()
 
 void Player::OnCollisionEnter(BaseCollider* other)
 {
+	if (hp_ > 0)
+	{
+		--hp_;
+	}
 }
 
 void Player::OnCollisionStay(BaseCollider* other)

@@ -95,6 +95,7 @@
     <ClCompile Include="application\camera\TitleCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Easing.h" />
     <ClInclude Include="engine\line\AABBLineObject.h" />
     <ClInclude Include="application\collider\AABBCollider.h" />
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
