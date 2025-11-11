@@ -321,6 +321,10 @@
     </ClCompile>
     <ClCompile Include="LineObjectManager.cpp" />
     <ClCompile Include="LineObjectFactory.cpp" />
+    <ClCompile Include="ObjectLine.cpp" />
+    <ClCompile Include="LineModel.cpp" />
+    <ClCompile Include="LineModelManager.cpp" />
+    <ClCompile Include="Rail.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -584,6 +588,10 @@
     <ClInclude Include="LineObjectManager.h" />
     <ClInclude Include="LineObjectFactory.h" />
     <ClInclude Include="Easing.h" />
+    <ClInclude Include="ObjectLine.h" />
+    <ClInclude Include="LineModel.h" />
+    <ClInclude Include="LineModelManager.h" />
+    <ClInclude Include="Rail.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

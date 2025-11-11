@@ -7,10 +7,12 @@
 
 #include <random>
 #include "LineDrawerBase.h"
+#include "LineModelManager.h"
 #include "Player.h"
 #include "Enemy.h"
 
 #include "LevelLoader.h"
+
 
 class GameScene : public BaseScene
 {
@@ -40,6 +42,8 @@ private:
     int32_t waitTimer_ = 0;
 
 	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;	
+
+	std::unique_ptr<LineModelManager> lineModelManager_ = nullptr;
 
 	Dissolve* dissolve_ = nullptr;
 

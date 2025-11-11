@@ -36,13 +36,6 @@ private:
 		Vector3 normal;   // 三角形の法線
 	};
 
-	struct ScanEffectCB
-	{
-		float progress;   // 0.0f～1.0f スキャンの進行度
-		float thickness;  // スキャンの厚み
-		bool isRenderScanned; // スキャン部分を描画するかどうか
-	};
-
 private:
 
 	struct Sphere {
@@ -94,50 +87,16 @@ public: // メンバ関数
 	// 初期化
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
-	// 更新
-	void Update();
-	
-	// スケルトンの更新
-	void SkeletonUpdate(Skeleton skeleton);
-
 	// 描画
-	void Draw(ViewProjection viewProjection);
+	void PreDraw(ViewProjection viewProjection);
 
-	void SetIsRenderScanned(bool isRender) { scanEffectData_->isRenderScanned = isRender; }
-
-	void SetScanActive(bool isActive);
+	DirectXCommon* GetdxCommon() { return dxCommon_; }
 
 private: // メンバ関数
 
 	void CreateRootSignature();
 
 	void CreatePipellineState();
-
-	std::unique_ptr<LineObject> CreateBaseLineData(Type type);
-
-public:
-
-	void CreateLineObject(Type type, WorldTransform* transform);
-
-	void CeateAABBLine(AABB aabb, WorldTransform* transform);
-
-	void CreateCatmullRomLine(std::vector<Vector3> points, WorldTransform* transform);
-
-	void CreateObject3DLine(std::string modelPath,  WorldTransform* transform);
-
-	void CreateSkeletonObject(Skeleton skeleton, WorldTransform* transform);
-
-private:
-
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateVertexResource();
-
-	void CreateVertexBufferView(LineObject* object);
-
-	void WriteLineData(LineObject* object);
-
-	void WriteSkeletonLineData(LineObject* object, Skeleton skeleton);
-
-	void CreateLineResource(LineObject* object);
 
 private: // メンバ変数
 
@@ -146,14 +105,6 @@ private: // メンバ変数
 	SrvManager* srvManager_ = nullptr;
 
 	std::unique_ptr<Pipeline> pipeline_ = nullptr;
-
-	std::list<std::unique_ptr<LineObject>> lineObjects_;
-
-	std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
-
-	ScanEffectCB* scanEffectData_ = nullptr;
-
-	Microsoft::WRL::ComPtr<ID3D12Resource> scanEffectResource_ = nullptr;
 
 	float scanTime = 6.0f;
 

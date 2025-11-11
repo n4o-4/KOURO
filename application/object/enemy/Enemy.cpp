@@ -3,7 +3,7 @@
 
 #include "algorithm"
 
-void Enemy::Initialize(Model* model)
+void Enemy::Initialize(LineModel* model)
 {
 	///=========================================
 	/// 親クラス
@@ -60,18 +60,18 @@ void Enemy::Update()
 	AABBCollider::Update();
 }
 
-void Enemy::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
+void Enemy::Draw()
 {
 	for (auto& bullet : bullets_)
 	{
-		bullet->Draw(directionalLight,pointLight,spotLight);
+		bullet->Draw();
 	}
 
 	///=========================================
 	/// 親クラス
 
 	// 描画
-	BaseCharacter::Draw(directionalLight, pointLight, spotLight);
+	BaseCharacter::Draw();
 }
 
 void Enemy::SetPosition(const Vector3& position)
@@ -106,9 +106,8 @@ void Enemy::Fire()
 	std::shared_ptr<EnemyBullet> bullet = std::make_shared<EnemyBullet>();
 
 	// 初期化
-	bullet->Initialize(ModelManager::GetInstance()->FindModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
+	bullet->Initialize(lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
 
-	bullet->SetCamera(camera_);
 
 	Matrix4x4 targetWMatrix= target_->GetWorldTransform()->matWorld_;
 

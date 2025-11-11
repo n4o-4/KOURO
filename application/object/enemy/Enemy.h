@@ -2,6 +2,8 @@
 #include "BaseCharacter.h"
 #include "EnemyBullet.h"
 
+#include "LineModelManager.h"
+
 #include "EnemyState.h"
 #include "ApproachState.h"
 
@@ -9,17 +11,19 @@ class Enemy : public BaseCharacter, public AABBCollider
 {
 public: // 公開メンバ関数
 	// 初期化処理
-	void Initialize(Model* model) override;
+	void Initialize(LineModel* model) override;
 	// 更新処理
 	void Update() override;
 	// 描画処理
-	void Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) override;
+	void Draw() override;
 
 	void SetPosition(const Vector3& position);
 
 	void SetTarget(BaseCharacter* target) { target_ = target; }
 
 	void SetColliderManager(ColliderManager* colliderManager) { colliderManager_ = colliderManager; }
+
+	void SetLineModelManager(LineModelManager* lineModelManager) { lineModelManager_ = lineModelManager; }
 
 	BaseCharacter* GetTarget() const { return target_; }
 
@@ -54,5 +58,7 @@ private: // 非公開メンバ変数
 	float fireTimer_ = 0.0f; //!< 弾の発射タイマー
 
 	std::unique_ptr<EnemyState> state_ = nullptr;
+
+	LineModelManager* lineModelManager_ = nullptr;
 };
 

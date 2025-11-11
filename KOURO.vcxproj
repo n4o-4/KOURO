@@ -63,6 +63,8 @@
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="engine\effect\LuminanceBasedOutline.cpp" />
     <ClCompile Include="engine\system\LevelLoader.cpp" />
+    <ClCompile Include="LineModel.cpp" />
+    <ClCompile Include="LineModelManager.cpp" />
     <ClCompile Include="LineObjectFactory.cpp" />
     <ClCompile Include="LineObjectManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -93,6 +95,8 @@
     <ClCompile Include="application\collider\OBBCollider.cpp" />
     <ClCompile Include="engine\line\OBBLineObject.cpp" />
     <ClCompile Include="application\camera\TitleCamera.cpp" />
+    <ClCompile Include="ObjectLine.cpp" />
+    <ClCompile Include="Rail.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Easing.h" />
@@ -182,8 +186,12 @@
     <ClInclude Include="application\collider\OBBCollider.h" />
     <ClInclude Include="engine\line\OBBLineObject.h" />
     <ClInclude Include="application\camera\TitleCamera.h" />
+    <ClInclude Include="LineModel.h" />
+    <ClInclude Include="LineModelManager.h" />
     <ClInclude Include="LineObjectFactory.h" />
     <ClInclude Include="LineObjectManager.h" />
+    <ClInclude Include="ObjectLine.h" />
+    <ClInclude Include="Rail.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

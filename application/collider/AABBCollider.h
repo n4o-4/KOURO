@@ -53,6 +53,6 @@ private: /// 非公開メンバ変数
 
 	AABB aabb_ = {};
 
-	Vector3 center_ = { 0.0f, 0.0f, 0.0f }; //!< AABBの中心座標
+	//Vector3 center_ = { 0.0f, 0.0f, 0.0f }; //!< AABBの中心座標
 };
 

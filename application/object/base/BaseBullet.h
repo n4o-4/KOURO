@@ -2,6 +2,7 @@
 
 #include "Kouro.h"
 #include "BaseEntity.h"
+#include "ObjectLine.h"
 
 class BaseBullet : public BaseEntity
 {
@@ -12,7 +13,7 @@ public: // 公開メンバ関数
 	 * \param  model モデル
 	 */
 
-	virtual void Initialize(Model* model, Vector3 spawnPos);
+	virtual void Initialize(LineModel* model, Vector3 spawnPos);
 
 	// \brief  Update 更新
 
@@ -26,7 +27,7 @@ public: // 公開メンバ関数
 	 * \param  spotLight スポットライト
 	 */
 
-	virtual void Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
+	virtual void Draw();
 
 	/**
 	 * \brief  GetIsAlive
@@ -45,12 +46,12 @@ public: // 公開メンバ関数
 protected: // 派生用メンバ変数
 
 	// 3Dモデル
-	std::unique_ptr<Object3d> object3d_;
+	std::unique_ptr<ObjectLine> objectLine_;
 
 	// 速度
 	Vector3 velocity_ = { 0.0f,0.0f,0.0f };
 
-	BaseCamera* camera_ = nullptr;
+	CameraManager* cameraManager_ = nullptr;
 
 	// 寿命定数
 	const float kLifeTime_ = 5.0f; //!< 弾の寿命

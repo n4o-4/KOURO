@@ -269,6 +269,8 @@ void DepthBasedOutline::CreateMaterial()
 
 void DepthBasedOutline::DrawImGui()
 {
+#ifdef _DEBUG
+
 	if (ImGui::TreeNode("depthBasedOutline")) {
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
@@ -277,4 +279,6 @@ void DepthBasedOutline::DrawImGui()
 
 		ImGui::TreePop();
 	}
+
+#endif
 }

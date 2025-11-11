@@ -185,6 +185,8 @@ void Vignette::CreatePipeLineState(Pipeline* pipeline)
 
 void Vignette::DrawImGui()
 {
+#ifdef _DEBUG
+
 	if (ImGui::TreeNode("vignette")) {
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
@@ -192,4 +194,6 @@ void Vignette::DrawImGui()
 
 		ImGui::TreePop();
 	}
+
+#endif
 }

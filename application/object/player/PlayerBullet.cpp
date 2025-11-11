@@ -1,7 +1,7 @@
 ﻿#include "PlayerBullet.h"
 #include "Enemy.h"
 
-void PlayerBullet::Initialize(Model* model,Vector3 spawnPos)
+void PlayerBullet::Initialize(LineModel* model,Vector3 spawnPos)
 {
 	// 親クラスの初期化
 
@@ -29,6 +29,8 @@ void PlayerBullet::Initialize(Model* model,Vector3 spawnPos)
 	emitter_->SetFinishColorRange({ {0.98f,0.0f,0.0f,1.0f}, {1.0f,0.72f,0.19f,1.0f} });
 	emitter_->SetLifeTimeRange({ 0.5f,0.8f });
 	emitter_->SetFrequency(1.0f);
+
+	objectLine_->SetColor({ 0.971f, 1.0f, 0.089f,1.0f });
 }
 
 void PlayerBullet::Update()
@@ -42,11 +44,11 @@ void PlayerBullet::Update()
 	SphereCollider::Update();
 }
 
-void PlayerBullet::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
+void PlayerBullet::Draw()
 {
 	// 親クラスの描画
 
-	BaseBullet::Draw(directionalLight, pointLight, spotLight);
+	BaseBullet::Draw();
 }
 
 void PlayerBullet::OnCollisionEnter(BaseCollider* other)

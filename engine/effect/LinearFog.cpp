@@ -265,10 +265,14 @@ void LinearFog::CreateMaterial()
 
 void LinearFog::DrawImGui()
 {
+#ifdef _DEBUG
+
 	if (ImGui::TreeNode("linerFog")) {
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
 
 		ImGui::TreePop();
 	}
+
+#endif
 }

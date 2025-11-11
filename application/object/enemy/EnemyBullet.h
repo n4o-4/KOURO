@@ -9,7 +9,7 @@ public: // 公開メンバ関数
 	 * \param  model モデル
 	 */
 
-	void Initialize(Model* model, Vector3 spawnPos) override;
+	void Initialize(LineModel* model, Vector3 spawnPos) override;
 
 	// \brief  Update 更新
 
@@ -22,17 +22,10 @@ public: // 公開メンバ関数
 	 * \param  spotLight スポットライト
 	 */
 
-	void Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) override;
+	void Draw() override;
 
 	///================================================================================
 	///                                        setter
-
-   /**
-	* \brief  SetCamera カメラを設定
-	* \param  camera カメラ
-   */
-
-	void SetCamera(BaseCamera* camera) { camera_ = camera; }
 
 	/**
 	 * \brief  SetVelocity 速度を設定

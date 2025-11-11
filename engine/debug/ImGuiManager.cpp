@@ -5,16 +5,20 @@
 
 ImGuiManager::~ImGuiManager()
 {
+#ifdef _DEBUG
 
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 
+#endif
 }
 
 
 
 void ImGuiManager::Initialize(WinApp* winApp, DirectXCommon* dxCommon)
 {
+#ifdef _DEBUG
+
 	// ImGuiのコンテキストを生成
 	ImGui::CreateContext();
 
@@ -43,24 +47,36 @@ void ImGuiManager::Initialize(WinApp* winApp, DirectXCommon* dxCommon)
 
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // ドッキングを
+
+#endif
 }
 
 void ImGuiManager::Begin()
 {
+#ifdef _DEBUG
+
 	// ImGuiフレーム開始
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+#endif
 }
 
 void ImGuiManager::End()
 {
+#ifdef _DEBUG
+
 	// 描画前準備
 	ImGui::Render();
+
+#endif
 }
 
 void ImGuiManager::Draw(DirectXCommon* dxCommon)
 {
+#ifdef _DEBUG
+
 	DirectXCommon::GetInstance()->GetRenderTextureResources();
 
 	End();
@@ -72,4 +88,6 @@ void ImGuiManager::Draw(DirectXCommon* dxCommon)
 	commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps->GetAddressOf());
 	// 描画コマンドを実行
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList.Get());
+
+#endif
 }

@@ -206,6 +206,8 @@ void LuminanceBasedOutline::CreateMaterial()
 
 void LuminanceBasedOutline::DrawImGui()
 {
+#ifdef _DEBUG
+
 	if (ImGui::TreeNode("luminanceBasedOutline")) {
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
@@ -214,4 +216,6 @@ void LuminanceBasedOutline::DrawImGui()
 
 		ImGui::TreePop();
 	}
+
+#endif
 }

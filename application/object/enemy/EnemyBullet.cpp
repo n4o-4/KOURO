@@ -2,7 +2,7 @@
 
 #include "PlayerBullet.h"
 
-void EnemyBullet::Initialize(Model* model, Vector3 spawnPos)
+void EnemyBullet::Initialize(LineModel* model, Vector3 spawnPos)
 {
 	// 親クラスの初期化
 
@@ -43,11 +43,11 @@ void EnemyBullet::Update()
 	SphereCollider::Update();
 }
 
-void EnemyBullet::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
+void EnemyBullet::Draw()
 {
 	// 親クラスの描画
 
-	BaseBullet::Draw(directionalLight, pointLight, spotLight);
+	BaseBullet::Draw();
 }
 
 void EnemyBullet::OnCollisionEnter(BaseCollider* other)

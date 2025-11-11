@@ -1,21 +1,13 @@
 ﻿#include "BaseBullet.h"
 
-void BaseBullet::Initialize(Model* model, Vector3 spawnPos)
+void BaseBullet::Initialize(LineModel* model, Vector3 spawnPos)
 {
 	///========================================
 	/// オブジェクト3D
 
 	// 生成と初期化
-	object3d_ = std::make_unique<Object3d>();
-	object3d_->Initialize(Object3dCommon::GetInstance());
-
-	// モデルを設定
-	object3d_->SetModel(model);
-
-	// ローカル行列の初期化
-	object3d_->SetLocalMatrix(MakeIdentity4x4());
-
-
+	objectLine_ = std::make_unique<ObjectLine>();
+	objectLine_->Initialize(model);
 
 	///========================================
 	/// ワールドトランスフォーム
@@ -64,11 +56,11 @@ void BaseBullet::Update()
 	}
 }
 
-void BaseBullet::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
+void BaseBullet::Draw()
 {
 	///========================================
 	/// オブジェクト3D
 
 	// 描画
-	object3d_->Draw(*worldTransform_.get(), camera_->GetViewProjection(), directionalLight, pointLight, spotLight);
+	objectLine_->Draw(worldTransform_.get());
 }

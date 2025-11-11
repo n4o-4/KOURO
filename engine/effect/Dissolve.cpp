@@ -247,6 +247,8 @@ void Dissolve::CreateMaterial()
 
 void Dissolve::DrawImGui()
 {
+#ifdef _DEBUG
+
 	if (ImGui::TreeNode("dissolve")) {
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
@@ -258,4 +260,6 @@ void Dissolve::DrawImGui()
 
 		ImGui::TreePop();
 	}
+
+#endif
 }

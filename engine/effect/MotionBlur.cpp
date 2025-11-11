@@ -237,6 +237,8 @@ void MotionBlur::CreateMaterial()
 
 void MotionBlur::DrawImGui()
 {
+#ifdef _DEBUG
+
 	if (ImGui::TreeNode("motionBlur")) {
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
@@ -248,4 +250,6 @@ void MotionBlur::DrawImGui()
 
 		ImGui::TreePop();
 	}
+
+#endif
 }

@@ -1,26 +1,13 @@
 ﻿#include "BaseCharacter.h"
 
-void BaseCharacter::Initialize(Model* model)
+void BaseCharacter::Initialize(LineModel* model)
 {
 	///========================================
 	/// オブジェクト3D
 	
 	// 生成と初期化
-	object3d_ = std::make_unique<Object3d>();
-	object3d_->Initialize(Object3dCommon::GetInstance());
-
-	// モデルを設定
-	object3d_->SetModel(model);
-
-	// ローカル行列の初期化
-	object3d_->SetLocalMatrix(MakeIdentity4x4());
-
-	// ライティングするかしないか
-	//object3d_->SetEnableLighting(true); 
-
-	object3d_->SetEnableEnvironmentMap(true);
-
-	object3d_->SetEnableEnvironmentMap(true);
+	objectLine_ = std::make_unique<ObjectLine>();
+	objectLine_->Initialize(model);
 
 	///========================================
 	/// ワールドトランスフォーム
@@ -62,13 +49,13 @@ void BaseCharacter::Update()
 	worldTransform_->UpdateMatrix();
 }
 
-void BaseCharacter::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
+void BaseCharacter::Draw()
 {
 	///========================================
 	/// オブジェクト3D
 
 	// 描画
-	object3d_->Draw(*worldTransform_.get(), camera_->GetViewProjection(), directionalLight, pointLight, spotLight);
+	objectLine_->Draw(worldTransform_.get());
 }
 
 void BaseCharacter::DrawImGui()

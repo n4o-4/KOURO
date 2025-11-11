@@ -23,24 +23,14 @@ public: /// メンバ関数
 
 	FollowCamera* GetFollowCamera() { return followCamera_.get(); }
 
-	void SetActiveCamera(BaseCamera* camera) {
-		activeCamera_ = camera;
-		ChangeActiveCamera();
-	}
-
-private:
-
-	void ChangeActiveCamera();
+	void SetActiveCamera(BaseCamera* camera) { activeCamera_ = camera; }
 
 public:
 
-	bool useDebugCamera_ = false;
-
-	bool useFollowCamera_ = false;	
-
-	bool useDefaultCamera_ = false;
+	void DrawDebugUI();
 
 private:
+
 	std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
 
 	std::unique_ptr<FollowCamera> followCamera_ = nullptr;
