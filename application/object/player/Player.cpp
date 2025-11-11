@@ -174,7 +174,7 @@ void Player::OnCollisionEnter(BaseCollider* other)
 {
 	if (hp_ > 0)
 	{
-		--hp_;
+		//--hp_;
 	}
 }
 

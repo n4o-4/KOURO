@@ -879,18 +879,45 @@ namespace Vect4
 // Catmull-Rom補間を使用して、4つの制御点(p0, p1, p2, p3)を通る曲線上の点を計算する関数
 static Vector3 CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t)
 {
-	const float s = 0.5f; // Catmull-Romの係数	
+	//const float s = 0.5f; // Catmull-Romの係数	
 
-	float t2 = t * t; // tの2乗
+	//float t2 = t * t; // tの2乗
 
-	float t3 = t2 * t; // tの3乗
+	//float t3 = t2 * t; // tの3乗
 
-	Vector3 e3 = -p0 + 3.0f * p1 - 3.0f * p2 + p3;
-	Vector3 e2 = 2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3;
-	Vector3 e1 = -p0 + p2;
-	Vector3 e0 = 2.0f * p1;
+	//Vector3 e3 = -p0 + 3.0f * p1 - 3.0f * p2 + p3;
+	//Vector3 e2 = 2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3;
+	//Vector3 e1 = -p0 + p2;
+	//Vector3 e0 = 2.0f * p1;
 
-	return s * (e3 * t3 + e2 * t2 + e1 * t + e0);
+	//return s * (e3 * t3 + e2 * t2 + e1 * t + e0);
+
+	const float alpha = 0.5f;
+
+	// 各点のパラメータ t_i を計算
+	auto tj = [&](float tPrev, const Vector3& pi, const Vector3& pj) {
+		return std::pow(Length(pj - pi), alpha) + tPrev;
+		};
+
+	float t0 = 0.0f;
+	float t1 = tj(t0, p0, p1);
+	float t2 = tj(t1, p1, p2);
+	float t3 = tj(t2, p2, p3);
+
+	// t を [t1, t2] の範囲にスケール
+	float tt = std::lerp(t1, t2, std::clamp(t, 0.0f, 1.0f));
+
+	// 線形補間で逐次計算（de Casteljau風）
+	Vector3 A1 = ((t1 - tt) / (t1 - t0)) * p0 + ((tt - t0) / (t1 - t0)) * p1;
+	Vector3 A2 = ((t2 - tt) / (t2 - t1)) * p1 + ((tt - t1) / (t2 - t1)) * p2;
+	Vector3 A3 = ((t3 - tt) / (t3 - t2)) * p2 + ((tt - t2) / (t3 - t2)) * p3;
+
+	Vector3 B1 = ((t2 - tt) / (t2 - t0)) * A1 + ((tt - t0) / (t2 - t0)) * A2;
+	Vector3 B2 = ((t3 - tt) / (t3 - t1)) * A2 + ((tt - t1) / (t3 - t1)) * A3;
+
+	Vector3 C = ((t2 - tt) / (t2 - t1)) * B1 + ((tt - t1) / (t2 - t1)) * B2;
+
+	return C;
 }
 
 // 曲線全体の中での位置計算
@@ -943,42 +970,68 @@ static Vector3 CatmullRomPosition(const std::vector<Vector3>& points, float t)
 	//// 4点を指定してCatmull-Rom補間
 	//return CatmullRomInterpolation(p0, p1, p2, p3, t_2);
 
+	// /////////////////////////////////////////////////////////////改良版1
+
+	//assert(points.size() >= 4 && "制御点は4点以上必要です");
+
+	//// 区間数は制御点の数 - 1
+	//size_t division = points.size() - 1;
+
+	//// 1区間の長さ
+	//float areaWidth = 1.0f / division;
+
+	//// 区間内の補間係数を計算
+	//float t_2 = std::fmod(t, areaWidth) * division;
+	//t_2 = std::clamp(t_2, 0.0f, 1.0f);
+
+	//// 区間インデックス
+	//size_t index = static_cast<size_t>(t / areaWidth);
+
+	//// index が points.size() を超えるのを防ぐ
+	//if (index >= points.size()) {
+	//	index = points.size() - 1;
+	//}
+
+	//// 制御点インデックス計算（範囲外にならないよう clamp）
+	//auto safeIndex = [&](int i) -> size_t {
+	//	return static_cast<size_t>(std::clamp(i, 0, static_cast<int>(points.size() - 1)));
+	//	};
+
+	//size_t index0 = safeIndex(static_cast<int>(index) - 1);
+	//size_t index1 = safeIndex(static_cast<int>(index));
+	//size_t index2 = safeIndex(static_cast<int>(index) + 1);
+	//size_t index3 = safeIndex(static_cast<int>(index) + 2);
+
+	//// 4点の座標
+	//const Vector3& p0 = points[index0];
+	//const Vector3& p1 = points[index1];
+	//const Vector3& p2 = points[index2];
+	//const Vector3& p3 = points[index3];
+
+	//// 補間実行
+	//return CatmullRomInterpolation(p0, p1, p2, p3, t_2);
+
+
 	assert(points.size() >= 4 && "制御点は4点以上必要です");
 
-	// 区間数は制御点の数 - 1
-	size_t division = points.size() - 1;
+	// 区間数（4点で1区間 → n-3）
+	size_t numSegments = points.size() - 3;
 
-	// 1区間の長さ
-	float areaWidth = 1.0f / division;
+	// t を [0, 1] にクランプ
+	t = std::clamp(t, 0.0f, 1.0f);
 
-	// 区間内の補間係数を計算
-	float t_2 = std::fmod(t, areaWidth) * division;
-	t_2 = std::clamp(t_2, 0.0f, 1.0f);
+	// 区間を計算
+	float segmentT = t * static_cast<float>(numSegments);
+	size_t i = static_cast<size_t>(segmentT);
+	if (i >= numSegments) i = numSegments - 1;
+	float localT = segmentT - static_cast<float>(i);
 
-	// 区間インデックス
-	size_t index = static_cast<size_t>(t / areaWidth);
+	// 対応する4点を取得
+	const Vector3& p0 = points[i + 0];
+	const Vector3& p1 = points[i + 1];
+	const Vector3& p2 = points[i + 2];
+	const Vector3& p3 = points[i + 3];
 
-	// index が points.size() を超えるのを防ぐ
-	if (index >= points.size()) {
-		index = points.size() - 1;
-	}
-
-	// 制御点インデックス計算（範囲外にならないよう clamp）
-	auto safeIndex = [&](int i) -> size_t {
-		return static_cast<size_t>(std::clamp(i, 0, static_cast<int>(points.size() - 1)));
-		};
-
-	size_t index0 = safeIndex(static_cast<int>(index) - 1);
-	size_t index1 = safeIndex(static_cast<int>(index));
-	size_t index2 = safeIndex(static_cast<int>(index) + 1);
-	size_t index3 = safeIndex(static_cast<int>(index) + 2);
-
-	// 4点の座標
-	const Vector3& p0 = points[index0];
-	const Vector3& p1 = points[index1];
-	const Vector3& p2 = points[index2];
-	const Vector3& p3 = points[index3];
-
-	// 補間実行
-	return CatmullRomInterpolation(p0, p1, p2, p3, t_2);
+	// セントリペタルCatmull-Rom補間
+	return CatmullRomInterpolation(p0, p1, p2, p3, localT);
 }

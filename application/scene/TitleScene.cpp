@@ -30,7 +30,10 @@ void TitleScene::Initialize()
 	titleCamera_->SetTarget(transform_.get());
 	titleCamera_->Initialize();
 
-	cameraManager_->SetActiveCamera(titleCamera_.get());
+	debugCamera_ = std::make_unique<DebugCamera>();
+	debugCamera_->Initialize();
+
+	cameraManager_->SetActiveCamera(titleCamera_.get()/*debugCamera_.get()*/);
 
 	startTime = std::chrono::steady_clock::now();
 

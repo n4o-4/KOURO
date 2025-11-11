@@ -54,6 +54,8 @@ void DebugCamera::Update()
        viewProjection_->transform.translate = targetTransform_->transform.translate + offSet;
    }
   
+   if (ImGui::DragFloat3("target", &targetTransform_->transform.translate.x, 0.01f));
+
 #endif
    if (Input::GetInstance()->PushMouseButton(Input::MouseButton::LEFT))  
    {  
@@ -63,6 +65,8 @@ void DebugCamera::Update()
 
       
    }  
+
+
 
    // カメラの角度から回転行列を計算  
    rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);

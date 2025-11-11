@@ -63,4 +63,6 @@ private:
 
 	// プレイヤーモデルの移動演出のフラグ
 	bool isMoveActive_ = false;
+
+	std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
 };
