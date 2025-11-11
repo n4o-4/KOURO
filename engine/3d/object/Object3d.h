@@ -72,19 +72,6 @@ private:
 
 	Matrix4x4 localMatrix;
 
-	//ModelData modelData;
-
-	// バッファリソース
-	/*Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
-
-	VertexData* vertexData = nullptr;
-
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
-
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
-
-	Material* materialData = nullptr;*/
-
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationResource;
 
 	TransformationMatrix* transformationMatrixData = nullptr;

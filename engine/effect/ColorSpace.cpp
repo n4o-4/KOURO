@@ -211,6 +211,8 @@ void ColorSpace::CreateMaterial()
 
 void ColorSpace::DrawImGui()
 {
+#ifdef _DEBUG
+
 	if (ImGui::TreeNode("colorSpace")) {
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
@@ -221,4 +223,6 @@ void ColorSpace::DrawImGui()
 	
 		ImGui::TreePop();
 	}
+
+#endif
 }

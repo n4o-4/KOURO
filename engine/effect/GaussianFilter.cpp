@@ -185,10 +185,14 @@ void GaussianFilter::CreatePipeLineState(Pipeline* pipeline)
 
 void GaussianFilter::DrawImGui()
 {
+#ifdef _DEBUG
+
 	if (ImGui::TreeNode("gaussianFIlter")) {
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
 
 		ImGui::TreePop();
 	}
+
+#endif
 }

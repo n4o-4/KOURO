@@ -1,6 +1,7 @@
 ﻿#pragma once
 // Engine
 #include "Kouro.h"
+#include "ObjectLine.h"
 #include "BaseEntity.h"
 
 class BaseCharacter : protected BaseEntity
@@ -8,16 +9,13 @@ class BaseCharacter : protected BaseEntity
 public: // 公開メンバ関数
 
 	// 初期化処理
-	virtual void Initialize(Model* model);
+	virtual void Initialize(LineModel* model);
 
 	// 更新処理
 	virtual void Update();
 
 	// 描画処理
-	virtual void Draw(DirectionalLight directionalLight,PointLight pointLight,SpotLight spotLight);
-
-	// カメラを設定
-	void SetCamera(BaseCamera* camera) { camera_ = camera; }
+	virtual void Draw();
 
 	WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
@@ -27,13 +25,11 @@ protected: // 派生用メンバ関数
 
 protected: // 派生用メンバ変数
 
-	// 3Dモデル
-	std::unique_ptr<Object3d> object3d_;
+	// ワイヤーモデル
+	std::unique_ptr<ObjectLine> objectLine_ = nullptr;
 
 	// 速度
 	Vector3 velocity_ = { 0.0f,0.0f,0.0f };
-
-	BaseCamera* camera_ = nullptr;
 
 	uint32_t hp_;
 

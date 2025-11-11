@@ -48,7 +48,6 @@ struct ModelData {
 	Node rootNode;
 };
 
-
 struct Joint
 {
 	QuaternionTransform transform; // transform情報

@@ -1,6 +1,6 @@
 ﻿#include "Player.h"
 
-void Player::Initialize(Model* model)
+void Player::Initialize(LineModel* model)
 {
 	///=========================================
 	/// 親クラス
@@ -12,8 +12,6 @@ void Player::Initialize(Model* model)
 
 	worldTransform_->quaternionTransform.scale = { 1.0f,1.0f,1.0f };
 	worldTransform_->transform.scale = { 0.5f,0.5f,0.5f };
-	worldTransform_->transform.translate.z = 25.0f; // 初期位置を設定
-	worldTransform_->transform.translate.y = -5.0f; // 初期位置を設定
 
 	AABBCollider::Initialize(worldTransform_.get(),this);
 
@@ -24,6 +22,12 @@ void Player::Initialize(Model* model)
 	SetAABB(AABB({}, { -1.0f,-1.0f,-1.0f }, {1.0f,1.0f,1.0f}));
 
 	hp_ = 3;
+
+	objectLine_->SetColor({ 0.071f, 0.429f, 1.0f,1.0f });
+
+	rail.Initialize(controlPoints_);
+
+	colliderTransform_->SetParent(rail.GetWorldTransform());
 }
 
 void Player::Update()
@@ -35,6 +39,10 @@ void Player::Update()
 	{
 		Fire();
 	}
+
+	rail.Update();
+
+	colliderTransform_->transform;
 
 	//worldTransform_->deltaRotate_ = { 0.01f,0.0f,0.0f };
 
@@ -87,6 +95,15 @@ void Player::Update()
 	///=========================================
 	/// 親クラス
 
+
+#ifdef _DEBUG
+
+	ImGui::Begin("Player Debug");
+	ImGui::Text("Translate X: %.2f Translate Y: %.2f Translate Z: %.2f", worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2]);
+	ImGui::End();
+
+#endif
+
 	// 更新
 	BaseCharacter::Update();
 
@@ -105,18 +122,18 @@ void Player::Update()
 #endif
 }
 
-void Player::Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
+void Player::Draw()
 {
 	for (auto& bullet : bullets_)
 	{
-		bullet->Draw(directionalLight, pointLight, spotLight);
+		bullet->Draw();
 	}
 
 	///=========================================
 	/// 親クラス
 	
 	// 描画
-	//BaseCharacter::Draw(directionalLight,pointLight,spotLight);
+	BaseCharacter::Draw();
 }
 
 bool Player::GetIsAlive()
@@ -157,9 +174,7 @@ void Player::Fire()
 	std::shared_ptr<PlayerBullet> bullet = std::make_shared<PlayerBullet>();
 
 	// 初期化
-	bullet->Initialize(ModelManager::GetInstance()->FindModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
-
-	bullet->SetCamera(camera_);
+	bullet->Initialize(lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
 
 	Vector3 velocity = TransformNormal({ 0.0f,0.0f,5.0f }, worldTransform_->matWorld_);
 

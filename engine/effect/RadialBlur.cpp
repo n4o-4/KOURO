@@ -209,6 +209,8 @@ void RadialBlur::CreateMaterial()
 
 void RadialBlur::DrawImGui()
 {
+#ifdef _DEBUG
+
 	if (ImGui::TreeNode("radialBlur")) {
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
@@ -219,4 +221,6 @@ void RadialBlur::DrawImGui()
 
 		ImGui::TreePop();
 	}
+
+#endif
 }

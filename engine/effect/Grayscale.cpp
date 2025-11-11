@@ -185,10 +185,14 @@ void Grayscale::CreatePipeLineState(Pipeline* pipeline)
 
 void Grayscale::DrawImGui()
 {
+#ifdef _DEBUG
+
 	if (ImGui::TreeNode("grayScale")) {
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
 
 		ImGui::TreePop();
 	}
+
+#endif
 }

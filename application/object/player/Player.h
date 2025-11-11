@@ -3,22 +3,28 @@
 
 #include "PlayerBullet.h"
 
+#include "LineModelManager.h"
+
+#include "Rail.h"
+
 class Player : public BaseCharacter, public AABBCollider
 {
 public: // 公開メンバ関数
 
 	// 初期化処理
-	void Initialize(Model* model) override;
+	void Initialize(LineModel* model) override;
 
 	// 更新処理
 	void Update() override;
 
 	// 描画処理
-	void Draw(DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) override;
+	void Draw() override;
 
 	void SetColliderManager(ColliderManager* colliderManager) { colliderManager_ = colliderManager; }
 
 	void SetParentTransform(WorldTransform* parent) { worldTransform_->SetParent(parent); }
+
+	void SetLineModelManager(LineModelManager* lineModelManager) { lineModelManager_ = lineModelManager; }
 
 	bool GetIsAlive();
 
@@ -54,20 +60,32 @@ private: // 非公開メンバ変数
 
 	std::vector<Vector3> controlPoints_ =
 	{
-		{0.0f,0.0f,0.0f},
-		{10.0f,0.0f,20.0f},
-		{0.0f,0.0f,40.0f},
-		{-10.0f,0.0f,60.0f},
-		{0.0f,0.0f,80.0f},
-		{10.0f,0.0f,100.0f},
-		{0.0f,0.0f,120.0f},
-		{-10.0f,0.0f,140.0f},
-		{0.0f,0.0f,160.0f},
-		{10.0f,0.0f,180.0f},
-		{0.0f,0.0f,200.0f}
+		 {0.0f, 0.0f, 0.0f},
+
+	{0.0f, 0.0f, 300.0f},
+	{10.0f, 0.0f, 390.0f},
+	{100.0f, 0.0f, 400.0f},
+
+	{400.0f, 0.0f, 400.0f},
+	{490.0f, 0.0f, 390.0f},
+	{500.0f, 0.0f, 300.0f},
+
+	{500.0f, 0.0f, 100.0f},
+	{490.0f, 0.0f, 10.0f},
+	{400.0f, 0.0f, 0.0f},
+
+	{100.0f, 0.0f, 0.0f},
+	{10.0f, 0.0f, 10.0f},
+	{0.0f, 0.0f, 100.0f},
+
+	{0.0f, 0.0f, 0.0f}, // 終了点
 	};
 
 	ColliderManager* colliderManager_ = nullptr; //!< コライダーマネージャ
+
+	LineModelManager* lineModelManager_ = nullptr;
+
+	Rail rail;
 
 private: 
 	

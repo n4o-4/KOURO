@@ -14,6 +14,8 @@
 #include "ParticleEmitter.h"
 #include "SceneManager.h"
 #include "Audio.h"
+#include "LineModelManager.h"
+#include "Player.h"
 
 class TitleScene : public BaseScene
 {
@@ -38,7 +40,7 @@ private:
 
 	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
 
-	std::unique_ptr<WorldTransform> transform_ = nullptr;
+	std::unique_ptr<BaseCharacter> player_ = nullptr;
 
 	std::unique_ptr<TitleCamera> titleCamera_ = nullptr;
 
@@ -64,5 +66,5 @@ private:
 	// プレイヤーモデルの移動演出のフラグ
 	bool isMoveActive_ = false;
 
-	std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
+	std::unique_ptr<LineModelManager> lineModelManager_ = nullptr;
 };

@@ -41,8 +41,6 @@ void BaseScene::Finalize()
 
 void BaseScene::Update()
 {
-	lineDrawer_->Update();
-
 	cameraManager_->Update();
 
 	fade_->Update();
@@ -54,7 +52,7 @@ void BaseScene::Draw()
 
 void BaseScene::LineDraw()
 {
-	lineDrawer_->Draw(Camera::GetInstance()->GetViewProjection());
+	lineDrawer_->PreDraw(Camera::GetInstance()->GetViewProjection());
 }
 
 void BaseScene::DrawObject()

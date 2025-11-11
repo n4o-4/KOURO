@@ -186,6 +186,8 @@ void Random::CreateMaterial()
 
 void Random::DrawImGui()
 {
+#ifdef _DEBUG
+
 	if (ImGui::TreeNode("random")) {
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
@@ -194,4 +196,6 @@ void Random::DrawImGui()
 
 		ImGui::TreePop();
 	}
+
+#endif
 }

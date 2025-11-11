@@ -9,6 +9,18 @@ void TitleScene::Initialize()
 
 	TextureManager::GetInstance()->LoadTexture("Resources/StartButton.png");
 
+
+
+	lineDrawer_ = std::make_unique<LineDrawerBase>();
+	lineDrawer_->Initialize(sceneManager_->GetDxCommon(), sceneManager_->GetSrvManager());
+
+	lineModelManager_ = std::make_unique<LineModelManager>();
+	lineModelManager_->Initialize(lineDrawer_.get());
+
+	lineModelManager_->LoadLineModel("player/player.obj");
+
+
+
 	startBotton_ = std::make_unique<Sprite>();
 	startBotton_->Initialize(SpriteCommon::GetInstance(),"Resources/StartButton.png");
 
@@ -17,17 +29,12 @@ void TitleScene::Initialize()
 	startBotton_->SetAnchorPoint({ 0.5f,0.5f });
 	startBotton_->SetTexSize({ 1542.0f,1024.0f });
 
-	transform_ = std::make_unique<WorldTransform>();
-
-	transform_->Initialize();
-
-	lineDrawer_ = std::make_unique<LineDrawerBase>();
-	lineDrawer_->Initialize(sceneManager_->GetDxCommon(), sceneManager_->GetSrvManager());
-
-	lineDrawer_->CreateObject3DLine("player/player.obj", transform_.get());
+	player_ = std::make_unique<BaseCharacter>();
+	player_->Initialize(lineModelManager_->FindLineModel("player/player.obj"));
+	
 
 	titleCamera_ = std::make_unique<TitleCamera>();
-	titleCamera_->SetTarget(transform_.get());
+	titleCamera_->SetTarget(player_->GetWorldTransform());
 	titleCamera_->Initialize();
 
 	debugCamera_ = std::make_unique<DebugCamera>();
@@ -36,7 +43,6 @@ void TitleScene::Initialize()
 	cameraManager_->SetActiveCamera(titleCamera_.get()/*debugCamera_.get()*/);
 
 	startTime = std::chrono::steady_clock::now();
-
 
 	// plane
 	ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", ParticleManager::ParticleType::Normal);
@@ -108,8 +114,6 @@ void TitleScene::Update()
 			fadeTimer_ = 0.0f;
 
 			isMoveActive_ = true;
-
-			lineDrawer_->SetScanActive(false);
 		}
 
 		if (titleCamera_->GetIsDeparture())
@@ -165,6 +169,8 @@ void TitleScene::Update()
 			moveTimer_ = 0.0f;
 		}
 
+		auto transform_ = player_->GetWorldTransform();
+
 		transform_->transform.translate = CatmullRomPosition(controlPoints_, t);
 
 		nextT = (moveTimer_ + (kDeltaTime * 26.0f)) / kMoveTime;
@@ -189,9 +195,7 @@ void TitleScene::Update()
 		transform_->UpdateMatrix();
 	}
 
-	transform_->UpdateMatrix();
-
-	lineDrawer_->Update();
+	player_->Update();
 
 	BaseScene::Update();
 }
@@ -206,7 +210,9 @@ void TitleScene::Draw()
 	DrawObject();
 	/// オブジェクト描画	
 
-	lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
+	lineDrawer_->PreDraw(cameraManager_->GetActiveCamera()->GetViewProjection());
+
+	player_->Draw();
 
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	

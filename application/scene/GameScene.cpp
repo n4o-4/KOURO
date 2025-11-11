@@ -71,8 +71,13 @@ void GameScene::Initialize() {
 	///		ライン描画
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
 	lineDrawer_->Initialize(sceneManager_->GetDxCommon(),sceneManager_->GetSrvManager());
-	//lineDrawer_->CreateLineObject(LineDrawerBase::Type::Grid, nullptr);
-	//lineDrawer_->CreateSkeletonObject(animationManager->GetActiveAnimation("walk.gltf").skeleton,nullptr);
+	
+	lineModelManager_ = std::make_unique<LineModelManager>();
+	lineModelManager_->Initialize(lineDrawer_.get());
+	lineModelManager_->LoadLineModel("player/player.obj");
+	lineModelManager_->LoadLineModel("enemy/enemy.obj");
+	lineModelManager_->LoadLineModel("playerbullet/playerbullet.obj");
+	//lineModelManager_->LoadLineModel("enemybullet/enemybullet.obj");
 
 	ModelManager::GetInstance()->LoadModel("terrain.obj");
 
@@ -204,7 +209,8 @@ void GameScene::Initialize() {
 	
 	// 初期化と生成
 	player_ = std::make_shared<Player>();
-	player_->Initialize((ModelManager::GetInstance()->FindModel("player/player.obj")));
+	player_->Initialize(lineModelManager_->FindLineModel("player/player.obj"));
+	player_->SetLineModelManager(lineModelManager_.get());
 
 	///========================================
 	/// 入力
@@ -216,12 +222,9 @@ void GameScene::Initialize() {
 	railCamera_->Initialize();
 
 	cameraManager_->SetActiveCamera(railCamera_.get());
-   //cameraManager_->useDebugCamera_ = true;
 	cameraManager_->Update();
 
-	player_->SetCamera(cameraManager_->GetActiveCamera());
-
-	player_->SetParentTransform(railCamera_->GetWorldTransform());
+	//player_->SetParentTransform(railCamera_->GetWorldTransform());
 
 
 	LevelLoader loader;
@@ -237,22 +240,22 @@ void GameScene::Initialize() {
 
 	colliderManager_ = std::make_unique<ColliderManager>();
 
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 5; ++i)
 	{
 		std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
-		enemy->Initialize(ModelManager::GetInstance()->FindModel("enemy/enemy.obj"));
-
-		enemy->SetCamera(cameraManager_->GetActiveCamera());
+		enemy->Initialize(lineModelManager_->FindLineModel("enemy/enemy.obj"));
 
 		enemy->SetTarget(player_.get());
 
 		enemy->SetColliderManager(colliderManager_.get());
 
+		enemy->SetLineModelManager(lineModelManager_.get());
+
 		std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
 
 		enemy->ChangeState(std::move(state));
 
-		enemy->SetPosition(Vector3(-20.0f + 5 * i, 0.0f, 40.0f));
+		enemy->SetPosition(Vector3(-10.0f + 5 * i, 0.0f, 400.0f));
 
 		colliderManager_->AddCollider(enemy);
 
@@ -282,17 +285,10 @@ void GameScene::Initialize() {
 
 	player_->SetColliderManager(colliderManager_.get());
 
-	lineDrawer_->CreateCatmullRomLine(railCamera_->GetControlPoints(), nullptr);
-
-	lineDrawer_->CreateObject3DLine("player/player.obj",player_->GetWorldTransform());
-
 	//lineDrawer_->CreateObject3DLine("playerbullet/playerbullet.obj", player_->GetWorldTransform());
 
 	fade_->Start(Fade::Status::WhiteFadeIn, 1.0f);
 
-	//lineDrawer_->SetScanActive(true);
-
-	lineDrawer_->SetIsRenderScanned(false);
 	auto* dissolve = static_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
 	dissolve->threshold = -0.5;
 }
@@ -309,10 +305,6 @@ void GameScene::Finalize()
 ///						更新
 void GameScene::Update()
 {
-	animationManager->Update();
-	lineDrawer_->SkeletonUpdate(animationManager->GetActiveAnimation("walk.gltf").skeleton);
-	//human_->Update();
-
 	BaseScene::Update();
 
 	//emitter1_->Update();
@@ -364,9 +356,7 @@ void GameScene::Update()
 	if (Input::GetInstance()->Triggerkey(DIK_E))
 	{
 		std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
-		enemy->Initialize(ModelManager::GetInstance()->FindModel("enemy/enemy.obj"));
-
-		enemy->SetCamera(cameraManager_->GetActiveCamera());
+		enemy->Initialize(lineModelManager_->FindLineModel("enemy/enemy.obj"));
 
 		enemy->SetTarget(player_.get());
 
@@ -444,12 +434,6 @@ void GameScene::Update()
 			phase_ = Phase::kFadeOut;
 		}
 
-		if (Input::GetInstance()->PushKey(DIK_SPACE))
-		{
-			fade_->Start(Fade::Status::FadeOut, fadeTime_);
-			phase_ = Phase::kFadeOut;
-		}
-
 		break;
 	case Phase::kFadeOut:
 
@@ -515,16 +499,14 @@ void GameScene::Update()
 
 	//emitter4_->Update();
 
-	railCamera_->Update();
-
-	lineDrawer_->Update();
+	//railCamera_->Update();
 }
 
 ///=============================================================================
 ///						描画
 void GameScene::Draw() 
 {
-	skybox_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+	//skybox_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
 
 	DrawBackgroundSprite();
 	/// 背景スプライト描画
@@ -532,18 +514,17 @@ void GameScene::Draw()
 	DrawObject();
 	/// オブジェクト描画
 
-	//ground_->Draw(*transform_.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
+	lineDrawer_->PreDraw(cameraManager_->GetActiveCamera()->GetViewProjection());
 
-	/*for (auto &object : levelData_->objects)
-	{
-		object.object3d->Draw(*object.worldTransform.get(), cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
-	}*/
+	player_->Draw();
 
-	//player_->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+	enemies_.erase(std::remove_if(enemies_.begin(), enemies_.end(),
+		[](const std::shared_ptr<Enemy>& enemy) { return !enemy->GetIsAlive(); }),
+		enemies_.end());
 
 	for (auto& enemy : enemies_)
 	{
-		enemy->Draw(*directionalLight.get(), *pointLight.get(), *spotLight.get());
+		enemy->Draw();
 	}
 
 	DrawForegroundSprite();
@@ -570,6 +551,4 @@ void GameScene::Draw()
 	//========================================
 	//パーティクルの描画
 	ParticleManager::GetInstance()->Draw("Resources/circle.png");	
-
-	lineDrawer_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection());
 }

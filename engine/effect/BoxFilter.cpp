@@ -187,6 +187,8 @@ void BoxFilter::CreatePipeLineState(Pipeline* pipeline)
 
 void BoxFilter::DrawImGui()
 {
+#ifdef _DEBUG
+
 	if (ImGui::TreeNode("boxFilter")) {
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
@@ -195,4 +197,6 @@ void BoxFilter::DrawImGui()
 
 		ImGui::TreePop();
 	}
+
+#endif
 }

@@ -164,6 +164,8 @@ void PostEffect::ResetActiveEffect()
 
 void PostEffect::DrawImGui()
 {
+#ifdef _DEBUG
+
 	// 追加したいエフェクトの名前入力用
 	static char effectNameBuffer[128] = "NewEffect";
 
@@ -204,4 +206,6 @@ void PostEffect::DrawImGui()
 		ImGui::PopID();
 		++it;
 	}
+
+#endif
 }

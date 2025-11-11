@@ -16,50 +16,28 @@ void CameraManager::Initialize()
 
 void CameraManager::Update()
 {
-
-	if (useDebugCamera_ || useFollowCamera_ || useDefaultCamera_)
-	{
-		ChangeActiveCamera();
-	}
-
 	activeCamera_->Update();
 
-	const char* cameraType = "Unknown";
+	DrawDebugUI();
+}
 
-	if (dynamic_cast<DebugCamera*>(activeCamera_)) {
-		cameraType = "DebugCamera";
-	}
-	else if (dynamic_cast<FollowCamera*>(activeCamera_)) {
-		cameraType = "FollowCamera";
-	}
-	else if (activeCamera_ == Camera::GetInstance()) {
-		cameraType = "DefaultCamera";
-	}
-
+void CameraManager::DrawDebugUI()
+{
 #ifdef _DEBUG
 
-	ImGui::Begin("Camera Info");
-	ImGui::Text("Active Camera: %s", cameraType);
+	ImGui::Begin("CameraManager");
+
+	if(ImGui::Button("Use Debug Camera"))
+	{
+		activeCamera_ = debugCamera_.get();
+	}
+
+	if (ImGui::Button("Use FollowCamera"))
+	{
+		activeCamera_ = followCamera_.get();
+	}
+
 	ImGui::End();
 
 #endif
-}
-
-void CameraManager::ChangeActiveCamera()
-{
-	if (useDebugCamera_)
-	{
-		useDebugCamera_ = false;
-		activeCamera_ = debugCamera_.get();
-	}
-	else if (useFollowCamera_)
-	{
-		useFollowCamera_ = false;
-		activeCamera_ = followCamera_.get();
-	}
-	else if(useDefaultCamera_)
-	{
-		useDefaultCamera_ = false;
-		activeCamera_ = Camera::GetInstance();
-	}
 }

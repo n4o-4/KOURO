@@ -8,8 +8,8 @@ void AABBCollider::Initialize(WorldTransform* worldTransform, BaseEntity* owner)
 	// AABBの初期化
 	aabb_ = {
         {},
-		Vector3(-0.5f, -0.5f, -0.5f), // 最小点
-		Vector3(0.5f, 0.5f, 0.5f)  // 最大点
+		Vector3(-1.0f, -1.0f, -1.0f), // 最小点
+		Vector3(1.0f, 1.0f, 1.0f)  // 最大点
 	};
 }
 
