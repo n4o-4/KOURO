@@ -5,6 +5,8 @@
 
 #include "WorldTransform.h"
 
+// \brief  RailCamera レールカメラ
+
 class RailCamera : public BaseCamera
 {
 public:
@@ -18,32 +20,54 @@ public:
 
 public:
 
-	// 初期化
+	/**
+	* \brief  Initialize 初期化
+	*/
 	void Initialize() override;
 
-	// 更新
+	/**
+	* \brief  Update 更新
+	*/
 	void Update() override;
 
-	//getter
+	/**
+	* \brief  GetWorldTransform ワールド変換情報を取得する
+	* \return worldTransform 
+	*/
 	WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
-
-	void SetControlPoints(const std::vector<Vector3>& points) { controlPoints_ = points; }
-
+	
+	/**
+	* \brief  GetControlPoints 制御点を取得する
+	* \return controlPoints_
+	*/
 	std::vector<Vector3> GetControlPoints() const { return controlPoints_; }
+
+	/**
+	* \brief  SetControlPoints 制御点を設定する
+	*/
+	void SetControlPoints(const std::vector<Vector3>& points) { controlPoints_ = points; }
 
 private:
 
+	/**
+	* \brief  CreateArcLengthTable アーク長テーブルの作成
+	*/
 	void CreateArcLengthTable(int samplePerSegment);
 
 private:
 
-	std::unique_ptr<WorldTransform> worldTransform_ = nullptr; //!< ワールド変形情報
+	// ワールド変換情報
+	std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
 
-	std::vector<Vector3> controlPoints_; //!< カメラの制御点
+	// 制御点
+	std::vector<Vector3> controlPoints_;
 	
+	// 移動時間
 	const float kMoveTime = 100.0f;
 
-	float moveTimer_ = 0.0f; //!< カメラの移動時間
+	// 移動タイマー
+	float moveTimer_ = 0.0f;
 
+	// アーク長テーブル
 	ArcLengthTable arcLengthTable_;
 };

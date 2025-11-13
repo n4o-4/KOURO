@@ -15,6 +15,7 @@ void AABBCollider::Initialize(WorldTransform* worldTransform, BaseEntity* owner)
 
 void AABBCollider::Update()
 {
+	// 基底クラスの更新
 	BaseCollider::Update();
 
     // ワールド座標系でのAABB中心座標を取得（例：今後の拡張用）

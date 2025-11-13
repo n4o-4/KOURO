@@ -6,31 +6,33 @@
 
 #include "SceneFactory.h"
 
-// ゲーム全体
+// \brief  ゲーム全体
+
 class MyGame : public Framework
 {
-public:
-private:
-
-
 public: //　メンバ関数
-	// 初期化
+
+	// \brief  Initialize 初期化
 	void Initialize() override;
 
-	// 終了
+	// \brief  Finalize 終了
 	void Finalize() override;
 
-	// 毎フレーム
+	// \brief  Update 更新
 	void Update() override;
 
-	// 描画
+	// \brief  Draw 描画
 	void Draw() override;
 
-	// 終了フラグのチェック
+	/**
+	* \brief  IsEndRequest 終了要求が来ているか
+	* \return 終了要求が来ているか
+	*/
 	bool IsEndRequest() override { return endRequest_; }
 
 private:
 
+	// シーンファクトリー
 	std::unique_ptr<AbstaractSceneFactory> sceneFactory_ = nullptr;
 
 };

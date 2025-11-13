@@ -1,7 +1,5 @@
 ﻿#include "TitleCamera.h"
 
-///=============================================================================
-///                        初期化
 void TitleCamera::Initialize()
 {
     // カメラの初期オフセット設定
@@ -19,8 +17,6 @@ void TitleCamera::Initialize()
     viewProjection_->transform.rotate = { 0.1f, 0.0f, 0.0f };
 }
 
-///=============================================================================
-///                        更新
 void TitleCamera::Update()
 {
     // ターゲットが設定されていない場合はエラー
@@ -36,8 +32,6 @@ void TitleCamera::Update()
 
     if(isDeparture_)
     {
-        //viewProjection_->transform.rotate.y = 0.0f;
-
 		viewProjection_->fovY += 0.007f;
 
 		FollowTarget();
@@ -56,8 +50,6 @@ void TitleCamera::Update()
     BaseCamera::Update();
 }
 
-///=============================================================================
-///                        オフセットの計算
 Vector3 TitleCamera::CalculationOffset()
 {
     Vector3 offset = offset_;
@@ -69,28 +61,10 @@ Vector3 TitleCamera::CalculationOffset()
     return offset;
 }
 
-///=============================================================================
-///                        回転の計算
 void TitleCamera::CalculationRotate()
 {
-   /* Vector3 rightStickVector = Input::GetInstance()->GetRightStick();
-
-    Vector3 rotate = { -rightStickVector.y * rotateSpeed_, rightStickVector.x * rotateSpeed_ ,0.0f };
-
-    destinationRotate += rotate;
-
-    viewProjection_->transform.rotate = Lerp(viewProjection_->transform.rotate, destinationRotate, easingFactor_);
-
-    float clampedX = std::clamp(viewProjection_->transform.rotate.x, -1.5f, 1.5f);
-    if (clampedX != viewProjection_->transform.rotate.x) {
-        destinationRotate.x = viewProjection_->transform.rotate.x;
-    }
-
-    viewProjection_->transform.rotate.x = std::clamp(viewProjection_->transform.rotate.x, -1.5f, 1.5f);*/
 }
 
-///=============================================================================
-///                        位置の計算
 void TitleCamera::CalculationTranslate()
 {
     interTarget_ = Lerp(interTarget_, target_->transform.translate, easingFactor_);
