@@ -25,6 +25,8 @@ public: /// メンバ関数
 
 	void SetActiveCamera(BaseCamera* camera) { activeCamera_ = camera; }
 
+	void CamerasClear();
+
 public:
 
 	void DrawDebugUI();

@@ -99,6 +99,8 @@ private:
 
 	float k = 0.0f;
 
+	std::unique_ptr<ObjectLine> stage_ = nullptr;
+
 private:
 
 public: // メンバ関数

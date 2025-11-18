@@ -21,6 +21,11 @@ void CameraManager::Update()
 	DrawDebugUI();
 }
 
+void CameraManager::CamerasClear()
+{
+	cameras_.clear();
+}
+
 void CameraManager::DrawDebugUI()
 {
 #ifdef _DEBUG

@@ -3,6 +3,16 @@
 void GameClear::Initialize()
 {
 	BaseScene::Initialize();
+
+	TextureManager::GetInstance()->LoadTexture("Resources/GameClear.png");
+
+	gameClearSprite_ = std::make_unique<Sprite>();
+	gameClearSprite_->Initialize(SpriteCommon::GetInstance(), "Resources/GameClear.png");
+	gameClearSprite_->SetSize({ 1280.0f,720.0f });
+	gameClearSprite_->SetPosition({ 640.0f,360.0f });
+	gameClearSprite_->SetAnchorPoint({ 0.5f,0.5f });
+	gameClearSprite_->SetTexSize({ 1536.0f,1024.0f });
+	gameClearSprite_->Update();
 }
 
 void GameClear::Finalize()
@@ -24,7 +34,9 @@ void GameClear::Update()
 		break;
 	case Phase::kMain:
 
-		if (Input::GetInstance()->Triggerkey(DIK_RETURN) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
+		timer_ += kDeltaTime;
+
+		if(kMainTime >= timer_)
 		{
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
 			phase_ = Phase::kFadeOut;
@@ -56,6 +68,8 @@ void GameClear::Draw()
 	DrawBackgroundSprite();
 
 	DrawForegroundSprite();
+
+	gameClearSprite_->Draw();
 
 	fade_->Draw();
 }

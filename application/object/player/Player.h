@@ -60,25 +60,27 @@ private: // 非公開メンバ変数
 
 	std::vector<Vector3> controlPoints_ =
 	{
-		 {0.0f, 0.0f, 0.0f},
+		{0.0f,0.0f,-20.0f},
 
-	{0.0f, 0.0f, 300.0f},
-	{10.0f, 0.0f, 390.0f},
-	{100.0f, 0.0f, 400.0f},
+		{0.0f,0.0f,20.0f},
 
-	{400.0f, 0.0f, 400.0f},
-	{490.0f, 0.0f, 390.0f},
-	{500.0f, 0.0f, 300.0f},
+		{0.0f,0.0f,480.0f},
+		{15.0f,0.0f,495.0f},
+		{20.0f,0.0,500.0f},
 
-	{500.0f, 0.0f, 100.0f},
-	{490.0f, 0.0f, 10.0f},
-	{400.0f, 0.0f, 0.0f},
+		{480.0f,0.0f,500.0f},
+		{495.0f,0.0f,495.0f},
+		{500.0f,0.0f,480.0f},
 
-	{100.0f, 0.0f, 0.0f},
-	{10.0f, 0.0f, 10.0f},
-	{0.0f, 0.0f, 100.0f},
+		{500.0f,0.0f,20.0f},
+		{495.0f,0.0f,5.0f},
+		{480.0f,0.0f,0.0f},
 
-	{0.0f, 0.0f, 0.0f}, // 終了点
+		{20.0f,0.0f,0.0f},
+		{5.0f,0.0f,5.0f},
+		{0.0f,0.0f,20.0f},
+
+		{0.0f,0.0f,20.1f}, // 終了点
 	};
 
 	ColliderManager* colliderManager_ = nullptr; //!< コライダーマネージャ
@@ -86,6 +88,14 @@ private: // 非公開メンバ変数
 	LineModelManager* lineModelManager_ = nullptr;
 
 	Rail rail;
+
+	const float kFireInterval_ = 0.2f; //!< 発射間隔
+
+	float fireTimer_ = 0.0f; //!< 発射タイマー
+
+	const float kHitInterval_ = 0.1f; //!< 被弾アクション間隔
+
+	float hitintervalTimer_ = 0.0f; //!< 被弾アクションタイマー
 
 private: 
 	

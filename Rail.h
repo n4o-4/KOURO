@@ -28,12 +28,14 @@ private:
 
 	std::vector<Vector3> controlPoints_; //!< ƒJƒƒ‰‚Ì§Œä“_
 
-	const float kMoveTime = 100.0f;
+	const float kMoveTime = 50.0f;
 
 	float moveTimer_ = 0.0f; //!< ƒJƒƒ‰‚ÌˆÚ“®ŽžŠÔ
 
 	ArcLengthTable arcLengthTable_;
 
 	std::unique_ptr<WorldTransform> worldTransform_;
+
+	float distanceTravelled = 0.0f;
 };
 

@@ -72,4 +72,6 @@ private:
 	float easingFactor_ = 0.85f;
 	// 回転速度
 	float rotateSpeed_ = 0.04f;
+
+	float distanceTravelled = 0.0f;
 };

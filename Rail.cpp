@@ -16,10 +16,14 @@ void Rail::Update()
 {
 	// 移動速度（曲線全体を kMoveTime 秒で移動）
 	float moveSpeed = arcLengthTable_.totalLength / kMoveTime;
-	static float distanceTravelled = 0.0f;
 
 	// 累積移動距離を更新
 	distanceTravelled += moveSpeed * kDeltaTime;
+
+	if (distanceTravelled >= arcLengthTable_.totalLength)
+	{
+		distanceTravelled = 0.0f;
+	}
 
 	// ------------------------------
 	// 現在位置 t を累積距離から逆算

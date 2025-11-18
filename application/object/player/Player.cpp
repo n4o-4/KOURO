@@ -1,5 +1,7 @@
 ﻿#include "Player.h"
 
+#include "EnemyBullet.h"
+
 void Player::Initialize(LineModel* model)
 {
 	///=========================================
@@ -32,13 +34,32 @@ void Player::Initialize(LineModel* model)
 
 void Player::Update()
 {
+	if(fireTimer_ > 0.0f)
+	{
+		fireTimer_ -= kDeltaTime;
+	}
+	else
+	{
+		if (Input::GetInstance()->/*PushKey*/Triggerkey(DIK_SPACE) || Input::GetInstance()->PushKey(DIK_SPACE))
+		{
+			Fire();
+		}
+	}
+
+	if(hitintervalTimer_ > 0.0f)
+	{
+		hitintervalTimer_ -= kDeltaTime;
+	}
+	else
+	{
+		hitintervalTimer_ = 0.0f;
+		objectLine_->SetColor({ 0.071f, 0.429f, 1.0f,1.0f });
+	}
+
 	// 移動
 	Move();
 
-	if (Input::GetInstance()->/*PushKey*/Triggerkey(DIK_SPACE))
-	{
-		Fire();
-	}
+	
 
 	rail.Update();
 
@@ -170,6 +191,8 @@ void Player::Move()
 
 void Player::Fire()
 {
+	fireTimer_ = kFireInterval_;
+
 	// 弾の生成
 	std::shared_ptr<PlayerBullet> bullet = std::make_shared<PlayerBullet>();
 
@@ -187,9 +210,17 @@ void Player::Fire()
 
 void Player::OnCollisionEnter(BaseCollider* other)
 {
-	if (hp_ > 0)
+
+	if (EnemyBullet* enemyBullet = dynamic_cast<EnemyBullet*>(other))
 	{
-		//--hp_;
+		if (hp_ > 0 && hitintervalTimer_ <= 0.0f)
+		{
+			hitintervalTimer_ = kHitInterval_;
+
+			objectLine_->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+
+			--hp_;
+		}
 	}
 }
 

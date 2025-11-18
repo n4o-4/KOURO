@@ -11,30 +11,27 @@ void RailCamera::Initialize()
 	
 	controlPoints_ =
 	{
-		  //{   0.0f, 1.0f,    0.0f },   // 開始点
-	   //   {   0.0f, 1.0f,  100.0f },   // Z+方向
-	   //   { 100.0f, 1.0f,  100.0f },   // X+方向
-	   //   { 100.0f, 1.0f,    0.0f },   // Z-方向
-	   //   {   0.0f, 1.0f,    0.0f },   // X-方向（戻ってくる）
-    {0.0f, 0.0f, 0.0f},
+        {0.0f,0.0f,-20.0f},
 
-	{0.0f, 0.0f, 300.0f},
-	{10.0f, 0.0f, 390.0f},
-	{100.0f, 0.0f, 400.0f},
+        {0.0f,0.0f,20.0f},
 
-	{400.0f, 0.0f, 400.0f},
-	{490.0f, 0.0f, 390.0f},
-	{500.0f, 0.0f, 300.0f},
+        {0.0f,0.0f,480.0f},
+        {15.0f,0.0f,495.0f},
+        {20.0f,0.0,500.0f},
 
-	{500.0f, 0.0f, 100.0f},
-	{490.0f, 0.0f, 10.0f},
-	{400.0f, 0.0f, 0.0f},
+        {480.0f,0.0f,500.0f},
+        {495.0f,0.0f,495.0f},
+        {500.0f,0.0f,480.0f},
 
-	{100.0f, 0.0f, 0.0f},
-	{10.0f, 0.0f, 10.0f},
-	{0.0f, 0.0f, 100.0f},
+        {500.0f,0.0f,20.0f},
+        {495.0f,0.0f,5.0f},
+        {480.0f,0.0f,0.0f},
 
-	{0.0f, 0.0f, 0.0f}, // 終了点
+        {20.0f,0.0f,0.0f},
+        {5.0f,0.0f,5.0f},
+        {0.0f,0.0f,20.0f},
+
+        {0.0f,0.0f,20.1f}, // 終了点
 	};
 
 	CreateArcLengthTable(100);
@@ -122,10 +119,19 @@ void RailCamera::Update()
 
     // 移動速度（曲線全体を kMoveTime 秒で移動）
     float moveSpeed = arcLengthTable_.totalLength / kMoveTime;
-    static float distanceTravelled = 0.0f;
+
+    if (!isMove_)
+    {
+        return;
+    }
 
     // 累積移動距離を更新
     distanceTravelled += moveSpeed * kDeltaTime;
+
+    if (distanceTravelled >= arcLengthTable_.totalLength)
+    {
+        distanceTravelled = 0.0f;
+    }
 
     // ------------------------------
     // 現在位置 t を累積距離から逆算

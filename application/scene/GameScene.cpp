@@ -77,7 +77,7 @@ void GameScene::Initialize() {
 	lineModelManager_->LoadLineModel("player/player.obj");
 	lineModelManager_->LoadLineModel("enemy/enemy.obj");
 	lineModelManager_->LoadLineModel("playerbullet/playerbullet.obj");
-	//lineModelManager_->LoadLineModel("enemybullet/enemybullet.obj");
+	lineModelManager_->LoadLineModel("stage/stage.obj");
 
 	ModelManager::GetInstance()->LoadModel("terrain.obj");
 
@@ -88,7 +88,9 @@ void GameScene::Initialize() {
 
 	transform_ = std::make_unique<WorldTransform>();
 	transform_->Initialize();
+	transform_->transform.translate = { 250.0f,0.0f,250.0f };
 
+	transform_->transform.scale = { 273.0f,300.0f,273.0f };
 	///========================================
 	///		パーティクル
 	
@@ -221,6 +223,7 @@ void GameScene::Initialize() {
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
 
+	cameraManager_->CamerasClear();
 	cameraManager_->SetActiveCamera(railCamera_.get());
 	cameraManager_->Update();
 
@@ -285,12 +288,14 @@ void GameScene::Initialize() {
 
 	player_->SetColliderManager(colliderManager_.get());
 
-	//lineDrawer_->CreateObject3DLine("playerbullet/playerbullet.obj", player_->GetWorldTransform());
-
 	fade_->Start(Fade::Status::WhiteFadeIn, 1.0f);
 
 	auto* dissolve = static_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
 	dissolve->threshold = -0.5;
+
+	stage_ = std::make_unique<ObjectLine>();
+	stage_->Initialize(lineModelManager_->FindLineModel("stage/stage.obj"));
+
 }
 
 ///=============================================================================
@@ -330,7 +335,7 @@ void GameScene::Update()
 
 	transform_->UpdateMatrix();
 
-	player_->Update();
+	
 
 	if (!player_->GetIsAlive())
 	{
@@ -353,6 +358,8 @@ void GameScene::Update()
 		object.worldTransform->UpdateMatrix();
 	}
 
+#ifdef _DEBUG
+
 	if (Input::GetInstance()->Triggerkey(DIK_E))
 	{
 		std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
@@ -368,10 +375,12 @@ void GameScene::Update()
 
 		colliderManager_->AddCollider(enemy);
 
+		enemy->SetLineModelManager(lineModelManager_.get());
+
 		enemies_.push_back(std::move(enemy));
 	}
 
-	
+#endif
 
 	size_t enemyCount = enemies_.size();
 
@@ -410,8 +419,9 @@ void GameScene::Update()
 			{
 				Input::GetInstance()->SetIsReception(true);
 
-
 				phase_ = Phase::kMain;
+
+				railCamera_->SetIsMove(true);
 			}
 		}
 
@@ -421,6 +431,8 @@ void GameScene::Update()
 		std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {
 			return !enemy->GetIsAlive();
 			});
+
+		player_->Update();
 
 		for (auto& enemy : enemies_)
 		{
@@ -439,6 +451,13 @@ void GameScene::Update()
 
 		if (fade_->IsFinished())
 		{
+			if(enemyCount == 0)
+			{
+				sceneManager_->ChangeScene("CLEAR");
+
+				return;
+			}
+
 			SceneManager::GetInstance()->ChangeScene("TITLE");
 
 			return;
@@ -452,7 +471,6 @@ void GameScene::Update()
 		break;
 	}
 
-	
 	colliderManager_->Update();
 
 #ifdef _DEBUG
@@ -526,6 +544,8 @@ void GameScene::Draw()
 	{
 		enemy->Draw();
 	}
+
+	stage_->Draw(transform_.get());
 
 	DrawForegroundSprite();
 	/// 前景スプライト描画

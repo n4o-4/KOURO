@@ -37,8 +37,8 @@ void TitleScene::Initialize()
 	titleCamera_->SetTarget(player_->GetWorldTransform());
 	titleCamera_->Initialize();
 
-	debugCamera_ = std::make_unique<DebugCamera>();
-	debugCamera_->Initialize();
+	/*debugCamera_ = std::make_unique<DebugCamera>();
+	debugCamera_->Initialize();*/
 
 	cameraManager_->SetActiveCamera(titleCamera_.get()/*debugCamera_.get()*/);
 
@@ -107,13 +107,16 @@ void TitleScene::Update()
 
 		if (Input::GetInstance()->Triggerkey(DIK_SPACE) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
 		{
-			titleCamera_->SetIsRotate(false);
+			if(!isMoveActive_) /// 移動開始フラグが無効なら
+			{
+				titleCamera_->SetIsRotate(false);
 
-			titleCamera_->SetIsDeparture(true);
+				titleCamera_->SetIsDeparture(true);
 
-			fadeTimer_ = 0.0f;
+				fadeTimer_ = 0.0f;
 
-			isMoveActive_ = true;
+				isMoveActive_ = true;
+			}
 		}
 
 		if (titleCamera_->GetIsDeparture())

@@ -30,9 +30,14 @@ public:
 
 	// 描画
 	void Draw() override;
-	
 
 private:
+
+	std::unique_ptr<Sprite> gameClearSprite_ = nullptr;
+
+	const float kMainTime = 3.0f;
+
+	float timer_ = 0.0f;
 
 };
 
