@@ -142,6 +142,11 @@ void PostEffect::ApplyEffect(std::string name, EffectType type)
 		newEffect->effect = std::make_unique<ColorSpace>();
 		newEffect->effect->Initialize(dxCommon_, srvManager_);
 	}
+	else if (type == EffectType::Absorb)
+	{
+		newEffect->effect = std::make_unique<Absorb>();
+		newEffect->effect->Initialize(dxCommon_, srvManager_);
+	}
 	else
 	{
 		assert(0);
@@ -175,7 +180,8 @@ void PostEffect::DrawImGui()
 	const char* effectTypeNames[] = {
 		"Grayscale", "Vignette", "BoxFilter", "GaussianFilter",
 		"LuminanceBasedOutline", "DepthBasedOutline", "RadialBlur",
-		"Dissolve", "Random", "LinearFog", "MotionBlur", "ColorSpace"
+		"Dissolve", "Random", "LinearFog", "MotionBlur", "ColorSpace",
+		"Absorb"
 	};
 
 	// UI: 新しいエフェクトの追加

@@ -5,56 +5,83 @@ class TitleCamera : public BaseCamera
 {
 public:
 
-	// 初期化
+	// \brief  Initialize 初期化
 	void Initialize();
-	// 更新
+	
+	// \brief  Update 更新
 	void Update();
 
+	/**
+	* \brief  SetTarget ターゲットの設定
+	* \param  target ターゲットのワールド変換のポインタ
+	*/
 	void SetTarget(WorldTransform* target) { target_ = target; }
 
+	/**
+	* \brief  SetIsRotate 回転フラグの設定
+	* \param  isRotate 回転フラグ
+	*/
 	void SetIsRotate(bool isRotate) { isRotate_ = isRotate; }
 
+	/**
+	* \brief  SetIsDeparture 離脱フラグの設定
+	* \param  isDeparture 離脱フラグ
+	*/
 	void SetIsDeparture(bool isDeparture) { isDeparture_ = isDeparture; }
 
+	/**
+	* \brief  GetIsDeparture 離脱フラグの取得
+	* \return isDeparture_ 離脱フラグ
+	*/
 	bool GetIsDeparture() const { return isDeparture_; }
 
 private:
 
+	/**
+	* \brief  CalculationOffset オフセットの計算
+	* \return 計算したオフセット
+	*/
 	Vector3 CalculationOffset();
 
+	// \brief  CalculationRotate 回転の計算
 	void CalculationRotate();
 
+	// \brief  CalculationTranslate 移動の計算
 	void CalculationTranslate();
 
+	// \brief  FollowTarget ターゲットの追従
 	void FollowTarget();
 
 private:
-	//========================================
+
 	// ターゲット
 	WorldTransform* target_ = nullptr;
-	//========================================
 
 	// 追従対象の残像座標
 	Vector3 interTarget_ = {};
-	//========================================
 
 	// オフセット
 	Vector3 offset_ = {};
+
 	// デフォルトのオフセット（元の値を保持）
 	Vector3 defaultOffset_ = { 0.0f, 3.0f, -30.0f };
 
-	//========================================
 	// 現在のカメラ位置
 	Vector3 currentPosition_ = {};
+
 	// 目標のカメラ位置
 	Vector3 destinationRotate = { 0.0f,0.0f,0.0f };
+
 	// イージング係数
 	float easingFactor_ = 0.85f;
+
 	// 回転速度
 	float rotateSpeed_ = 0.04f;
 
+	// 回転フラグ
 	bool isRotate_ = false;
 
+	// 離脱フラグ
 	bool isDeparture_ = false;
 };
 

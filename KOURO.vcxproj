@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Absorb.cpp" />
     <ClCompile Include="engine\line\AABBLineObject.cpp" />
     <ClCompile Include="application\collider\AABBCollider.cpp" />
     <ClCompile Include="application\scene\BaseScene.cpp" />
@@ -95,10 +96,12 @@
     <ClCompile Include="application\collider\OBBCollider.cpp" />
     <ClCompile Include="engine\line\OBBLineObject.cpp" />
     <ClCompile Include="application\camera\TitleCamera.cpp" />
+    <ClCompile Include="NumUi.cpp" />
     <ClCompile Include="ObjectLine.cpp" />
     <ClCompile Include="Rail.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Absorb.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="engine\line\AABBLineObject.h" />
     <ClInclude Include="application\collider\AABBCollider.h" />
@@ -190,6 +193,7 @@
     <ClInclude Include="LineModelManager.h" />
     <ClInclude Include="LineObjectFactory.h" />
     <ClInclude Include="LineObjectManager.h" />
+    <ClInclude Include="NumUi.h" />
     <ClInclude Include="ObjectLine.h" />
     <ClInclude Include="Rail.h" />
   </ItemGroup>
@@ -207,6 +211,12 @@
     <None Include="Resources\shaders\Sprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Resources\shaders\Absorb.PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Resources\shaders\BoxFilter.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>

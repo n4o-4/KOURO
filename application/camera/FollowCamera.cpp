@@ -6,8 +6,6 @@
 #include "FollowCamera.h"
 #include "Input.h"
 
-///=============================================================================
-///                        初期化
 void FollowCamera::Initialize()
 {
     // カメラの初期オフセット設定
@@ -25,8 +23,6 @@ void FollowCamera::Initialize()
     viewProjection_->transform.rotate = { 0.1f, 0.0f, 0.0f };
 }
 
-///=============================================================================
-///                        更新
 void FollowCamera::Update()
 {
     // ターゲットが設定されていない場合はエラー
@@ -45,46 +41,51 @@ void FollowCamera::Update()
     BaseCamera::Update();
 }
 
-///=============================================================================
-///                        オフセットの計算
 Vector3 FollowCamera::CalculationOffset()
 {
+	// オフセットの初期化
     Vector3 offset = offset_;
 
+	// 回転行列の作成
     Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);
 
+	// オフセットに回転を適用
     offset = TransformNormal(offset, rotateMatrix);
 
+	// 計算したオフセットを返す
     return offset;
 }
 
-///=============================================================================
-///                        回転の計算
 void FollowCamera::CalculationRotate()
 {
+	// スティックの入力取得
     Vector3 rightStickVector = Input::GetInstance()->GetRightStick();
 
+	// 回転速度
     Vector3 rotate = { -rightStickVector.y * rotateSpeed_, rightStickVector.x * rotateSpeed_ ,0.0f };
 
+	// 目的の回転角度を計算
     destinationRotate += rotate;
 
+	// 回転をイージングで補間
     viewProjection_->transform.rotate = Lerp(viewProjection_->transform.rotate, destinationRotate, easingFactor_);
 
+	// X軸の回転角度を制限
     float clampedX = std::clamp(viewProjection_->transform.rotate.x, -1.5f, 1.5f);
     if (clampedX != viewProjection_->transform.rotate.x) {
         destinationRotate.x = viewProjection_->transform.rotate.x;
     }
-
     viewProjection_->transform.rotate.x = std::clamp(viewProjection_->transform.rotate.x, -1.5f, 1.5f);
 }
 
-///=============================================================================
-///                        位置の計算
 void FollowCamera::CalculationTranslate()
 {
+	// ターゲットの位置をイージングで補間
     interTarget_ = Lerp(interTarget_, target_->transform.translate, easingFactor_);
 
+	// オフセットの計算
     Vector3 offset = CalculationOffset();
 
+	// カメラの位置を設定
     viewProjection_->transform.translate = interTarget_ + offset;
 }

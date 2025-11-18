@@ -8,7 +8,7 @@ void TitleScene::Initialize()
 	BaseScene::Initialize();
 
 	TextureManager::GetInstance()->LoadTexture("Resources/StartButton.png");
-
+	TextureManager::GetInstance()->LoadTexture("Resources/num.png");
 
 
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
@@ -58,6 +58,9 @@ void TitleScene::Initialize()
 	// パルスを有効
 	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enablePulse = false;
 
+
+	scoreUi_ = std::make_unique<NumUi<int>>();
+	scoreUi_->Initialize();
 }
 
 void TitleScene::Finalize()
@@ -200,6 +203,9 @@ void TitleScene::Update()
 
 	player_->Update();
 
+	scoreUi_->Update(12);
+
+
 	BaseScene::Update();
 }
 
@@ -219,6 +225,8 @@ void TitleScene::Draw()
 
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	
+
+	scoreUi_->Draw();
 
 	startBotton_->Draw();
 

@@ -2,20 +2,28 @@
 // Engine
 #include "Kouro.h"
 
+// 全てのオブジェkとの基底クラス
+
 class BaseEntity
 {
 public: // 公開メンバ関数
 
-	// 初期化処理
+	// \brief  Initialize 初期化
 	void Initialize();
 
-	// 更新処理
+	// \brief  Update 更新
 	void Update();
+
+	/**
+	 * \brief  GetWorldTransform ワールド変換情報を取得する
+	 * \return worldTransform
+	 */
 
 	WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
 protected: // 派生用メンバ関数
 
+	// \brief DrawImGui ImGui描画
 	void DrawImGui();
 
 public: // 派生用メンバ変数
