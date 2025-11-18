@@ -69,5 +69,5 @@ private:
 
 	std::unique_ptr<LineModelManager> lineModelManager_ = nullptr;
 
-	std::unique_ptr<NumUi<int>> scoreUi_ = nullptr;
+	std::unique_ptr<NumUi> scoreUi_ = nullptr;
 };

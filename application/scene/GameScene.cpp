@@ -428,10 +428,6 @@ void GameScene::Update()
 		break;
 	case Phase::kMain:
 
-		std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {
-			return !enemy->GetIsAlive();
-			});
-
 		player_->Update();
 
 		for (auto& enemy : enemies_)
@@ -439,6 +435,18 @@ void GameScene::Update()
 			enemy->Update();
 		}
 		
+
+		for (auto& enemy : enemies_)
+		{
+			if (!enemy->GetIsAlive())
+			{
+ 				++eliminatedEnemyCount_;
+			}
+		}
+
+		std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {
+			return !enemy->GetIsAlive();
+			});
 
 		if (enemyCount == 0)
 		{
@@ -453,12 +461,14 @@ void GameScene::Update()
 		{
 			if(enemyCount == 0)
 			{
+				grobalVariables_.SaveFile("ELIMINATED_ENEMY_COUNT", eliminatedEnemyCount_);
+
 				sceneManager_->ChangeScene("CLEAR");
 
 				return;
 			}
 
-			SceneManager::GetInstance()->ChangeScene("TITLE");
+			SceneManager::GetInstance()->ChangeScene("OVER");
 
 			return;
 		}

@@ -2,7 +2,7 @@
 #include <string>
 #include <fstream>
 #include <cassert>
-#include <externals/json.hpp>
+#include <json.hpp>
 #include <regex>
 
 #include "Kouro.h"

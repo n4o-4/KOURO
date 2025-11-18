@@ -12,7 +12,7 @@
 #include "Enemy.h"
 
 #include "LevelLoader.h"
-
+#include "GrobalVariables.h"
 
 class GameScene : public BaseScene
 {
@@ -100,6 +100,10 @@ private:
 	float k = 0.0f;
 
 	std::unique_ptr<ObjectLine> stage_ = nullptr;
+
+	GrobalVariables grobalVariables_;
+
+	uint32_t eliminatedEnemyCount_ = 0;
 
 private:
 

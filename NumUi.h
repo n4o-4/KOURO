@@ -4,106 +4,31 @@
 #include <memory>
 #include <chrono>
 #include "Sprite.h"
+#include "SpriteCommon.h"
 
-template <typename T>
 class NumUi
 {
 public:
-    void Initialize()
-    {
-        value_ = static_cast<T>(0);
 
-        for (size_t i = 0; i < 2; ++i)
-        {
-            std::unique_ptr<Sprite> sprite = std::make_unique<Sprite>();
-            sprite->Initialize(SpriteCommon::GetInstance(), "Resources/num.png");
-			sprite->SetTexSize({ 64.0f,128.0f });
-			sprite->SetAnchorPoint({ 0.0f,0.0f });
-			numSprites_.push_back(std::move(sprite));
-        }
-    }
+	void Initialize(size_t maxDigits);
 
-    void Update(T newValue)
-    {
-        value_ = newValue;
+	void Update();
 
-		size_t digitCount = 0;
-		digitCount = GetDigitCount(value_);
+	void Draw();
 
-		size_t temp = value_;
-		while (temp > 0)
-		{
-			int digit = temp % 10;
-			digits_.push_back(digit);
-			temp /= 10;
-		}
+	void SetTexSize(float width, float height) {};
 
-		// 数字のリストを逆順にする
-		std::reverse(digits_.begin(), digits_.end());
+	void SetDestinationValue(uint32_t value,float countTime);
 
-		for (size_t i = 0; i < numSprites_.size();)
-		{
-			if (i < digitCount)
-			{
-				numSprites_[i]->SetSize({ texWidth_, texHeight_ });
-
-				Vector2 texLeftTop = { 0.0f,digits_[i] * 128.0f };
-
-				numSprites_[i]->SetTexLeftTop(texLeftTop);
-
-				numSprites_[i]->SetPosition({ position_.x + (texWidth_ + digitSpacing_) * static_cast<float>(i), position_.y });
-
-				numSprites_[i]->Update();
-
-				++i;
-			}
-			else
-			{
-				//numSprites_.erase(numSprites_.begin() + i);
-			}
-		}
-    }
-
-    void Draw()
-    {
-		for (auto& sprite : numSprites_)
-		{
-			sprite->Draw();
-		}
-    }
-
-	void SetTexSize(float width, float height)
-	{
-		texWidth_ = width;
-		texHeight_ = height;
-	}
-
-	void SetDigitSpacing(float spacing)
-	{
-		digitSpacing_ = spacing;
-	}
-
-private:
-
-	size_t GetDigitCount(T value)
-	{
-		size_t count = 0;
-		do
-		{
-			value /= 10;
-			++count;
-		} while (value != 0);
-		return count;
-	}
-
+	bool GetIsCountFinished() const { return isCountFinished_; }
 
 private:
 
 	Vector2 position_ = { 0.0f, 0.0f };
 
-    T value_;
-
-	uint32_t distributionValue_ = 0;
+	uint32_t destinationValue_ = 0;
+	uint32_t startValue_ = 0;
+	uint32_t value_ = 0;
 
 	std::vector<std::unique_ptr<Sprite>> numSprites_;
 
@@ -115,5 +40,13 @@ private:
 
 	std::vector<int> digits_;
 
-	bool isCountUp_ = false;
+	bool isCount_ = false;
+
+	std::chrono::steady_clock::time_point lastUpdateTime_;
+
+	float countDuration_ = 0.1f; // カウントアップにかける時間（秒）
+
+	float countTime_ = 0.0f;
+
+	bool isCountFinished_ = false;
 };

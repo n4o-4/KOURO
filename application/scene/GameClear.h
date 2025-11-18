@@ -13,7 +13,9 @@
 #include "ParticleManager.h"
 #include "ParticleEmitter.h"
 #include "SceneManager.h"
-#include "Audio.h"
+#include "GrobalVariables.h"
+#include "NumUi.h"
+
 
 class GameClear : public BaseScene {
 
@@ -38,6 +40,13 @@ private:
 	const float kMainTime = 3.0f;
 
 	float timer_ = 0.0f;
+	
+	std::unique_ptr<NumUi> scoreUi_ = nullptr;
 
+	GrobalVariables grobalVariables_;
+
+	uint32_t eliminatedEnemyCount_ = 0;
+
+	std::unique_ptr<Sprite> scoreLabelSprite_ = nullptr;
 };
 

@@ -5,6 +5,7 @@ void GameClear::Initialize()
 	BaseScene::Initialize();
 
 	TextureManager::GetInstance()->LoadTexture("Resources/GameClear.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/score.png");
 
 	gameClearSprite_ = std::make_unique<Sprite>();
 	gameClearSprite_->Initialize(SpriteCommon::GetInstance(), "Resources/GameClear.png");
@@ -13,6 +14,20 @@ void GameClear::Initialize()
 	gameClearSprite_->SetAnchorPoint({ 0.5f,0.5f });
 	gameClearSprite_->SetTexSize({ 1536.0f,1024.0f });
 	gameClearSprite_->Update();
+
+	scoreUi_ = std::make_unique<NumUi>();
+	scoreUi_->Initialize(2);
+
+	eliminatedEnemyCount_ = grobalVariables_.LoadFile("ELIMINATED_ENEMY_COUNT",0);
+
+	scoreUi_->SetDestinationValue(eliminatedEnemyCount_, 1.0f);
+
+	scoreLabelSprite_ = std::make_unique<Sprite>();
+	scoreLabelSprite_->Initialize(SpriteCommon::GetInstance(), "Resources/score.png");
+	scoreLabelSprite_->SetTexSize({ 640.0f,128.0f });
+	scoreLabelSprite_->SetPosition({ 320.0f,550.0f });
+	scoreLabelSprite_->SetSize({ 480.0f,128.0f });
+	scoreLabelSprite_->Update();
 }
 
 void GameClear::Finalize()
@@ -34,7 +49,10 @@ void GameClear::Update()
 		break;
 	case Phase::kMain:
 
-		timer_ += kDeltaTime;
+		if(scoreUi_->GetIsCountFinished())
+		{
+			timer_ += kDeltaTime;
+		}
 
 		if(kMainTime >= timer_)
 		{
@@ -60,6 +78,8 @@ void GameClear::Update()
 		break;
 	}
 
+	scoreUi_->Update();
+
 	BaseScene::Update();
 }
 
@@ -67,9 +87,13 @@ void GameClear::Draw()
 {
 	DrawBackgroundSprite();
 
-	DrawForegroundSprite();
+	DrawForegroundSprite();	
 
 	gameClearSprite_->Draw();
+
+	scoreLabelSprite_->Draw();
+
+	scoreUi_->Draw();
 
 	fade_->Draw();
 }

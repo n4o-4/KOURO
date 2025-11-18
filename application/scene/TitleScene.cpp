@@ -59,8 +59,8 @@ void TitleScene::Initialize()
 	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enablePulse = false;
 
 
-	scoreUi_ = std::make_unique<NumUi<int>>();
-	scoreUi_->Initialize();
+	scoreUi_ = std::make_unique<NumUi>();
+	scoreUi_->Initialize(2);
 }
 
 void TitleScene::Finalize()
@@ -203,8 +203,20 @@ void TitleScene::Update()
 
 	player_->Update();
 
-	scoreUi_->Update(12);
+	static int count = 0;
 
+#ifdef _DEBUG
+	ImGui::Begin("Count");
+
+	if (ImGui::DragInt("count", &count))
+	{
+		scoreUi_->SetDestinationValue(count,1.0f);
+	}
+
+	ImGui::End();
+#endif
+
+	scoreUi_->Update();
 
 	BaseScene::Update();
 }
@@ -226,7 +238,7 @@ void TitleScene::Draw()
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	
 
-	scoreUi_->Draw();
+	//scoreUi_->Draw();
 
 	startBotton_->Draw();
 

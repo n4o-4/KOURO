@@ -23,13 +23,13 @@ void Player::Initialize(LineModel* model)
 
 	SetAABB(AABB({}, { -1.0f,-1.0f,-1.0f }, {1.0f,1.0f,1.0f}));
 
-	hp_ = 3;
-
 	objectLine_->SetColor({ 0.071f, 0.429f, 1.0f,1.0f });
 
 	rail.Initialize(controlPoints_);
 
 	colliderTransform_->SetParent(rail.GetWorldTransform());
+
+	hp_ = 1000;
 }
 
 void Player::Update()

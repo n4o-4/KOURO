@@ -46,8 +46,7 @@ public:
 	* \brief  SetControlPoints 制御点を設定する
 	*/
 	void SetControlPoints(const std::vector<Vector3>& points) { controlPoints_ = points; }
-
-	std::vector<Vector3> GetControlPoints() const { return controlPoints_; }
+	
 
 	void SetIsMove(bool isMove) { isMove_ = isMove; }
 

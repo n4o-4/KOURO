@@ -328,6 +328,7 @@
     <ClCompile Include="Rail.cpp" />
     <ClCompile Include="Absorb.cpp" />
     <ClCompile Include="NumUi.cpp" />
+    <ClCompile Include="GrobalVariables.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -597,6 +598,7 @@
     <ClInclude Include="Rail.h" />
     <ClInclude Include="Absorb.h" />
     <ClInclude Include="NumUi.h" />
+    <ClInclude Include="GrobalVariables.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
