@@ -79,6 +79,7 @@
     <FxCompile Include="Resources\shaders\Vignette.PS.hlsl">
       <Filter>resources\shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\Absorb.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -325,6 +326,8 @@
     <ClCompile Include="LineModel.cpp" />
     <ClCompile Include="LineModelManager.cpp" />
     <ClCompile Include="Rail.cpp" />
+    <ClCompile Include="Absorb.cpp" />
+    <ClCompile Include="NumUi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -592,6 +595,8 @@
     <ClInclude Include="LineModel.h" />
     <ClInclude Include="LineModelManager.h" />
     <ClInclude Include="Rail.h" />
+    <ClInclude Include="Absorb.h" />
+    <ClInclude Include="NumUi.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

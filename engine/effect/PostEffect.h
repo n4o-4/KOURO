@@ -20,6 +20,7 @@
 #include "LinearFog.h"
 #include "MotionBlur.h"
 #include "ColorSpace.h"
+#include "Absorb.h"
 
 class PostEffect
 {
@@ -63,6 +64,9 @@ public:
 
 		// ColorSpace
 		ColorSpace,
+
+		// Absorb
+		Absorb,
 
 		// ↑↑↑追加↑↑↑
 

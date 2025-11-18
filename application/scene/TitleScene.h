@@ -16,6 +16,7 @@
 #include "Audio.h"
 #include "LineModelManager.h"
 #include "Player.h"
+#include "NumUi.h"
 
 class TitleScene : public BaseScene
 {
@@ -67,4 +68,6 @@ private:
 	bool isMoveActive_ = false;
 
 	std::unique_ptr<LineModelManager> lineModelManager_ = nullptr;
+
+	std::unique_ptr<NumUi<int>> scoreUi_ = nullptr;
 };
