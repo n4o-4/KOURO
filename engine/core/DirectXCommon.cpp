@@ -879,6 +879,35 @@ DirectX::ScratchImage DirectXCommon::LoadTexture(const std::string& filePath)
 	return mipImages;
 }
 
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CretaetComputeBufferResource(size_t sizeInBytes)
+{
+	Microsoft::WRL::ComPtr<ID3D12Resource> particleResource;
+
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+
+	D3D12_RESOURCE_DESC resourceDesc{};
+	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	resourceDesc.Width = sizeInBytes;
+	resourceDesc.Height = 1;
+	resourceDesc.DepthOrArraySize = 1;
+	resourceDesc.MipLevels = 1;
+	resourceDesc.SampleDesc.Count = 1;
+	resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS; // UAV用！
+
+	device->CreateCommittedResource(
+		&heapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&resourceDesc,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS, // UAV用の初期ステート
+		nullptr,
+		IID_PPV_ARGS(&particleResource)
+	);
+
+	return particleResource;
+}
+
 void DirectXCommon::InitializeFixFPS()
 {
 	// 現在時間を記録

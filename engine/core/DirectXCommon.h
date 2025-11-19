@@ -74,6 +74,8 @@ public:
 	// Textureデータを読み込む関数
 	DirectX::ScratchImage LoadTexture(const std::string& filePath);
 
+	Microsoft::WRL::ComPtr<ID3D12Resource> CretaetComputeBufferResource(size_t sizeInBytes);
+
 	static D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index)
 	{
 		D3D12_CPU_DESCRIPTOR_HANDLE handleCPU = descriptorHeap->GetCPUDescriptorHandleForHeapStart();
@@ -127,6 +129,8 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12Resource> GetDepthStencilResource() { return depthStencilResource; }
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDepthSrvHandle() { return depthHandle_; }
+
+
 
 private:  
 	//デバイス初期化

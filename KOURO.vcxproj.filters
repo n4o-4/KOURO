@@ -329,6 +329,7 @@
     <ClCompile Include="Absorb.cpp" />
     <ClCompile Include="NumUi.cpp" />
     <ClCompile Include="GrobalVariables.cpp" />
+    <ClCompile Include="GpuParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -599,6 +600,7 @@
     <ClInclude Include="Absorb.h" />
     <ClInclude Include="NumUi.h" />
     <ClInclude Include="GrobalVariables.h" />
+    <ClInclude Include="GpuParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
