@@ -8,7 +8,7 @@ struct VertexShaderInput
 };
 
 StructuredBuffer<Particle> gParticles : register(t0);
-ConstantBuffer<PerView> gPerView : register(b0);
+ConstantBuffer<PerView> gPerView : register(b1);
 
 VertexShaderOutput main(VertexShaderInput input, uint instanceId : SV_InstanceID)
 {

@@ -3,6 +3,8 @@
 #include <chrono>
 #include <cmath>
 
+#include "GpuParticle.h"
+
 void TitleScene::Initialize()
 {
 	BaseScene::Initialize();
@@ -91,6 +93,7 @@ void TitleScene::Update()
 	std::chrono::time_point<std::chrono::steady_clock> now;
 	float elapsedTime;
 
+	GpuParticle::GetInstance()->Update(cameraManager_->GetActiveCamera()->GetViewProjection());
 
 	switch (phase_)
 	{
@@ -231,9 +234,9 @@ void TitleScene::Draw()
 	DrawObject();
 	/// オブジェクト描画	
 
-	lineDrawer_->PreDraw(cameraManager_->GetActiveCamera()->GetViewProjection());
+	//lineDrawer_->PreDraw(cameraManager_->GetActiveCamera()->GetViewProjection());
 
-	player_->Draw();
+	//player_->Draw();
 
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	

@@ -1,14 +1,38 @@
 #include "GpuParticle.h"
+#include "TextureManager.h"
 
-void GpuParticle::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, UavManager uavManagedr)
+std::unique_ptr<GpuParticle> GpuParticle::instance = nullptr;
+
+GpuParticle* GpuParticle::GetInstance()
+{
+	if (instance == nullptr) {
+		instance = std::make_unique<GpuParticle>();
+	}
+
+	return instance.get();
+}
+
+void GpuParticle::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, UavManager* uavManagedr)
 {
 	// メンバ変数に記録
 	dxCommon_ = dxCommon;
 	srvManager_ = srvManager;
-	uavManager_ = &uavManagedr;
+	uavManager_ = uavManagedr;
 
 	// リソースの生成
 	CreateResource();
+
+	// 頂点リソースの生成
+	CreateVertexResource();
+
+	// 頂点バッファビューの生成
+	CreateVertexBufferView();
+
+	// パービュ―リソースの生成
+	CreatePerViewResource();
+
+	// マテリアルリソースの生成
+	CreateMaterialResource();
 
 	// SRVの作成
 	srvIndex_ = srvManager_->Allocate();
@@ -17,10 +41,21 @@ void GpuParticle::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, Ua
 	// UAVの作成
 	uavIndex_ = uavManager_->Allocate();
 	uavManager_->CreateUAVforStructuredBuffer(uavIndex_, particleResource_.Get(), kMaxParticleCount, sizeof(ParticleCS));
-}
 
-void GpuParticle::Update()
-{
+	// パイプラインセットの作成
+	CreatePipelineSet();
+
+	materialData_.textureFilePath = "Resources/circle.png";
+	TextureManager::GetInstance()->LoadTexture(materialData_.textureFilePath);
+	materialData_.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(materialData_.textureFilePath);
+
+	material_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	material_->uvTransform = MakeIdentity4x4();
+
+
+	// ヒープの設定
+	srvManager_->PreDraw();
+
 	// rootSignatureの設定
 	dxCommon_->GetCommandList()->SetComputeRootSignature(computePipelineSet_.rootSignature.Get());
 
@@ -28,36 +63,124 @@ void GpuParticle::Update()
 	dxCommon_->GetCommandList()->SetPipelineState(computePipelineSet_.pipelineState.Get());
 
 	// UAVの設定
-	dxCommon_->GetCommandList()->SetComputeRootDescriptorTable(0, uavManager_->GetGPUDescriptorHandle(uavIndex_));
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, particleResource_.Get()->GetGPUVirtualAddress());
 
 	// Dispatchの実行
-	dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount,1,1);
+	dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount, 1, 1);
+}
+
+void GpuParticle::Update(ViewProjection viewProjection)
+{
+	Matrix4x4 view = viewProjection.matView_;
+
+	Matrix4x4 projection = viewProjection.matProjection_;
+
+	perView_->viewProjection = Multiply(view, projection);
+
+	Matrix4x4 backToFrontMatrix = MakeRotateZMatrix(std::numbers::pi_v<float>);
+
+	perView_->billboardMatrix = Multiply(backToFrontMatrix, viewProjection.matWorld_);
+}
+
+void GpuParticle::Draw()
+{
+	// rootSignatureの設定
+	dxCommon_->GetCommandList()->SetGraphicsRootSignature(graphicsPipelineSet_.rootSignature.Get());
+	// pipeLineStateの設定
+	dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineSet_.pipelineState.Get());
+
+	// 頂点バッファの設定
+	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+
+	// プリミティブトポロジーの設定
+	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	// 定数バッファの設定
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_.Get()->GetGPUVirtualAddress());
+
+	// SRVの設定
+	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(srvIndex_));
+
+	// テクスチャの設定
+	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, srvManager_->GetGPUDescriptorHandle(materialData_.textureIndex));
+
+	// パービュ―リソースの設定
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, perViewResource_.Get()->GetGPUVirtualAddress());
+
+	// 描画コマンド
+	dxCommon_->GetCommandList()->DrawInstanced(6, kMaxParticleCount, 0, 0);
 }
 
 void GpuParticle::CreateResource()
 {
-    D3D12_HEAP_PROPERTIES heapProperties{};
-    heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+    //D3D12_HEAP_PROPERTIES heapProperties{};
+    //heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
 
-    D3D12_RESOURCE_DESC resourceDesc{};
-    resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-    resourceDesc.Width = sizeof(ParticleCS) * kMaxParticleCount;
-    resourceDesc.Height = 1;
-    resourceDesc.DepthOrArraySize = 1;
-    resourceDesc.MipLevels = 1;
-    resourceDesc.SampleDesc.Count = 1;
-    resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-    resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS; // UAVとして使う
+    //D3D12_RESOURCE_DESC resourceDesc{};
+    //resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+    //resourceDesc.Width = sizeof(ParticleCS) * kMaxParticleCount;
+    //resourceDesc.Height = 1;
+    //resourceDesc.DepthOrArraySize = 1;
+    //resourceDesc.MipLevels = 1;
+    //resourceDesc.SampleDesc.Count = 1;
+    //resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+    //resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS; // UAVとして使う
 
-    // UAVとして使えるように初期ステートをUNORDERED_ACCESSにしておく
-    dxCommon_->GetDevice()->CreateCommittedResource(
-        &heapProperties,
-        D3D12_HEAP_FLAG_NONE,
-        &resourceDesc,
-        D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-        nullptr,
-        IID_PPV_ARGS(&particleResource_)
-    );
+    //// UAVとして使えるように初期ステートをUNORDERED_ACCESSにしておく
+    //dxCommon_->GetDevice()->CreateCommittedResource(
+    //    &heapProperties,
+    //    D3D12_HEAP_FLAG_NONE,
+    //    &resourceDesc,
+    //    D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+    //    nullptr,
+    //    IID_PPV_ARGS(&particleResource_)
+    //);
+
+	particleResource_ = dxCommon_->CretaetComputeBufferResource(sizeof(ParticleCS) * kMaxParticleCount);
+
+}
+
+void GpuParticle::CreateVertexResource()
+{
+	modelData_.vertices.push_back({ { -0.5f,  0.5f, 0.0f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // 左上
+	modelData_.vertices.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // 右上
+	modelData_.vertices.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // 左下
+
+	modelData_.vertices.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // 右上
+	modelData_.vertices.push_back({ {  0.5f, -0.5f, 0.0f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // 右下
+	modelData_.vertices.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // 左下
+
+	vertexResource_ = dxCommon_->CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
+}
+
+void GpuParticle::CreateVertexBufferView()
+{
+	// リソースの先頭アドレス
+	vertexBufferView_.BufferLocation = vertexResource_.Get()->GetGPUVirtualAddress();
+
+	// 使用するリソースのサイズ
+	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.vertices.size());
+
+	// 1頂点あたりのサイズ
+	vertexBufferView_.StrideInBytes = sizeof(VertexData);
+
+	VertexData* vertexData;
+	vertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+	std::memcpy(vertexData, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
+}
+
+void GpuParticle::CreatePerViewResource()
+{
+	perViewResource_ = dxCommon_->CreateBufferResource(sizeof(PerView));
+	perView_ = nullptr;
+	perViewResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&perView_));
+}
+
+void GpuParticle::CreateMaterialResource()
+{
+	materialResource_ = dxCommon_->CreateBufferResource(sizeof(Particle::Material));
+	material_ = nullptr;
+	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&material_));
 }
 
 void GpuParticle::CrateComputeRootSignature()
@@ -92,7 +215,7 @@ void GpuParticle::CrateComputeRootSignature()
 
 void GpuParticle::CreateComputePipelineState()
 {
-	Microsoft::WRL::ComPtr<IDxcBlob> computeShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.CS.hlsl", L"vs_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> computeShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/InitializeParticle.CS.hlsl", L"cs_6_0");
 
 	// Shaderのコンパイル
 	D3D12_COMPUTE_PIPELINE_STATE_DESC computePipelineStateDesc{};
@@ -126,21 +249,29 @@ void GpuParticle::CreateGraphicsRootSignature()
 	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	// rootParameterの生成
-	D3D12_ROOT_PARAMETER rootParameters[5] = {};
+	D3D12_ROOT_PARAMETER rootParameters[4] = {};
 
+	// material
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters[0].Descriptor.ShaderRegister = 0;
 
+	// instancing
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 	rootParameters[1].DescriptorTable.pDescriptorRanges = descriptorRangeForInstancing;
 	rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForInstancing);
 
+	// 
 	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;
 	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
+
+	// 
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	rootParameters[3].Descriptor.ShaderRegister = 1;
 
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
@@ -211,9 +342,9 @@ void GpuParticle::CreateGraphicsPipelineState()
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shaderのコンパイル
-	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.VS.hlsl", L"vs_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.CS.VS.hlsl", L"vs_6_0");
 
-	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.PS.hlsl", L"ps_6_0");
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.CS.PS.hlsl", L"ps_6_0");
 
 	// DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
@@ -273,4 +404,15 @@ void GpuParticle::CreateGraphicsPipelineState()
 	graphicsPipelineSet_.pipelineState = nullptr;
 	hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineSet_.pipelineState));
 	assert(SUCCEEDED(hr));
+}
+
+void GpuParticle::CreatePipelineSet()
+{
+	// ComputeShader用
+	CrateComputeRootSignature();
+	CreateComputePipelineState();
+
+	// 描画用
+	CreateGraphicsRootSignature();
+	CreateGraphicsPipelineState();
 }

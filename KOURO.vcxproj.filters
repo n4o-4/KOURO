@@ -83,6 +83,7 @@
     <FxCompile Include="Resources\shaders\Particle.CS.hlsl" />
     <FxCompile Include="Resources\shaders\InitializeParticle.CS.hlsl" />
     <FxCompile Include="Resources\shaders\Particle.CS.VS.hlsl" />
+    <FxCompile Include="Resources\shaders\Particle.CS.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

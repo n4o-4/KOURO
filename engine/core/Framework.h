@@ -27,6 +27,8 @@
 
 #include "LeakChecker.h"
 
+#include "GpuParticle.h"
+
 #include <chrono>
 #include <string>
 #include <wrl.h>
@@ -45,6 +47,8 @@ protected:
 
 	std::unique_ptr<ModelCommon> modelCommon = nullptr;
 
+	std::unique_ptr<UavManager> uavManager_ = nullptr;
+
 #ifdef _DEBUG
 
 	std::unique_ptr<ImGuiManager> imGuiManager = nullptr;
@@ -58,6 +62,10 @@ protected:
 	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
 
 	std::unique_ptr<PostEffect> postEffect_ = nullptr;
+
+	//std::unique_ptr<GpuParticle> gpuParticle_ = nullptr;
+
+	GpuParticle* gpuParticle_ = nullptr;
 
 	// フレームごとの時間計測用
 	uint64_t frameCount = 0;

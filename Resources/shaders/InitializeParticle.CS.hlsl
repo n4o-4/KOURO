@@ -1,4 +1,4 @@
-#include "Particle.CS.hlsli"
+ï»¿#include "Particle.CS.hlsli"
 
 RWStructuredBuffer<Particle> gParticles : register(u0);
 
@@ -8,7 +8,9 @@ void main( uint3 DTid : SV_DispatchThreadID )
     uint particleIndex = DTid.x;
     if (particleIndex < kMaxParticles)
     {
-        // ƒp[ƒeƒBƒNƒ‹‚ð‰Šú‰»
+        // ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚’åˆæœŸåŒ–
         gParticles[particleIndex] = (Particle) 0;
+        gParticles[particleIndex].scale = float3(0.5f,0.5f,0.5f);
+        gParticles[particleIndex].color = float4(1.0f, 1.0f, 1.0f, 1.0f);
     }
 }

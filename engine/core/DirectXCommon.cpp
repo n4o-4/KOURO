@@ -440,11 +440,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateDepthStencilTextureR
 		resourceDesc.Format = DXGI_FORMAT_R24G8_TYPELESS; // SRVとDSVで使えるフォーマット
 		resourceDesc.SampleDesc.Count = 1; // サンプリングカウント。1固定。
 		resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D; // 2次元
-		//resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL; // DepthStrncilとして使う通知
-		// 修正前
-		// resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // SRVとしても使う
-
-		// 修正後
+		
 		resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL | D3D12_RESOURCE_FLAG_NONE; // SRVとしても使う
 
 		// 利用するHeapの設定
@@ -697,7 +693,6 @@ void DirectXCommon::PostDraw()
 Microsoft::WRL::ComPtr<IDxcBlob> DirectXCommon::CompileShader(const std::wstring& filePath, const wchar_t* profile)
 {
 	// これからシェーダーをコンパイル
-	//Log(ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
 
 	// hlslファイルを読み込む
 	Microsoft::WRL::ComPtr<IDxcBlobEncoding> shaderSource = nullptr;
@@ -881,31 +876,40 @@ DirectX::ScratchImage DirectXCommon::LoadTexture(const std::string& filePath)
 
 Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CretaetComputeBufferResource(size_t sizeInBytes)
 {
-	Microsoft::WRL::ComPtr<ID3D12Resource> particleResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> resource;
 
-	D3D12_HEAP_PROPERTIES heapProperties{};
+	D3D12_HEAP_PROPERTIES heapProperties = {};
 	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+	heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+	heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+	heapProperties.CreationNodeMask = 1;
+	heapProperties.VisibleNodeMask = 1;
 
-	D3D12_RESOURCE_DESC resourceDesc{};
+	D3D12_RESOURCE_DESC resourceDesc = {};
 	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	resourceDesc.Alignment = 0;                              // ← これ重要！
 	resourceDesc.Width = sizeInBytes;
 	resourceDesc.Height = 1;
 	resourceDesc.DepthOrArraySize = 1;
 	resourceDesc.MipLevels = 1;
+	resourceDesc.Format = DXGI_FORMAT_UNKNOWN;               // ← これも重要！
 	resourceDesc.SampleDesc.Count = 1;
+	resourceDesc.SampleDesc.Quality = 0;
 	resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS; // UAV用！
+	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 
-	device->CreateCommittedResource(
+	HRESULT hr = device->CreateCommittedResource(
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS, // UAV用の初期ステート
+		D3D12_RESOURCE_STATE_COMMON,
 		nullptr,
-		IID_PPV_ARGS(&particleResource)
+		IID_PPV_ARGS(&resource)
 	);
 
-	return particleResource;
+	assert(SUCCEEDED(hr)); // エラーチェック
+
+	return resource;
 }
 
 void DirectXCommon::InitializeFixFPS()

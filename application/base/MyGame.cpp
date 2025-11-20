@@ -61,6 +61,8 @@ void MyGame::Draw()
 	// 基盤システムの描画
 	Framework::Draw();
 
+	gpuParticle_->Draw();
+
 	// レンダーテクスチャへの描画後処理
 	DirectXCommon::GetInstance()->RenderTexturePostDraw();
 
