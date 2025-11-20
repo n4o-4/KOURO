@@ -5,7 +5,7 @@ const uint32_t SrvManager::kMaxSRVCount = 512;
 void SrvManager::Initialize(DirectXCommon* directXCommon)
 {
 	// メンバ変数に記録
-	this->dxCommon_ = directXCommon;
+	dxCommon_ = directXCommon;
 
 	// デスクリプタヒープの生成
 	descriptorHeap = directXCommon->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
@@ -18,6 +18,8 @@ void SrvManager::Initialize(DirectXCommon* directXCommon)
 
 uint32_t SrvManager::Allocate()
 {
+	assert(CheckSrvCount() && "Srvの数が上限に達しています");
+
 	// return する番号を一旦記録しておく
 	int index = useIndex;
 
@@ -115,7 +117,8 @@ void SrvManager::SetGraphicsRootDescriptorTable(UINT RootParameterIndex, uint32_
 
 bool SrvManager::CheckSrvCount()
 {
-	if (useIndex < kMaxSRVCount) {
+	if (useIndex < kMaxSRVCount)
+	{
 		return true;
 	}
 	else {

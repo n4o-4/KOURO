@@ -23,7 +23,6 @@ public: /// 公開メンバ関数
 	 * \brief Sphereの情報を設定する
 	 * \parma Sphere Sphereの数値を設定
 	*/
-
 	void SetSphere(const Sphere& sphere) { sphere_ = sphere; }
 
 	///================================================================================
@@ -33,12 +32,7 @@ public: /// 公開メンバ関数
 	 * \brief  GetSphere Sphereを取得する
 	 * \return Sphere
 	 */
-
 	Sphere GetSphere() const { return sphere_; }
-
-private: /// 非公開メンバ関数
-
-public: /// 公開メンバ変数
 
 private: /// 非公開メンバ変数
 
