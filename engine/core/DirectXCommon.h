@@ -74,7 +74,7 @@ public:
 	// Textureデータを読み込む関数
 	DirectX::ScratchImage LoadTexture(const std::string& filePath);
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> CretaetComputeBufferResource(size_t sizeInBytes);
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateComputeBufferResource(size_t sizeInBytes);
 
 	static D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index)
 	{

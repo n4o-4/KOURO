@@ -84,6 +84,8 @@
     <FxCompile Include="Resources\shaders\InitializeParticle.CS.hlsl" />
     <FxCompile Include="Resources\shaders\Particle.CS.VS.hlsl" />
     <FxCompile Include="Resources\shaders\Particle.CS.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\EmitParticleSphere.CS.hlsl" />
+    <FxCompile Include="Resources\shaders\UpdateParticle.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -632,6 +634,7 @@
       <Filter>resources\shaders</Filter>
     </None>
     <None Include="Resources\shaders\Particle.CS.hlsli" />
+    <None Include="Resources\shaders\Random.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="application">

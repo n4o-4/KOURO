@@ -57,11 +57,13 @@ void Framework::Initialize()
 
 	SceneManager::GetInstance()->SetPostEffect(postEffect_.get());
 
-	startTime = std::chrono::high_resolution_clock::now();
 
-	//gpuParticle_ = std::make_unique<GpuParticle>();
 	gpuParticle_ = GpuParticle::GetInstance();
 	gpuParticle_->Initialize(dxCommon_, srvManager.get(), uavManager_.get());
+
+	now = std::chrono::steady_clock::now();
+
+	startTime = now;
 }
 
 void Framework::Finalize()
@@ -107,6 +109,10 @@ void Framework::Update()
 
 	UpdateFPS();
 
+	float deltaTime = std::chrono::duration<float>(now - lastTime).count();
+
+	gpuParticle_->SetPerFrame(totalTime, deltaTime);
+
 #endif _DEBUG
 }
 
@@ -150,18 +156,21 @@ void Framework::Run()
 
 void Framework::UpdateFPS()
 {
-		frameCount++;
+	frameCount++;
 
-		auto currentTime = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double> delta = currentTime - startTime;
-		elapsedTime += delta.count();
-		startTime = currentTime;
+	// 現在時刻を取得
+	now = std::chrono::steady_clock::now();
 
-		if (elapsedTime >= 1.0) {
-			fps = frameCount / elapsedTime;
-			frameCount = 0;
-			elapsedTime = 0.0;
-		}
+	// 経過時間を秒で計算
+	elapsedTime = std::chrono::duration<float>(now - lastTime).count();
+	totalTime = std::chrono::duration<float>(now - startTime).count();
 
-		ImGui::Text("FPS: %.1f", fps);
+	if (elapsedTime >= 1.0f) {
+		fps = frameCount / elapsedTime;
+		frameCount = 0;
+		lastTime = now; // lastTime をここで更新
+	}
+
+	// ImGui に表示
+	ImGui::Text("FPS: %.2f TotalTime: %.2f", fps, totalTime);
 }

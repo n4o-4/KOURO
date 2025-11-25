@@ -69,10 +69,14 @@ protected:
 
 	// フレームごとの時間計測用
 	uint64_t frameCount = 0;
-	double elapsedTime = 0.0;
+	double totalTime = 0.0; // 総時間
+	std::chrono::steady_clock::time_point startTime;
+	std::chrono::steady_clock::time_point lastTime;
+	double elapsedTime = 0.0; 
 	double fps = 0.0;
+	std::chrono::steady_clock::time_point now;
 
-    std::chrono::high_resolution_clock::time_point startTime;
+	const float kDeltaTime_ = 1.0f / 60.0f;
 public:
 
 	virtual~Framework() = default;
@@ -96,6 +100,8 @@ public:
 
 	// 実行
 	void Run();
+
+	const float GetDeltaTime() const { return kDeltaTime_; }
 
 private:
 

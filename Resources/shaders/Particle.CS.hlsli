@@ -1,3 +1,4 @@
+#include "Random.hlsli"
 static uint kMaxParticles = 1024;
 
 struct Particle
@@ -10,10 +11,27 @@ struct Particle
     float4 color;
 };
 
+struct EmitterSphere
+{
+    float3 translate;    // 位置
+    float radius;        // 射出半径
+    uint count;          // 射出数
+    float frequency;     // 射出間隔
+    float frequencyTime; // 射出間隔調整用時間
+    uint emit;           // 射出許可
+};
+
 struct PerView
 {
     float4x4 viewProjection;
     float4x4 billboardMatrix;
+};
+
+struct PerFrame
+{
+    float time;
+    
+    float deltaTime;
 };
 
 struct VertexShaderOutput
@@ -21,4 +39,21 @@ struct VertexShaderOutput
     float4 position : SV_Position;
     float2 texcoord : TEXCOORD0;
     float4 color : COLOR0;
+};
+
+class RandomGenerator
+{
+    float3 seed;
+    float3 Generate3d()
+    {
+        seed = rand3dTo3d(seed);
+        return seed;
+    }
+    
+    float Generate1d()
+    {
+        float result = rand3dTo1d(seed);
+        seed.x = result;
+        return result;
+    }
 };

@@ -34,5 +34,4 @@ private:
 
 	// シーンファクトリー
 	std::unique_ptr<AbstaractSceneFactory> sceneFactory_ = nullptr;
-
 };

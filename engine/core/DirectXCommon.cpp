@@ -874,7 +874,7 @@ DirectX::ScratchImage DirectXCommon::LoadTexture(const std::string& filePath)
 	return mipImages;
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CretaetComputeBufferResource(size_t sizeInBytes)
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateComputeBufferResource(size_t sizeInBytes)
 {
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource;
 
