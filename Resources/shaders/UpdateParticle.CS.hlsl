@@ -19,22 +19,19 @@ void main( uint3 DTid : SV_DispatchThreadID )
             float alpha = 1.0f - (gParticles[particleIndex].currentTime / gParticles[particleIndex].lifeTime);
             gParticles[particleIndex].color.a = saturate(alpha);
         }
-        else
+        
+        if (gParticles[particleIndex].currentTime >= gParticles[particleIndex].lifeTime)
         {
-            gParticles[particleIndex].scale = float3(0.0f,0.0f,0.0f);
-            
-            int freeListIndex;
-            
+            gParticles[particleIndex].scale = float3(0, 0, 0);
+            uint freeListIndex;
             InterlockedAdd(gFreeListIndex[0], 1, freeListIndex);
-
-            // ÅV‚ÌFreeListIndex‚ÌêŠ‚É€‚ñ‚¾Particle‚ÌIndex‚ğİ’è
-            if ((freeListIndex + 1) < kMaxParticles)
+            if (freeListIndex < kMaxParticles)
             {
-                gFreeList[freeListIndex + 1] = particleIndex;
+                gFreeList[freeListIndex] = particleIndex;
             }
             else
             {
-                InterlockedAdd(gFreeListIndex[0], -1,freeListIndex);
+                InterlockedAdd(gFreeListIndex[0], -1);
             }
         }
     }

@@ -98,6 +98,7 @@
     <ClCompile Include="application\collider\OBBCollider.cpp" />
     <ClCompile Include="engine\line\OBBLineObject.cpp" />
     <ClCompile Include="application\camera\TitleCamera.cpp" />
+    <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="NumUi.cpp" />
     <ClCompile Include="ObjectLine.cpp" />
     <ClCompile Include="Rail.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="LineModelManager.h" />
     <ClInclude Include="LineObjectFactory.h" />
     <ClInclude Include="LineObjectManager.h" />
+    <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="NumUi.h" />
     <ClInclude Include="ObjectLine.h" />
     <ClInclude Include="Rail.h" />
@@ -252,6 +254,14 @@
     <FxCompile Include="Resources\shaders\Dissolve.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\EmitParticleLine.CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>

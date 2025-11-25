@@ -16,26 +16,23 @@ void main( uint3 DTid : SV_DispatchThreadID )
         
         for (uint countIndex = 0; countIndex < gEmitter.count;countIndex++)
         {     
-            int freeListIndex;
-            
-            // FreeListのIndexを1つ前に設定し、現在のIndexを取得
+            uint freeListIndex;
             InterlockedAdd(gFreeListIndex[0], -1, freeListIndex);
-            
-            if(0 <= freeListIndex && freeListIndex < kMaxParticles)
+
+            if (freeListIndex > 0)
             {
-                uint particleIndex = gFreeList[freeListIndex];
-                gParticles[particleIndex].scale = generator.Generate3d();
+                uint particleIndex = gFreeList[freeListIndex - 1]; // ← ここが重要
+                gParticles[particleIndex].scale = float3(1, 1, 1);
                 gParticles[particleIndex].translate = generator.Generate3d() * 11 - 6;
-                gParticles[particleIndex].velocity = generator.Generate3d() * 0.7 - 0.4;
+                gParticles[particleIndex].velocity = generator.Generate3d() * 0.05 - 0.03;
                 gParticles[particleIndex].color.rgb = generator.Generate3d();
-                gParticles[particleIndex].lifeTime = 10;
                 gParticles[particleIndex].color.a = 1.0f;
+                gParticles[particleIndex].currentTime = 0.0f;
+                gParticles[particleIndex].lifeTime = 5.0f;
             }
             else
             {
                 InterlockedAdd(gFreeListIndex[0], 1);
-                
-                break;
             }
         }
     }

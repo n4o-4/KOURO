@@ -86,6 +86,7 @@
     <FxCompile Include="Resources\shaders\Particle.CS.PS.hlsl" />
     <FxCompile Include="Resources\shaders\EmitParticleSphere.CS.hlsl" />
     <FxCompile Include="Resources\shaders\UpdateParticle.CS.hlsl" />
+    <FxCompile Include="Resources\shaders\EmitParticleLine.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -337,6 +338,7 @@
     <ClCompile Include="GrobalVariables.cpp" />
     <ClCompile Include="GpuParticle.cpp" />
     <ClCompile Include="UavManager.cpp" />
+    <ClCompile Include="ModelLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -609,6 +611,7 @@
     <ClInclude Include="GrobalVariables.h" />
     <ClInclude Include="GpuParticle.h" />
     <ClInclude Include="UavManager.h" />
+    <ClInclude Include="ModelLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

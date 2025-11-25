@@ -4,10 +4,15 @@ static uint kMaxParticles = 1024;
 struct Particle
 {
     float3 translate;
+    float pad0; // 16ƒoƒCƒg‹«ŠE
     float3 scale;
+    float pad1;
     float lifeTime;
+    float3 pad2;
     float3 velocity;
+    float pad3;
     float currentTime;
+    float3 pad4;
     float4 color;
 };
 

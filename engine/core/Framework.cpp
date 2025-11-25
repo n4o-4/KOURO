@@ -109,8 +109,6 @@ void Framework::Update()
 
 	UpdateFPS();
 
-	float deltaTime = std::chrono::duration<float>(now - lastTime).count();
-
 	gpuParticle_->SetPerFrame(totalTime, deltaTime);
 
 #endif _DEBUG
@@ -162,15 +160,18 @@ void Framework::UpdateFPS()
 	now = std::chrono::steady_clock::now();
 
 	// 経過時間を秒で計算
-	elapsedTime = std::chrono::duration<float>(now - lastTime).count();
+	//elapsedTime = std::chrono::duration<float>(now - lastTime).count();
 	totalTime = std::chrono::duration<float>(now - startTime).count();
 
 	if (elapsedTime >= 1.0f) {
 		fps = frameCount / elapsedTime;
 		frameCount = 0;
-		lastTime = now; // lastTime をここで更新
 	}
 
+	deltaTime = std::chrono::duration<float>(now - lastTime).count();
+
+	lastTime = now; // lastTime をここで更新
+
 	// ImGui に表示
-	ImGui::Text("FPS: %.2f TotalTime: %.2f", fps, totalTime);
+	ImGui::Text("FPS: %.2f TotalTime: %.2f deltaTime: %.f", fps, totalTime,deltaTime);
 }

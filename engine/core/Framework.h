@@ -70,6 +70,7 @@ protected:
 	// フレームごとの時間計測用
 	uint64_t frameCount = 0;
 	double totalTime = 0.0; // 総時間
+	float deltaTime;
 	std::chrono::steady_clock::time_point startTime;
 	std::chrono::steady_clock::time_point lastTime;
 	double elapsedTime = 0.0; 

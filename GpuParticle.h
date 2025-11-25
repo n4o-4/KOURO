@@ -7,14 +7,16 @@
 #include "ModelDatas.h"
 #include "ViewProjection.h"
 
+#include "LineModelManager.h"
+
 struct ParticleCS
 {
-	Vector3 translate; // 位置	
-	Vector3 scale;     // 
-	float lifeTime;    // 
-	Vector3 velocity;  //
-	float currentTime; // 
-	Vector4 color;     // 
+	Vector3 translate; float pad0;
+	Vector3 scale;     float pad1;
+	float lifeTime;    float pad2[3];
+	Vector3 velocity;  float pad3;
+	float currentTime; float pad4[3];
+	Vector4 color;
 };
 
 struct PerView
@@ -52,6 +54,19 @@ namespace Particle
 		float time;
 		float deltaTime;
 	};
+
+	struct Transform
+	{
+		Matrix4x4 matWorld;
+	};
+
+	struct LineSegment
+	{
+		Vector3 start;
+		float pad1;
+		Vector3 end;
+		float pad2;
+	};
 }
 
 class GpuParticle
@@ -80,6 +95,10 @@ public:
 
 	void SetPerFrame(float time, float deltaTime) { perFrame_->time = time, perFrame_->deltaTime = deltaTime; }
 
+	void CreateLineSegment(std::string filePath);
+
+	void LineEmit(Matrix4x4 world);
+
 private: // 非公開メンバ関数
 
 	// \brief  CreateResourc0e リソースの生成
@@ -103,6 +122,15 @@ private: // 非公開メンバ関数
 	// \brief  CreatePerFrameResource perFrameリソースの生成
 	void CreatePerFrameResource();
 
+	// \brief  CreateTransformResource transformリソースの生成
+	void CreateTransformResource();
+
+	// \brief  CreateLineSegmentResource lineSegmentリソースの生成
+	void CreateLineSegmentResource();
+
+	//
+	void CreateLineCountResource();
+
 	/// Compute
 
 	// initialize
@@ -110,6 +138,8 @@ private: // 非公開メンバ関数
 
 	// emit
 	void CreateEmitPipelineSet();
+
+	void CreateLineEmitPipelineSet();
 
 	// update
 	void CreateUpdatePipelineSet();
@@ -172,6 +202,17 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> perFrameResource_ = nullptr;
 	Particle::PerFrame* perFrame_ = nullptr;
 
+	// transform
+	Microsoft::WRL::ComPtr<ID3D12Resource> transformResource_ = nullptr;
+	Particle::Transform* transform_ = nullptr;
+
+	// lineSegment
+	Microsoft::WRL::ComPtr<ID3D12Resource> lineSegmentResource_ = nullptr;
+	Particle::LineSegment* lineSegment_ = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> lineCountResource_ = nullptr;
+	uint32_t* lineCount_;
+
 	uint32_t srvIndex_ = 0;
 
 	uint32_t uavIndex_ = 0;
@@ -182,14 +223,20 @@ private:
 	// ComputeShader用(EmitParticle)
 	std::unique_ptr<PipelineSet> emitPipelineSet_;
 
+	// ComputeShader用(線上発射)
+	std::unique_ptr<PipelineSet> lineEmitPipelineSet_;
+
 	// ComputeShader用(UpdateParticle)
 	std::unique_ptr<PipelineSet> updatePipelineSet_;
 
 	// 描画用
 	std::unique_ptr<PipelineSet> graphicsPipelineSet_;
 
-	
-
 	const float kDeltaTime_ = 1.0f / 60.0f;
+
+	std::vector<Particle::LineSegment> lineSegments_;
+
+	uint32_t lineSegmentSrvIndex_ = 0;
+
 };
 
