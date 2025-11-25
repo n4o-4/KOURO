@@ -27,7 +27,11 @@ void Player::Initialize(LineModel* model)
 
 	rail.Initialize(controlPoints_);
 
-	colliderTransform_->SetParent(rail.GetWorldTransform());
+	colliderTransform_->transform.translate = { 0.0f,0.0f,300.0f };
+
+	colliderTransform_->UpdateMatrix();
+
+	//colliderTransform_->SetParent(rail.GetWorldTransform());
 
 	hp_ = 1000;
 }
@@ -61,7 +65,7 @@ void Player::Update()
 
 	
 
-	rail.Update();
+	//rail.Update();
 
 	colliderTransform_->transform;
 

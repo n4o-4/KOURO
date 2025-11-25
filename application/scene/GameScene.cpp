@@ -224,9 +224,9 @@ void GameScene::Initialize() {
 	railCamera_->Initialize();
 
 	cameraManager_->CamerasClear();
-	cameraManager_->SetActiveCamera(railCamera_.get());
+	//cameraManager_->SetActiveCamera(railCamera_.get());
 	cameraManager_->Update();
-
+	cameraManager_->GetActiveCamera()->GetViewProjection().transform.translate.z = 280.0f;
 	//player_->SetParentTransform(railCamera_->GetWorldTransform());
 
 

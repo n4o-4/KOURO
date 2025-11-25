@@ -60,5 +60,7 @@ private: // 非公開メンバ変数
 	std::unique_ptr<EnemyState> state_ = nullptr;
 
 	LineModelManager* lineModelManager_ = nullptr;
+
+	ParticleEmitter emitter_;
 };
 
