@@ -73,6 +73,8 @@ void GpuParticle::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, Ua
 
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, counterResource_.Get()->GetGPUVirtualAddress());
 
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, freeListResource_.Get()->GetGPUVirtualAddress());
+
 	// DispatchÇÃé¿çs
 	dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount, 1, 1);
 }
@@ -117,9 +119,11 @@ void GpuParticle::Update(ViewProjection viewProjection)
 
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, counterResource_.Get()->GetGPUVirtualAddress());
 
-	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(2, emitterResource_.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, freeListResource_.Get()->GetGPUVirtualAddress());
 
-	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(3, perFrameResource_.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(3, emitterResource_.Get()->GetGPUVirtualAddress());
+
+	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
 
 	// DispatchÇÃé¿çs
 	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
@@ -146,7 +150,9 @@ void GpuParticle::Update(ViewProjection viewProjection)
 
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, counterResource_.Get()->GetGPUVirtualAddress());
 
-	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(2, perFrameResource_.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, freeListResource_.Get()->GetGPUVirtualAddress());
+
+	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(3, perFrameResource_.Get()->GetGPUVirtualAddress());
 
 	// DispatchÇÃé¿çs
 	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
@@ -210,6 +216,7 @@ void GpuParticle::CreateResource()
 
 	counterResource_ = dxCommon_->CreateComputeBufferResource(sizeof(uint32_t));
 
+	freeListResource_ = dxCommon_->CreateComputeBufferResource(sizeof(uint32_t) * kMaxParticleCount);
 }
 
 void GpuParticle::CreateVertexResource()
@@ -284,7 +291,7 @@ void GpuParticle::CreateInitializePipelineSet()
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	// rootParameterÇÃê∂ê¨
-	D3D12_ROOT_PARAMETER rootParameters[2] = {};
+	D3D12_ROOT_PARAMETER rootParameters[3] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[0].Descriptor.ShaderRegister = 0;
@@ -292,6 +299,10 @@ void GpuParticle::CreateInitializePipelineSet()
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[1].Descriptor.ShaderRegister = 1;
+
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[2].Descriptor.ShaderRegister = 2;
 
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
@@ -322,7 +333,7 @@ void GpuParticle::CreateEmitPipelineSet()
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	// rootParameterÇÃê∂ê¨
-	D3D12_ROOT_PARAMETER rootParameters[4] = {};
+	D3D12_ROOT_PARAMETER rootParameters[5] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[0].Descriptor.ShaderRegister = 0;
@@ -331,13 +342,17 @@ void GpuParticle::CreateEmitPipelineSet()
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[1].Descriptor.ShaderRegister = 1;
 
-	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rootParameters[2].Descriptor.ShaderRegister = 0;
+	rootParameters[2].Descriptor.ShaderRegister = 2;
 
 	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rootParameters[3].Descriptor.ShaderRegister = 1;
+	rootParameters[3].Descriptor.ShaderRegister = 0;
+
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[4].Descriptor.ShaderRegister = 1;
 
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
@@ -368,7 +383,7 @@ void GpuParticle::CreateUpdatePipelineSet()
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	// rootParameterÇÃê∂ê¨
-	D3D12_ROOT_PARAMETER rootParameters[3] = {};
+	D3D12_ROOT_PARAMETER rootParameters[4] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[0].Descriptor.ShaderRegister = 0;
@@ -377,9 +392,13 @@ void GpuParticle::CreateUpdatePipelineSet()
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[1].Descriptor.ShaderRegister = 1;
 
-	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rootParameters[2].Descriptor.ShaderRegister = 0;
+	rootParameters[2].Descriptor.ShaderRegister = 2;
+
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[3].Descriptor.ShaderRegister = 0;
 
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);

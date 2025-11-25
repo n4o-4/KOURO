@@ -153,6 +153,7 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> particleResource_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> counterResource_ = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> freeListResource_ = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
