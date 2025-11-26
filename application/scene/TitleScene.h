@@ -18,6 +18,8 @@
 #include "Player.h"
 #include "NumUi.h"
 
+// \brief TitleScene タイトルシーンクラス
+
 class TitleScene : public BaseScene
 {
 private:

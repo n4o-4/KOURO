@@ -6,6 +6,8 @@
 #include "RailCamera.h"
 #include "TitleCamera.h"
 
+// \brief CameraManager カメラ管理クラス
+
 class CameraManager
 {
 public: /// メンバ関数	

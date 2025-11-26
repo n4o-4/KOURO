@@ -1,6 +1,8 @@
 #pragma once
 #include "BaseCamera.h"
 
+// \brief Camera デフォルトのカメラクラス
+
 class Camera : public BaseCamera
 {
 private:

@@ -12,14 +12,8 @@
 
 #include "ModelDatas.h"
 
-//struct Node
-//	{
-//		Matrix4x4 localMatrix;
-//		std::string name;
-//		std::vector<Node> children;
-//	};
+// \brief Model 3dモデルクラス
 
-// 3Dモデル
 class Model
 {
 public:

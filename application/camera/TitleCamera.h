@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "BaseCamera.h"
 #include "WorldTransform.h"
+
+// \brief TitleCamera タイトルで使うカメラ
+
 class TitleCamera : public BaseCamera
 {
 public:

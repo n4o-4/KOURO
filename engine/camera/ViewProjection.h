@@ -22,6 +22,8 @@ struct ConstBufferDataViewProjection
 	Matrix4x4 matViewProjection;
 };
 
+// \brief ViewProjection ビュープロジェクションクラス
+
 class ViewProjection
 {
 public:

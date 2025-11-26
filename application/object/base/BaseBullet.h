@@ -4,6 +4,8 @@
 #include "BaseEntity.h"
 #include "ObjectLine.h"
 
+// \brief BaseBullet 弾の基底クラス
+
 class BaseBullet : public BaseEntity
 {
 public: // 公開メンバ関数

@@ -2,6 +2,8 @@
 #include "DirectXCommon.h"
 #include "Camera.h"
 
+// \brief  Object3dCommon object3dの汎用処理クラス
+
 class Object3dCommon
 {
 public: // メンバ関数

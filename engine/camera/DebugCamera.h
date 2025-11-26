@@ -5,6 +5,8 @@
 #include "BaseCamera.h"
 #include "WorldTransform.h"
 
+// \brief DebugCamera デバッグカメラクラス
+
 class DebugCamera : public BaseCamera
 {
 public:

@@ -7,7 +7,7 @@
 #include "SpriteCommon.h"
 #include "Sprite.h"
 
-
+// \brief Fade フェードクラス
 
 class Fade
 {

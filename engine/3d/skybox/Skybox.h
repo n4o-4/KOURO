@@ -13,6 +13,8 @@
 #include "SpotLight.h"
 #include "ModelDatas.h"
 
+// \brief SkyBox スカイボックスクラス
+
 class Skybox
 {
 public:

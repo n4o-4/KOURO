@@ -11,6 +11,9 @@
 #include "CameraManager.h"
 
 #include "ModelManager.h"
+
+// \brief ParicleManager パーティクル管理クラス
+
 class ParticleManager
 {
 

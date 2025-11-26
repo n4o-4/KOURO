@@ -1,6 +1,8 @@
 #pragma once
 #include "ParticleManager.h"
 
+// \brief ParticleEmitter   パーティクル射出クラス
+
 class ParticleEmitter
 {
 private:

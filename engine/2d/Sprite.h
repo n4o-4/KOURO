@@ -8,6 +8,8 @@
 
 class SpriteCommon;
 
+// \brief Sprite スプライトクラス
+
 class Sprite
 {
 public: // メンバ関数

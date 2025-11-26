@@ -5,6 +5,8 @@
 #include "Model.h"
 #include "ModelCommon.h"
 
+// \brief ModelManager モデル管理クラス
+
 class ModelManager
 {
 public:

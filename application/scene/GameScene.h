@@ -14,6 +14,8 @@
 #include "LevelLoader.h"
 #include "GrobalVariables.h"
 
+// \brief GameScene ゲームシーンクラス
+
 class GameScene : public BaseScene
 {
 private:

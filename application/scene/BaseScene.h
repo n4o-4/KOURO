@@ -18,7 +18,8 @@
 
 class SceneManager;
 
-// シーン基底クラス
+// \brief BaseSceneシーン基底クラス
+
 class BaseScene
 {
 public:

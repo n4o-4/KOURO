@@ -15,6 +15,8 @@ using ColliderVariant = std::variant<
 	std::shared_ptr<OBBCollider>
 >;
 
+// \brief ColliderManager collider管理クラス
+
 class ColliderManager
 {
 public:  /// 公開メンバ関数

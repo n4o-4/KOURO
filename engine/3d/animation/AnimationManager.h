@@ -12,6 +12,8 @@
 
 #include "Model.h"
 
+// \brief AnimationManager アニメーション管理クラス 読み込み、再生を行う
+
 class AnimationManager
 {
 private:

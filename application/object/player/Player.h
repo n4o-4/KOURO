@@ -7,6 +7,8 @@
 
 #include "Rail.h"
 
+// \brief Player プレイヤークラス
+
 class Player : public BaseCharacter, public AABBCollider
 {
 public: // 公開メンバ関数

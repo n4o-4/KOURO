@@ -3,9 +3,7 @@
 #include "BaseScene.h"
 #include <string>
 
-/// <sumary>
-/// シーン工場(概念)
-/// </summary>
+// \brief AbstractSceneFactory シーン工場(概念)
 
 class AbstaractSceneFactory
 {

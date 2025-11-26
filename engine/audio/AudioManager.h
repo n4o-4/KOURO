@@ -17,6 +17,8 @@
 #pragma comment(lib, "Mfreadwrite.lib")
 #pragma comment(lib, "mfuuid.lib")
 
+// \brief AudioManager 音管理クラス
+
 class AudioManager
 {
 private:

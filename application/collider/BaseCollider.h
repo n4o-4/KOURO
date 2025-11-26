@@ -10,6 +10,8 @@ class SphereCollider; // 前方宣言
 
 class BaseEntity; // 前方宣言
 
+// \brief BaseCollider Collider基底クラス
+
 class BaseCollider
 {
 public: /// 公開メンバ関数

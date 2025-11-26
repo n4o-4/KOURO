@@ -15,6 +15,8 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 
+// \brief Object3d objectの位置情報クラス
+
 class Object3d
 {
 private:

@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "BaseCollider.h"
 
+// \brief OBBCollider OBB型ぼコライダークラス
+
 class OBBCollider : public BaseCollider
 {
 public: /// 公開メンバ関数

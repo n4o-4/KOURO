@@ -8,6 +8,8 @@
 
 #include "MyMath.h"
 
+// \brief WorldTransform トランスフォームクラス
+
 struct ConstBufferDataWorldTransform
 {
 	Matrix4x4 matWorld;

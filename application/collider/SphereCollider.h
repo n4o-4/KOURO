@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "BaseCollider.h"
 
+// \brief SphereCollider Sphere型のコライダークラス
+
 class SphereCollider : public BaseCollider
 {
 public: /// 公開メンバ関数

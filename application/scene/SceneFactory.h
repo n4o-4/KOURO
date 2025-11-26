@@ -7,7 +7,8 @@
 #include "GameClear.h"
 #include "GameOver.h"
 
-// このゲーム用のシーン工場
+// \brief SceneFactory このゲーム用のシーン工場
+
 class SceneFactory : public AbstaractSceneFactory
 {
 public:

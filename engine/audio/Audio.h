@@ -10,6 +10,8 @@
 
 #include <AudioManager.h>
 
+// \brief Audio 音クラス
+
 class Audio {
 
 

@@ -5,7 +5,9 @@
 #include "Camera.h"
 #include "SrvManager.h"
 #include "PostEffect.h"
-// シーン管理
+
+// \brief SceneManager シーン管理クラス
+
 class SceneManager
 {
 public:

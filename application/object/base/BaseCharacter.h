@@ -4,6 +4,8 @@
 #include "ObjectLine.h"
 #include "BaseEntity.h"
 
+// \brief BaseCharacter キャラクター基底クラス
+
 class BaseCharacter : protected BaseEntity
 {
 public: // 公開メンバ関数

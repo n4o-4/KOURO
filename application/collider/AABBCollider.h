@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "BaseCollider.h"
 
+// \brief AABBCollider AABB型のコライダークラス
+
 class AABBCollider : public BaseCollider
 {
 public: /// 公開メンバ関数
