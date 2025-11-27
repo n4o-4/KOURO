@@ -13,6 +13,10 @@
 #include "SpotLight.h"
 #include "ModelDatas.h"
 
+// \brief Skybox
+// 背景として描画される立方体スカイボックスを管理するクラス。
+// DirectX12を使用して、頂点・インデックス・マテリアルリソースを生成し描画。
+
 class Skybox
 {
 public:

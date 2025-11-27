@@ -12,6 +12,10 @@ namespace ColorSpaceShader
 	};
 }
 
+// \brief ColorSpace  
+// HSV（色相・彩度・明度）を操作して画面全体の色調を変化させるポストエフェクトクラス。  
+// パイプライン生成とマテリアル制御を行い、色味調整やトーン補正などの効果を適用する。
+
 class ColorSpace : public BaseEffect
 {
 public:

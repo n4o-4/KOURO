@@ -13,6 +13,10 @@ namespace DissolveShader
 	};
 }
 
+// \brief Dissolve  
+// マスクテクスチャを利用してオブジェクトを徐々に消失させるディゾルブ効果を実現するポストエフェクトクラス。  
+// エッジカラーや閾値を調整し、溶けるようなフェードアウト演出を行う。
+
 class Dissolve : public BaseEffect
 {
 public:

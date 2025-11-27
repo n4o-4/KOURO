@@ -7,6 +7,8 @@
 #include "EnemyState.h"
 #include "ApproachState.h"
 
+// \brief Enemy 敵クラス
+
 class Enemy : public BaseCharacter, public AABBCollider
 {
 public: // 公開メンバ関数

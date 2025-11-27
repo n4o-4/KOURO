@@ -5,6 +5,7 @@
 // 仮
 #include "ApproachState.h"
 #include "Easing.h"
+#include "GpuParticle.h"
 
 ///=============================================================================
 ///						マトリックス表示
@@ -318,6 +319,9 @@ void GameScene::Update()
 
 	ParticleManager::GetInstance()->Update();
 
+	GpuParticle::GetInstance()->Update(cameraManager_->GetActiveCamera()->GetViewProjection());
+
+
 	//========================================
 	// ライト
 	// 
@@ -515,6 +519,18 @@ void GameScene::Update()
 		ImGui::DragFloat("spotLight.cosAngle", &spotLight->cosAngle_, 0.01f);
 		ImGui::DragFloat("spotLight.cosFalloffStart", &spotLight->cosFalloffStart_, 0.01f);
 		ImGui::TreePop();
+	}
+
+	if (ImGui::Button("Emit"))
+	{
+
+		Vector3 scale = { 1.0f,1.0f,1.0 };
+		Vector3 rotate = { 0.0f,0.0f,0.0f };
+		Vector3 translate = { 0.0f,0.0f,0.0f };
+
+		Matrix4x4 world = MakeAffineMatrix(scale, rotate, translate);
+
+		GpuParticle::GetInstance()->LineEmit(world);
 	}
 	
 #endif

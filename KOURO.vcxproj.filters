@@ -80,6 +80,13 @@
       <Filter>resources\shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\Absorb.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\Particle.CS.hlsl" />
+    <FxCompile Include="Resources\shaders\InitializeParticle.CS.hlsl" />
+    <FxCompile Include="Resources\shaders\Particle.CS.VS.hlsl" />
+    <FxCompile Include="Resources\shaders\Particle.CS.PS.hlsl" />
+    <FxCompile Include="Resources\shaders\EmitParticleSphere.CS.hlsl" />
+    <FxCompile Include="Resources\shaders\UpdateParticle.CS.hlsl" />
+    <FxCompile Include="Resources\shaders\EmitParticleLine.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -329,6 +336,9 @@
     <ClCompile Include="Absorb.cpp" />
     <ClCompile Include="NumUi.cpp" />
     <ClCompile Include="GrobalVariables.cpp" />
+    <ClCompile Include="GpuParticle.cpp" />
+    <ClCompile Include="UavManager.cpp" />
+    <ClCompile Include="ModelLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -599,6 +609,9 @@
     <ClInclude Include="Absorb.h" />
     <ClInclude Include="NumUi.h" />
     <ClInclude Include="GrobalVariables.h" />
+    <ClInclude Include="GpuParticle.h" />
+    <ClInclude Include="UavManager.h" />
+    <ClInclude Include="ModelLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -623,6 +636,8 @@
     <None Include="Resources\shaders\Sprite.hlsli">
       <Filter>resources\shaders</Filter>
     </None>
+    <None Include="Resources\shaders\Particle.CS.hlsli" />
+    <None Include="Resources\shaders\Random.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="application">

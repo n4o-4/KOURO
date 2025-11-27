@@ -1,6 +1,10 @@
 #pragma once
 #include "DirectXCommon.h"
 
+// \brief SrvManager
+// DirectX12におけるShader Resource View(SRV)管理クラス。  
+// SRVの生成・割り当て・デスクリプタヒープ管理を行い、テクスチャや構造化バッファをGPUに提供する。
+
 class SrvManager
 {
 public:

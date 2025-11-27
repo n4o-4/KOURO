@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "BaseBullet.h"
 
+// \brief PlayerBullet プレイヤーの弾クラス
+
 class PlayerBullet : public BaseBullet, public SphereCollider
 {
 public: // 公開メンバ関数

@@ -7,7 +7,11 @@
 #include "GameClear.h"
 #include "GameOver.h"
 
-// このゲーム用のシーン工場
+// \brief SceneFactory
+// シーン生成用のファクトリクラス。
+// AbstractSceneFactoryを継承し、シーン名に応じたBaseScene派生クラスのインスタンスを生成する。
+// ゲームのシーン切り替え時に利用される。
+
 class SceneFactory : public AbstaractSceneFactory
 {
 public:

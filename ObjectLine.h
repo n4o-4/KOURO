@@ -17,6 +17,12 @@ struct ScanEffectCB
 	float thickness;  // スキャンの厚み
 };
 
+// \brief ObjectLine
+// 3D空間におけるライン描画を管理するクラス。
+// LineModelを用いてライン形状を保持し、WorldTransformを指定して描画可能。
+// ラインの色はSetColorで変更可能。
+// 内部でGPU用定数バッファ(LineForGPU)やスキャンエフェクト用定数バッファ(ScanEffectCB)を管理。
+
 class ObjectLine
 {
 public:

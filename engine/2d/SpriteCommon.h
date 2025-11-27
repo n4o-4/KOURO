@@ -1,6 +1,12 @@
 ﻿#pragma once
 #include "DirectXCommon.h"
 
+// \brief SpriteCommon
+// スプライト描画に必要な共通リソースやパイプラインを管理するクラス。
+// ルートシグネチャやグラフィックスパイプライン（前景・背景）を生成・保持し、
+// スプライト描画時に適切なパイプライン設定を提供。
+// シングルトンとして管理され、DirectXCommonを介してDirectX12描画にアクセスする。
+
 class SpriteCommon
 {
 public: // メンバ関数

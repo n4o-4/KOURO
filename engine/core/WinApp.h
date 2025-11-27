@@ -4,6 +4,7 @@
 #include "imgui.h"
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+// \brief WinApp /// Windowsアプリケーションのウィンドウ生成とメッセージ処理を管理するクラス。 HWNDやウィンドウサイズなど、DirectX初期化の基盤となる情報を提供する。
 
 class WinApp
 {

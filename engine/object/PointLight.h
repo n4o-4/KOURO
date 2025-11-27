@@ -15,6 +15,10 @@ struct PointLightData
 	float padding[2];
 };
 
+// \brief PointLight  
+// 点光源（ランプや炎のような位置に依存する光）を管理するクラス。  
+// 光の色・位置・強度・半径・減衰を設定し、シーン内で局所的な照明効果を提供する。
+
 class PointLight
 {
 public:

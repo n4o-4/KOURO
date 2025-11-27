@@ -5,11 +5,9 @@
 #include "MyMath.h"	
 #include "ViewProjection.h"	
 
-/// <summary>
-/// カメラの基底クラス
-/// カメラの種類ごとに継承して使用する
-/// ViewProjectionの生成と初期化、更新を行う
-/// </summary>
+// \brief BaseCamera
+// カメラの基底クラス。
+// ViewProjection行列の生成・保持・更新を提供し、派生カメラで共通処理を実装可能。
 
 class BaseCamera
 {

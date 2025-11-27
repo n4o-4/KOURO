@@ -5,7 +5,12 @@
 #include "Camera.h"
 #include "SrvManager.h"
 #include "PostEffect.h"
-// シーン管理
+
+// \brief SceneManager
+// ゲーム内のシーン管理を行うシングルトンクラス。
+// 現在のシーンや次のシーンを保持し、更新・描画処理やシーン切り替えを管理する。
+// SceneFactoryを利用してシーンを生成し、PostEffectやカメラなどの共通リソースも保持。
+
 class SceneManager
 {
 public:

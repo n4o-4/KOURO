@@ -6,6 +6,9 @@
 
 #include "DirectXCommon.h"
 
+// \brief SpotLight  
+// スポットライト（特定方向に円錐状に光を放つ光源）を管理するクラス。  
+// 色・位置・方向・強度・距離・減衰・角度情報を設定し、局所的な照明や演出に使用される。
 
 struct SpotLightData
 {

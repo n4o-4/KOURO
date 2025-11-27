@@ -10,6 +10,10 @@ namespace LuminanceOutline
 	};
 }
 
+// \brief LuminanceBasedOutline  
+// 輝度差をもとに物体の輪郭を抽出するポストエフェクトクラス。  
+// 明暗の境界を強調し、セル画風やスケッチ風の表現を実現する。
+
 class LuminanceBasedOutline : public BaseEffect
 {
 public:

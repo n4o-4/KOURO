@@ -10,6 +10,9 @@
 
 #include <AudioManager.h>
 
+// \brief Audio
+// 音声再生を管理するクラス。WASAPI/XAudio2を使用して、BGMや効果音の再生・停止・音量調整が可能。
+
 class Audio {
 
 

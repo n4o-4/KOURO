@@ -1,5 +1,10 @@
 ﻿#pragma once
 #include "BaseEffect.h"
+
+// \brief BoxFilter
+// 画面全体にボックスフィルターを適用してブラー効果を実現するポストエフェクトクラス。  
+// パイプライン構築と描画処理を担当し、描画結果を柔らかくぼかす。
+
 class BoxFilter : public BaseEffect
 {
 public:

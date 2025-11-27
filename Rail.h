@@ -9,6 +9,10 @@ struct ArcLengthTable
 	float totalLength;          // 全体の長さ
 };
 
+// \brief Rail
+// 3次ベジェ曲線やスプラインに基づくカメラやオブジェクトの軌道管理クラス。
+// 制御点（controlPoints）から曲線を生成し、距離に基づく移動をサポート。
+// ArcLengthTableを用いて移動距離と時間の補間を行い、WorldTransformを通じて位置・向きを取得可能。
 
 class Rail
 {

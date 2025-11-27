@@ -2,6 +2,8 @@
 
 class Enemy; // ‘O•ûéŒ¾
 
+// \brief EnemyState “G‚Ìó‘ÔŠî’êƒNƒ‰ƒX
+
 class EnemyState
 {
 	public:

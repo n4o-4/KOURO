@@ -12,6 +12,10 @@
 
 #include "Model.h"
 
+// \brief AnimationManager
+// モデルのアニメーション管理を行うシングルトンクラス。
+// キーフレームベースでの位置・回転・スケールの補間、ループ再生、スケルトン更新をサポート。
+
 class AnimationManager
 {
 private:

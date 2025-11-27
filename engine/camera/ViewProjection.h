@@ -22,6 +22,10 @@ struct ConstBufferDataViewProjection
 	Matrix4x4 matViewProjection;
 };
 
+// \brief ViewProjection
+// ビュー行列とプロジェクション行列を管理するクラス。
+// カメラの位置・回転・投影設定を保持し、GPU用の定数バッファも管理する。
+
 class ViewProjection
 {
 public:

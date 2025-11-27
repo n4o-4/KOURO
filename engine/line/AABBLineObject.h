@@ -3,6 +3,10 @@
 
 #include "AABBCollider.h"
 
+// \brief AABBLineObject  
+// AABB（軸平行境界ボックス）を線で可視化するデバッグ用オブジェクトクラス。  
+// コライダー情報を基にワイヤーフレームを描画し、当たり判定範囲を確認するために使用される。
+
 class AABBLineObject : public BaseLineObject
 {
 public: // 公開メンバ関数

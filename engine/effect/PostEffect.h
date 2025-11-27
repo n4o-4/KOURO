@@ -22,6 +22,10 @@
 #include "ColorSpace.h"
 #include "Absorb.h"
 
+// \brief PostEffect  
+// 各種ポストエフェクト（ブラー・アウトライン・カラー調整など）を統合的に管理するクラス。  
+// エフェクトの生成・更新・描画を一括で制御し、シーンの後処理表現を実現する。
+
 class PostEffect
 {
 public:

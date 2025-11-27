@@ -14,6 +14,9 @@ namespace MotionBlurShader
 	};
 }
 
+// \brief MotionBlur  
+// カメラやオブジェクトの移動量に応じて残像を表現するモーションブラー効果クラス。  
+// フレーム間の位置差分を利用し、動きの滑らかさやスピード感を演出する。
 
 class MotionBlur : public BaseEffect
 {

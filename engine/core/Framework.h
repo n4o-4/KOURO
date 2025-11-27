@@ -27,9 +27,13 @@
 
 #include "LeakChecker.h"
 
+#include "GpuParticle.h"
+
 #include <chrono>
 #include <string>
 #include <wrl.h>
+
+// \brief FrameWork ゲーム全体の基本的な流れ（初期化・更新・描画・終了）を管理するフレームワーククラス。DirectX環境や各種マネージャを統合し、アプリのメインループを制御する。 
 
 class Framework
 {
@@ -45,6 +49,8 @@ protected:
 
 	std::unique_ptr<ModelCommon> modelCommon = nullptr;
 
+	std::unique_ptr<UavManager> uavManager_ = nullptr;
+
 #ifdef _DEBUG
 
 	std::unique_ptr<ImGuiManager> imGuiManager = nullptr;
@@ -59,12 +65,21 @@ protected:
 
 	std::unique_ptr<PostEffect> postEffect_ = nullptr;
 
+	//std::unique_ptr<GpuParticle> gpuParticle_ = nullptr;
+
+	GpuParticle* gpuParticle_ = nullptr;
+
 	// フレームごとの時間計測用
 	uint64_t frameCount = 0;
-	double elapsedTime = 0.0;
+	double totalTime = 0.0; // 総時間
+	float deltaTime;
+	std::chrono::steady_clock::time_point startTime;
+	std::chrono::steady_clock::time_point lastTime;
+	double elapsedTime = 0.0; 
 	double fps = 0.0;
+	std::chrono::steady_clock::time_point now;
 
-    std::chrono::high_resolution_clock::time_point startTime;
+	const float kDeltaTime_ = 1.0f / 60.0f;
 public:
 
 	virtual~Framework() = default;
@@ -88,6 +103,8 @@ public:
 
 	// 実行
 	void Run();
+
+	const float GetDeltaTime() const { return kDeltaTime_; }
 
 private:
 

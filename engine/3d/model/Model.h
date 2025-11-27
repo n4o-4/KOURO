@@ -11,15 +11,11 @@
 #include "ViewProjection.h"
 
 #include "ModelDatas.h"
+// \brief Model
+// 3Dモデルの読み込み・描画を管理するクラス。
+// OBJやFBX等のモデルデータを読み込み、マテリアル情報を保持。
+// DirectX12の頂点バッファリソースを生成し、ワールド変換に基づく描画をサポート。
 
-//struct Node
-//	{
-//		Matrix4x4 localMatrix;
-//		std::string name;
-//		std::vector<Node> children;
-//	};
-
-// 3Dモデル
 class Model
 {
 public:

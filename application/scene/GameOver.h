@@ -15,6 +15,8 @@
 #include "SceneManager.h"
 #include "Audio.h"
 
+// \brief GameOver ゲームオーバーシーンクラス
+
 class GameOver : public BaseScene {
 
 

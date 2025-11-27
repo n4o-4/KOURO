@@ -12,6 +12,10 @@ namespace RandomShader
 	};
 }
 
+// \brief Random  
+// 画面全体にランダムなノイズや揺らぎ効果を適用するポストエフェクトクラス。  
+// ノイズ演出やダメージ表現など、映像にランダム性を加える際に使用される。
+
 class Random : public BaseEffect
 {
 public:

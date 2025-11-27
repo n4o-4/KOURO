@@ -16,6 +16,7 @@
 #include "GrobalVariables.h"
 #include "NumUi.h"
 
+// \brief GameClear ゲームクリアシーンクラス
 
 class GameClear : public BaseScene {
 

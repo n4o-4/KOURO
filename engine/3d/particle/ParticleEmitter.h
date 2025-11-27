@@ -1,6 +1,12 @@
 #pragma once
 #include "ParticleManager.h"
 
+// \brief ParticleEmitter
+// パーティクル放出を管理するクラス。
+// 発生位置や頻度、色、スケール、回転、速度、寿命などを設定可能。
+// 単発放出(Emit)、放射状放出(RadialEmit)、指定数放出(Emit(count, ...))などの機能を提供。
+// 内部でEmitter構造体に状態を保持し、ParticleManagerのParticleGroupを管理。
+
 class ParticleEmitter
 {
 private:

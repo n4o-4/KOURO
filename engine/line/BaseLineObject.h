@@ -14,6 +14,10 @@ namespace LineDrawer
 	};
 }
 
+// \brief BaseLineObject  
+// ライン描画オブジェクトの基底クラス。  
+// 頂点リソースやバッファビューを管理し、派生クラスで線形オブジェクトの描画処理を共通化する。
+
 class BaseLineObject // ラインオブジェクトの基底クラス
 {
 public: // 公開メンバ関数

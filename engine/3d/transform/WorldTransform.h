@@ -14,7 +14,11 @@ struct ConstBufferDataWorldTransform
 	Matrix4x4 matWorldInverse;
 };
 
-
+// \brief WorldTransform
+// ワールド座標変換を管理するクラス。
+// スケール、回転、平行移動の情報を保持し、行列計算によるワールド行列(matWorld_)の更新を行う。
+// クォータニオンによる回転もサポートし、親子関係(parent)による階層変換も可能。
+// DirectX12の定数バッファ(transformResource_)を介してGPUに変換行列を転送できる。
 
 class WorldTransform
 {

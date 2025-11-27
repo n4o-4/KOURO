@@ -5,6 +5,9 @@
 #include "BaseCamera.h"
 #include "WorldTransform.h"
 
+// \brief DebugCamera
+// デバッグ用カメラ。自由に移動・回転が可能で、ターゲットの位置に応じた追従もできる。
+
 class DebugCamera : public BaseCamera
 {
 public:

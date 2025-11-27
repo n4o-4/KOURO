@@ -5,100 +5,47 @@
 void Framework::Initialize()
 {
 
-	/*-----------------------------------
-	* WinAppの生成と初期化
-	-----------------------------------*/
-
+	// WinAppの生成と初期化
 	winApp = std::make_unique<WinApp>();
 	winApp->Initialize();
 
-	/*-----------------------------------
-	* DirectXCommonの生成と初期化
-	-----------------------------------*/
-
+	// DirectXCommonの生成と初期化
 	DirectXCommon::GetInstance()->Initialize(winApp.get());
 	dxCommon_ = DirectXCommon::GetInstance();
 
-	/*-----------------------------------
-	* Audioの初期化
-	-----------------------------------*/
-
-	
-
-	/*-----------------------------------
-	* Inputの生成と初期化
-	-----------------------------------*/
-
+	// Inputの生成と初期化
 	Input::GetInstance()->Initialize(winApp.get());
 
-	/*-----------------------------------
-	* SrvManagerの生成と初期化
-	-----------------------------------*/
-
-
+	// SrvManagerの生成と初期化
 	srvManager = std::make_unique<SrvManager>();
 	srvManager->Initialize(dxCommon_);
 
-	/*-----------------------------------
-	* TextureManagerの初期化
-	-----------------------------------*/
+	// UavManagerの生成と初期化
+	uavManager_ = std::make_unique<UavManager>();
+	uavManager_->Initialize(dxCommon_);
 
+	// TextureManagerの初期化
 	TextureManager::GetInstance()->Initialize(dxCommon_, srvManager.get());
 
-	/*-----------------------------------
-	* SpriteCommonの生成と初期化
-	*
-	*  スプライト共通部
-	-----------------------------------*/
-
+	// SpriteCommon初期化
 	SpriteCommon::GetInstance()->Initialize(dxCommon_);
 
-	/*-----------------------------------
-	* Object3dCommonの生成と初期化
-	*
-	*  3Dオブジェクト共通部
-	-----------------------------------*/
-
-
+	// Object3dCommonの生成と初期化
 	Object3dCommon::GetInstance()->Initialize(dxCommon_);
 
-	/*-----------------------------------
-	* ModelCommonの生成と初期化
-	*
-	*  モデル共通部
-	-----------------------------------*/
-
+	// ModelCommonの生成と初期化
 	modelCommon = std::make_unique<ModelCommon>();
 	modelCommon->Initialize(dxCommon_);
 
-
-	/*-----------------------------------
-	* ModelManagerの初期化
-	-----------------------------------*/
-
+	// ModelManagerの生成と初期化
 	ModelManager::GetInstance()->Initialize(dxCommon_);
 
-	/*-----------------------------------
-	* Cameraの初期化
-	-----------------------------------*/
-
+	// Cameraの生成と初期化
 	Camera::GetInstance()->Initialize();
 
-	/*-----------------------------------
-	* ParticleManagerの初期化
-	-----------------------------------*/
-
+	// ParticleManagerの生成と初期化
 	ParticleManager::GetInstance()->Initialize(dxCommon_, srvManager.get());
-	//ParticleManager::GetInstance()->CreateParticleGroup("particle", "Resources/circle.png");
-
-	/*-----------------------------------
-	* ParticleEmitterの生成と初期化
-	-----------------------------------*/
-
-
-	/*particleEmitter = std::make_unique<ParticleEmitter>();
-	particleEmitter->Initialize("particle");
-	particleEmitter->Emit();*/
+	
 
 	SceneManager::GetInstance()->Initialize(dxCommon_,srvManager.get(),Camera::GetInstance());
 
@@ -110,7 +57,13 @@ void Framework::Initialize()
 
 	SceneManager::GetInstance()->SetPostEffect(postEffect_.get());
 
-	startTime = std::chrono::high_resolution_clock::now();
+
+	gpuParticle_ = GpuParticle::GetInstance();
+	gpuParticle_->Initialize(dxCommon_, srvManager.get(), uavManager_.get());
+
+	now = std::chrono::steady_clock::now();
+
+	startTime = now;
 }
 
 void Framework::Finalize()
@@ -156,6 +109,8 @@ void Framework::Update()
 
 	UpdateFPS();
 
+	gpuParticle_->SetPerFrame(totalTime, deltaTime);
+
 #endif _DEBUG
 }
 
@@ -199,18 +154,24 @@ void Framework::Run()
 
 void Framework::UpdateFPS()
 {
-		frameCount++;
+	frameCount++;
 
-		auto currentTime = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double> delta = currentTime - startTime;
-		elapsedTime += delta.count();
-		startTime = currentTime;
+	// 現在時刻を取得
+	now = std::chrono::steady_clock::now();
 
-		if (elapsedTime >= 1.0) {
-			fps = frameCount / elapsedTime;
-			frameCount = 0;
-			elapsedTime = 0.0;
-		}
+	// 経過時間を秒で計算
+	//elapsedTime = std::chrono::duration<float>(now - lastTime).count();
+	totalTime = std::chrono::duration<float>(now - startTime).count();
 
-		ImGui::Text("FPS: %.1f", fps);
+	if (elapsedTime >= 1.0f) {
+		fps = frameCount / elapsedTime;
+		frameCount = 0;
+	}
+
+	deltaTime = std::chrono::duration<float>(now - lastTime).count();
+
+	lastTime = now; // lastTime をここで更新
+
+	// ImGui に表示
+	ImGui::Text("FPS: %.2f TotalTime: %.2f deltaTime: %.f", fps, totalTime,deltaTime);
 }

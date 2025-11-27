@@ -5,6 +5,10 @@
 
 #include "DirectXCommon.h"
 
+// \brief DirectionalLight  
+// 平行光源（太陽光のような方向性のある光）を管理するクラス。  
+// 光の色・方向・強度を設定し、シーン内での照明計算に使用される。
+
 class DirectionalLight
 {
 private:

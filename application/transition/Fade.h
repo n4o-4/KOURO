@@ -7,7 +7,11 @@
 #include "SpriteCommon.h"
 #include "Sprite.h"
 
-
+// \brief Fade
+// 画面フェード処理を管理するクラス。
+// 黒または白によるフェードイン・フェードアウトをサポート。
+// スプライトを用いて画面全体を覆い、フェードの状態・時間を管理。
+// Updateで状態を進行させ、Drawで描画。Startでフェード開始、IsFinishedで終了判定。
 
 class Fade
 {
