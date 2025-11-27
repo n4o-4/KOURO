@@ -2,7 +2,10 @@
 #include "DirectXCommon.h"
 #include "Camera.h"
 
-// \brief  Object3dCommon object3dの汎用処理クラス
+// \brief Object3dCommon
+// 3Dオブジェクト描画に共通で必要なリソースや設定を管理するクラス。
+// DirectX12のルートシグネチャやパイプラインステート、デフォルトカメラ、環境マップなどを保持。
+// シングルトンとして扱い、すべてのObject3dインスタンスで共有される。
 
 class Object3dCommon
 {

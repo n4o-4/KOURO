@@ -3,6 +3,8 @@
 #include "WinApp.h"
 #include "DirectXCommon.h"
 
+// \brief ImGuiManager UI管理クラス
+
 class ImGuiManager {
 public:
 

@@ -6,7 +6,9 @@
 #include "RailCamera.h"
 #include "TitleCamera.h"
 
-// \brief CameraManager カメラ管理クラス
+// \brief CameraManager
+// 複数カメラを管理するクラス。
+// デバッグカメラや追従カメラなどを保持し、更新・切り替え・ターゲット設定を行う。
 
 class CameraManager
 {

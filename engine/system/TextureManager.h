@@ -11,7 +11,12 @@
 #include <unordered_map>
 #include "externals//DirectXTex/d3dx12.h"
 #include <vector>
-// テクスチャマネージャー
+
+// \brief TextureManager
+// DirectX12用テクスチャ管理クラス。
+// テクスチャの読み込み、SRV生成、GPUハンドル取得、メタデータ管理を行う。
+// シングルトンとして利用され、複数のテクスチャを効率的に扱える。
+
 class TextureManager
 {
 public:

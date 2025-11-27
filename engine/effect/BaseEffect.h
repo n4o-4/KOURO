@@ -11,6 +11,7 @@ struct Pipeline
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState;
 };
 
+// \brief BaseEffect ポストエフェクト基底クラス
 
 class BaseEffect
 {

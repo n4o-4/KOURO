@@ -1,7 +1,9 @@
 #pragma once
 #include "DirectXCommon.h"
 
-// \brief ModelCommon 3dモデル汎用クラス 汎用の処理を行う
+// \brief ModelCommon
+// モデル共通情報を管理するクラス。
+// DirectXCommonの参照を保持し、モデル描画時に共有リソースとして利用する。
 
 class ModelCommon
 {

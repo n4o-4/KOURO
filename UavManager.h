@@ -3,7 +3,11 @@
 
 #include "DirectXCommon.h"
 
-// UavManagerクラス
+// \brief UavManager
+// DirectX12におけるUAV（Unordered Access View）の管理を行うクラス。
+// 最大512個のUAVを管理可能で、StructuredBuffer用UAVの作成やCPU/GPUデスクリプタハンドル取得が可能。
+// 描画前の準備処理やUAV割り当ても提供し、UAVの使用上限チェックも実装。
+
 class UavManager
 {
 public:

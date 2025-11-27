@@ -1,5 +1,10 @@
 ﻿#pragma once
 #include "BaseEffect.h"
+
+// \brief GaussianFilter  
+// ガウス関数に基づいて画像を滑らかにぼかすポストエフェクトクラス。  
+// ボックスフィルターより自然なブラー効果を実現し、光のにじみや被写界深度表現などに使用される。
+
 class GaussianFilter : public BaseEffect
 {
 public:

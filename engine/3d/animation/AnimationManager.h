@@ -12,7 +12,9 @@
 
 #include "Model.h"
 
-// \brief AnimationManager アニメーション管理クラス 読み込み、再生を行う
+// \brief AnimationManager
+// モデルのアニメーション管理を行うシングルトンクラス。
+// キーフレームベースでの位置・回転・スケールの補間、ループ再生、スケルトン更新をサポート。
 
 class AnimationManager
 {

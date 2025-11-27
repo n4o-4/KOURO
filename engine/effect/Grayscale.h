@@ -1,5 +1,10 @@
 ﻿#pragma once
 #include "BaseEffect.h"
+
+// \brief Grayscale  
+// シーン全体をモノクロ化するポストエフェクトクラス。  
+// カラー画像を輝度値に変換し、映像の演出やトーン調整に利用される。
+
 class Grayscale : public BaseEffect
 {
 public:

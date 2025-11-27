@@ -18,7 +18,12 @@
 
 class SceneManager;
 
-// \brief BaseSceneシーン基底クラス
+// \brief BaseScene
+// ゲームシーンの基本クラス。
+// フェーズ管理（フェードイン、メイン、プレイ、ポーズ、フェードアウト）や、
+// シーン内の更新・描画処理の共通処理を提供。
+// LineDrawer、CameraManager、Fade、Skyboxなどの共通機能を管理し、
+// 派生シーンでのオブジェクト描画やスプライト描画、フェード処理をサポート。
 
 class BaseScene
 {

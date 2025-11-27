@@ -9,6 +9,10 @@
 
 #include <set>
 
+// \brief LineDrawerBase  
+// ライン描画の基底クラスで、AABBや球、グリッド、スケルトンなど様々なラインオブジェクトを描画可能。  
+// 頂点バッファやパイプラインを管理し、GPUに転送してワイヤーフレーム表示を行う。
+
 class LineDrawerBase
 {
 public:

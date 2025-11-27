@@ -1,5 +1,10 @@
 ﻿#pragma once
 #include "BaseEffect.h"
+
+// \brief Vignette  
+// 画面の周辺を暗くぼかして中央を強調するビネット効果を適用するポストエフェクトクラス。  
+// 映像の雰囲気づくりや視線誘導に使用される。
+
 class Vignette : public BaseEffect
 {
 public:

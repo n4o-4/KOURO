@@ -15,7 +15,9 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 
-// \brief Object3d objectの位置情報クラス
+// \brief Object3d
+// 3Dオブジェクトを表すクラス。
+// モデルの設定、スケール・回転・平行移動の設定、描画、ライティングやマテリアルの設定を行う。
 
 class Object3d
 {

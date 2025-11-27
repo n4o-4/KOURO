@@ -12,7 +12,12 @@
 
 #include "ModelManager.h"
 
-// \brief ParicleManager パーティクル管理クラス
+// \brief ParticleManager
+// CPU側でパーティクルを管理し、GPUにインスタンシングして描画するシステムクラス。
+// パーティクルグループの生成、発生、更新、描画、リセットを提供。
+// ビルボード、ストレッチ、ブレンドモード、加速度フィールドなどに対応。
+// 内部でParticleGroupやParticle構造体を使用して状態を保持し、GPUリソース（頂点バッファ、マテリアル、フラグ、カメラ情報など）を管理。
+// シングルトンで提供され、DirectXCommonやSrvManagerとの連携が必要。
 
 class ParticleManager
 {

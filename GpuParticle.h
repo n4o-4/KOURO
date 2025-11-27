@@ -69,6 +69,13 @@ namespace Particle
 	};
 }
 
+// \brief GpuParticle
+// GPU上でパーティクルを管理・描画するシングルトンクラス。
+// 最大パーティクル数を管理し、ComputeShaderによる初期化、発生、更新処理を行う。
+// また、線上パーティクル(LineSegment)の発生や描画もサポート。
+// 内部で各種リソース（パーティクル、カウンター、フリスト、頂点、マテリアル、エミッター、transform、lineSegmentなど）を管理。
+// PipelineSetを用いて、GPU側のComputeとGraphicsパイプラインを構成し、効率的な大量パーティクル描画を可能にする。
+
 class GpuParticle
 {
 public:

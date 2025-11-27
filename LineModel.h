@@ -24,6 +24,11 @@ struct LineModelData {
 	std::vector<uint32_t> indices;
 };
 
+// \brief LineModel
+// ライン描画用のモデルクラス。
+// ファイルから頂点データを読み込み、ライン描画に必要なバッファを作成・管理する。
+// 内部でDirectXの頂点リソースとバッファビューを保持し、Draw関数で描画を実行する。
+
 class LineModel
 {
 public:

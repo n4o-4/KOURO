@@ -6,6 +6,12 @@
 #include "Sprite.h"
 #include "SpriteCommon.h"
 
+// \brief NumUi
+// 数字をUI上に表示し、カウントアップアニメーションを行うクラス。
+// 最大桁数を指定して初期化し、SetDestinationValueで目標値を設定。
+// Updateでカウント処理を進め、Drawで画面に描画。
+// 内部で各桁をSpriteとして保持し、時間経過に応じて数値を滑らかに変化させる。
+
 class NumUi
 {
 public:

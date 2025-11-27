@@ -3,6 +3,10 @@
 
 #include "OBBCollider.h"
 
+// \brief OBBLineObject  
+// OBB（方向付き境界ボックス）を線で可視化するデバッグ用オブジェクトクラス。  
+// コライダー情報を基にワイヤーフレームを描画し、回転や傾きのある当たり判定範囲を確認するために使用される。
+
 class OBBLineObject : public BaseLineObject
 {
 public: // 公開メンバ関数

@@ -19,6 +19,8 @@
 #include "Structs.h"
 #include "OffScreenRendring.h"
 
+// \brief DirectXCommon DirectX12の初期化と描画処理をまとめて管理するクラス。  デバイスやスワップチェーンなどの生成・制御を一括で行う。
+
 class DirectXCommon
 {
 public:

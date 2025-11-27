@@ -33,6 +33,8 @@
 #include <string>
 #include <wrl.h>
 
+// \brief FrameWork ゲーム全体の基本的な流れ（初期化・更新・描画・終了）を管理するフレームワーククラス。DirectX環境や各種マネージャを統合し、アプリのメインループを制御する。 
+
 class Framework
 {
 public:

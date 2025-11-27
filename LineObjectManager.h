@@ -2,10 +2,10 @@
 
 #include "BaseLineObject.h"
 
-/// <summary>
-/// LineObjectの管理クラス
-/// LineObjectの更新を行う
-/// </summary>
+// \brief LineObjectManager
+// 複数のラインオブジェクトを管理するクラス。
+// LineObjectの追加や更新処理を一括で行う。
+// 内部でstd::listにラインオブジェクトを保持。
 
 class LineObjectManager
 {

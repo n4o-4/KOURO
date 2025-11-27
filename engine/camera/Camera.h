@@ -1,7 +1,10 @@
 #pragma once
 #include "BaseCamera.h"
 
-// \brief Camera デフォルトのカメラクラス
+// \brief Camera
+// シングルトン実装のカメラクラス。
+// BaseCameraを継承し、回転・位置・FOV・アスペクト比を操作可能。
+// ゲーム内で共通カメラとして使用する。
 
 class Camera : public BaseCamera
 {

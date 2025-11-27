@@ -17,7 +17,9 @@
 #pragma comment(lib, "Mfreadwrite.lib")
 #pragma comment(lib, "mfuuid.lib")
 
-// \brief AudioManager 音管理クラス
+// \brief AudioManager
+// 音声ファイルの読み込みと管理を行うシングルトンクラス。
+// WAV/MP3形式に対応し、各音声データをバッファとして保持する。
 
 class AudioManager
 {

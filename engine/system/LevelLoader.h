@@ -8,7 +8,9 @@
 #include "Kouro.h"
 #include "Structs.h"
 
-
+// \brief LevelLoader  
+// JSONファイルからレベルデータを読み込み、オブジェクト情報やワールド変換を管理するクラス。  
+// 各オブジェクトの名前・タイプ・3Dモデル・位置情報を整理してゲーム内シーン構築に利用される。
 
 class LevelLoader
 {

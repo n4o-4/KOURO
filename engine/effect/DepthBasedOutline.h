@@ -11,6 +11,10 @@ namespace DepthOutline
 	};
 }
 
+// \brief DepthBasedOutline  
+// 深度情報をもとに物体の輪郭線を描画するポストエフェクトクラス。  
+// 深度差からエッジを検出し、シーン全体にアウトライン効果を適用する。
+
 class DepthBasedOutline : public BaseEffect
 {
 public:

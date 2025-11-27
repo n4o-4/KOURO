@@ -24,6 +24,11 @@ namespace Line
 	};
 }
 
+// \brief ModelLoader
+// モデルファイルを読み込み、頂点データを生成するクラス。
+// 主にラインモデル用のデータを読み込み、LoadLineModelで頂点配列を返す。
+// デフォルトで"Resources/"ディレクトリから読み込む仕様。
+
 class ModelLoader
 {
 public:

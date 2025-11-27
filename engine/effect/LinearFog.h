@@ -10,6 +10,10 @@ namespace LinearFogShader
 
 }
 
+// \brief LinearFog  
+// カメラとの距離に応じて線形に霧をかけるポストエフェクトクラス。  
+// 遠景を淡くぼかし、空間の奥行きや大気感を表現する。
+
 class LinearFog : public BaseEffect
 {
 public:

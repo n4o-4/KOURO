@@ -5,7 +5,9 @@
 #include "Model.h"
 #include "ModelCommon.h"
 
-// \brief ModelManager モデル管理クラス
+// \brief ModelManager
+// モデルを管理するシングルトンクラス。
+// モデルの読み込み、取得、共有を行う。
 
 class ModelManager
 {

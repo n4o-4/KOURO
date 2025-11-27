@@ -11,8 +11,10 @@
 #include "ViewProjection.h"
 
 #include "ModelDatas.h"
-
-// \brief Model 3dモデルクラス
+// \brief Model
+// 3Dモデルの読み込み・描画を管理するクラス。
+// OBJやFBX等のモデルデータを読み込み、マテリアル情報を保持。
+// DirectX12の頂点バッファリソースを生成し、ワールド変換に基づく描画をサポート。
 
 class Model
 {

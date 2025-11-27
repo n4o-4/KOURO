@@ -11,6 +11,10 @@ namespace Radial
 	};
 }
 
+// \brief RadialBlur  
+// 画面の中心から放射状に広がるブラー効果を適用するポストエフェクトクラス。  
+// 爆発や加速などの演出で、動きの勢いや焦点効果を強調する。
+
 class RadialBlur : public BaseEffect
 {
 public:
