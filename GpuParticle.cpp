@@ -85,6 +85,11 @@ void GpuParticle::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, Ua
 	dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount, 1, 1);
 }
 
+void GpuParticle::Finalize()
+{
+	instance.reset();
+}
+
 void GpuParticle::Update(ViewProjection viewProjection)
 {
 	Matrix4x4 view = viewProjection.matView_;

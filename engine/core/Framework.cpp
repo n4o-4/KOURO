@@ -68,6 +68,8 @@ void Framework::Initialize()
 
 void Framework::Finalize()
 {
+	GpuParticle::GetInstance()->Finalize();
+
 	SceneManager::GetInstance()->Finalize(); ///
 
 	postEffect_->Finalize();

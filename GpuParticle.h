@@ -95,6 +95,9 @@ public:
 	*/
 	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,UavManager* uavManagedr);
 
+	// \brief  Finalize I—¹
+	void Finalize();
+
 	// \brief  Update XV
 	void Update(ViewProjection viewProjection);
 
