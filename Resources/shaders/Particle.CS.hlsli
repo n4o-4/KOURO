@@ -1,10 +1,10 @@
-#include "Random.hlsli"
+ï»¿#include "Random.hlsli"
 static uint kMaxParticles = 524288;
 
 struct Particle
 {
     float3 translate;
-    float pad0; // 16ƒoƒCƒg‹«ŠE
+    float pad0; // 16ãƒã‚¤ãƒˆå¢ƒç•Œ
     float3 scale;
     float pad1;
     float lifeTime;
@@ -18,12 +18,12 @@ struct Particle
 
 struct EmitterSphere
 {
-    float3 translate;    // ˆÊ’u
-    float radius;        // Ëo”¼Œa
-    uint count;          // Ëo”
-    float frequency;     // ËoŠÔŠu
-    float frequencyTime; // ËoŠÔŠu’²®—pŠÔ
-    uint emit;           // Ëo‹–‰Â
+    float3 translate;    // ä½ç½®
+    float radius;        // å°„å‡ºåŠå¾„
+    uint count;          // å°„å‡ºæ•°
+    float frequency;     // å°„å‡ºé–“éš”
+    float frequencyTime; // å°„å‡ºé–“éš”èª¿æ•´ç”¨æ™‚é–“
+    uint emit;           // å°„å‡ºè¨±å¯
 };
 
 struct PerView

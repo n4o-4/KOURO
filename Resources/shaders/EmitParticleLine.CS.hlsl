@@ -26,7 +26,9 @@ RWStructuredBuffer<uint> gFreeList : register(u2);          // 4
 ConstantBuffer<EmitterSphere> gEmitter : register(b1);      // 5
 ConstantBuffer<PerFrame> gPerFrame : register(b2);          // 6
 ConstantBuffer<SegmentCount> gCount : register(b3);
-[numthreads(128, 1, 1)]
+
+[numthreads(512, 1, 1)]
+
 void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID)
 {
     if (gEmitter.emit == 0) return;
@@ -64,9 +66,11 @@ void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID)
 
     // パーティクル初期化
     gParticles[particleIndex].translate = pos;
-    gParticles[particleIndex].velocity = float3(0.0f, 0.0f, 0.0f);
-    gParticles[particleIndex].scale = float3(0.3f, 0.3f, 0.3f);
-    gParticles[particleIndex].color = float4(1, 1, 1, 1);
-    gParticles[particleIndex].lifeTime = 5.0f;
+    gParticles[particleIndex].velocity.x = 0.0f;
+    gParticles[particleIndex].velocity.y = generator.Generate1d() * 0.3f - 0.02f;
+    gParticles[particleIndex].velocity.z = 0.0f;
+    gParticles[particleIndex].scale = float3(0.1f, 0.1f, 0.1f);
+    gParticles[particleIndex].color = float4(1.0, 0.3265, 0.2908,1.0f);
+    gParticles[particleIndex].lifeTime = generator.Generate1d() * 2.0f;
     gParticles[particleIndex].currentTime = 0.0f;
 }

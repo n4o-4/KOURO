@@ -2,6 +2,7 @@
 #include "PlayerBullet.h"
 
 #include "algorithm"
+#include "GpuParticle.h"
 
 void Enemy::Initialize(LineModel* model)
 {
@@ -166,6 +167,7 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 	if (hp_ == 0)
 	{
 		BaseEntity::isAlive_ = false;
+		GpuParticle::GetInstance()->LineEmit(colliderTransform_->matWorld_);
 	}
 }
 

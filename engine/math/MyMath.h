@@ -17,7 +17,7 @@ struct AABB {
 
 struct Sphere {
 	Vector3 center; //!< 中心
-	float radius; //!< 半径
+	float radius =1.0f; //!< 半径
 };
 
 struct OBB

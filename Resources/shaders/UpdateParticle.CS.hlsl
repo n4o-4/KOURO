@@ -1,4 +1,4 @@
-#include "Particle.CS.hlsli"
+﻿#include "Particle.CS.hlsli"
 
 RWStructuredBuffer<Particle> gParticles : register(u0);
 RWStructuredBuffer<int> gFreeListIndex : register(u1);
@@ -14,7 +14,15 @@ void main( uint3 DTid : SV_DispatchThreadID )
     {
         if(gParticles[particleIndex].color.a != 0)
         {
-            gParticles[particleIndex].translate += gParticles[particleIndex].velocity;
+            //float3 noise = PerlinNoise3D(gParticles[particleIndex].translate * 0.2f + gPerFrame.time * 0.5f);
+            //gParticles[particleIndex].velocity += noise * 0.0001f;
+            
+            float3 noisePos = gParticles[particleIndex].translate * 0.9f + gPerFrame.time * 0.3f;
+            float3 curl = CurlNoise3D(noisePos);
+            gParticles[particleIndex].velocity += curl * 0.5f;
+            
+            
+            gParticles[particleIndex].translate += gParticles[particleIndex].velocity * gPerFrame.deltaTime;
             gParticles[particleIndex].currentTime += gPerFrame.deltaTime;
             float alpha = 1.0f - (gParticles[particleIndex].currentTime / gParticles[particleIndex].lifeTime);
             gParticles[particleIndex].color.a = saturate(alpha);

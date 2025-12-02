@@ -173,8 +173,6 @@ void GpuParticle::Update(ViewProjection viewProjection)
 
 	// Dispatch�̎��s
 	dxCommon_->GetCommandList()->Dispatch(512, 1, 1);
-
-	LineEmit(MakeIdentity4x4());
 }
 
 void GpuParticle::Draw()
