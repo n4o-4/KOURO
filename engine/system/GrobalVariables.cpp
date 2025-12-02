@@ -1,4 +1,4 @@
-#include "GrobalVariables.h"
+ï»¿#include "GrobalVariables.h"
 #include <fstream>
 #include <iostream>
 
@@ -6,7 +6,7 @@ void GrobalVariables::SaveFile(const std::string& item,uint32_t value)
 {
     json root;
 
-    // Šù‘¶‚Ìƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Şi‘¶İ‚µ‚È‚¢ê‡‚ÍV‹Kì¬j
+    // æ—¢å­˜ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€ï¼ˆå­˜åœ¨ã—ãªã„å ´åˆã¯æ–°è¦ä½œæˆï¼‰
     std::ifstream inFile("Resources/Data/global.json");
     if (inFile.is_open())
     {
@@ -18,10 +18,10 @@ void GrobalVariables::SaveFile(const std::string& item,uint32_t value)
         root = json::object();
     }
 
-    // ’l‚ğİ’è
+    // å€¤ã‚’è¨­å®š
     root[item] = value;
 
-    // ƒtƒ@ƒCƒ‹‚É•Û‘¶i®Œ`o—Íj
+    // ãƒ•ã‚¡ã‚¤ãƒ«ã«ä¿å­˜ï¼ˆæ•´å½¢å‡ºåŠ›ï¼‰
     std::ofstream outFile("Resources/global.json");
     if (outFile.is_open())
     {
@@ -34,7 +34,7 @@ uint32_t GrobalVariables::LoadFile(const std::string& item, uint32_t defaultValu
 {
     json root;
 
-    // ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+    // ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
     std::ifstream inFile("Resources/global.json");
     if (inFile.is_open())
     {
@@ -43,30 +43,30 @@ uint32_t GrobalVariables::LoadFile(const std::string& item, uint32_t defaultValu
             inFile.close();
         }
         catch (...) {
-            std::cerr << "Error: JSONƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½B\n";
+            std::cerr << "Error: JSONãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸã€‚\n";
             return defaultValue;
         }
     }
     else
     {
-        std::cerr << "Warning: global.json ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB\n";
+        std::cerr << "Warning: global.json ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚\n";
         return defaultValue;
     }
 
-    // w’èƒL[‚ª‘¶İ‚·‚é‚©Šm”F
+    // æŒ‡å®šã‚­ãƒ¼ãŒå­˜åœ¨ã™ã‚‹ã‹ç¢ºèª
     if (root.contains(item))
     {
         try {
             return root[item].get<uint32_t>();
         }
         catch (...) {
-            std::cerr << "Error: ƒL[[" << item << "]‚ÌŒ^‚ªuint32_t‚Å‚Í‚ ‚è‚Ü‚¹‚ñB\n";
+            std::cerr << "Error: ã‚­ãƒ¼[" << item << "]ã®å‹ãŒuint32_tã§ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚\n";
             return defaultValue;
         }
     }
     else
     {
-        std::cerr << "Warning: ƒL[[" << item << "]‚ª‘¶İ‚µ‚Ü‚¹‚ñB\n";
+        std::cerr << "Warning: ã‚­ãƒ¼[" << item << "]ãŒå­˜åœ¨ã—ã¾ã›ã‚“ã€‚\n";
         return defaultValue;
     }
 }

@@ -1,15 +1,15 @@
-#pragma once
+ï»¿#pragma once
 
-class Enemy; // ‘O•ûéŒ¾
+class Enemy; // å‰æ–¹å®£è¨€
 
-// \brief EnemyState “G‚Ìó‘ÔŠî’êƒNƒ‰ƒX
+// \brief EnemyState æ•µã®çŠ¶æ…‹åŸºåº•ã‚¯ãƒ©ã‚¹
 
 class EnemyState
 {
 	public:
 	virtual ~EnemyState() = default;
 
-	virtual void Enter(Enemy* enemy) = 0;  // ó‘Ô‚É“ü‚é‚Æ‚«
-	virtual void Update(Enemy* enemy) = 0; // ó‘Ô‚ÌXV
-	virtual void Exit(Enemy* enemy) = 0;   // ó‘Ô‚©‚ço‚é‚Æ‚«
+	virtual void Enter(Enemy* enemy) = 0;  // çŠ¶æ…‹ã«å…¥ã‚‹ã¨ã
+	virtual void Update(Enemy* enemy) = 0; // çŠ¶æ…‹ã®æ›´æ–°
+	virtual void Exit(Enemy* enemy) = 0;   // çŠ¶æ…‹ã‹ã‚‰å‡ºã‚‹ã¨ã
 };

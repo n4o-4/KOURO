@@ -1,12 +1,12 @@
-#pragma once
+﻿#pragma once
 #include <string>
 #include <json.hpp>
 
 using json = nlohmann::json;
 
 // \brief GrobalVariables
-// �Q�[���̃O���[�o���ϐ���ݒ�l�̕ۑ��E�ǂݍ��݂��Ǘ�����N���X�B
-// SaveFile�֐��Ŏw�肵���A�C�e�����ƒl��ۑ����ALoadFile�֐��ŕۑ��ς݂̒l���擾��
+// ゲームのグローバル変数や設定値の保存・読み込みを管理するクラス。
+// SaveFile関数で指定したアイテム名と値を保存し、LoadFile関数で保存済みの値を取得で
 
 class GrobalVariables
 {

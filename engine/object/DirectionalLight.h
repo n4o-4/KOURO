@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <d3d12.h>
 #include <wrl.h>
 #include "Structs.h"
@@ -6,8 +6,8 @@
 #include "DirectXCommon.h"
 
 // \brief DirectionalLight  
-// ���s�����i���z���̂悤�ȕ������̂�����j���Ǘ�����N���X�B  
-// ���̐F�E�����E���x��ݒ肵�A�V�[�����ł̏Ɩ��v�Z�Ɏg�p�����B
+// 平行光源（太陽光のような方向性のある光）を管理するクラス。  
+// 光の色・方向・強度を設定し、シーン内での照明計算に使用される。
 
 class DirectionalLight
 {

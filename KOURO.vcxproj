@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Absorb.cpp" />
+    <ClCompile Include="engine\effect\Absorb.cpp" />
     <ClCompile Include="engine\line\AABBLineObject.cpp" />
     <ClCompile Include="application\collider\AABBCollider.cpp" />
     <ClCompile Include="application\scene\BaseScene.cpp" />
@@ -64,12 +64,12 @@
     <ClCompile Include="engine\effect\LinearFog.cpp" />
     <ClCompile Include="engine\effect\LuminanceBasedOutline.cpp" />
     <ClCompile Include="engine\system\LevelLoader.cpp" />
-    <ClCompile Include="GpuParticle.cpp" />
-    <ClCompile Include="GrobalVariables.cpp" />
-    <ClCompile Include="LineModel.cpp" />
-    <ClCompile Include="LineModelManager.cpp" />
-    <ClCompile Include="LineObjectFactory.cpp" />
-    <ClCompile Include="LineObjectManager.cpp" />
+    <ClCompile Include="engine\system\GpuParticle.cpp" />
+    <ClCompile Include="engine\system\GrobalVariables.cpp" />
+    <ClCompile Include="engine\3d\model\LineModel.cpp" />
+    <ClCompile Include="engine\system\LineModelManager.cpp" />
+    <ClCompile Include="engine\system\LineObjectFactory.cpp" />
+    <ClCompile Include="engine\system\LineObjectManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\model\Model.cpp" />
     <ClCompile Include="engine\3d\model\ModelCommon.cpp" />
@@ -98,15 +98,15 @@
     <ClCompile Include="application\collider\OBBCollider.cpp" />
     <ClCompile Include="engine\line\OBBLineObject.cpp" />
     <ClCompile Include="application\camera\TitleCamera.cpp" />
-    <ClCompile Include="ModelLoader.cpp" />
-    <ClCompile Include="NumUi.cpp" />
-    <ClCompile Include="ObjectLine.cpp" />
-    <ClCompile Include="Rail.cpp" />
-    <ClCompile Include="UavManager.cpp" />
+    <ClCompile Include="engine\system\ModelLoader.cpp" />
+    <ClCompile Include="engine\system\NumUi.cpp" />
+    <ClCompile Include="engine\3d\object\ObjectLine.cpp" />
+    <ClCompile Include="application\base\Rail.cpp" />
+    <ClCompile Include="engine\system\UavManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Absorb.h" />
-    <ClInclude Include="Easing.h" />
+    <ClInclude Include="engine\effect\Absorb.h" />
+    <ClInclude Include="engine\math\Easing.h" />
     <ClInclude Include="engine\line\AABBLineObject.h" />
     <ClInclude Include="application\collider\AABBCollider.h" />
     <ClInclude Include="application\scene\AbstractSceneFactory.h" />
@@ -193,17 +193,17 @@
     <ClInclude Include="application\collider\OBBCollider.h" />
     <ClInclude Include="engine\line\OBBLineObject.h" />
     <ClInclude Include="application\camera\TitleCamera.h" />
-    <ClInclude Include="GpuParticle.h" />
-    <ClInclude Include="GrobalVariables.h" />
-    <ClInclude Include="LineModel.h" />
-    <ClInclude Include="LineModelManager.h" />
-    <ClInclude Include="LineObjectFactory.h" />
-    <ClInclude Include="LineObjectManager.h" />
-    <ClInclude Include="ModelLoader.h" />
-    <ClInclude Include="NumUi.h" />
-    <ClInclude Include="ObjectLine.h" />
-    <ClInclude Include="Rail.h" />
-    <ClInclude Include="UavManager.h" />
+    <ClInclude Include="engine\system\GpuParticle.h" />
+    <ClInclude Include="engine\system\GrobalVariables.h" />
+    <ClInclude Include="engine\3d\model\LineModel.h" />
+    <ClInclude Include="engine\system\LineModelManager.h" />
+    <ClInclude Include="engine\system\LineObjectFactory.h" />
+    <ClInclude Include="engine\system\LineObjectManager.h" />
+    <ClInclude Include="engine\system\ModelLoader.h" />
+    <ClInclude Include="engine\system\NumUi.h" />
+    <ClInclude Include="engine\3d\object\ObjectLine.h" />
+    <ClInclude Include="application\base\Rail.h" />
+    <ClInclude Include="engine\system\UavManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

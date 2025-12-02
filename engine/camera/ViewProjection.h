@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <d3d12.h>
 #include <wrl.h>
 #include "Structs.h"
@@ -23,8 +23,8 @@ struct ConstBufferDataViewProjection
 };
 
 // \brief ViewProjection
-// �r���[�s��ƃv���W�F�N�V�����s����Ǘ�����N���X�B
-// �J�����̈ʒu�E��]�E���e�ݒ��ێ����AGPU�p�̒萔�o�b�t�@���Ǘ�����B
+// ビュー行列とプロジェクション行列を管理するクラス。
+// カメラの位置・回転・投影設定を保持し、GPU用の定数バッファも管理する。
 
 class ViewProjection
 {

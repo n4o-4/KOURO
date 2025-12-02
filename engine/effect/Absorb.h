@@ -1,16 +1,16 @@
-#pragma once
+ï»¿#pragma once
 #include "BaseEffect.h"
 
 namespace AbsorbShader
 {
 	struct Material
 	{
-		Vector4 glowColor; // ”­ŒõƒJƒ‰[i—á: float3(1.0, 1.0, 1.0)j
-        Vector2 center; // ‹z‚¢‚İ’†Si—á: float2(0.5, 0.5)j
-		float time; // 0.0 ¨ 1.0
-		float intensity; // ‹z‚¢‚İ‚Ì‹­‚³
+		Vector4 glowColor; // ç™ºå…‰ã‚«ãƒ©ãƒ¼ï¼ˆä¾‹: float3(1.0, 1.0, 1.0)ï¼‰
+        Vector2 center; // å¸ã„è¾¼ã¿ä¸­å¿ƒï¼ˆä¾‹: float2(0.5, 0.5)ï¼‰
+		float time; // 0.0 â†’ 1.0
+		float intensity; // å¸ã„è¾¼ã¿ã®å¼·ã•
 
-		float glowPower; // ”­Œõ‚Ì‹­‚³
+		float glowPower; // ç™ºå…‰ã®å¼·ã•
 		float padding[3];
 	};
 }
@@ -20,33 +20,33 @@ class Absorb : public BaseEffect
 public:
 
 	/**
-	* \brief  Initialize ‰Šú‰»
-	* \param  dxCommon DirectX‹¤’Ê
-	* \param  srvManager SRVƒ}ƒl[ƒWƒƒ[
+	* \brief  Initialize åˆæœŸåŒ–
+	* \param  dxCommon DirectXå…±é€š
+	* \param  srvManager SRVãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
 	*/
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) override;
 
 	/**
-	* \brief  Update XV
+	* \brief  Update æ›´æ–°
 	*/
 	void Update() override;
 
 	/**
-	* \brief  Draw •`‰æ
-	* \param  renderTargetIndex ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒg‚ÌƒCƒ“ƒfƒbƒNƒX
-	* \param  renderResourceIndex ƒŒƒ“ƒ_[ƒŠƒ\[ƒX‚ÌƒCƒ“ƒfƒbƒNƒX
+	* \brief  Draw æç”»
+	* \param  renderTargetIndex ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+	* \param  renderResourceIndex ãƒ¬ãƒ³ãƒ€ãƒ¼ãƒªã‚½ãƒ¼ã‚¹ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 	*/
 	void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
 
 	/**
 	* \brief  GetMaterialData
-	* \return ƒ}ƒeƒŠƒAƒ‹ƒf[ƒ^‚Ìƒ|ƒCƒ“ƒ^[
+	* \return ãƒãƒ†ãƒªã‚¢ãƒ«ãƒ‡ãƒ¼ã‚¿ã®ãƒã‚¤ãƒ³ã‚¿ãƒ¼
 	*/
 	const AbsorbShader::Material& GetMaterialData() const { return *data_; }
 
 	/**
 	* \brief  SetMaterialData
-	* \param  data ƒ}ƒeƒŠƒAƒ‹ƒf[ƒ^
+	* \param  data ãƒãƒ†ãƒªã‚¢ãƒ«ãƒ‡ãƒ¼ã‚¿
 	*/
 	void SetMaterialData(const AbsorbShader::Material& data) { *data_ = data; }
 
@@ -63,16 +63,16 @@ private:
 	void CreatePipeLineState(Pipeline* pipeline);
 
 
-	// ƒ}ƒeƒŠƒAƒ‹‚Ì¶¬
+	// ãƒãƒ†ãƒªã‚¢ãƒ«ã®ç”Ÿæˆ
 	void CreateMaterial();
 
 	void DrawImGui() override;
 
 private:
 
-	// ƒŠƒ\[ƒX
+	// ãƒªã‚½ãƒ¼ã‚¹
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource_;
 
-	// ƒ|ƒCƒ“ƒ^[
+	// ãƒã‚¤ãƒ³ã‚¿ãƒ¼
 	AbsorbShader::Material* data_ = nullptr;
 };

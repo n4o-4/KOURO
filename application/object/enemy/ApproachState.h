@@ -1,7 +1,7 @@
-#pragma once
+﻿#pragma once
 #include "EnemyState.h"
 
-// \brief ApproachState �ڋߏ�ԃN���X
+// \brief ApproachState 接近状態クラス
 
 class ApproachState : public EnemyState
 {

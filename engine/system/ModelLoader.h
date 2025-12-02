@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <string>
 #include <iostream>
 #include <vector>
@@ -25,15 +25,15 @@ namespace Line
 }
 
 // \brief ModelLoader
-// ƒ‚ƒfƒ‹ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İA’¸“_ƒf[ƒ^‚ğ¶¬‚·‚éƒNƒ‰ƒXB
-// å‚Éƒ‰ƒCƒ“ƒ‚ƒfƒ‹—p‚Ìƒf[ƒ^‚ğ“Ç‚İ‚İALoadLineModel‚Å’¸“_”z—ñ‚ğ•Ô‚·B
-// ƒfƒtƒHƒ‹ƒg‚Å"Resources/"ƒfƒBƒŒƒNƒgƒŠ‚©‚ç“Ç‚İ‚Şd—lB
+// ãƒ¢ãƒ‡ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã¿ã€é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã‚’ç”Ÿæˆã™ã‚‹ã‚¯ãƒ©ã‚¹ã€‚
+// ä¸»ã«ãƒ©ã‚¤ãƒ³ãƒ¢ãƒ‡ãƒ«ç”¨ã®ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã¿ã€LoadLineModelã§é ‚ç‚¹é…åˆ—ã‚’è¿”ã™ã€‚
+// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§"Resources/"ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‹ã‚‰èª­ã¿è¾¼ã‚€ä»•æ§˜ã€‚
 
 class ModelLoader
 {
 public:
 
-	// ƒ‚ƒfƒ‹ƒf[ƒ^‚ğ“Ç‚İ‚ŞŠÖ”
+	// ãƒ¢ãƒ‡ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã‚€é–¢æ•°
     std::vector<Line::Vertex> LoadLineModel(std::string filePath);
 
 private:

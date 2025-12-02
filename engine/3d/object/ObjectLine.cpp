@@ -1,4 +1,4 @@
-#include "ObjectLine.h"
+ï»¿#include "ObjectLine.h"
 
 void ObjectLine::Initialize(LineModel* model)
 {
@@ -25,7 +25,7 @@ void ObjectLine::Draw(WorldTransform* worldTransform)
 {
 	if (model_ == nullptr)
 	{
-		assert(0, "ƒ‚ƒfƒ‹‚ªƒZƒbƒg‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+		assert(0, "ãƒ¢ãƒ‡ãƒ«ãŒã‚»ãƒƒãƒˆã•ã‚Œã¦ã„ã¾ã›ã‚“");
 	}
 
 	lineData_->matWorld = worldTransform->matWorld_;

@@ -1,32 +1,32 @@
-#include "UavManager.h"
+ï»¿#include "UavManager.h"
 
 void UavManager::Initialize(DirectXCommon* dxCommon)
 {
-	// ƒƒ“ƒo•Ï”‚É‹L˜^
+	// ãƒ¡ãƒ³ãƒå¤‰æ•°ã«è¨˜éŒ²
 	dxCommon_ = dxCommon;
 
-	// ƒfƒXƒNƒŠƒvƒ^ƒq[ƒv‚Ì¶¬
+	// ãƒ‡ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒ’ãƒ¼ãƒ—ã®ç”Ÿæˆ
 	descriptorHeap_ = dxCommon->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxUAVCount, true);
 
-	// ƒfƒXƒNƒŠƒvƒ^1ŒÂ•ª‚ÌƒTƒCƒY‚ğæ“¾‚µ‚Ä‹L˜^
+	// ãƒ‡ã‚¹ã‚¯ãƒªãƒ—ã‚¿1å€‹åˆ†ã®ã‚µã‚¤ã‚ºã‚’å–å¾—ã—ã¦è¨˜éŒ²
 	descriptorSize_ = dxCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
 uint32_t UavManager::Allocate()
 {
-	// return ‚·‚é”Ô†‚ğˆê’U‹L˜^‚µ‚Ä‚¨‚­
+	// return ã™ã‚‹ç•ªå·ã‚’ä¸€æ—¦è¨˜éŒ²ã—ã¦ãŠã
 	int index = useIndex_;
 
-	// Ÿ‰ñ‚Ì‚½‚ß‚É”Ô†‚ğ1i‚ß‚é
+	// æ¬¡å›ã®ãŸã‚ã«ç•ªå·ã‚’1é€²ã‚ã‚‹
 	useIndex_++;
 
-	// ‹L˜^‚µ‚½”Ô†‚ğreturn
+	// è¨˜éŒ²ã—ãŸç•ªå·ã‚’return
 	return index;
 }
 
 void UavManager::PreDraw()
 {
-	// •`‰æ—p‚ÌDescriptorHeap‚Ìİ’è
+	// æç”»ç”¨ã®DescriptorHeapã®è¨­å®š
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { descriptorHeap_ };
 	dxCommon_->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
 }
@@ -35,15 +35,15 @@ void UavManager::CreateUAVforStructuredBuffer(uint32_t uavIndex, ID3D12Resource*
 {
 	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
 	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-	uavDesc.Format = DXGI_FORMAT_UNKNOWN;  // \‘¢‰»ƒoƒbƒtƒ@‚Å‚ÍUnknown
+	uavDesc.Format = DXGI_FORMAT_UNKNOWN;  // æ§‹é€ åŒ–ãƒãƒƒãƒ•ã‚¡ã§ã¯Unknown
 
 	uavDesc.Buffer.FirstElement = 0;
-	uavDesc.Buffer.NumElements = numElements;             // —v‘f”i—á: 1024j
+	uavDesc.Buffer.NumElements = numElements;             // è¦ç´ æ•°ï¼ˆä¾‹: 1024ï¼‰
 	uavDesc.Buffer.StructureByteStride = structureByteStride; // sizeof(ParticleCS)
-	uavDesc.Buffer.CounterOffsetInBytes = 0;              // ƒJƒEƒ“ƒ^•t‚«‚È‚ç‚±‚±‚Éw’è
-	uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;    // Šî–{‚ÍNONE
+	uavDesc.Buffer.CounterOffsetInBytes = 0;              // ã‚«ã‚¦ãƒ³ã‚¿ä»˜ããªã‚‰ã“ã“ã«æŒ‡å®š
+	uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;    // åŸºæœ¬ã¯NONE
 
-	// ƒfƒoƒCƒX‚ğg‚Á‚Ä SRV ‚ğì¬‚·‚é
+	// ãƒ‡ãƒã‚¤ã‚¹ã‚’ä½¿ã£ã¦ SRV ã‚’ä½œæˆã™ã‚‹
 	dxCommon_->GetDevice()->CreateUnorderedAccessView(pResource,nullptr,&uavDesc,GetCPUDescriptorHandle(uavIndex));
 }
 

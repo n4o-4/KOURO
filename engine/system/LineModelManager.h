@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include "LineModel.h"
 
 // \brief LineModelManager
-// ƒ‰ƒCƒ“ƒ‚ƒfƒ‹‚ğŠÇ—‚·‚éƒNƒ‰ƒXB
-// ƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İAŒŸõA‚¨‚æ‚Ñ“à•”•Û‚ğs‚¤B
-// “à•”‚Åstd::map‚ğ—p‚¢‚Äƒtƒ@ƒCƒ‹ƒpƒX‚ÆLineModel‚Ì‘Î‰‚ğŠÇ—B
+// ãƒ©ã‚¤ãƒ³ãƒ¢ãƒ‡ãƒ«ã‚’ç®¡ç†ã™ã‚‹ã‚¯ãƒ©ã‚¹ã€‚
+// ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿ã€æ¤œç´¢ã€ãŠã‚ˆã³å†…éƒ¨ä¿æŒã‚’è¡Œã†ã€‚
+// å†…éƒ¨ã§std::mapã‚’ç”¨ã„ã¦ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã¨LineModelã®å¯¾å¿œã‚’ç®¡ç†ã€‚
 
 class LineModelManager
 {
@@ -19,7 +19,7 @@ private:
 
 	LineDrawerBase* lineDrawerBase_ = nullptr;
 
-	// ƒ‚ƒfƒ‹ƒf[ƒ^
+	// ãƒ¢ãƒ‡ãƒ«ãƒ‡ãƒ¼ã‚¿
 	std::map<std::string, std::unique_ptr<LineModel>> models_;
 
 };

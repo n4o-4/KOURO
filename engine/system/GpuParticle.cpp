@@ -1,4 +1,4 @@
-#include "GpuParticle.h"
+ï»¿#include "GpuParticle.h"
 #include "TextureManager.h"
 #include "ModelLoader.h"
 
@@ -15,27 +15,27 @@ GpuParticle* GpuParticle::GetInstance()
 
 void GpuParticle::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, UavManager* uavManagedr)
 {
-	// ƒƒ“ƒo•Ï”‚É‹L˜^
+	// ãƒ¡ãƒ³ãƒå¤‰æ•°ã«è¨˜éŒ²
 	dxCommon_ = dxCommon;
 	srvManager_ = srvManager;
 	uavManager_ = uavManagedr;
 
-	// ƒŠƒ\[ƒX‚Ì¶¬
+	// ãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	CreateResource();
 
-	// ’¸“_ƒŠƒ\[ƒX‚Ì¶¬
+	// é ‚ç‚¹ãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	CreateVertexResource();
 
-	// ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ì¶¬
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ç”Ÿæˆ
 	CreateVertexBufferView();
 
-	// ƒp[ƒrƒ…\ƒŠƒ\[ƒX‚Ì¶¬
+	// ãƒ‘ãƒ¼ãƒ“ãƒ¥â€•ãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	CreatePerViewResource();
 
-	// ƒ}ƒeƒŠƒAƒ‹ƒŠƒ\[ƒX‚Ì¶¬
+	// ãƒãƒ†ãƒªã‚¢ãƒ«ãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	CreateMaterialResource();
 
-	// ƒGƒ~ƒbƒ^[ƒŠƒ\[ƒX‚Ì¶¬
+	// ã‚¨ãƒŸãƒƒã‚¿ãƒ¼ãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	CreateEmitterResource();
 
 	// 
@@ -45,15 +45,15 @@ void GpuParticle::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, Ua
 
 	CreateLineCountResource();
 
-	// SRV‚Ìì¬
+	// SRVã®ä½œæˆ
 	srvIndex_ = srvManager_->Allocate();
 	srvManager_->CreateSRVforStructuredBuffer(srvIndex_, particleResource_.Get(), kMaxParticleCount, sizeof(ParticleCS));
 
-	// UAV‚Ìì¬
+	// UAVã®ä½œæˆ
 	uavIndex_ = uavManager_->Allocate();
 	uavManager_->CreateUAVforStructuredBuffer(uavIndex_, particleResource_.Get(), kMaxParticleCount, sizeof(ParticleCS));
 
-	// ƒpƒCƒvƒ‰ƒCƒ“ƒZƒbƒg‚Ìì¬
+	// ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚»ãƒƒãƒˆã®ä½œæˆ
 	CreatePipelineSet();
 
 	materialData_.textureFilePath = "Resources/circle.png";
@@ -65,23 +65,23 @@ void GpuParticle::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, Ua
 
 	CreateLineSegment("enemy/enemy.obj");
 
-	// ƒq[ƒv‚Ìİ’è
+	// ãƒ’ãƒ¼ãƒ—ã®è¨­å®š
 	srvManager_->PreDraw();
 
-	// rootSignature‚Ìİ’è
+	// rootSignatureã®è¨­å®š
 	dxCommon_->GetCommandList()->SetComputeRootSignature(initializePipelineSet_->rootSignature.Get());
 
-	// pipeLineState‚Ìİ’è
+	// pipeLineStateã®è¨­å®š
 	dxCommon_->GetCommandList()->SetPipelineState(initializePipelineSet_->pipelineState.Get());
 
-	// UAV‚Ìİ’è
+	// UAVã®è¨­å®š
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, particleResource_.Get()->GetGPUVirtualAddress());
 
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, counterResource_.Get()->GetGPUVirtualAddress());
 
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, freeListResource_.Get()->GetGPUVirtualAddress());
 
-	// Dispatch‚ÌÀs
+	// Dispatchã®å®Ÿè¡Œ
 	dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount, 1, 1);
 }
 
@@ -116,16 +116,16 @@ void GpuParticle::Update(ViewProjection viewProjection)
 
 	perFrame_;
 
-	// ƒq[ƒv‚Ìİ’è
+	// ãƒ’ãƒ¼ãƒ—ã®è¨­å®š
 	srvManager_->PreDraw();
 
-	// rootSignature‚Ìİ’è
+	// rootSignatureã®è¨­å®š
 	dxCommon_->GetCommandList()->SetComputeRootSignature(emitPipelineSet_->rootSignature.Get());
 
-	// pipeLineState‚Ìİ’è
+	// pipeLineStateã®è¨­å®š
 	dxCommon_->GetCommandList()->SetPipelineState(emitPipelineSet_->pipelineState.Get());
 
-	// UAV‚Ìİ’è
+	// UAVã®è¨­å®š
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, particleResource_.Get()->GetGPUVirtualAddress());
 
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, counterResource_.Get()->GetGPUVirtualAddress());
@@ -136,7 +136,7 @@ void GpuParticle::Update(ViewProjection viewProjection)
 
 	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
 
-	// Dispatch‚ÌÀs
+	// Dispatchã®å®Ÿè¡Œ
 	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
 
 	D3D12_RESOURCE_BARRIER barrier1{};
@@ -157,10 +157,10 @@ void GpuParticle::Update(ViewProjection viewProjection)
 	barrier3.UAV.pResource = freeListResource_.Get();
 	dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier3);
 
-	// rootSignature‚Ìİ’è
+	// rootSignatureã®è¨­å®š
 	dxCommon_->GetCommandList()->SetComputeRootSignature(updatePipelineSet_->rootSignature.Get());
 
-	// pipeLineState‚Ìİ’è
+	// pipeLineStateã®è¨­å®š
 	dxCommon_->GetCommandList()->SetPipelineState(updatePipelineSet_->pipelineState.Get());
 
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, particleResource_.Get()->GetGPUVirtualAddress());
@@ -171,36 +171,36 @@ void GpuParticle::Update(ViewProjection viewProjection)
 
 	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(3, perFrameResource_.Get()->GetGPUVirtualAddress());
 
-	// Dispatch‚ÌÀs
+	// Dispatchã®å®Ÿè¡Œ
 	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
 }
 
 void GpuParticle::Draw()
 {
-	// rootSignature‚Ìİ’è
+	// rootSignatureã®è¨­å®š
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(graphicsPipelineSet_->rootSignature.Get());
-	// pipeLineState‚Ìİ’è
+	// pipeLineStateã®è¨­å®š
 	dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineSet_->pipelineState.Get());
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ìİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
-	// ƒvƒŠƒ~ƒeƒBƒuƒgƒ|ƒƒW[‚Ìİ’è
+	// ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–ãƒˆãƒãƒ­ã‚¸ãƒ¼ã®è¨­å®š
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// ’è”ƒoƒbƒtƒ@‚Ìİ’è
+	// å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_.Get()->GetGPUVirtualAddress());
 
-	// SRV‚Ìİ’è
+	// SRVã®è¨­å®š
 	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(srvIndex_));
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, srvManager_->GetGPUDescriptorHandle(materialData_.textureIndex));
 
-	// ƒp[ƒrƒ…\ƒŠƒ\[ƒX‚Ìİ’è
+	// ãƒ‘ãƒ¼ãƒ“ãƒ¥â€•ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, perViewResource_.Get()->GetGPUVirtualAddress());
 
-	// •`‰æƒRƒ}ƒ“ƒh
+	// æç”»ã‚³ãƒãƒ³ãƒ‰
 	dxCommon_->GetCommandList()->DrawInstanced(6, kMaxParticleCount, 0, 0);
 }
 
@@ -210,8 +210,8 @@ void GpuParticle::CreateLineSegment(std::string filePath)
 
 	std::vector<Line::Vertex> vertices = loader.LoadLineModel(filePath);
 
-	// ’¸“_‚ª‹ô”ŒÂ‚Å‚ ‚é‘O’ñiLINELISTj
-	// 2‚Â‚²‚Æ‚Éü•ª‚ğì¬
+	// é ‚ç‚¹ãŒå¶æ•°å€‹ã§ã‚ã‚‹å‰æï¼ˆLINELISTï¼‰
+	// 2ã¤ã”ã¨ã«ç·šåˆ†ã‚’ä½œæˆ
 	for (size_t i = 0; i + 1 < vertices.size(); i += 2)
 	{
 		Particle::LineSegment seg;
@@ -223,7 +223,7 @@ void GpuParticle::CreateLineSegment(std::string filePath)
 		lineSegments_.push_back(seg);
 	}
 
-	// lineSegmentƒŠƒ\[ƒX‚Ì¶¬
+	// lineSegmentãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	CreateLineSegmentResource();
 }
 
@@ -231,13 +231,13 @@ void GpuParticle::LineEmit(Matrix4x4 world)
 {
 	transform_->matWorld = world;
 
-	// 1. Compute RootSignature ‚ğƒZƒbƒg
+	// 1. Compute RootSignature ã‚’ã‚»ãƒƒãƒˆ
 	dxCommon_->GetCommandList()->SetComputeRootSignature(lineEmitPipelineSet_->rootSignature.Get());
 
-	// 2. Pipeline State ‚ğƒZƒbƒg
+	// 2. Pipeline State ã‚’ã‚»ãƒƒãƒˆ
 	dxCommon_->GetCommandList()->SetPipelineState(lineEmitPipelineSet_->pipelineState.Get());
 
-	// 3. Compute Root ‚Ì Descriptor / CBV / UAV ‚ğƒZƒbƒg
+	// 3. Compute Root ã® Descriptor / CBV / UAV ã‚’ã‚»ãƒƒãƒˆ
 	dxCommon_->GetCommandList()->SetComputeRootDescriptorTable(0, srvManager_->GetGPUDescriptorHandle(lineSegmentSrvIndex_));
 	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(1, transformResource_.Get()->GetGPUVirtualAddress());
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, particleResource_.Get()->GetGPUVirtualAddress());
@@ -248,7 +248,7 @@ void GpuParticle::LineEmit(Matrix4x4 world)
 	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(7, lineCountResource_.Get()->GetGPUVirtualAddress());
 
 
-	// Dispatch‚ÌÀs
+	// Dispatchã®å®Ÿè¡Œ
 	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
 }
 
@@ -265,9 +265,9 @@ void GpuParticle::CreateResource()
     //resourceDesc.MipLevels = 1;
     //resourceDesc.SampleDesc.Count = 1;
     //resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-    //resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS; // UAV‚Æ‚µ‚Äg‚¤
+    //resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS; // UAVã¨ã—ã¦ä½¿ã†
 
-    //// UAV‚Æ‚µ‚Äg‚¦‚é‚æ‚¤‚É‰ŠúƒXƒe[ƒg‚ğUNORDERED_ACCESS‚É‚µ‚Ä‚¨‚­
+    //// UAVã¨ã—ã¦ä½¿ãˆã‚‹ã‚ˆã†ã«åˆæœŸã‚¹ãƒ†ãƒ¼ãƒˆã‚’UNORDERED_ACCESSã«ã—ã¦ãŠã
     //dxCommon_->GetDevice()->CreateCommittedResource(
     //    &heapProperties,
     //    D3D12_HEAP_FLAG_NONE,
@@ -286,26 +286,26 @@ void GpuParticle::CreateResource()
 
 void GpuParticle::CreateVertexResource()
 {
-	modelData_.vertices.push_back({ { -0.5f,  0.5f, 0.0f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // ¶ã
-	modelData_.vertices.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // ‰Eã
-	modelData_.vertices.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // ¶‰º
+	modelData_.vertices.push_back({ { -0.5f,  0.5f, 0.0f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // å·¦ä¸Š
+	modelData_.vertices.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // å³ä¸Š
+	modelData_.vertices.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // å·¦ä¸‹
 
-	modelData_.vertices.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // ‰Eã
-	modelData_.vertices.push_back({ {  0.5f, -0.5f, 0.0f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // ‰E‰º
-	modelData_.vertices.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // ¶‰º
+	modelData_.vertices.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // å³ä¸Š
+	modelData_.vertices.push_back({ {  0.5f, -0.5f, 0.0f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // å³ä¸‹
+	modelData_.vertices.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // å·¦ä¸‹
 
 	vertexResource_ = dxCommon_->CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
 }
 
 void GpuParticle::CreateVertexBufferView()
 {
-	// ƒŠƒ\[ƒX‚Ìæ“ªƒAƒhƒŒƒX
+	// ãƒªã‚½ãƒ¼ã‚¹ã®å…ˆé ­ã‚¢ãƒ‰ãƒ¬ã‚¹
 	vertexBufferView_.BufferLocation = vertexResource_.Get()->GetGPUVirtualAddress();
 
-	// g—p‚·‚éƒŠƒ\[ƒX‚ÌƒTƒCƒY
+	// ä½¿ç”¨ã™ã‚‹ãƒªã‚½ãƒ¼ã‚¹ã®ã‚µã‚¤ã‚º
 	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.vertices.size());
 
-	// 1’¸“_‚ ‚½‚è‚ÌƒTƒCƒY
+	// 1é ‚ç‚¹ã‚ãŸã‚Šã®ã‚µã‚¤ã‚º
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
 	VertexData* vertexData;
@@ -378,11 +378,11 @@ void GpuParticle::CreateInitializePipelineSet()
 
 	HRESULT hr;
 
-	// rootSignature‚Ì¶¬
+	// rootSignatureã®ç”Ÿæˆ
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	// rootParameter‚Ì¶¬
+	// rootParameterã®ç”Ÿæˆ
 	D3D12_ROOT_PARAMETER rootParameters[3] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -399,7 +399,7 @@ void GpuParticle::CreateInitializePipelineSet()
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
-	// ƒVƒŠƒAƒ‰ƒCƒY‚µ‚ÄƒoƒCƒiƒŠ‚É‚·‚é
+	// ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã—ã¦ãƒã‚¤ãƒŠãƒªã«ã™ã‚‹
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
@@ -408,7 +408,7 @@ void GpuParticle::CreateInitializePipelineSet()
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	// ƒoƒCƒiƒŠ‚ğŒ³‚ÉRootSignature‚ğ¶¬
+	// ãƒã‚¤ãƒŠãƒªã‚’å…ƒã«RootSignatureã‚’ç”Ÿæˆ
 	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&initializePipelineSet_->rootSignature));
 
 	CreateComputePipelineState(initializePipelineSet_.get(), "Resources/shaders/InitializeParticle.CS.hlsl");
@@ -420,11 +420,11 @@ void GpuParticle::CreateEmitPipelineSet()
 
 	HRESULT hr;
 
-	// rootSignature‚Ì¶¬
+	// rootSignatureã®ç”Ÿæˆ
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	// rootParameter‚Ì¶¬
+	// rootParameterã®ç”Ÿæˆ
 	D3D12_ROOT_PARAMETER rootParameters[5] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -449,7 +449,7 @@ void GpuParticle::CreateEmitPipelineSet()
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
-	// ƒVƒŠƒAƒ‰ƒCƒY‚µ‚ÄƒoƒCƒiƒŠ‚É‚·‚é
+	// ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã—ã¦ãƒã‚¤ãƒŠãƒªã«ã™ã‚‹
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
@@ -458,7 +458,7 @@ void GpuParticle::CreateEmitPipelineSet()
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	// ƒoƒCƒiƒŠ‚ğŒ³‚ÉRootSignature‚ğ¶¬
+	// ãƒã‚¤ãƒŠãƒªã‚’å…ƒã«RootSignatureã‚’ç”Ÿæˆ
 	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&emitPipelineSet_->rootSignature));
 
 	CreateComputePipelineState(emitPipelineSet_.get(), "Resources/shaders/EmitParticleSphere.CS.hlsl");
@@ -470,7 +470,7 @@ void GpuParticle::CreateLineEmitPipelineSet()
 	
 	HRESULT hr;
 
-	// rootSignature‚Ì¶¬
+	// rootSignatureã®ç”Ÿæˆ
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
@@ -480,7 +480,7 @@ void GpuParticle::CreateLineEmitPipelineSet()
 	descriptorRangeForInstancing[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	// rootParameter‚Ì¶¬
+	// rootParameterã®ç”Ÿæˆ
 	D3D12_ROOT_PARAMETER rootParameters[8] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -518,7 +518,7 @@ void GpuParticle::CreateLineEmitPipelineSet()
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
-	// ƒVƒŠƒAƒ‰ƒCƒY‚µ‚ÄƒoƒCƒiƒŠ‚É‚·‚é
+	// ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã—ã¦ãƒã‚¤ãƒŠãƒªã«ã™ã‚‹
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
@@ -527,7 +527,7 @@ void GpuParticle::CreateLineEmitPipelineSet()
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	// ƒoƒCƒiƒŠ‚ğŒ³‚ÉRootSignature‚ğ¶¬
+	// ãƒã‚¤ãƒŠãƒªã‚’å…ƒã«RootSignatureã‚’ç”Ÿæˆ
 	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&lineEmitPipelineSet_->rootSignature));
 
 	CreateComputePipelineState(lineEmitPipelineSet_.get(), "Resources/shaders/EmitParticleLine.CS.hlsl");
@@ -539,11 +539,11 @@ void GpuParticle::CreateUpdatePipelineSet()
 
 	HRESULT hr;
 
-	// rootSignature‚Ì¶¬
+	// rootSignatureã®ç”Ÿæˆ
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	// rootParameter‚Ì¶¬
+	// rootParameterã®ç”Ÿæˆ
 	D3D12_ROOT_PARAMETER rootParameters[4] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -564,7 +564,7 @@ void GpuParticle::CreateUpdatePipelineSet()
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
-	// ƒVƒŠƒAƒ‰ƒCƒY‚µ‚ÄƒoƒCƒiƒŠ‚É‚·‚é
+	// ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã—ã¦ãƒã‚¤ãƒŠãƒªã«ã™ã‚‹
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
@@ -573,7 +573,7 @@ void GpuParticle::CreateUpdatePipelineSet()
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	// ƒoƒCƒiƒŠ‚ğŒ³‚ÉRootSignature‚ğ¶¬
+	// ãƒã‚¤ãƒŠãƒªã‚’å…ƒã«RootSignatureã‚’ç”Ÿæˆ
 	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&updatePipelineSet_->rootSignature));
 
 	CreateComputePipelineState(updatePipelineSet_.get(), "Resources/shaders/UpdateParticle.CS.hlsl");
@@ -585,7 +585,7 @@ void GpuParticle::CreateGraphicsRootSignature()
 
 	HRESULT hr;
 
-	// rootSignature‚Ì¶¬
+	// rootSignatureã®ç”Ÿæˆ
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
@@ -601,7 +601,7 @@ void GpuParticle::CreateGraphicsRootSignature()
 	descriptorRangeForInstancing[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	// rootParameter‚Ì¶¬
+	// rootParameterã®ç”Ÿæˆ
 	D3D12_ROOT_PARAMETER rootParameters[4] = {};
 
 	// material
@@ -629,23 +629,23 @@ void GpuParticle::CreateGraphicsRootSignature()
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
-	// sampler‚Ì¶¬
+	// samplerã®ç”Ÿæˆ
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
-	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // ƒoƒCƒiƒŠƒtƒBƒ‹ƒ^
-	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // 0~1‚Ì”ÍˆÍŠO‚ğƒŠƒs[ƒg
-	//staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP; // XÀ•W
+	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // ãƒã‚¤ãƒŠãƒªãƒ•ã‚£ãƒ«ã‚¿
+	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // 0~1ã®ç¯„å›²å¤–ã‚’ãƒªãƒ”ãƒ¼ãƒˆ
+	//staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP; // Xåº§æ¨™
 	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-	//staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // YÀ•W
+	//staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // Yåº§æ¨™
 	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // ”äŠr‚µ‚È‚¢
-	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX; // ‘½‚­‚ÌMipMap‚ğg‚¤
+	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // æ¯”è¼ƒã—ãªã„
+	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX; // å¤šãã®MipMapã‚’ä½¿ã†
 	staticSamplers[0].ShaderRegister = 0;
 	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	descriptionRootSignature.pStaticSamplers = staticSamplers;
 	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
 
-	// ƒVƒŠƒAƒ‰ƒCƒY‚µ‚ÄƒoƒCƒiƒŠ‚É‚·‚é
+	// ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã—ã¦ãƒã‚¤ãƒŠãƒªã«ã™ã‚‹
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 
@@ -655,7 +655,7 @@ void GpuParticle::CreateGraphicsRootSignature()
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	// ƒoƒCƒiƒŠ‚ğŒ³‚ÉRootSignature‚ğ¶¬
+	// ãƒã‚¤ãƒŠãƒªã‚’å…ƒã«RootSignatureã‚’ç”Ÿæˆ
 	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&graphicsPipelineSet_->rootSignature));
 	assert(SUCCEEDED(hr));
 }
@@ -664,7 +664,7 @@ void GpuParticle::CreateGraphicsPipelineState()
 {
 	HRESULT hr;
 
-	// InputLayout‚Ìİ’è
+	// InputLayoutã®è¨­å®š
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
@@ -685,37 +685,37 @@ void GpuParticle::CreateGraphicsPipelineState()
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
 
-	// RasterizerState‚Ìİ’è
+	// RasterizerStateã®è¨­å®š
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
 
-	// — –Ê(Œv‰ñ‚è)‚ğ•\¦‚µ‚È‚¢
+	// è£é¢(æ™‚è¨ˆå›ã‚Š)ã‚’è¡¨ç¤ºã—ãªã„
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 
-	// OŠpŒ`‚Ì’†‚ğ“h‚è‚Â‚Ô‚·
+	// ä¸‰è§’å½¢ã®ä¸­ã‚’å¡—ã‚Šã¤ã¶ã™
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
-	// Shader‚ÌƒRƒ“ƒpƒCƒ‹
+	// Shaderã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.CS.VS.hlsl", L"vs_6_0");
 
 	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.CS.PS.hlsl", L"ps_6_0");
 
-	// DepthStencilState‚Ìİ’è
+	// DepthStencilStateã®è¨­å®š
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 
-	// Depth‚Ì‹@”\‚ğ—LŒø‰»‚·‚é
+	// Depthã®æ©Ÿèƒ½ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
 	depthStencilDesc.DepthEnable = true;
 
-	// ‘‚«‚İ‚µ‚Ü‚·
+	// æ›¸ãè¾¼ã¿ã—ã¾ã™
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 
-	// ”äŠrŠÖ”‚ÍLessEqualB‹ß‚¯‚ê‚Î•`‰æ‚³‚ê‚é
+	// æ¯”è¼ƒé–¢æ•°ã¯LessEqualã€‚è¿‘ã‘ã‚Œã°æç”»ã•ã‚Œã‚‹
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
 
-	// BlendState‚Ìİ’è
+	// BlendStateã®è¨­å®š
 	D3D12_BLEND_DESC blendDesc{};
 
-	// ‘S‚Ä‚Ì—v‘f”‚ğ‘‚«‚Ş
+	// å…¨ã¦ã®è¦ç´ æ•°ã‚’æ›¸ãè¾¼ã‚€
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
 
@@ -738,22 +738,22 @@ void GpuParticle::CreateGraphicsPipelineState()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;
 
-	// ‘‚«‚ŞRTV‚Ìî•ñ
+	// æ›¸ãè¾¼ã‚€RTVã®æƒ…å ±
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 
-	// —˜—p‚·‚éƒgƒ|ƒƒW[(Œ`ó)‚Ìƒ^ƒCƒvBOŠpŒ`
+	// åˆ©ç”¨ã™ã‚‹ãƒˆãƒãƒ­ã‚¸ãƒ¼(å½¢çŠ¶)ã®ã‚¿ã‚¤ãƒ—ã€‚ä¸‰è§’å½¢
 	graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-	// ‚Ç‚Ì‚æ‚¤‚É‰æ–Ê‚ÉF‚ğ‚Â‚¯‚é‚©
+	// ã©ã®ã‚ˆã†ã«ç”»é¢ã«è‰²ã‚’ã¤ã‘ã‚‹ã‹
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-	// DepthStencil‚Ìİ’è
+	// DepthStencilã®è¨­å®š
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	// ÀÛ‚É¶¬
+	// å®Ÿéš›ã«ç”Ÿæˆ
 	graphicsPipelineSet_->pipelineState = nullptr;
 	hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineSet_->pipelineState));
 	assert(SUCCEEDED(hr));
@@ -765,14 +765,14 @@ void GpuParticle::CreateComputePipelineState(PipelineSet* pipelineSet, std::stri
 
 	Microsoft::WRL::ComPtr<IDxcBlob> computeShaderBlob = dxCommon_->CompileShader(wShaderPath.c_str(), L"cs_6_0");
 
-	// Shader‚ÌƒRƒ“ƒpƒCƒ‹
+	// Shaderã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
 	D3D12_COMPUTE_PIPELINE_STATE_DESC computePipelineStateDesc{};
 	computePipelineStateDesc.CS = { .pShaderBytecode = computeShaderBlob->GetBufferPointer(), .BytecodeLength = computeShaderBlob->GetBufferSize() };
 
-	// RootSignature‚Ìİ’è
+	// RootSignatureã®è¨­å®š
 	computePipelineStateDesc.pRootSignature = pipelineSet->rootSignature.Get();
 
-	// ÀÛ‚É¶¬
+	// å®Ÿéš›ã«ç”Ÿæˆ
 	HRESULT hr = dxCommon_->GetDevice()->CreateComputePipelineState(&computePipelineStateDesc, IID_PPV_ARGS(&pipelineSet->pipelineState));
 }
 
@@ -780,10 +780,10 @@ void GpuParticle::CreatePipelineSet()
 {
 	/// ComputeShader
 
-	// InitializeParticle—p
+	// InitializeParticleç”¨
 	CreateInitializePipelineSet();
 
-	// EmitParticle—p
+	// EmitParticleç”¨
 	CreateEmitPipelineSet();
 
 	CreateLineEmitPipelineSet();
@@ -791,7 +791,7 @@ void GpuParticle::CreatePipelineSet()
 	// UpdateParticle
 	CreateUpdatePipelineSet();
 
-	// •`‰æ—p
+	// æç”»ç”¨
 	CreateGraphicsRootSignature();
 	CreateGraphicsPipelineState();
 }

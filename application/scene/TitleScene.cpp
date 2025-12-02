@@ -234,9 +234,9 @@ void TitleScene::Draw()
 	DrawObject();
 	/// オブジェクト描画	
 
-	//lineDrawer_->PreDraw(cameraManager_->GetActiveCamera()->GetViewProjection());
+	lineDrawer_->PreDraw(cameraManager_->GetActiveCamera()->GetViewProjection());
 
-	//player_->Draw();
+	player_->Draw();
 
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	

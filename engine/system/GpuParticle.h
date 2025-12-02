@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "DirectXCommon.h"
 #include "SrvManager.h"
 #include "UavManager.h"
@@ -41,12 +41,12 @@ namespace Particle
 
 	struct EmitterSphere
 	{
-		Vector3 translate;   // ˆÊ’u
-		float radius;        // Ëo”¼Œa
-		uint32_t count;      // Ëo”
-		float frequency;     // ËoŠÔŠu
-		float frequencyTime; // ËoŠÔŠu’²®—pŠÔ
-		uint32_t emit;       // Ëo‹–‰Â
+		Vector3 translate;   // ä½ç½®
+		float radius;        // å°„å‡ºåŠå¾„
+		uint32_t count;      // å°„å‡ºæ•°
+		float frequency;     // å°„å‡ºé–“éš”
+		float frequencyTime; // å°„å‡ºé–“éš”èª¿æ•´ç”¨æ™‚é–“
+		uint32_t emit;       // å°„å‡ºè¨±å¯
 	};
 
 	struct PerFrame
@@ -70,17 +70,17 @@ namespace Particle
 }
 
 // \brief GpuParticle
-// GPUã‚Åƒp[ƒeƒBƒNƒ‹‚ğŠÇ—E•`‰æ‚·‚éƒVƒ“ƒOƒ‹ƒgƒ“ƒNƒ‰ƒXB
-// Å‘åƒp[ƒeƒBƒNƒ‹”‚ğŠÇ—‚µAComputeShader‚É‚æ‚é‰Šú‰»A”­¶AXVˆ—‚ğs‚¤B
-// ‚Ü‚½Aüãƒp[ƒeƒBƒNƒ‹(LineSegment)‚Ì”­¶‚â•`‰æ‚àƒTƒ|[ƒgB
-// “à•”‚ÅŠeíƒŠƒ\[ƒXiƒp[ƒeƒBƒNƒ‹AƒJƒEƒ“ƒ^[AƒtƒŠƒXƒgA’¸“_Aƒ}ƒeƒŠƒAƒ‹AƒGƒ~ƒbƒ^[AtransformAlineSegment‚È‚Çj‚ğŠÇ—B
-// PipelineSet‚ğ—p‚¢‚ÄAGPU‘¤‚ÌCompute‚ÆGraphicsƒpƒCƒvƒ‰ƒCƒ“‚ğ\¬‚µAŒø—¦“I‚È‘å—Êƒp[ƒeƒBƒNƒ‹•`‰æ‚ğ‰Â”\‚É‚·‚éB
+// GPUä¸Šã§ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚’ç®¡ç†ãƒ»æç”»ã™ã‚‹ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚¯ãƒ©ã‚¹ã€‚
+// æœ€å¤§ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æ•°ã‚’ç®¡ç†ã—ã€ComputeShaderã«ã‚ˆã‚‹åˆæœŸåŒ–ã€ç™ºç”Ÿã€æ›´æ–°å‡¦ç†ã‚’è¡Œã†ã€‚
+// ã¾ãŸã€ç·šä¸Šãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«(LineSegment)ã®ç™ºç”Ÿã‚„æç”»ã‚‚ã‚µãƒãƒ¼ãƒˆã€‚
+// å†…éƒ¨ã§å„ç¨®ãƒªã‚½ãƒ¼ã‚¹ï¼ˆãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã€ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼ã€ãƒ•ãƒªã‚¹ãƒˆã€é ‚ç‚¹ã€ãƒãƒ†ãƒªã‚¢ãƒ«ã€ã‚¨ãƒŸãƒƒã‚¿ãƒ¼ã€transformã€lineSegmentãªã©ï¼‰ã‚’ç®¡ç†ã€‚
+// PipelineSetã‚’ç”¨ã„ã¦ã€GPUå´ã®Computeã¨Graphicsãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚’æ§‹æˆã—ã€åŠ¹ç‡çš„ãªå¤§é‡ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æç”»ã‚’å¯èƒ½ã«ã™ã‚‹ã€‚
 
 class GpuParticle
 {
 public:
 
-	// Å‘åƒp[ƒeƒBƒNƒ‹”
+	// æœ€å¤§ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æ•°
 	const uint32_t kMaxParticleCount = 1024;
 
 public:
@@ -88,17 +88,17 @@ public:
 	static GpuParticle* GetInstance();
 
 	/**
-	* \brief  Initialize ‰Šú‰»
-	* \param  dxCommon DirectXCommon‚Ìƒ|ƒCƒ“ƒ^
-	* \param  srvManager SrvManager‚Ìƒ|ƒCƒ“ƒ^
-	* \param  uavManagedr UavManager‚Ìƒ|ƒCƒ“ƒ^
+	* \brief  Initialize åˆæœŸåŒ–
+	* \param  dxCommon DirectXCommonã®ãƒã‚¤ãƒ³ã‚¿
+	* \param  srvManager SrvManagerã®ãƒã‚¤ãƒ³ã‚¿
+	* \param  uavManagedr UavManagerã®ãƒã‚¤ãƒ³ã‚¿
 	*/
 	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,UavManager* uavManagedr);
 
-	// \brief  Finalize I—¹
+	// \brief  Finalize çµ‚äº†
 	void Finalize();
 
-	// \brief  Update XV
+	// \brief  Update æ›´æ–°
 	void Update(ViewProjection viewProjection);
 
 	void Draw();
@@ -109,33 +109,33 @@ public:
 
 	void LineEmit(Matrix4x4 world);
 
-private: // ”ñŒöŠJƒƒ“ƒoŠÖ”
+private: // éå…¬é–‹ãƒ¡ãƒ³ãƒé–¢æ•°
 
-	// \brief  CreateResourc0e ƒŠƒ\[ƒX‚Ì¶¬
+	// \brief  CreateResourc0e ãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	void CreateResource();
 
-	// \brief  CreateVertexResource ’¸“_ƒŠƒ\[ƒX‚Ì¶¬
+	// \brief  CreateVertexResource é ‚ç‚¹ãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	void CreateVertexResource();
 
-	// \brief  CreateVertexBufferView ’¸“_ƒoƒbƒtƒ@ƒrƒ…[‚Ì¶¬
+	// \brief  CreateVertexBufferView é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãƒ“ãƒ¥ãƒ¼ã®ç”Ÿæˆ
 	void CreateVertexBufferView();
 
-	// \brief  CreatePerViewResource ƒp[ƒrƒ…\ƒŠƒ\[ƒX‚Ì¶¬
+	// \brief  CreatePerViewResource ãƒ‘ãƒ¼ãƒ“ãƒ¥â€•ãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	void CreatePerViewResource();
 
-	// \brief  CreateMaterialResource ƒ}ƒeƒŠƒAƒ‹ƒŠƒ\[ƒX‚Ì¶¬
+	// \brief  CreateMaterialResource ãƒãƒ†ãƒªã‚¢ãƒ«ãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	void CreateMaterialResource();
 
-	// \brief  CreateEmitterResource ƒGƒ~ƒbƒ^[ƒŠƒ\[ƒX‚Ì¶¬
+	// \brief  CreateEmitterResource ã‚¨ãƒŸãƒƒã‚¿ãƒ¼ãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	void CreateEmitterResource();
 
-	// \brief  CreatePerFrameResource perFrameƒŠƒ\[ƒX‚Ì¶¬
+	// \brief  CreatePerFrameResource perFrameãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	void CreatePerFrameResource();
 
-	// \brief  CreateTransformResource transformƒŠƒ\[ƒX‚Ì¶¬
+	// \brief  CreateTransformResource transformãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	void CreateTransformResource();
 
-	// \brief  CreateLineSegmentResource lineSegmentƒŠƒ\[ƒX‚Ì¶¬
+	// \brief  CreateLineSegmentResource lineSegmentãƒªã‚½ãƒ¼ã‚¹ã®ç”Ÿæˆ
 	void CreateLineSegmentResource();
 
 	//
@@ -156,16 +156,16 @@ private: // ”ñŒöŠJƒƒ“ƒoŠÖ”
 
 	/// Graphics
 
-	// \brief  CreateGraphicsRootSignature •`‰æ—pƒ‹[ƒgƒVƒOƒlƒ`ƒƒ‚Ìì¬
+	// \brief  CreateGraphicsRootSignature æç”»ç”¨ãƒ«ãƒ¼ãƒˆã‚·ã‚°ãƒãƒãƒ£ã®ä½œæˆ
 	void CreateGraphicsRootSignature();
 
-	// \brief  CreateGraphicsPipelineState •`‰æ—pƒpƒCƒvƒ‰ƒCƒ“ƒXƒe[ƒg‚Ìì¬
+	// \brief  CreateGraphicsPipelineState æç”»ç”¨ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚¹ãƒ†ãƒ¼ãƒˆã®ä½œæˆ
 	void CreateGraphicsPipelineState();
 
-	// \brief  CreateComputePipelineState ComputeƒpƒCƒvƒ‰ƒCƒ“ƒXƒe[ƒg‚Ìì¬
+	// \brief  CreateComputePipelineState Computeãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚¹ãƒ†ãƒ¼ãƒˆã®ä½œæˆ
 	void CreateComputePipelineState(PipelineSet* pipelineSet,std::string shaderPath);
 
-	// \brief  CreatePipelineSet ƒpƒCƒvƒ‰ƒCƒ“ƒZƒbƒg‚Ìì¬
+	// \brief  CreatePipelineSet ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚»ãƒƒãƒˆã®ä½œæˆ
 	void CreatePipelineSet();
 
 private:
@@ -204,7 +204,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;
 	Particle::Material* material_ = nullptr;
 
-	// ƒGƒ~ƒbƒ^[
+	// ã‚¨ãƒŸãƒƒã‚¿ãƒ¼
 	Microsoft::WRL::ComPtr<ID3D12Resource> emitterResource_ = nullptr;
 	Particle::EmitterSphere* emitter_ = nullptr;
 
@@ -227,19 +227,19 @@ private:
 
 	uint32_t uavIndex_ = 0;
 
-	// ComputeShader—p(InitializeParticle)
+	// ComputeShaderç”¨(InitializeParticle)
 	std::unique_ptr<PipelineSet> initializePipelineSet_;
 	
-	// ComputeShader—p(EmitParticle)
+	// ComputeShaderç”¨(EmitParticle)
 	std::unique_ptr<PipelineSet> emitPipelineSet_;
 
-	// ComputeShader—p(üã”­Ë)
+	// ComputeShaderç”¨(ç·šä¸Šç™ºå°„)
 	std::unique_ptr<PipelineSet> lineEmitPipelineSet_;
 
-	// ComputeShader—p(UpdateParticle)
+	// ComputeShaderç”¨(UpdateParticle)
 	std::unique_ptr<PipelineSet> updatePipelineSet_;
 
-	// •`‰æ—p
+	// æç”»ç”¨
 	std::unique_ptr<PipelineSet> graphicsPipelineSet_;
 
 	const float kDeltaTime_ = 1.0f / 60.0f;

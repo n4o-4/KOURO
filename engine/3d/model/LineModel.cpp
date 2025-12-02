@@ -1,4 +1,4 @@
-#include "LineModel.h"
+ï»¿#include "LineModel.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -16,7 +16,7 @@ void LineModel::Initialize(LineDrawerBase* lienDrawer, const std::string& direct
 
 void LineModel::Draw()
 {
-	// VBV‚ğİ’è
+	// VBVã‚’è¨­å®š
 	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
 	dxCommon_->GetCommandList()->DrawInstanced(vertexCount_, 1, 0, 0);
@@ -47,7 +47,7 @@ void LineModel::LoadLineModelFile(const std::string& directoryPath, const std::s
 		aiMesh* mesh = scene->mMeshes[meshIndex];
 		assert(mesh->HasNormals());
 
-		// ’¸“_‚Ì’Ç‰Á
+		// é ‚ç‚¹ã®è¿½åŠ 
 		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex) {
 			aiVector3D& position = mesh->mVertices[vertexIndex];
 			aiVector3D& normal = mesh->mNormals[vertexIndex];
@@ -57,7 +57,7 @@ void LineModel::LoadLineModelFile(const std::string& directoryPath, const std::s
 			modelData.vertices.push_back(vertex);
 		}
 
-		// ƒCƒ“ƒfƒbƒNƒXiOŠpŒ`j‚ğ’Ç‰Á
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ï¼ˆä¸‰è§’å½¢ï¼‰ã‚’è¿½åŠ 
 		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
 			aiFace& face = mesh->mFaces[faceIndex];
 			assert(face.mNumIndices == 3);
@@ -67,7 +67,7 @@ void LineModel::LoadLineModelFile(const std::string& directoryPath, const std::s
 		}
 	}
 
-	// ---- ŠOŒ`ƒGƒbƒW‚ğ’Šoi–@üˆê’v‚È‚çíœj ----
+	// ---- å¤–å½¢ã‚¨ãƒƒã‚¸ã‚’æŠ½å‡ºï¼ˆæ³•ç·šä¸€è‡´ãªã‚‰å‰Šé™¤ï¼‰ ----
 	struct EdgeKey {
 		uint32_t v0, v1;
 		bool operator==(const EdgeKey& other) const {
@@ -92,7 +92,7 @@ void LineModel::LoadLineModelFile(const std::string& directoryPath, const std::s
 		uint32_t i1 = modelData.indices[i + 1];
 		uint32_t i2 = modelData.indices[i + 2];
 
-		// OŠpŒ`‚Ì–@ü‚ğŒvZ
+		// ä¸‰è§’å½¢ã®æ³•ç·šã‚’è¨ˆç®—
 		Vector3 p0 = { modelData.vertices[i0].position.x, modelData.vertices[i0].position.y, modelData.vertices[i0].position.z };
 		Vector3 p1 = { modelData.vertices[i1].position.x, modelData.vertices[i1].position.y, modelData.vertices[i1].position.z };
 		Vector3 p2 = { modelData.vertices[i2].position.x, modelData.vertices[i2].position.y, modelData.vertices[i2].position.z };
@@ -104,33 +104,33 @@ void LineModel::LoadLineModelFile(const std::string& directoryPath, const std::s
 			uint32_t v0 = tri[e];
 			uint32_t v1 = tri[(e + 1) % 3];
 
-			// v0 < v1 ‚É‚È‚é‚æ‚¤‚É³‹K‰»
+			// v0 < v1 ã«ãªã‚‹ã‚ˆã†ã«æ­£è¦åŒ–
 			if (v0 > v1) std::swap(v0, v1);
 
 			EdgeKey key{ v0, v1 };
 
 			auto it = edgeMap.find(key);
 			if (it == edgeMap.end()) {
-				// V‚µ‚¢ƒGƒbƒW
+				// æ–°ã—ã„ã‚¨ãƒƒã‚¸
 				edgeMap[key] = EdgeData{ v0, v1, n, false };
 			}
 			else {
-				// Šù‘¶ƒGƒbƒW‚Æ”äŠr
+				// æ—¢å­˜ã‚¨ãƒƒã‚¸ã¨æ¯”è¼ƒ
 				EdgeData& ed = it->second;
 				float dot = Dot(Normalize(ed.normal), n);
 				if (dot > 0.999f) {
-					// “¯ˆê•½–Ê ¨ íœi•ªŠ„üj
+					// åŒä¸€å¹³é¢ â†’ å‰Šé™¤ï¼ˆåˆ†å‰²ç·šï¼‰
 					edgeMap.erase(it);
 				}
 				else {
-					// ˆÙ‚È‚é–Ê ¨ ŠOŒ`‚Æ‚µ‚Äc‚·
+					// ç•°ãªã‚‹é¢ â†’ å¤–å½¢ã¨ã—ã¦æ®‹ã™
 					ed.hasPair = true;
 				}
 			}
 		}
 	}
 
-	// ŠOŒ`ƒGƒbƒW‚¾‚¯‚ğûW
+	// å¤–å½¢ã‚¨ãƒƒã‚¸ã ã‘ã‚’åé›†
 	std::vector<LineVertex> lineVertices;
 	for (auto& kv : edgeMap) {
 		LineVertex va, vb;
@@ -140,7 +140,7 @@ void LineModel::LoadLineModelFile(const std::string& directoryPath, const std::s
 		lineVertices.push_back(vb);
 	}
 
-	// ---- VertexBuffer ì¬iƒCƒ“ƒfƒbƒNƒX‚Íg‚í‚È‚¢j----
+	// ---- VertexBuffer ä½œæˆï¼ˆã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã¯ä½¿ã‚ãªã„ï¼‰----
 	vertexResource_ = dxCommon_->CreateBufferResource(sizeof(LineVertex) * lineVertices.size());
 
 	vertexData_ = nullptr;

@@ -41,11 +41,11 @@ std::unique_ptr<LevelLoader::LevelData> LevelLoader::LoadLevel(nlohmann::json de
 				objectData.worldTransform->transform.translate.z = -(float)transform["translate"][0];
 
 				
-				constexpr float kDeg2Rad = std::numbers::pi / 180.0f;
+				constexpr float kDeg2Rad = static_cast<float>(std::numbers::pi / 180.0f);
 
 				objectData.worldTransform->transform.rotate.x = (float)transform["rotate"][1] * kDeg2Rad;
 				objectData.worldTransform->transform.rotate.y = (float)transform["rotate"][2] * kDeg2Rad;
-				objectData.worldTransform->transform.rotate.z = (float)transform["rotate"][0] * kDeg2Rad - std::numbers::pi / 2.0f;
+				objectData.worldTransform->transform.rotate.z = (float)transform["rotate"][0] * kDeg2Rad - static_cast<float>(std::numbers::pi / 2.0f);
 
 				// スケーリング
 				objectData.worldTransform->transform.scale.x = (float)transform["scale"][1];

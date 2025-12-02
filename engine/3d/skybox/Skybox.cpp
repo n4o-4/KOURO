@@ -1,4 +1,4 @@
-#include "Skybox.h"
+ï»¿#include "Skybox.h"
 
 void Skybox::Initialize(DirectXCommon* dxCommon,const std::string& filePath)
 {
@@ -16,37 +16,37 @@ void Skybox::Initialize(DirectXCommon* dxCommon,const std::string& filePath)
 
 	vertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
 
-	// ‰E–Ê
+	// å³é¢
 	vertexData_[0].position = { 1.0f,  1.0f, -1.0f, 1.0f };
 	vertexData_[1].position = { 1.0f,  1.0f,  1.0f, 1.0f };
 	vertexData_[2].position = { 1.0f, -1.0f, -1.0f, 1.0f };
 	vertexData_[3].position = { 1.0f, -1.0f,  1.0f, 1.0f };
 
-	// ¶–Ê
+	// å·¦é¢
 	vertexData_[4].position = { -1.0f,  1.0f, -1.0f, 1.0f };
 	vertexData_[5].position = { -1.0f,  1.0f,  1.0f, 1.0f };
 	vertexData_[6].position = { -1.0f, -1.0f, -1.0f, 1.0f };
 	vertexData_[7].position = { -1.0f, -1.0f,  1.0f, 1.0f };
 
-	// ‘O–Ê
+	// å‰é¢
 	vertexData_[8].position = { -1.0f,  1.0f,  1.0f, 1.0f };
 	vertexData_[9].position = { 1.0f,  1.0f,  1.0f, 1.0f };
 	vertexData_[10].position = { -1.0f, -1.0f,  1.0f, 1.0f };
 	vertexData_[11].position = { 1.0f, -1.0f,  1.0f, 1.0f };
 
-	// Œã–Ê
+	// å¾Œé¢
 	vertexData_[12].position = { -1.0f,  1.0f, -1.0f, 1.0f };
 	vertexData_[13].position = { 1.0f,  1.0f, -1.0f, 1.0f };
 	vertexData_[14].position = { -1.0f, -1.0f, -1.0f, 1.0f };
 	vertexData_[15].position = { 1.0f, -1.0f, -1.0f, 1.0f };
 
-	// ã–Ê
+	// ä¸Šé¢
 	vertexData_[16].position = { -1.0f,  1.0f, -1.0f, 1.0f };
 	vertexData_[17].position = { 1.0f,  1.0f, -1.0f, 1.0f };
 	vertexData_[18].position = { -1.0f,  1.0f,  1.0f, 1.0f };
 	vertexData_[19].position = { 1.0f,  1.0f,  1.0f, 1.0f };
 
-	// ‰º–Ê
+	// ä¸‹é¢
 	vertexData_[20].position = { -1.0f, -1.0f, -1.0f, 1.0f };
 	vertexData_[21].position = { 1.0f, -1.0f, -1.0f, 1.0f };
 	vertexData_[22].position = { -1.0f, -1.0f,  1.0f, 1.0f };
@@ -54,7 +54,7 @@ void Skybox::Initialize(DirectXCommon* dxCommon,const std::string& filePath)
 
 	materialResource_ = dxCommon_->CreateBufferResource(sizeof(Material));
 
-	// ‘‚«‚Ş‚½‚ß‚ÌƒAƒhƒŒƒX‚ğæ“¾
+	// æ›¸ãè¾¼ã‚€ãŸã‚ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’å–å¾—
 	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -88,14 +88,14 @@ void Skybox::Draw(ViewProjection viewProjection, DirectionalLight directionalLig
 {
 	directionData_->direction = viewProjection.transform.rotate;
 
-	// Œ`ó‚ğİ’èBPSO‚Éİ’è‚µ‚Ä‚¢‚é‚à‚Ì‚Æ‚Í‚Ü‚½•ÊB“¯‚¶‚à‚Ì‚ğİ’è‚·‚é‚Æl‚¦‚Ä‚¨‚¯‚Î‚¢‚¢
+	// å½¢çŠ¶ã‚’è¨­å®šã€‚PSOã«è¨­å®šã—ã¦ã„ã‚‹ã‚‚ã®ã¨ã¯ã¾ãŸåˆ¥ã€‚åŒã˜ã‚‚ã®ã‚’è¨­å®šã™ã‚‹ã¨è€ƒãˆã¦ãŠã‘ã°ã„ã„
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 
-	dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineState.Get());  // PSO‚ğİ’è
+	dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineState.Get());  // PSOã‚’è¨­å®š
 
-	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);  // VBV‚ğİ’è
+	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);  // VBVã‚’è¨­å®š
 
 	dxCommon_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
 
@@ -117,37 +117,37 @@ void Skybox::Draw(ViewProjection viewProjection, DirectionalLight directionalLig
 	
 	//dxCommon_->GetCommandList()->DrawInstanced(24, 1, 0, 0);
 
-	dxCommon_->GetCommandList()->DrawIndexedInstanced(36, 1, 0, 0, 0); // ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğg‚¤ê‡‚Í‚±‚Á‚¿
+	dxCommon_->GetCommandList()->DrawIndexedInstanced(36, 1, 0, 0, 0); // ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ä½¿ã†å ´åˆã¯ã“ã£ã¡
 }
 
 void Skybox::CreateRootSignature()
 {
 	HRESULT hr;
 
-	// RootSignatureì¬
+	// RootSignatureä½œæˆ
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
-	descriptorRange[0].BaseShaderRegister = 0; // 0‚©‚ç‚Í‚¶‚Ü‚é
-	descriptorRange[0].NumDescriptors = 1; // 1‚©‚çn‚Ü‚é
-	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRV‚ğg‚¤
-	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // Offset‚ğ©“®ŒvZ
+	descriptorRange[0].BaseShaderRegister = 0; // 0ã‹ã‚‰ã¯ã˜ã¾ã‚‹
+	descriptorRange[0].NumDescriptors = 1; // 1ã‹ã‚‰å§‹ã¾ã‚‹
+	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRVã‚’ä½¿ã†
+	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // Offsetã‚’è‡ªå‹•è¨ˆç®—
 
-	// RootParameterì¬
+	// RootParameterä½œæˆ
 	D3D12_ROOT_PARAMETER rootParameters[8] = {};
-	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;   //CBV‚ğg‚¤
-	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;  //PixelShader‚Åg‚¤
-	rootParameters[0].Descriptor.ShaderRegister = 0;    // ƒŒƒWƒXƒ^”Ô†0‚ÆƒoƒCƒ“ƒh
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;   //CBVã‚’ä½¿ã†
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;  //PixelShaderã§ä½¿ã†
+	rootParameters[0].Descriptor.ShaderRegister = 0;    // ãƒ¬ã‚¸ã‚¹ã‚¿ç•ªå·0ã¨ãƒã‚¤ãƒ³ãƒ‰
 
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 	rootParameters[1].Descriptor.ShaderRegister = 0;
 
-	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE; // Descriptortable‚ğg‚¤
-	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShader‚Ås‚¤
-	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange; // Table‚Ì’†g‚Ì”z—ñ‚ğw’è
-	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange); // Table‚Å—˜—p‚·‚é”
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE; // Descriptortableã‚’ä½¿ã†
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderã§è¡Œã†
+	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange; // Tableã®ä¸­èº«ã®é…åˆ—ã‚’æŒ‡å®š
+	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange); // Tableã§åˆ©ç”¨ã™ã‚‹æ•°
 
 
 	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
@@ -170,22 +170,22 @@ void Skybox::CreateRootSignature()
 	rootParameters[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters[7].Descriptor.ShaderRegister = 4;
 
-	descriptionRootSignature.pParameters = rootParameters;  // ƒ‹[ƒgƒpƒ‰ƒ[ƒ^[”z—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
-	descriptionRootSignature.NumParameters = _countof(rootParameters);  // ”z—ñ‚Ì’·‚³
+	descriptionRootSignature.pParameters = rootParameters;  // ãƒ«ãƒ¼ãƒˆãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼é…åˆ—ã¸ã®ãƒã‚¤ãƒ³ã‚¿
+	descriptionRootSignature.NumParameters = _countof(rootParameters);  // é…åˆ—ã®é•·ã•
 
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
-	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // ƒoƒCƒiƒŠƒtƒBƒ‹ƒ^
-	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // 0~1‚Ì”ÍˆÍŠO‚ğƒŠƒs[ƒg
+	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // ãƒã‚¤ãƒŠãƒªãƒ•ã‚£ãƒ«ã‚¿
+	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // 0~1ã®ç¯„å›²å¤–ã‚’ãƒªãƒ”ãƒ¼ãƒˆ
 	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // ”äŠr‚µ‚È‚¢
-	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;     // ‘½‚­‚ÌMipMap‚ğg‚¤
-	staticSamplers[0].ShaderRegister = 0; // ƒŒƒWƒXƒ^”Ô†0‚ğg‚¤
-	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShader‚Åg‚¤
+	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // æ¯”è¼ƒã—ãªã„
+	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;     // å¤šãã®MipMapã‚’ä½¿ã†
+	staticSamplers[0].ShaderRegister = 0; // ãƒ¬ã‚¸ã‚¹ã‚¿ç•ªå·0ã‚’ä½¿ã†
+	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderã§ä½¿ã†
 	descriptionRootSignature.pStaticSamplers = staticSamplers;
 	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
 
-	//ƒVƒŠƒAƒ‰ƒCƒY‚µ‚ÄƒoƒCƒiƒŠ‚É‚·‚é
+	//ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã—ã¦ãƒã‚¤ãƒŠãƒªã«ã™ã‚‹
 
 	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
 	if (FAILED(hr))
@@ -194,7 +194,7 @@ void Skybox::CreateRootSignature()
 		assert(false);
 	}
 
-	// ƒoƒCƒiƒŠ‚ğŒ³‚É¶¬
+	// ãƒã‚¤ãƒŠãƒªã‚’å…ƒã«ç”Ÿæˆ
 	rootSignature = nullptr;
 	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
 	assert(SUCCEEDED(hr));
@@ -226,7 +226,7 @@ void Skybox::CreateGraphicsPipeline()
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
 
-	// BlendState‚Ìİ’è
+	// BlendStateã®è¨­å®š
 	D3D12_BLEND_DESC blendDesc{};
 
 	blendDesc.RenderTarget[0].BlendEnable = true;
@@ -237,35 +237,35 @@ void Skybox::CreateGraphicsPipeline()
 	blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 
-	// ‚·‚×‚Ä‚Ì—v‘f”‚ğ‘‚«‚Ş
+	// ã™ã¹ã¦ã®è¦ç´ æ•°ã‚’æ›¸ãè¾¼ã‚€
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
-	// RasiterzerState‚Ìİ’è
+	// RasiterzerStateã®è¨­å®š
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
 
-	// — –Ê(Œv‰ñ‚è)‚ğ•\¦‚µ‚È‚¢
+	// è£é¢(æ™‚è¨ˆå›ã‚Š)ã‚’è¡¨ç¤ºã—ãªã„
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 
-	// OŠpŒ`‚Ì’†‚ğ“h‚è‚Â‚Ô‚·
+	// ä¸‰è§’å½¢ã®ä¸­ã‚’å¡—ã‚Šã¤ã¶ã™
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
-	// Shader‚ğƒRƒ“ƒpƒCƒ‹‚·‚é
+	// Shaderã‚’ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã™ã‚‹
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Skybox.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
 	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Skybox.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
-	// DepthStencilState‚Ìİ’è
+	// DepthStencilStateã®è¨­å®š
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 
-	// Depth‚Ì‹@”\‚ğ—LŒø‰»‚·‚é
+	// Depthã®æ©Ÿèƒ½ã‚’æœ‰åŠ¹åŒ–ã™ã‚‹
 	depthStencilDesc.DepthEnable = true;
 
-	// ‘‚«‚İ‚µ‚Ü‚·
+	// æ›¸ãè¾¼ã¿ã—ã¾ã™
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 
-	// ”äŠrŠÖ”‚ÍLessEqualB‹ß‚¯‚ê‚Î•`‰æ‚³‚ê‚é
+	// æ¯”è¼ƒé–¢æ•°ã¯LessEqualã€‚è¿‘ã‘ã‚Œã°æç”»ã•ã‚Œã‚‹
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
@@ -276,22 +276,22 @@ void Skybox::CreateGraphicsPipeline()
 	graphicsPipelineStateDesc.BlendState = blendDesc; //BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc; // RasterizerState
 
-	// ‘‚«‚ŞRTV‚Ìî•ñ
+	// æ›¸ãè¾¼ã‚€RTVã®æƒ…å ±
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 
-	// —˜—p‚·‚éƒgƒ|ƒƒW(Œ`ó)‚Ìƒ^ƒCƒv.BOŠpŒ`
+	// åˆ©ç”¨ã™ã‚‹ãƒˆãƒãƒ­ã‚¸(å½¢çŠ¶)ã®ã‚¿ã‚¤ãƒ—.ã€‚ä¸‰è§’å½¢
 	graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-	// ‚Ç‚Ì‚æ‚¤‚É‰æ–Ê‚ÉF‚ğ‚Â‚¯‚é‚©
+	// ã©ã®ã‚ˆã†ã«ç”»é¢ã«è‰²ã‚’ã¤ã‘ã‚‹ã‹
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-	// DepthStencil‚Ìİ’è
+	// DepthStencilã®è¨­å®š
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	// ÀÛ‚É¶¬
+	// å®Ÿéš›ã«ç”Ÿæˆ
 	graphicsPipelineState = nullptr;
 	hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
 	assert(SUCCEEDED(hr));
@@ -308,34 +308,34 @@ void Skybox::InitializeIndexBuffer()
 	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
 
 	indexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
-	// ‰E–Ê
+	// å³é¢
 	indexData_[0] = 0;  indexData_[1] = 2;  indexData_[2] = 1;
 	indexData_[3] = 1;  indexData_[4] = 2;  indexData_[5] = 3;
 
-	// ¶–Ê
+	// å·¦é¢
 	indexData_[6] = 4;  indexData_[7] = 5;  indexData_[8] = 6;
 	indexData_[9] = 5;  indexData_[10] = 7; indexData_[11] = 6;
 
-	// ‘O–Ê
+	// å‰é¢
 	//indexData_[12] = 8;  indexData_[13] = 10; indexData_[14] = 9;
 	//indexData_[15] = 9;  indexData_[16] = 10; indexData_[17] = 11;
 	indexData_[12] = 8;  indexData_[13] = 9;  indexData_[14] = 10;
 	indexData_[15] = 9;  indexData_[16] = 11; indexData_[17] = 10;
 
-	// Œã–Ê
+	// å¾Œé¢
 	//indexData_[18] = 12; indexData_[19] = 13; indexData_[20] = 14;
 	//indexData_[21] = 13; indexData_[22] = 15; indexData_[23] = 14;
 
 	indexData_[18] = 12; indexData_[19] = 14; indexData_[20] = 13;
 	indexData_[21] = 13; indexData_[22] = 14; indexData_[23] = 15;
 
-	// ã–Ê
+	// ä¸Šé¢
 	//indexData_[24] = 16; indexData_[25] = 18; indexData_[26] = 17;
 	//indexData_[27] = 17; indexData_[28] = 18; indexData_[29] = 19;
 	indexData_[24] = 16; indexData_[25] = 17; indexData_[26] = 18;
 	indexData_[27] = 17; indexData_[28] = 19; indexData_[29] = 18;
 
-	// ‰º–Ê
+	// ä¸‹é¢
 	//indexData_[30] = 20; indexData_[31] = 21; indexData_[32] = 22;
 	//indexData_[33] = 21; indexData_[34] = 23; indexData_[35] = 22;
 	indexData_[30] = 20; indexData_[31] = 22; indexData_[32] = 21;

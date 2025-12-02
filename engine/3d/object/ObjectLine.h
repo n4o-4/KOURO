@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "LineObjectManager.h"
 #include "LineDrawerBase.h"
 #include "LineModel.h"
@@ -11,17 +11,17 @@ struct LineForGPU
 
 struct ScanEffectCB
 {
-	bool enableScan; // ƒXƒLƒƒƒ“ƒGƒtƒFƒNƒg‚ğ—LŒø‚É‚·‚é‚©‚Ç‚¤‚©
-	bool isRenderScanned; // ƒXƒLƒƒƒ“•”•ª‚ğ•`‰æ‚·‚é‚©‚Ç‚¤‚©
-	float progress;   // 0.0f`1.0f ƒXƒLƒƒƒ“‚Ìis“x
-	float thickness;  // ƒXƒLƒƒƒ“‚ÌŒú‚İ
+	bool enableScan; // ã‚¹ã‚­ãƒ£ãƒ³ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’æœ‰åŠ¹ã«ã™ã‚‹ã‹ã©ã†ã‹
+	bool isRenderScanned; // ã‚¹ã‚­ãƒ£ãƒ³éƒ¨åˆ†ã‚’æç”»ã™ã‚‹ã‹ã©ã†ã‹
+	float progress;   // 0.0fï½1.0f ã‚¹ã‚­ãƒ£ãƒ³ã®é€²è¡Œåº¦
+	float thickness;  // ã‚¹ã‚­ãƒ£ãƒ³ã®åšã¿
 };
 
 // \brief ObjectLine
-// 3D‹óŠÔ‚É‚¨‚¯‚éƒ‰ƒCƒ“•`‰æ‚ğŠÇ—‚·‚éƒNƒ‰ƒXB
-// LineModel‚ğ—p‚¢‚Äƒ‰ƒCƒ“Œ`ó‚ğ•Û‚µAWorldTransform‚ğw’è‚µ‚Ä•`‰æ‰Â”\B
-// ƒ‰ƒCƒ“‚ÌF‚ÍSetColor‚Å•ÏX‰Â”\B
-// “à•”‚ÅGPU—p’è”ƒoƒbƒtƒ@(LineForGPU)‚âƒXƒLƒƒƒ“ƒGƒtƒFƒNƒg—p’è”ƒoƒbƒtƒ@(ScanEffectCB)‚ğŠÇ—B
+// 3Dç©ºé–“ã«ãŠã‘ã‚‹ãƒ©ã‚¤ãƒ³æç”»ã‚’ç®¡ç†ã™ã‚‹ã‚¯ãƒ©ã‚¹ã€‚
+// LineModelã‚’ç”¨ã„ã¦ãƒ©ã‚¤ãƒ³å½¢çŠ¶ã‚’ä¿æŒã—ã€WorldTransformã‚’æŒ‡å®šã—ã¦æç”»å¯èƒ½ã€‚
+// ãƒ©ã‚¤ãƒ³ã®è‰²ã¯SetColorã§å¤‰æ›´å¯èƒ½ã€‚
+// å†…éƒ¨ã§GPUç”¨å®šæ•°ãƒãƒƒãƒ•ã‚¡(LineForGPU)ã‚„ã‚¹ã‚­ãƒ£ãƒ³ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”¨å®šæ•°ãƒãƒƒãƒ•ã‚¡(ScanEffectCB)ã‚’ç®¡ç†ã€‚
 
 class ObjectLine
 {

@@ -1,4 +1,4 @@
-#include "ModelLoader.h"
+ï»¿#include "ModelLoader.h"
 
 std::vector < Line::Vertex> ModelLoader::LoadLineModel(std::string filePath)
 {
@@ -25,7 +25,7 @@ std::vector < Line::Vertex> ModelLoader::LoadLineModel(std::string filePath)
 		aiMesh* mesh = scene->mMeshes[meshIndex];
 		assert(mesh->HasNormals());
 
-		// ’¸“_‚Ì’Ç‰Á
+		// é ‚ç‚¹ã®è¿½åŠ 
 		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex) {
 			aiVector3D& position = mesh->mVertices[vertexIndex];
 			aiVector3D& normal = mesh->mNormals[vertexIndex];
@@ -35,7 +35,7 @@ std::vector < Line::Vertex> ModelLoader::LoadLineModel(std::string filePath)
 			modelData.vertices.push_back(vertex);
 		}
 
-		// ƒCƒ“ƒfƒbƒNƒXiOŠpŒ`j‚ğ’Ç‰Á
+		// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ï¼ˆä¸‰è§’å½¢ï¼‰ã‚’è¿½åŠ 
 		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
 			aiFace& face = mesh->mFaces[faceIndex];
 			assert(face.mNumIndices == 3);
@@ -45,7 +45,7 @@ std::vector < Line::Vertex> ModelLoader::LoadLineModel(std::string filePath)
 		}
 	}
 
-	// ---- ŠOŒ`ƒGƒbƒW‚ğ’Šoi–@üˆê’v‚È‚çíœj ----
+	// ---- å¤–å½¢ã‚¨ãƒƒã‚¸ã‚’æŠ½å‡ºï¼ˆæ³•ç·šä¸€è‡´ãªã‚‰å‰Šé™¤ï¼‰ ----
 	struct EdgeKey {
 		uint32_t v0, v1;
 		bool operator==(const EdgeKey& other) const {
@@ -70,7 +70,7 @@ std::vector < Line::Vertex> ModelLoader::LoadLineModel(std::string filePath)
 		uint32_t i1 = modelData.indices[i + 1];
 		uint32_t i2 = modelData.indices[i + 2];
 
-		// OŠpŒ`‚Ì–@ü‚ğŒvZ
+		// ä¸‰è§’å½¢ã®æ³•ç·šã‚’è¨ˆç®—
 		Vector3 p0 = { modelData.vertices[i0].position.x, modelData.vertices[i0].position.y, modelData.vertices[i0].position.z };
 		Vector3 p1 = { modelData.vertices[i1].position.x, modelData.vertices[i1].position.y, modelData.vertices[i1].position.z };
 		Vector3 p2 = { modelData.vertices[i2].position.x, modelData.vertices[i2].position.y, modelData.vertices[i2].position.z };
@@ -82,33 +82,33 @@ std::vector < Line::Vertex> ModelLoader::LoadLineModel(std::string filePath)
 			uint32_t v0 = tri[e];
 			uint32_t v1 = tri[(e + 1) % 3];
 
-			// v0 < v1 ‚É‚È‚é‚æ‚¤‚É³‹K‰»
+			// v0 < v1 ã«ãªã‚‹ã‚ˆã†ã«æ­£è¦åŒ–
 			if (v0 > v1) std::swap(v0, v1);
 
 			EdgeKey key{ v0, v1 };
 
 			auto it = edgeMap.find(key);
 			if (it == edgeMap.end()) {
-				// V‚µ‚¢ƒGƒbƒW
+				// æ–°ã—ã„ã‚¨ãƒƒã‚¸
 				edgeMap[key] = EdgeData{ v0, v1, n, false };
 			}
 			else {
-				// Šù‘¶ƒGƒbƒW‚Æ”äŠr
+				// æ—¢å­˜ã‚¨ãƒƒã‚¸ã¨æ¯”è¼ƒ
 				EdgeData& ed = it->second;
 				float dot = Dot(Normalize(ed.normal), n);
 				if (dot > 0.999f) {
-					// “¯ˆê•½–Ê ¨ íœi•ªŠ„üj
+					// åŒä¸€å¹³é¢ â†’ å‰Šé™¤ï¼ˆåˆ†å‰²ç·šï¼‰
 					edgeMap.erase(it);
 				}
 				else {
-					// ˆÙ‚È‚é–Ê ¨ ŠOŒ`‚Æ‚µ‚Äc‚·
+					// ç•°ãªã‚‹é¢ â†’ å¤–å½¢ã¨ã—ã¦æ®‹ã™
 					ed.hasPair = true;
 				}
 			}
 		}
 	}
 
-	// ŠOŒ`ƒGƒbƒW‚¾‚¯‚ğûW
+	// å¤–å½¢ã‚¨ãƒƒã‚¸ã ã‘ã‚’åé›†
 	std::vector<Line::Vertex> lineVertices;
 	for (auto& kv : edgeMap) {
 		Line::Vertex va, vb;

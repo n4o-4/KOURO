@@ -16,7 +16,11 @@ class SceneFactory : public AbstaractSceneFactory
 {
 public:
 
-
+	/**
+	* \brief  CreateScene シーンの生成	
+	* \param  string シーンの名前
+	* \return BaseScene 生成したシーンの生ポインタ
+	*/
 	std::unique_ptr<BaseScene> CreateScene(const std::string& sceneName) override;
 
 };

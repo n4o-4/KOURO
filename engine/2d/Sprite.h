@@ -17,46 +17,94 @@ class SpriteCommon;
 class Sprite
 {
 public: // メンバ関数
-	// 初期化
+
+	/**
+	* \brief  Initialize 初期化
+	* \param  spriteCommon SpriteCommonのポインタ
+	* \param  textureFilePath textureのファイルパス
+	*/
 	void Initialize(SpriteCommon* spriteCommon,std::string textureFilePath);
 
+	// \brief Update 更新
 	void Update();
 
+	// \brief Draw 描画
 	void Draw();
 
+	/**
+	* \brief  GetPosition スプライトの位置を取得する
+	* \return position スプライトの位置
+	*/
 	const Vector2& GetPosition() const { return position;}
+
+	/**
+	* \brief  GetRotation スプライトの回転を取得する
+	* /return rotation スプライトの回転
+	*/
+	float GetRotation() const { return rotation; }
+
+	/**
+	* \brief  GetColor スプライトの色を取得する
+	* \return color スプライトの色
+	*/
+	const Vector4 GetColor() const { return materialData->color; }
+
+	/**
+	* \brief  GetSize	描画サイズを取得する
+	* \return size 描画サイズ
+	*/
+	const Vector2& GetSize() const { return size; }
+
+	/**
+	* \brief GetAnchorPoint アンカーポイントを取得する
+	*/
+	const Vector2& GetAnchorPoint() const { return anchorPoint; }
+
+	/**
+    * \brief GetIsFlipX X方向の反転フラグを取得する
+    * \param isFlipX X方向の反転フラグ
+    */
+	const bool GetIsFlipX() { return isFlipX_; }
+
+	/**
+	* \brief GetIsFlipY Y方向の反転フラグを取得する
+	* \param isFlipY Y方向の反転フラグ
+	*/
+	const bool GetIsFlipY() { return isFlipY_; }
+
+	/**
+	* \brief  GetTexLeftTop スプライト上の左上切り出し位置を取得する
+	* \param textureLeftTop スプライト上の左上切り出し位置
+	*/
+	const Vector2& GetTexLeftTop() { return textureLeftTop; }
+
+	/**
+	* \brief  GetTexSize　テクスチャの切り出しサイズを取得する
+	* \return textureSize テクスチャの切り出しサイズ
+	*/
+	const Vector2& GetTexSize() { return textureSize; }
 
 	void SetPosition(const Vector2& position) { this->position = position; }
 	
-	float GetRotation() const { return rotation; }
-	
 	void SetRotation(float rotation) { this->rotation = rotation; }
 
-	const Vector4 GetColor() const { return materialData->color; }
-
 	void SetColor(const Vector4& color) { materialData->color = color; }
-	
-	const Vector2& GetSize() const { return size; }
 
 	void SetSize(const Vector2& size) { this->size = size; }
 
 	// getter
-	const Vector2& GetAnchorPoint() const { return anchorPoint; }
+	
 
 	// setter
 	void SetAnchorPoint(const Vector2& anchorPoint) { this->anchorPoint = anchorPoint; }
 
-	// getter
-	const bool GetIsFlipX() { return isFlipX_; }
-	const bool GetIsFlipY() { return isFlipY_; }
+	
 
 	// setter
 	void SetIsFlipX(bool isFlipX) { isFlipX_ = isFlipX; }
 	void SetIsFlipY(bool isFlipY) { isFlipY_ = isFlipY; }
 
-	// getter
-	const Vector2& GetTexLeftTop() { return textureLeftTop; }
-	const Vector2& GetTexSize() { return textureSize; }
+	
 
 	// setter
 	void SetTexLeftTop(const Vector2& leftTop) { textureLeftTop = leftTop; }
@@ -113,12 +161,12 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource = nullptr;
 
 	// バッファリソース内のデータを指すポインタ
-	VertexData* vertexData;
-	uint32_t* indexData;
+	VertexData* vertexData = nullptr;
+	uint32_t* indexData = nullptr;
 
 	// バッファリソースの使い道を補足するバッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
-	D3D12_INDEX_BUFFER_VIEW indexBufferView;
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView = {};
+	D3D12_INDEX_BUFFER_VIEW indexBufferView = {};
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
 	Material* materialData = nullptr;

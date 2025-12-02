@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <type_traits>
 #include <vector>
 #include <memory>
@@ -7,10 +7,10 @@
 #include "SpriteCommon.h"
 
 // \brief NumUi
-// ������UI��ɕ\�����A�J�E���g�A�b�v�A�j���[�V�������s���N���X�B
-// �ő包�����w�肵�ď��������ASetDestinationValue�ŖڕW�l��ݒ�B
-// Update�ŃJ�E���g������i�߁ADraw�ŉ�ʂɕ`��B
-// �����Ŋe����Sprite�Ƃ��ĕێ����A���Ԍo�߂ɉ����Đ��l�����炩�ɕω�������B
+// 数字をUI上に表示し、カウントアップアニメーションを行うクラス。
+// 最大桁数を指定して初期化し、SetDestinationValueで目標値を設定。
+// Updateでカウント処理を進め、Drawで画面に描画。
+// 内部で各桁をSpriteとして保持し、時間経過に応じて数値を滑らかに変化させる。
 
 class NumUi
 {
@@ -50,7 +50,7 @@ private:
 
 	std::chrono::steady_clock::time_point lastUpdateTime_;
 
-	float countDuration_ = 0.1f; // �J�E���g�A�b�v�ɂ����鎞�ԁi�b�j
+	float countDuration_ = 0.1f; // カウントアップにかける時間（秒）
 
 	float countTime_ = 0.0f;
 

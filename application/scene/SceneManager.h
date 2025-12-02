@@ -17,29 +17,63 @@ public:
 
 	static SceneManager* GetInstance();
 
-	// 初期化
+	/**
+	* \brief  Initialize 初期化
+	* \param  DirectXCOmmon DirectXCommonのポインタ
+	* \param  SrvManager Srvマネージャーのポインタ
+	* \param  Camera カメラのポインタ
+	*/
 	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,Camera* camera);
 
+	// \brief Finalize 終了
 	void Finalize();
 
-	// 更新　
+	// \brief Uodate 更新
 	void Update();
 
-	// 描画
+	// \brief Draw 描画	
 	void Draw();
 
+	/**
+	* \brief  ChangeState シーンを変える
+	* \param  sceneName シーンの名前
+	*/
 	void ChangeScene(const std::string& sceneName);
 	
+	/**
+	* \brief  SetSceneFactory sceneFactoryの設定
+	* \param  sceneFactory 
+	*/
 	void SetSceneFactory(AbstaractSceneFactory& sceneFactory) { sceneFactory_ = &sceneFactory; }
 
+	/**
+	* \brief  SetPostEffect ポストエフェクトクラスの設定
+	* \param  PostEffect posEffectのポインタ
+	*/
 	void SetPostEffect(PostEffect* postEffect) { postEffect_ = postEffect; }
 
+	/**
+	* \brief  GetDxCommon DirectXCommonのポインタを取得する
+	* \return dxCommon_ DirectXCommonのポインタ
+	*/
 	DirectXCommon* GetDxCommon() { return dxCommon_; }	
 
+	/**
+	* \brief  GetSrvManager SrvManagerのポインタを取得す
+	* \return srvManager_ SrvManagerのポインタ
+	*/
 	SrvManager* GetSrvManager() { return srvManager_; }
 
+	/**
+	* \brief  GetCamera Cameraのポインタを取得する
+	* \return camera_ Cameraのポインタ
+	*/
 	Camera* GetCamera() { return camera_; }
 
+	/**
+	* \brief  GetPostEffect PostEffectのポインタを取得する
+	* \return postEffect_ PostEffectのポインタ
+	*/
 	PostEffect* GetPostEffect() { return postEffect_; }
 
 private:

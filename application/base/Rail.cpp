@@ -1,4 +1,4 @@
-#include "Rail.h"
+ï»¿#include "Rail.h"
 
 void Rail::Initialize(const std::vector<Vector3>& controlPoints, int samplePerSegment)
 {
@@ -14,10 +14,10 @@ void Rail::Initialize(const std::vector<Vector3>& controlPoints, int samplePerSe
 
 void Rail::Update()
 {
-	// ˆÚ“®‘¬“xi‹Èü‘S‘Ì‚ğ kMoveTime •b‚ÅˆÚ“®j
+	// ç§»å‹•é€Ÿåº¦ï¼ˆæ›²ç·šå…¨ä½“ã‚’ kMoveTime ç§’ã§ç§»å‹•ï¼‰
 	float moveSpeed = arcLengthTable_.totalLength / kMoveTime;
 
-	// —İÏˆÚ“®‹——£‚ğXV
+	// ç´¯ç©ç§»å‹•è·é›¢ã‚’æ›´æ–°
 	distanceTravelled += moveSpeed * kDeltaTime;
 
 	if (distanceTravelled >= arcLengthTable_.totalLength)
@@ -26,9 +26,9 @@ void Rail::Update()
 	}
 
 	// ------------------------------
-	// Œ»İˆÊ’u t ‚ğ—İÏ‹——£‚©‚ç‹tZ
+	// ç¾åœ¨ä½ç½® t ã‚’ç´¯ç©è·é›¢ã‹ã‚‰é€†ç®—
 	// ------------------------------
-	float t = 1.0f; // ƒfƒtƒHƒ‹ƒg‚ÍÅŒã
+	float t = 1.0f; // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯æœ€å¾Œ
 	for (int i = 1; i < arcLengthTable_.lengths.size(); ++i)
 	{
 		if (distanceTravelled <= arcLengthTable_.lengths[i])
@@ -40,11 +40,11 @@ void Rail::Update()
 		}
 	}
 
-	// Œ»İˆÊ’u
+	// ç¾åœ¨ä½ç½®
 	Vector3 position = CatmullRomPosition(controlPoints_, t);
 
 	// ------------------------------
-	// ŸƒtƒŒ[ƒ€‚Ìƒ^[ƒQƒbƒgˆÊ’uiis•ûŒüj
+	// æ¬¡ãƒ•ãƒ¬ãƒ¼ãƒ ã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆä½ç½®ï¼ˆé€²è¡Œæ–¹å‘ï¼‰
 	// ------------------------------
 	float lookAheadDistance = moveSpeed * kDeltaTime * 2.0f;
 	float distanceAhead;
@@ -66,7 +66,7 @@ void Rail::Update()
 	Vector3 target = CatmullRomPosition(controlPoints_, tNext);
 
 	// ------------------------------
-	// forward ƒxƒNƒgƒ‹‚©‚çƒIƒCƒ‰[Šp‚ğŒvZ
+	// forward ãƒ™ã‚¯ãƒˆãƒ«ã‹ã‚‰ã‚ªã‚¤ãƒ©ãƒ¼è§’ã‚’è¨ˆç®—
 	// ------------------------------
 	Vector3 forward = Normalize(target - position);
 	float yaw = std::atan2(forward.x, forward.z);
@@ -74,7 +74,7 @@ void Rail::Update()
 	float roll = 0.0f;
 
 	// ------------------------------
-	// ƒJƒƒ‰•ÏŠ·‚ğ“K—p
+	// ã‚«ãƒ¡ãƒ©å¤‰æ›ã‚’é©ç”¨
 	// ------------------------------
 	worldTransform_->transform.translate = position;
 	worldTransform_->transform.rotate = { pitch, yaw, roll };
@@ -95,7 +95,7 @@ void Rail::CreateArcLengthTable(int samplePerSegment)
 
 	for (int i = 1; i <= totalSamples; ++i)
 	{
-		float t = static_cast<float>(i) / totalSamples; // 0?1 ³‹K‰»
+		float t = static_cast<float>(i) / totalSamples; // 0?1 æ­£è¦åŒ–
 		Vector3 currPoint = CatmullRomPosition(controlPoints_, t);
 
 		float segmentLength = Length(currPoint - prevPoint);

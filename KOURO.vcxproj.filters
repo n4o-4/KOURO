@@ -327,18 +327,18 @@
     <ClCompile Include="engine\effect\Vignette.cpp">
       <Filter>engine\effect</Filter>
     </ClCompile>
-    <ClCompile Include="LineObjectManager.cpp" />
-    <ClCompile Include="LineObjectFactory.cpp" />
-    <ClCompile Include="ObjectLine.cpp" />
-    <ClCompile Include="LineModel.cpp" />
-    <ClCompile Include="LineModelManager.cpp" />
-    <ClCompile Include="Rail.cpp" />
-    <ClCompile Include="Absorb.cpp" />
-    <ClCompile Include="NumUi.cpp" />
-    <ClCompile Include="GrobalVariables.cpp" />
-    <ClCompile Include="GpuParticle.cpp" />
-    <ClCompile Include="UavManager.cpp" />
-    <ClCompile Include="ModelLoader.cpp" />
+    <ClCompile Include="engine\system\LineObjectManager.cpp" />
+    <ClCompile Include="engine\system\LineObjectFactory.cpp" />
+    <ClCompile Include="engine\3d\object\ObjectLine.cpp" />
+    <ClCompile Include="engine\3d\model\LineModel.cpp" />
+    <ClCompile Include="engine\system\LineModelManager.cpp" />
+    <ClCompile Include="application\base\Rail.cpp" />
+    <ClCompile Include="engine\effect\Absorb.cpp" />
+    <ClCompile Include="engine\system\NumUi.cpp" />
+    <ClCompile Include="engine\system\GrobalVariables.cpp" />
+    <ClCompile Include="engine\system\GpuParticle.cpp" />
+    <ClCompile Include="engine\system\UavManager.cpp" />
+    <ClCompile Include="engine\system\ModelLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -599,19 +599,19 @@
     <ClInclude Include="engine\core\Kouro.h">
       <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="LineObjectManager.h" />
-    <ClInclude Include="LineObjectFactory.h" />
-    <ClInclude Include="Easing.h" />
-    <ClInclude Include="ObjectLine.h" />
-    <ClInclude Include="LineModel.h" />
-    <ClInclude Include="LineModelManager.h" />
-    <ClInclude Include="Rail.h" />
-    <ClInclude Include="Absorb.h" />
-    <ClInclude Include="NumUi.h" />
-    <ClInclude Include="GrobalVariables.h" />
-    <ClInclude Include="GpuParticle.h" />
-    <ClInclude Include="UavManager.h" />
-    <ClInclude Include="ModelLoader.h" />
+    <ClInclude Include="engine\system\LineObjectManager.h" />
+    <ClInclude Include="engine\system\LineObjectFactory.h" />
+    <ClInclude Include="engine\math\Easing.h" />
+    <ClInclude Include="engine\3d\object\ObjectLine.h" />
+    <ClInclude Include="engine\3d\model\LineModel.h" />
+    <ClInclude Include="engine\system\LineModelManager.h" />
+    <ClInclude Include="application\base\Rail.h" />
+    <ClInclude Include="engine\effect\Absorb.h" />
+    <ClInclude Include="engine\system\NumUi.h" />
+    <ClInclude Include="engine\system\GrobalVariables.h" />
+    <ClInclude Include="engine\system\GpuParticle.h" />
+    <ClInclude Include="engine\system\UavManager.h" />
+    <ClInclude Include="engine\system\ModelLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

@@ -1,4 +1,4 @@
-#include "NumUi.h"
+ï»¿#include "NumUi.h"
 
 void NumUi::Initialize(size_t maxDigits)
 {
@@ -18,10 +18,10 @@ void NumUi::Update()
 {
     if (!isCount_) return;
 
-    // Œo‰ßŠÔ‚ğæ“¾
+    // çµŒéæ™‚é–“ã‚’å–å¾—
     float elapsed = std::chrono::duration<float>(std::chrono::steady_clock::now() - lastUpdateTime_).count();
 
-    // ˆê’èŠÔŒo‰ß‚²‚Æ‚É’l‚ğXV
+    // ä¸€å®šæ™‚é–“çµŒéã”ã¨ã«å€¤ã‚’æ›´æ–°
     if (elapsed >= countDuration_)
     {
         lastUpdateTime_ = std::chrono::steady_clock::now();
@@ -35,7 +35,7 @@ void NumUi::Update()
             value_--;
         }
 
-        // “’B‚µ‚½‚çI—¹
+        // åˆ°é”ã—ãŸã‚‰çµ‚äº†
         if (value_ == destinationValue_)
         {
             isCount_ = false;
@@ -43,12 +43,12 @@ void NumUi::Update()
         }
     }
 
-    // Œ…•ª‰ği–ˆƒtƒŒ[ƒ€s‚¤j
+    // æ¡åˆ†è§£ï¼ˆæ¯ãƒ•ãƒ¬ãƒ¼ãƒ è¡Œã†ï¼‰
     digits_.clear();
 
     uint32_t tempValue = value_;
 
-    // ’l‚ğ1Œ…‚¸‚Â•ª‰ğ
+    // å€¤ã‚’1æ¡ãšã¤åˆ†è§£
     if (tempValue == 0)
     {
         digits_.push_back(0);
@@ -62,17 +62,17 @@ void NumUi::Update()
         }
     }
 
-    // ---- ‚±‚±‚©‚ç’Ç‰Á ----
+    // ---- ã“ã“ã‹ã‚‰è¿½åŠ  ----
     std::reverse(digits_.begin(), digits_.end());
     // -----------------------
 
-    // 2Œ…‚É‘µ‚¦‚éiƒ[ƒ–„‚ßj
+    // 2æ¡ã«æƒãˆã‚‹ï¼ˆã‚¼ãƒ­åŸ‹ã‚ï¼‰
     while (digits_.size() < 2)
     {
         digits_.insert(digits_.begin(), 0);
     }
 
-    // ƒXƒvƒ‰ƒCƒgXV
+    // ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆæ›´æ–°
     for (size_t i = 0; i < numSprites_.size() && i < digits_.size(); ++i)
     {
         int digit = digits_[i];
@@ -86,7 +86,7 @@ void NumUi::Update()
 void NumUi::Draw()
 {
 	
-	// ƒXƒvƒ‰ƒCƒg‚ÌˆÊ’u‚ÆƒeƒNƒXƒ`ƒƒ‚ğXV‚µ‚Ä•`‰æ
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä½ç½®ã¨ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æ›´æ–°ã—ã¦æç”»
 	for (size_t i = 0; i < numSprites_.size(); ++i)
 	{
 		numSprites_[i]->Draw();
@@ -102,14 +102,14 @@ void NumUi::SetDestinationValue(uint32_t value,float countTime)
         isCount_ = true;
         lastUpdateTime_ = std::chrono::steady_clock::now();
 
-        // ƒJƒEƒ“ƒg·
+        // ã‚«ã‚¦ãƒ³ãƒˆå·®
         int diff = static_cast<int>(destinationValue_) - static_cast<int>(value_);
 
-        // ƒXƒeƒbƒv”iâ‘Î’lj
+        // ã‚¹ãƒ†ãƒƒãƒ—æ•°ï¼ˆçµ¶å¯¾å€¤ï¼‰
         int steps = std::abs(diff);
-        if (steps == 0) steps = 1; // 0œZ–h~
+        if (steps == 0) steps = 1; // 0é™¤ç®—é˜²æ­¢
 
-        // 1ƒXƒeƒbƒv‚É‚©‚¯‚éŠÔ
+        // 1ã‚¹ãƒ†ãƒƒãƒ—ã«ã‹ã‘ã‚‹æ™‚é–“
         countDuration_ = countTime / static_cast<float>(steps);
     }
 }

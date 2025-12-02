@@ -1,4 +1,4 @@
-#include "LineModelManager.h"
+ï»¿#include "LineModelManager.h"
 
 void LineModelManager::Initialize(LineDrawerBase* lineDrawerBase)
 {
@@ -7,26 +7,26 @@ void LineModelManager::Initialize(LineDrawerBase* lineDrawerBase)
 
 void LineModelManager::LoadLineModel(std::string filePath)
 {
-	// “Ç‚İ‚İÏ‚İƒ‚ƒfƒ‹ŒŸõ
+	// èª­ã¿è¾¼ã¿æ¸ˆã¿ãƒ¢ãƒ‡ãƒ«æ¤œç´¢
 	if (models_.contains(filePath)) {
 		return;
 	}
 
-	// ƒ‚ƒfƒ‹‚Ì¶¬‚Æƒtƒ@ƒCƒ‹“Ç‚İ‚İA‰Šú‰»
+	// ãƒ¢ãƒ‡ãƒ«ã®ç”Ÿæˆã¨ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ã€åˆæœŸåŒ–
 	std::unique_ptr<LineModel> model = std::make_unique<LineModel>();
 	model->Initialize(lineDrawerBase_, "Resources", filePath);
 
-	// ƒ‚ƒfƒ‹‚ğmapƒRƒ“ƒeƒi‚ÉŠi”[‚·‚é
+	// ãƒ¢ãƒ‡ãƒ«ã‚’mapã‚³ãƒ³ãƒ†ãƒŠã«æ ¼ç´ã™ã‚‹
 	models_.insert(std::make_pair(filePath, std::move(model)));
 }
 
 LineModel* LineModelManager::FindLineModel(const std::string filePath)
 {
-	// “Ç‚İ‚İÏ‚İƒ‚ƒfƒ‹‚ğŒŸõ
+	// èª­ã¿è¾¼ã¿æ¸ˆã¿ãƒ¢ãƒ‡ãƒ«ã‚’æ¤œç´¢
 	if (models_.contains(filePath)) {
-		// “Ç‚İ‚İƒ‚ƒfƒ‹‚ğ–ß‚è’l‚Æ‚µ‚Äreturn
+		// èª­ã¿è¾¼ã¿ãƒ¢ãƒ‡ãƒ«ã‚’æˆ»ã‚Šå€¤ã¨ã—ã¦return
 		return models_.at(filePath).get();
 	}
 
-	assert(0,"ŠY“–‚Ìƒ‚ƒfƒ‹‚ª“Ç‚İ‚Ü‚ê‚Ä‹‚Ü‚¹‚ñ");
+	assert(0);
 }

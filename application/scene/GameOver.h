@@ -22,16 +22,17 @@ class GameOver : public BaseScene {
 
 public: 
 
-	// 初期化
+	// \brief Initialzie 初期化
 	void Initialize() override;
-	// 終了
+
+	// \brief Finialize 終了
 	void Finalize() override;
-	// 毎フレーム更新
+
+	// \brief Update 更新
 	void Update() override;
-	// 描画
+
+	// \brief Draw 描画
 	void Draw() override;
-
-
 
 private:
 

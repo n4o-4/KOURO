@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <cassert>
 #include <string>
@@ -25,9 +25,9 @@ struct LineModelData {
 };
 
 // \brief LineModel
-// ���C���`��p�̃��f���N���X�B
-// �t�@�C�����璸�_�f�[�^��ǂݍ��݁A���C���`��ɕK�v�ȃo�b�t�@���쐬�E�Ǘ�����B
-// ������DirectX�̒��_���\�[�X�ƃo�b�t�@�r���[��ێ����ADraw�֐��ŕ`������s����B
+// ライン描画用のモデルクラス。
+// ファイルから頂点データを読み込み、ライン描画に必要なバッファを作成・管理する。
+// 内部でDirectXの頂点リソースとバッファビューを保持し、Draw関数で描画を実行する。
 
 class LineModel
 {
