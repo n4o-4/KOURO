@@ -26,10 +26,17 @@ struct SpotLightData
 class SpotLight
 {
 public:
+	
+	/// \brief 初期化
 	void Initialize();
 
+	/// \brief 更新
 	void Update();
 
+	/**
+	* \brief  スポットライトのresourceを取得する
+	* \return spotLightResource
+	*/
 	Microsoft::WRL::ComPtr<ID3D12Resource> GetSpotLightResource() { return spotLightResource_; }
 
 public:

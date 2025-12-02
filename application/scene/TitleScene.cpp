@@ -216,6 +216,11 @@ void TitleScene::Update()
 		scoreUi_->SetDestinationValue(count,1.0f);
 	}
 
+	if (ImGui::Button("emit"))
+	{
+		GpuParticle::GetInstance()->LineEmit(MakeIdentity4x4());
+	}
+
 	ImGui::End();
 #endif
 

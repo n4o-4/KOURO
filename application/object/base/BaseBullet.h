@@ -14,11 +14,9 @@ public: // 公開メンバ関数
 	 * \brief  Initialize 初期化
 	 * \param  model モデル
 	 */
-
 	virtual void Initialize(LineModel* model, Vector3 spawnPos);
 
 	// \brief  Update 更新
-
 	virtual void Update();
 	
 	
@@ -28,21 +26,18 @@ public: // 公開メンバ関数
 	 * \param  pointLight ポイントライト
 	 * \param  spotLight スポットライト
 	 */
-
 	virtual void Draw();
 
 	/**
 	 * \brief  GetIsAlive
 	 * \return isAlive 生存フラグ
 	 */
-
 	bool GetIsAlive() const { return isAlive_; }
 
 	/**
 	 * \brief  GetDamage ダメージ量取得
 	 * \return damage ダメージ量
 	 */
-
 	uint32_t GetDamage() const { return damage_; }
 
 protected: // 派生用メンバ変数

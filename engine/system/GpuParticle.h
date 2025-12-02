@@ -41,12 +41,12 @@ namespace Particle
 
 	struct EmitterSphere
 	{
-		Vector3 translate;   // 位置
-		float radius;        // 射出半径
-		uint32_t count;      // 射出数
-		float frequency;     // 射出間隔
-		float frequencyTime; // 射出間隔調整用時間
-		uint32_t emit;       // 射出許可
+		Vector3 translate;   // �ʒu
+		float radius;        // �ˏo���a
+		uint32_t count;      // �ˏo��
+		float frequency;     // �ˏo�Ԋu
+		float frequencyTime; // �ˏo�Ԋu�����p����
+		uint32_t emit;       // �ˏo����
 	};
 
 	struct PerFrame
@@ -70,35 +70,35 @@ namespace Particle
 }
 
 // \brief GpuParticle
-// GPU上でパーティクルを管理・描画するシングルトンクラス。
-// 最大パーティクル数を管理し、ComputeShaderによる初期化、発生、更新処理を行う。
-// また、線上パーティクル(LineSegment)の発生や描画もサポート。
-// 内部で各種リソース（パーティクル、カウンター、フリスト、頂点、マテリアル、エミッター、transform、lineSegmentなど）を管理。
-// PipelineSetを用いて、GPU側のComputeとGraphicsパイプラインを構成し、効率的な大量パーティクル描画を可能にする。
+// GPU��Ńp�[�e�B�N����Ǘ��E�`�悷��V���O���g���N���X�B
+// �ő�p�[�e�B�N������Ǘ����AComputeShader�ɂ�鏉�����A�����A�X�V������s���B
+// �܂��A����p�[�e�B�N��(LineSegment)�̔�����`���T�|�[�g�B
+// ����Ŋe�탊�\�[�X�i�p�[�e�B�N���A�J�E���^�[�A�t���X�g�A���_�A�}�e���A���A�G�~�b�^�[�Atransform�AlineSegment�Ȃǁj��Ǘ��B
+// PipelineSet��p���āAGPU����Compute��Graphics�p�C�v���C����\�����A�����I�ȑ�ʃp�[�e�B�N���`���\�ɂ���B
 
 class GpuParticle
 {
 public:
 
-	// 最大パーティクル数
-	const uint32_t kMaxParticleCount = 1024;
+	// �ő�p�[�e�B�N����
+	const uint32_t kMaxParticleCount = 524288;
 
 public:
 
 	static GpuParticle* GetInstance();
 
 	/**
-	* \brief  Initialize 初期化
-	* \param  dxCommon DirectXCommonのポインタ
-	* \param  srvManager SrvManagerのポインタ
-	* \param  uavManagedr UavManagerのポインタ
+	* \brief  Initialize ������
+	* \param  dxCommon DirectXCommon�̃|�C���^
+	* \param  srvManager SrvManager�̃|�C���^
+	* \param  uavManagedr UavManager�̃|�C���^
 	*/
 	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,UavManager* uavManagedr);
 
-	// \brief  Finalize 終了
+	// \brief  Finalize �I��
 	void Finalize();
 
-	// \brief  Update 更新
+	// \brief  Update �X�V
 	void Update(ViewProjection viewProjection);
 
 	void Draw();
@@ -109,33 +109,33 @@ public:
 
 	void LineEmit(Matrix4x4 world);
 
-private: // 非公開メンバ関数
+private: // ����J�����o�֐�
 
-	// \brief  CreateResourc0e リソースの生成
+	// \brief  CreateResourc0e ���\�[�X�̐���
 	void CreateResource();
 
-	// \brief  CreateVertexResource 頂点リソースの生成
+	// \brief  CreateVertexResource ���_���\�[�X�̐���
 	void CreateVertexResource();
 
-	// \brief  CreateVertexBufferView 頂点バッファビューの生成
+	// \brief  CreateVertexBufferView ���_�o�b�t�@�r���[�̐���
 	void CreateVertexBufferView();
 
-	// \brief  CreatePerViewResource パービュ―リソースの生成
+	// \brief  CreatePerViewResource �p�[�r���\���\�[�X�̐���
 	void CreatePerViewResource();
 
-	// \brief  CreateMaterialResource マテリアルリソースの生成
+	// \brief  CreateMaterialResource �}�e���A�����\�[�X�̐���
 	void CreateMaterialResource();
 
-	// \brief  CreateEmitterResource エミッターリソースの生成
+	// \brief  CreateEmitterResource �G�~�b�^�[���\�[�X�̐���
 	void CreateEmitterResource();
 
-	// \brief  CreatePerFrameResource perFrameリソースの生成
+	// \brief  CreatePerFrameResource perFrame���\�[�X�̐���
 	void CreatePerFrameResource();
 
-	// \brief  CreateTransformResource transformリソースの生成
+	// \brief  CreateTransformResource transform���\�[�X�̐���
 	void CreateTransformResource();
 
-	// \brief  CreateLineSegmentResource lineSegmentリソースの生成
+	// \brief  CreateLineSegmentResource lineSegment���\�[�X�̐���
 	void CreateLineSegmentResource();
 
 	//
@@ -156,16 +156,16 @@ private: // 非公開メンバ関数
 
 	/// Graphics
 
-	// \brief  CreateGraphicsRootSignature 描画用ルートシグネチャの作成
+	// \brief  CreateGraphicsRootSignature �`��p���[�g�V�O�l�`���̍쐬
 	void CreateGraphicsRootSignature();
 
-	// \brief  CreateGraphicsPipelineState 描画用パイプラインステートの作成
+	// \brief  CreateGraphicsPipelineState �`��p�p�C�v���C���X�e�[�g�̍쐬
 	void CreateGraphicsPipelineState();
 
-	// \brief  CreateComputePipelineState Computeパイプラインステートの作成
+	// \brief  CreateComputePipelineState Compute�p�C�v���C���X�e�[�g�̍쐬
 	void CreateComputePipelineState(PipelineSet* pipelineSet,std::string shaderPath);
 
-	// \brief  CreatePipelineSet パイプラインセットの作成
+	// \brief  CreatePipelineSet �p�C�v���C���Z�b�g�̍쐬
 	void CreatePipelineSet();
 
 private:
@@ -204,7 +204,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;
 	Particle::Material* material_ = nullptr;
 
-	// エミッター
+	// �G�~�b�^�[
 	Microsoft::WRL::ComPtr<ID3D12Resource> emitterResource_ = nullptr;
 	Particle::EmitterSphere* emitter_ = nullptr;
 
@@ -227,19 +227,19 @@ private:
 
 	uint32_t uavIndex_ = 0;
 
-	// ComputeShader用(InitializeParticle)
+	// ComputeShader�p(InitializeParticle)
 	std::unique_ptr<PipelineSet> initializePipelineSet_;
 	
-	// ComputeShader用(EmitParticle)
+	// ComputeShader�p(EmitParticle)
 	std::unique_ptr<PipelineSet> emitPipelineSet_;
 
-	// ComputeShader用(線上発射)
+	// ComputeShader�p(���㔭��)
 	std::unique_ptr<PipelineSet> lineEmitPipelineSet_;
 
-	// ComputeShader用(UpdateParticle)
+	// ComputeShader�p(UpdateParticle)
 	std::unique_ptr<PipelineSet> updatePipelineSet_;
 
-	// 描画用
+	// �`��p
 	std::unique_ptr<PipelineSet> graphicsPipelineSet_;
 
 	const float kDeltaTime_ = 1.0f / 60.0f;

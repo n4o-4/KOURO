@@ -15,27 +15,27 @@ GpuParticle* GpuParticle::GetInstance()
 
 void GpuParticle::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, UavManager* uavManagedr)
 {
-	// メンバ変数に記録
+	// �����o�ϐ��ɋL�^
 	dxCommon_ = dxCommon;
 	srvManager_ = srvManager;
 	uavManager_ = uavManagedr;
 
-	// リソースの生成
+	// ���\�[�X�̐���
 	CreateResource();
 
-	// 頂点リソースの生成
+	// ���_���\�[�X�̐���
 	CreateVertexResource();
 
-	// 頂点バッファビューの生成
+	// ���_�o�b�t�@�r���[�̐���
 	CreateVertexBufferView();
 
-	// パービュ―リソースの生成
+	// �p�[�r���\���\�[�X�̐���
 	CreatePerViewResource();
 
-	// マテリアルリソースの生成
+	// �}�e���A�����\�[�X�̐���
 	CreateMaterialResource();
 
-	// エミッターリソースの生成
+	// �G�~�b�^�[���\�[�X�̐���
 	CreateEmitterResource();
 
 	// 
@@ -45,15 +45,15 @@ void GpuParticle::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, Ua
 
 	CreateLineCountResource();
 
-	// SRVの作成
+	// SRV�̍쐬
 	srvIndex_ = srvManager_->Allocate();
 	srvManager_->CreateSRVforStructuredBuffer(srvIndex_, particleResource_.Get(), kMaxParticleCount, sizeof(ParticleCS));
 
-	// UAVの作成
+	// UAV�̍쐬
 	uavIndex_ = uavManager_->Allocate();
 	uavManager_->CreateUAVforStructuredBuffer(uavIndex_, particleResource_.Get(), kMaxParticleCount, sizeof(ParticleCS));
 
-	// パイプラインセットの作成
+	// �p�C�v���C���Z�b�g�̍쐬
 	CreatePipelineSet();
 
 	materialData_.textureFilePath = "Resources/circle.png";
@@ -65,24 +65,24 @@ void GpuParticle::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, Ua
 
 	CreateLineSegment("enemy/enemy.obj");
 
-	// ヒープの設定
+	// �q�[�v�̐ݒ�
 	srvManager_->PreDraw();
 
-	// rootSignatureの設定
+	// rootSignature�̐ݒ�
 	dxCommon_->GetCommandList()->SetComputeRootSignature(initializePipelineSet_->rootSignature.Get());
 
-	// pipeLineStateの設定
+	// pipeLineState�̐ݒ�
 	dxCommon_->GetCommandList()->SetPipelineState(initializePipelineSet_->pipelineState.Get());
 
-	// UAVの設定
+	// UAV�̐ݒ�
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, particleResource_.Get()->GetGPUVirtualAddress());
 
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, counterResource_.Get()->GetGPUVirtualAddress());
 
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, freeListResource_.Get()->GetGPUVirtualAddress());
 
-	// Dispatchの実行
-	dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount, 1, 1);
+	// Dispatch�̎��s
+	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
 }
 
 void GpuParticle::Finalize()
@@ -116,16 +116,16 @@ void GpuParticle::Update(ViewProjection viewProjection)
 
 	perFrame_;
 
-	// ヒープの設定
+	// �q�[�v�̐ݒ�
 	srvManager_->PreDraw();
 
-	// rootSignatureの設定
+	// rootSignature�̐ݒ�
 	dxCommon_->GetCommandList()->SetComputeRootSignature(emitPipelineSet_->rootSignature.Get());
 
-	// pipeLineStateの設定
+	// pipeLineState�̐ݒ�
 	dxCommon_->GetCommandList()->SetPipelineState(emitPipelineSet_->pipelineState.Get());
 
-	// UAVの設定
+	// UAV�̐ݒ�
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, particleResource_.Get()->GetGPUVirtualAddress());
 
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, counterResource_.Get()->GetGPUVirtualAddress());
@@ -136,8 +136,8 @@ void GpuParticle::Update(ViewProjection viewProjection)
 
 	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
 
-	// Dispatchの実行
-	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
+	// Dispatch�̎��s
+	//dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
 
 	D3D12_RESOURCE_BARRIER barrier1{};
 	barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
@@ -157,10 +157,10 @@ void GpuParticle::Update(ViewProjection viewProjection)
 	barrier3.UAV.pResource = freeListResource_.Get();
 	dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier3);
 
-	// rootSignatureの設定
+	// rootSignature�̐ݒ�
 	dxCommon_->GetCommandList()->SetComputeRootSignature(updatePipelineSet_->rootSignature.Get());
 
-	// pipeLineStateの設定
+	// pipeLineState�̐ݒ�
 	dxCommon_->GetCommandList()->SetPipelineState(updatePipelineSet_->pipelineState.Get());
 
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, particleResource_.Get()->GetGPUVirtualAddress());
@@ -171,36 +171,38 @@ void GpuParticle::Update(ViewProjection viewProjection)
 
 	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(3, perFrameResource_.Get()->GetGPUVirtualAddress());
 
-	// Dispatchの実行
-	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
+	// Dispatch�̎��s
+	dxCommon_->GetCommandList()->Dispatch(512, 1, 1);
+
+	LineEmit(MakeIdentity4x4());
 }
 
 void GpuParticle::Draw()
 {
-	// rootSignatureの設定
+	// rootSignature�̐ݒ�
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(graphicsPipelineSet_->rootSignature.Get());
-	// pipeLineStateの設定
+	// pipeLineState�̐ݒ�
 	dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineSet_->pipelineState.Get());
 
-	// 頂点バッファの設定
+	// ���_�o�b�t�@�̐ݒ�
 	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
-	// プリミティブトポロジーの設定
+	// �v���~�e�B�u�g�|���W�[�̐ݒ�
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// 定数バッファの設定
+	// �萔�o�b�t�@�̐ݒ�
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_.Get()->GetGPUVirtualAddress());
 
-	// SRVの設定
+	// SRV�̐ݒ�
 	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(srvIndex_));
 
-	// テクスチャの設定
+	// �e�N�X�`���̐ݒ�
 	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, srvManager_->GetGPUDescriptorHandle(materialData_.textureIndex));
 
-	// パービュ―リソースの設定
+	// �p�[�r���\���\�[�X�̐ݒ�
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, perViewResource_.Get()->GetGPUVirtualAddress());
 
-	// 描画コマンド
+	// �`��R�}���h
 	dxCommon_->GetCommandList()->DrawInstanced(6, kMaxParticleCount, 0, 0);
 }
 
@@ -210,8 +212,8 @@ void GpuParticle::CreateLineSegment(std::string filePath)
 
 	std::vector<Line::Vertex> vertices = loader.LoadLineModel(filePath);
 
-	// 頂点が偶数個である前提（LINELIST）
-	// 2つごとに線分を作成
+	// ���_������ł���O��iLINELIST�j
+	// 2���Ƃɐ�����쐬
 	for (size_t i = 0; i + 1 < vertices.size(); i += 2)
 	{
 		Particle::LineSegment seg;
@@ -223,7 +225,7 @@ void GpuParticle::CreateLineSegment(std::string filePath)
 		lineSegments_.push_back(seg);
 	}
 
-	// lineSegmentリソースの生成
+	// lineSegment���\�[�X�̐���
 	CreateLineSegmentResource();
 }
 
@@ -231,13 +233,13 @@ void GpuParticle::LineEmit(Matrix4x4 world)
 {
 	transform_->matWorld = world;
 
-	// 1. Compute RootSignature をセット
+	// 1. Compute RootSignature ��Z�b�g
 	dxCommon_->GetCommandList()->SetComputeRootSignature(lineEmitPipelineSet_->rootSignature.Get());
 
-	// 2. Pipeline State をセット
+	// 2. Pipeline State ��Z�b�g
 	dxCommon_->GetCommandList()->SetPipelineState(lineEmitPipelineSet_->pipelineState.Get());
 
-	// 3. Compute Root の Descriptor / CBV / UAV をセット
+	// 3. Compute Root �� Descriptor / CBV / UAV ��Z�b�g
 	dxCommon_->GetCommandList()->SetComputeRootDescriptorTable(0, srvManager_->GetGPUDescriptorHandle(lineSegmentSrvIndex_));
 	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(1, transformResource_.Get()->GetGPUVirtualAddress());
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, particleResource_.Get()->GetGPUVirtualAddress());
@@ -248,8 +250,14 @@ void GpuParticle::LineEmit(Matrix4x4 world)
 	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(7, lineCountResource_.Get()->GetGPUVirtualAddress());
 
 
-	// Dispatchの実行
-	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
+	// Dispatch�̎��s
+	dxCommon_->GetCommandList()->Dispatch(lineSegments_.size(), 1, 1);
+
+	D3D12_RESOURCE_BARRIER barrier1{};
+	barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+	barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier1.UAV.pResource = particleResource_.Get();
+	dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier1);
 }
 
 void GpuParticle::CreateResource()
@@ -265,9 +273,9 @@ void GpuParticle::CreateResource()
     //resourceDesc.MipLevels = 1;
     //resourceDesc.SampleDesc.Count = 1;
     //resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-    //resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS; // UAVとして使う
+    //resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS; // UAV�Ƃ��Ďg��
 
-    //// UAVとして使えるように初期ステートをUNORDERED_ACCESSにしておく
+    //// UAV�Ƃ��Ďg����悤�ɏ����X�e�[�g��UNORDERED_ACCESS�ɂ��Ă���
     //dxCommon_->GetDevice()->CreateCommittedResource(
     //    &heapProperties,
     //    D3D12_HEAP_FLAG_NONE,
@@ -286,26 +294,26 @@ void GpuParticle::CreateResource()
 
 void GpuParticle::CreateVertexResource()
 {
-	modelData_.vertices.push_back({ { -0.5f,  0.5f, 0.0f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // 左上
-	modelData_.vertices.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // 右上
-	modelData_.vertices.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // 左下
+	modelData_.vertices.push_back({ { -0.5f,  0.5f, 0.0f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // ����
+	modelData_.vertices.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // �E��
+	modelData_.vertices.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // ����
 
-	modelData_.vertices.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // 右上
-	modelData_.vertices.push_back({ {  0.5f, -0.5f, 0.0f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // 右下
-	modelData_.vertices.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // 左下
+	modelData_.vertices.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } }); // �E��
+	modelData_.vertices.push_back({ {  0.5f, -0.5f, 0.0f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // �E��
+	modelData_.vertices.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }); // ����
 
 	vertexResource_ = dxCommon_->CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
 }
 
 void GpuParticle::CreateVertexBufferView()
 {
-	// リソースの先頭アドレス
+	// ���\�[�X�̐擪�A�h���X
 	vertexBufferView_.BufferLocation = vertexResource_.Get()->GetGPUVirtualAddress();
 
-	// 使用するリソースのサイズ
+	// �g�p���郊�\�[�X�̃T�C�Y
 	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.vertices.size());
 
-	// 1頂点あたりのサイズ
+	// 1���_������̃T�C�Y
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
 	VertexData* vertexData;
@@ -333,7 +341,7 @@ void GpuParticle::CreateEmitterResource()
 	emitter_ = nullptr;
 	emitterResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&emitter_));
 	emitter_->emit = 0;
-	emitter_->frequency = 1.0f;
+	emitter_->frequency = 0.0f;
 	emitter_->frequencyTime = 0.0f;
 	emitter_->count = 512;
 }
@@ -357,6 +365,7 @@ void GpuParticle::CreateLineSegmentResource()
 	lineSegmentResource_ = dxCommon_->CreateBufferResource(sizeof(Particle::LineSegment) * lineSegments_.size());
 	Particle::LineSegment* lineSegmentData;
 	lineSegmentResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&lineSegmentData));
+	std::memcpy(lineSegmentData, lineSegments_.data(), sizeof(Particle::LineSegment) * lineSegments_.size());
 
 	lineSegmentSrvIndex_ = srvManager_->Allocate();
 
@@ -378,11 +387,11 @@ void GpuParticle::CreateInitializePipelineSet()
 
 	HRESULT hr;
 
-	// rootSignatureの生成
+	// rootSignature�̐���
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	// rootParameterの生成
+	// rootParameter�̐���
 	D3D12_ROOT_PARAMETER rootParameters[3] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -399,7 +408,7 @@ void GpuParticle::CreateInitializePipelineSet()
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
-	// シリアライズしてバイナリにする
+	// �V���A���C�Y���ăo�C�i���ɂ���
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
@@ -408,7 +417,7 @@ void GpuParticle::CreateInitializePipelineSet()
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	// バイナリを元にRootSignatureを生成
+	// �o�C�i�������RootSignature�𐶐�
 	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&initializePipelineSet_->rootSignature));
 
 	CreateComputePipelineState(initializePipelineSet_.get(), "Resources/shaders/InitializeParticle.CS.hlsl");
@@ -420,11 +429,11 @@ void GpuParticle::CreateEmitPipelineSet()
 
 	HRESULT hr;
 
-	// rootSignatureの生成
+	// rootSignature�̐���
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	// rootParameterの生成
+	// rootParameter�̐���
 	D3D12_ROOT_PARAMETER rootParameters[5] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -449,7 +458,7 @@ void GpuParticle::CreateEmitPipelineSet()
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
-	// シリアライズしてバイナリにする
+	// �V���A���C�Y���ăo�C�i���ɂ���
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
@@ -458,7 +467,7 @@ void GpuParticle::CreateEmitPipelineSet()
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	// バイナリを元にRootSignatureを生成
+	// �o�C�i�������RootSignature�𐶐�
 	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&emitPipelineSet_->rootSignature));
 
 	CreateComputePipelineState(emitPipelineSet_.get(), "Resources/shaders/EmitParticleSphere.CS.hlsl");
@@ -470,7 +479,7 @@ void GpuParticle::CreateLineEmitPipelineSet()
 	
 	HRESULT hr;
 
-	// rootSignatureの生成
+	// rootSignature�̐���
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
@@ -480,7 +489,7 @@ void GpuParticle::CreateLineEmitPipelineSet()
 	descriptorRangeForInstancing[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	// rootParameterの生成
+	// rootParameter�̐���
 	D3D12_ROOT_PARAMETER rootParameters[8] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -518,7 +527,7 @@ void GpuParticle::CreateLineEmitPipelineSet()
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
-	// シリアライズしてバイナリにする
+	// �V���A���C�Y���ăo�C�i���ɂ���
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
@@ -527,7 +536,7 @@ void GpuParticle::CreateLineEmitPipelineSet()
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	// バイナリを元にRootSignatureを生成
+	// �o�C�i�������RootSignature�𐶐�
 	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&lineEmitPipelineSet_->rootSignature));
 
 	CreateComputePipelineState(lineEmitPipelineSet_.get(), "Resources/shaders/EmitParticleLine.CS.hlsl");
@@ -539,11 +548,11 @@ void GpuParticle::CreateUpdatePipelineSet()
 
 	HRESULT hr;
 
-	// rootSignatureの生成
+	// rootSignature�̐���
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	// rootParameterの生成
+	// rootParameter�̐���
 	D3D12_ROOT_PARAMETER rootParameters[4] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -564,7 +573,7 @@ void GpuParticle::CreateUpdatePipelineSet()
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
-	// シリアライズしてバイナリにする
+	// �V���A���C�Y���ăo�C�i���ɂ���
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
@@ -573,7 +582,7 @@ void GpuParticle::CreateUpdatePipelineSet()
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	// バイナリを元にRootSignatureを生成
+	// �o�C�i�������RootSignature�𐶐�
 	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&updatePipelineSet_->rootSignature));
 
 	CreateComputePipelineState(updatePipelineSet_.get(), "Resources/shaders/UpdateParticle.CS.hlsl");
@@ -585,7 +594,7 @@ void GpuParticle::CreateGraphicsRootSignature()
 
 	HRESULT hr;
 
-	// rootSignatureの生成
+	// rootSignature�̐���
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
@@ -601,7 +610,7 @@ void GpuParticle::CreateGraphicsRootSignature()
 	descriptorRangeForInstancing[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	// rootParameterの生成
+	// rootParameter�̐���
 	D3D12_ROOT_PARAMETER rootParameters[4] = {};
 
 	// material
@@ -629,23 +638,23 @@ void GpuParticle::CreateGraphicsRootSignature()
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
-	// samplerの生成
+	// sampler�̐���
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
-	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // バイナリフィルタ
-	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // 0~1の範囲外をリピート
-	//staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP; // X座標
+	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // �o�C�i���t�B���^
+	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // 0~1�͈̔͊O����s�[�g
+	//staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP; // X���W
 	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-	//staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // Y座標
+	//staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // Y���W
 	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // 比較しない
-	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX; // 多くのMipMapを使う
+	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // ��r���Ȃ�
+	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX; // ������MipMap��g��
 	staticSamplers[0].ShaderRegister = 0;
 	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	descriptionRootSignature.pStaticSamplers = staticSamplers;
 	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
 
-	// シリアライズしてバイナリにする
+	// �V���A���C�Y���ăo�C�i���ɂ���
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 
@@ -655,7 +664,7 @@ void GpuParticle::CreateGraphicsRootSignature()
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	// バイナリを元にRootSignatureを生成
+	// �o�C�i�������RootSignature�𐶐�
 	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&graphicsPipelineSet_->rootSignature));
 	assert(SUCCEEDED(hr));
 }
@@ -664,7 +673,7 @@ void GpuParticle::CreateGraphicsPipelineState()
 {
 	HRESULT hr;
 
-	// InputLayoutの設定
+	// InputLayout�̐ݒ�
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
@@ -685,37 +694,37 @@ void GpuParticle::CreateGraphicsPipelineState()
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
 
-	// RasterizerStateの設定
+	// RasterizerState�̐ݒ�
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
 
-	// 裏面(時計回り)を表示しない
+	// ����(���v���)��\�����Ȃ�
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 
-	// 三角形の中を塗りつぶす
+	// �O�p�`�̒���h��Ԃ�
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
-	// Shaderのコンパイル
+	// Shader�̃R���p�C��
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.CS.VS.hlsl", L"vs_6_0");
 
 	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.CS.PS.hlsl", L"ps_6_0");
 
-	// DepthStencilStateの設定
+	// DepthStencilState�̐ݒ�
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 
-	// Depthの機能を有効化する
+	// Depth�̋@�\��L��������
 	depthStencilDesc.DepthEnable = true;
 
-	// 書き込みします
+	// �������݂��܂�
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 
-	// 比較関数はLessEqual。近ければ描画される
+	// ��r�֐���LessEqual�B�߂���Ε`�悳���
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
 
-	// BlendStateの設定
+	// BlendState�̐ݒ�
 	D3D12_BLEND_DESC blendDesc{};
 
-	// 全ての要素数を書き込む
+	// �S�Ă̗v�f�����������
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
 
@@ -738,22 +747,22 @@ void GpuParticle::CreateGraphicsPipelineState()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;
 
-	// 書き込むRTVの情報
+	// ��������RTV�̏��
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 
-	// 利用するトポロジー(形状)のタイプ。三角形
+	// ���p����g�|���W�[(�`��)�̃^�C�v�B�O�p�`
 	graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-	// どのように画面に色をつけるか
+	// �ǂ̂悤�ɉ�ʂɐF����邩
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-	// DepthStencilの設定
+	// DepthStencil�̐ݒ�
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	// 実際に生成
+	// ���ۂɐ���
 	graphicsPipelineSet_->pipelineState = nullptr;
 	hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineSet_->pipelineState));
 	assert(SUCCEEDED(hr));
@@ -765,14 +774,14 @@ void GpuParticle::CreateComputePipelineState(PipelineSet* pipelineSet, std::stri
 
 	Microsoft::WRL::ComPtr<IDxcBlob> computeShaderBlob = dxCommon_->CompileShader(wShaderPath.c_str(), L"cs_6_0");
 
-	// Shaderのコンパイル
+	// Shader�̃R���p�C��
 	D3D12_COMPUTE_PIPELINE_STATE_DESC computePipelineStateDesc{};
 	computePipelineStateDesc.CS = { .pShaderBytecode = computeShaderBlob->GetBufferPointer(), .BytecodeLength = computeShaderBlob->GetBufferSize() };
 
-	// RootSignatureの設定
+	// RootSignature�̐ݒ�
 	computePipelineStateDesc.pRootSignature = pipelineSet->rootSignature.Get();
 
-	// 実際に生成
+	// ���ۂɐ���
 	HRESULT hr = dxCommon_->GetDevice()->CreateComputePipelineState(&computePipelineStateDesc, IID_PPV_ARGS(&pipelineSet->pipelineState));
 }
 
@@ -780,10 +789,10 @@ void GpuParticle::CreatePipelineSet()
 {
 	/// ComputeShader
 
-	// InitializeParticle用
+	// InitializeParticle�p
 	CreateInitializePipelineSet();
 
-	// EmitParticle用
+	// EmitParticle�p
 	CreateEmitPipelineSet();
 
 	CreateLineEmitPipelineSet();
@@ -791,7 +800,7 @@ void GpuParticle::CreatePipelineSet()
 	// UpdateParticle
 	CreateUpdatePipelineSet();
 
-	// 描画用
+	// �`��p
 	CreateGraphicsRootSignature();
 	CreateGraphicsPipelineState();
 }

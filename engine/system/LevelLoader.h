@@ -37,10 +37,19 @@ public:
 
 private:
 
+    /**
+    * \brief  読み込んだlevelDataを実際に使えるように読み込む
+    * \param  deserialized : levelData
+    */
     std::unique_ptr<LevelData> LoadLevel(nlohmann::json deserialized);
 
 public:
 
+    /**
+    * \brief  jsonFileからLevelDataを読み込む
+    * \param  fileName : 読み込むfileName
+    * \return LevelData
+    */
     std::unique_ptr<LevelLoader::LevelData> LoadLevelFromJson(std::string fileName);
 
 

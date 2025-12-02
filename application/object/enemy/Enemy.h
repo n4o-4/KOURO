@@ -12,39 +12,77 @@
 class Enemy : public BaseCharacter, public AABBCollider
 {
 public: // 公開メンバ関数
-	// 初期化処理
+
+	/**
+	* \brief  Initialzie 初期化
+	* \param  LineModel 線モデル
+	*/
 	void Initialize(LineModel* model) override;
-	// 更新処理
+
+	
+	// \brief Update 更新
 	void Update() override;
-	// 描画処理
+
+	// \brief Draw 描画
 	void Draw() override;
 
+	/**
+	* \brief SetPosition
+	* \param Vector3 座標
+	*/
 	void SetPosition(const Vector3& position);
 
+	/**
+	* \brief SetTarget ターゲットの設定
+	* \param BaseCharacter ターゲットのポインタ
+	*/
 	void SetTarget(BaseCharacter* target) { target_ = target; }
 
+	/**
+	* \brief SetColliderManager コライダーマネージャーを設定する
+	* \param ColliderManager コライダーマネージャーのポインタ
+	*/
 	void SetColliderManager(ColliderManager* colliderManager) { colliderManager_ = colliderManager; }
 
+	/**
+	* \brief SetLineModelManager ラインモデルマネージャーを設定する
+	* \param LineModelManager ラインモデルマネージャーのポインタ
+	*/
 	void SetLineModelManager(LineModelManager* lineModelManager) { lineModelManager_ = lineModelManager; }
 
+	/**
+	* \brief GetTarget ターゲットを取得する
+	* \return BaseCharacter キャラクターのポインタ
+	*/
 	BaseCharacter* GetTarget() const { return target_; }
 
+	/**
+	* \brief ChangeState 状態を変える
+	* \param EnemyState 状態
+	*/
 	void ChangeState(std::unique_ptr<EnemyState> state);
 
 private: // 非公開メンバ関数
 
+	// \brief Fire 弾の発射処理
 	void Fire();
 
-	// \brief  OnCollisionEnter 衝突開始時の処理
-
+	/**
+	* \brief  OnCollisionEnter 衝突開始時
+	* \param  BaseCollider 他のコライダー
+	*/
 	void OnCollisionEnter(BaseCollider* other) override;
 
-	// \brief  OnCollisionStay 衝突中の処理
-
+	/**
+	* \brief  OnCollisionStay 衝突中
+	* \param  BaseCollider 他のコライダー
+	*/
 	void OnCollisionStay(BaseCollider* other) override;
 
-	// \brief  OnCollisionExit 衝突終了時の処理
-
+	/**
+	* \brief  OnCollisionExit 衝突終了時
+	* \param  BaseCollider 他のコライダー
+	*/
 	void OnCollisionExit(BaseCollider* other) override;
 
 private: // 非公開メンバ変数

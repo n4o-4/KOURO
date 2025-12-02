@@ -10,19 +10,27 @@ class BaseCharacter : protected BaseEntity
 {
 public: // 公開メンバ関数
 
-	// 初期化処理
+	/**
+	* \brief  Initialize 初期化
+	* \param  LineModel 線モデル
+	*/
 	virtual void Initialize(LineModel* model);
 
-	// 更新処理
+	// \brief Update 更新
 	virtual void Update();
 
-	// 描画処理
+	// \brief 描画
 	virtual void Draw();
 
+	/**
+	* \brief  GetWorldTransform
+	* \return WorldTransform* ワールドトランスフォームのポインタ
+	*/
 	WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
 protected: // 派生用メンバ関数
 
+	// \brief DrawImGui デバッグUIの描画
 	void DrawImGui();
 
 protected: // 派生用メンバ変数

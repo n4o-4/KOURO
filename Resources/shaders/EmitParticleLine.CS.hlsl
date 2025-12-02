@@ -26,51 +26,47 @@ RWStructuredBuffer<uint> gFreeList : register(u2);          // 4
 ConstantBuffer<EmitterSphere> gEmitter : register(b1);      // 5
 ConstantBuffer<PerFrame> gPerFrame : register(b2);          // 6
 ConstantBuffer<SegmentCount> gCount : register(b3);
-[numthreads(1, 1, 1)]
-void main(uint3 DTid : SV_DispatchThreadID)
+[numthreads(128, 1, 1)]
+void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID)
 {
     if (gEmitter.emit == 0) return;
 
     RandomGenerator generator;
-    generator.seed = asuint(gPerFrame.time) + DTid.x * 13;
+    //generator.seed = asuint(gPerFrame.time) + DTid.x * 13;
+    generator.seed = gPerFrame.time + (float)DTid.x * 13.0f;
 
-    uint lineCount = gCount.count;
+    // StructuredBuffer からコピー
+    const LineSegment lineSegment = gLineSegments[Gid.x];
 
-    for (uint i = 0; i < gEmitter.count; ++i)
+    // 線分上のランダム位置
+    float t = generator.Generate1d(); // 0〜1
+
+    // float4 の xyz 成分を取り出して lerp
+    float3 startPos = lineSegment.start.xyz;
+    float3 endPos = lineSegment.end.xyz;
+    float3 pos = lerp(startPos, endPos, t);
+
+    // ワールド行列で変換
+    pos = mul(float4(pos, 1.0f), gTransform.world).xyz;
+
+    //float4x4 mat = gTransform.world;
+    
+    // FreeList から空きを取得
+    uint freeListIndex;
+    InterlockedAdd(gFreeListIndex[0], -1, freeListIndex);
+    if (freeListIndex == 0)
     {
-        uint lineIndex = (uint)(generator.Generate1d() * lineCount);
-
-        // StructuredBuffer からコピー
-        const LineSegment lineSegment = gLineSegments[lineIndex];
-
-        // 線分上のランダム位置
-        float t = generator.Generate1d(); // 0〜1
-
-        // float4 の xyz 成分を取り出して lerp
-        float3 startPos = lineSegment.start.xyz;
-        float3 endPos   = lineSegment.end.xyz;
-        float3 pos = lerp(startPos, endPos, t);
-
-        // ワールド行列で変換
-        pos = mul(float4(pos, 1.0f), gTransform.world).xyz;
-
-        // FreeList から空きを取得
-        uint prevIndex;
-        InterlockedAdd(gFreeListIndex[0], -1, prevIndex);
-        if (prevIndex == 0)
-        {
-            InterlockedAdd(gFreeListIndex[0], 1);
-            break;
-        }
-
-        uint particleIndex = gFreeList[prevIndex - 1];
-
-        // パーティクル初期化
-        gParticles[particleIndex].translate = pos;
-        gParticles[particleIndex].velocity  = float3(0.0f,0.0f,0.0f);
-        gParticles[particleIndex].scale = float3(0.3f, 0.3f, 0.3f);
-        gParticles[particleIndex].color = float4(1, 1, 1, 1);
-        gParticles[particleIndex].lifeTime = 5.0f;
-        gParticles[particleIndex].currentTime = 0.0f;
+        InterlockedAdd(gFreeListIndex[0], 1);
+        return;
     }
+
+    uint particleIndex = gFreeList[freeListIndex - 1];
+
+    // パーティクル初期化
+    gParticles[particleIndex].translate = pos;
+    gParticles[particleIndex].velocity = float3(0.0f, 0.0f, 0.0f);
+    gParticles[particleIndex].scale = float3(0.3f, 0.3f, 0.3f);
+    gParticles[particleIndex].color = float4(1, 1, 1, 1);
+    gParticles[particleIndex].lifeTime = 5.0f;
+    gParticles[particleIndex].currentTime = 0.0f;
 }

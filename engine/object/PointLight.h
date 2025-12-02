@@ -23,10 +23,16 @@ class PointLight
 {
 public:
 
+	/// \brief 初期化
 	void Initilize();
 
+	/// \brief 更新
 	void Update();
 
+	/**
+	* \brief  ポイントライトのresourceを取得する
+	* \return pointLightResource
+	*/
 	const Microsoft::WRL::ComPtr<ID3D12Resource>& GetPointLightResource() { return pointLightResource_; }
 
 public:

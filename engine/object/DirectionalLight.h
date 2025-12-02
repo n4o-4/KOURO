@@ -25,6 +25,10 @@ public:
 
 	void Update();
 
+	/**
+	* \brief  •½sŒõŒ¹‚Ìresource‚ğæ“¾‚·‚é
+	* \return directionalLightResource
+	*/
 	const Microsoft::WRL::ComPtr<ID3D12Resource>& GetDirectionalLightResource() { return directionalLightResource_; }
 public:
 
