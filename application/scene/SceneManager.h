@@ -17,7 +17,7 @@ public:
 
 	static SceneManager* GetInstance();
 
-	// 初期化
+	
 	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,Camera* camera);
 
 	void Finalize();

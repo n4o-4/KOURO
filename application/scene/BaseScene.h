@@ -44,24 +44,37 @@ public:
 
 public:
 
+	// \brief 
 	virtual ~BaseScene() = default;
 
-	// 初期化
+	// \brief Initialize 初期化
 	virtual void Initialize();
 
-	// 終了
+	// \brief Finalize 終了
 	virtual void Finalize();
 
-	// 更新
+	// \brief Update 更新
 	virtual void Update();
 
-	// 描画
+	// \brief Draw 描画
 	virtual void Draw();
 
+	/**
+	* \brief  SetSceneManager シーンマネージャーの設定
+	* \ param SceneManager シーンマネージャーのポインタ
+	*/
 	virtual void SetSceneManager(SceneManager* sceneManager) { sceneManager_ = sceneManager; }
 
+	/**
+	* \brief  SetSrvManager Srvマネージャーを設定する
+	* \param  SrvManager Srvマネージャーのポインタ
+	*/
 	virtual void SetSrvManager(SrvManager* srvManager) { srvManager_ = srvManager; }
 
+	/**
+	* \brief  GetSrvManager Srvマネージャーを取得する
+	* \return SrvManager
+	*/
 	virtual SrvManager* GetSrvManager() { return srvManager_; }
 
 protected:

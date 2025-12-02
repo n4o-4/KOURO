@@ -13,43 +13,66 @@ class Player : public BaseCharacter, public AABBCollider
 {
 public: // 公開メンバ関数
 
-	// 初期化処理
+	/**
+	* \brief  Initialzie 初期化
+	* \param  LineModel 線モデル
+	*/
 	void Initialize(LineModel* model) override;
 
-	// 更新処理
+	// \brief Update 更新
 	void Update() override;
 
-	// 描画処理
+	// \brief  Draw 描画
 	void Draw() override;
 
+	/**
+	* \brief SetColliderManager コライダーマネージャーを設定する
+	* \param ColliderManager コライダーマネージャーのポインタ
+	*/
 	void SetColliderManager(ColliderManager* colliderManager) { colliderManager_ = colliderManager; }
 
+	/**
+	* \brief  SetParentTransform 座標の親を設定する
+	* \param  WorldTransform ワールドトランスフォームのポインタ
+	*/
 	void SetParentTransform(WorldTransform* parent) { worldTransform_->SetParent(parent); }
 
+	/**
+	* \brief  SetLineModelManager ラインモデルマネージャーを設定する
+	* \param  LineModelManager ラインモデルマネージャーのポインタ
+	*/
 	void SetLineModelManager(LineModelManager* lineModelManager) { lineModelManager_ = lineModelManager; }
 
+	/**
+	* \brief  GetIsAlive 生存フラグを取得する
+	* \return bool 生存フラグ
+	*/
 	bool GetIsAlive();
 
 private: // 非公開メンバ関数
 
 	// \brief  Move 移動処理
-
 	void Move();
 
 	// \brief  Fire 弾を発射する
-
 	void Fire();
 
-	// \brief  OnCollisionEnter 衝突開始時の処理
-
+	/**
+	* \brief  OnCollisionEnter 衝突開始時
+	* \param  BaseCollider 他のコライダー
+	*/
 	void OnCollisionEnter(BaseCollider* other) override;
 
-	// \brief  OnCollisionStay 衝突中の処理
-
+	/**
+	* \brief  OnCollisionStay 衝突中
+	* \param  BaseCollider 他のコライダー
+	*/
 	void OnCollisionStay(BaseCollider* other) override;
 
-	// \brief  OnCollisionExit 衝突終了時の処理
-
+	/**
+	* \brief  OnCollisionExit 衝突終了時
+	* \param  BaseCollider 他のコライダー
+	*/
 	void OnCollisionExit(BaseCollider* other) override;
 
 private: // 非公開メンバ変数

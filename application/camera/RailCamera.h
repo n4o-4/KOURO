@@ -47,7 +47,9 @@ public:
 	*/
 	void SetControlPoints(const std::vector<Vector3>& points) { controlPoints_ = points; }
 	
-
+	/**
+	* \brief  SetIsMove 移動フラグを設定する
+	*/
 	void SetIsMove(bool isMove) { isMove_ = isMove; }
 
 private:

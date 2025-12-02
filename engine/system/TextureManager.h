@@ -23,23 +23,43 @@ public:
 	// シングルトンインスタンスの取得
 	static TextureManager* GetInstance();
 
-	// 初期化
+	/**
+	* \brief  テクスチャマネージャーの初期化
+	* \param  dxCommon   DirectXCommonのポインタ
+	* \param  srvManager srvManagerのポインタ
+	*/
 	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager);
 
-	// 終了
+	/// \brief Finalize 終了
 	void Finalize();
 
-	// Textureデータを読み込む関数
+	/**
+	* \brief  読み込み
+	* \param  filePath : ファイルパス
+	*/
 	void LoadTexture(const std::string& filePath);
 
-	// SRVインデックスの開始番号
+	/**
+	* \brief  ファイルパスからインデックスを取得する
+	* \param  filePath : ファイルパス
+	* \return インデックス
+	*/
 	uint32_t GetTextureIndexByFilePath(const std::string& filePath);
 
+	/**
+	* \brief  ファイルパスからGPUハンドルを取得する
+	* \param  filePath : ファイルパス
+	* \reutne GPUハンドル
+	*/
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(std::string filePath);
 
-	// メタデータを取得
+	/**
+	* \brief  ファイルパスからメタデータを取得する
+	* \param  filePath : ファイルパス
+	*/
 	const DirectX::TexMetadata& GetMetaData(std::string filePath);
 
+	/// \brief オフスクリーンレンダリング用のテクスチャを作る
 	void CreateRenderTextureMetaData();
 
 private:
