@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Logger.h"
 #include "DirectXCommon.h"
 #include "SrvManager.h"
@@ -103,7 +103,7 @@ public:
 	struct MaterialData
 	{
 		std::string textureFilePath;
-		uint32_t textureIndex;
+		uint32_t textureIndex = 0;
 	};
 
 	/*struct ModelData {

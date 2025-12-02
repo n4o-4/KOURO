@@ -1,4 +1,4 @@
-#include "Framework.h"
+﻿#include "Framework.h"
 
 #include "LeakChecker.h"
 
@@ -111,7 +111,7 @@ void Framework::Update()
 
 	UpdateFPS();
 
-	gpuParticle_->SetPerFrame(totalTime, deltaTime);
+	gpuParticle_->SetPerFrame(static_cast<float >(totalTime), deltaTime);
 
 #endif _DEBUG
 }

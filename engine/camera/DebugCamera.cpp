@@ -28,7 +28,7 @@ void DebugCamera::Update()
 
        offset.z = std::clamp(offset.z, -100000.0f, -1.0f); // 修正: float 型のリテラルに変更
 
-       Input::GetInstance()->mouseState.lZ == 0.0f;
+       Input::GetInstance()->mouseState.lZ = static_cast<LONG>(0.0f);
    }  
 
     // カメラの角度から回転行列を計算  
@@ -53,8 +53,6 @@ void DebugCamera::Update()
        // カメラの位置をターゲットの位置からオフセット分ずらす  
        viewProjection_->transform.translate = targetTransform_->transform.translate + offSet;
    }
-  
-   if (ImGui::DragFloat3("target", &targetTransform_->transform.translate.x, 0.01f));
 
 #endif
    if (Input::GetInstance()->PushMouseButton(Input::MouseButton::LEFT))  

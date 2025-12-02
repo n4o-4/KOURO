@@ -63,9 +63,9 @@ namespace Particle
 	struct LineSegment
 	{
 		Vector3 start;
-		float pad1;
+		float pad1 = 0.0f;
 		Vector3 end;
-		float pad2;
+		float pad2 = 0.0f;
 	};
 }
 
@@ -221,7 +221,7 @@ private:
 	Particle::LineSegment* lineSegment_ = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> lineCountResource_ = nullptr;
-	uint32_t* lineCount_;
+	uint32_t* lineCount_ = nullptr;
 
 	uint32_t srvIndex_ = 0;
 

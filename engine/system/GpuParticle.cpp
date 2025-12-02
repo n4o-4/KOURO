@@ -251,7 +251,7 @@ void GpuParticle::LineEmit(Matrix4x4 world)
 
 
 	// Dispatch�̎��s
-	dxCommon_->GetCommandList()->Dispatch(lineSegments_.size(), 1, 1);
+	dxCommon_->GetCommandList()->Dispatch(static_cast<UINT>(lineSegments_.size()), 1, 1);
 
 	D3D12_RESOURCE_BARRIER barrier1{};
 	barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;

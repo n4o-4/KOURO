@@ -13,7 +13,7 @@ class ApproachState : public EnemyState
 		void Enter(Enemy* enemy) override;
 
 		/**
-		* \brief  Update XV
+		* \brief  Update ï¿½Xï¿½V
 		* \param  Enemy
 		*/
 		void Update(Enemy* enemy) override;

@@ -1,7 +1,7 @@
-#pragma once
+ï»¿#pragma once
 
 /// <summary>
-/// LineObject‚Ì¶¬
+/// LineObjectã®ç”Ÿæˆ
 /// </summary>
 
 class LineObjectFactory

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <cassert>
 #include <string>
 #include <vector>
@@ -43,7 +43,7 @@ private:
 
 	struct Animation
 	{
-		float duration; // アニメーション全体の尺(秒)
+		float duration = 0.0f; // アニメーション全体の尺(秒)
 
 		// NodeAnimationの集合体
 		std::unordered_map<std::string, NodeAnimation> nodeAnimations;
@@ -55,10 +55,10 @@ private:
 	struct AnimationState
 	{
 		Animation animation;
-		int maxLoopCount;
-		int currentLoopCount;
-		float animationTime;
-		bool isInfiniteLoop;
+		int maxLoopCount = 0;
+		int currentLoopCount = 0;
+		float animationTime = 0.0f;
+		bool isInfiniteLoop = 0;
 	};
 
 ///------------------------------
@@ -108,7 +108,7 @@ public:
 
 private:
 	
-	Matrix4x4 localMatrix;
+	Matrix4x4 localMatrix = MakeIdentity4x4();
 
 	const float deltaTime = 1.0f / 60.0f;
 

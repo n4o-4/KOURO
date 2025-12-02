@@ -21,7 +21,7 @@ struct Transform
 struct QuaternionTransform
 {
 	Vector3 scale;
-	Quaternion rotate;
+	Quaternion rotate = {};
 	Vector3 translate;
 };
 

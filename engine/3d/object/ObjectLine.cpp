@@ -25,7 +25,7 @@ void ObjectLine::Draw(WorldTransform* worldTransform)
 {
 	if (model_ == nullptr)
 	{
-		assert(0, "モデルがセットされていません");
+		assert(0);
 	}
 
 	lineData_->matWorld = worldTransform->matWorld_;

@@ -238,15 +238,15 @@ private:
 
 	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler = nullptr;
 
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[4];
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[4] = {};
 
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = {};
 
 	//D3D12_RESOURCE_BARRIER barrier{};
 
 	HANDLE fenceEvent = nullptr;
 
-	uint32_t fenceValue;
+	uint32_t fenceValue = 0;
 
 	uint32_t backBufferCount_ = 2;
 
@@ -288,7 +288,7 @@ private:
 	// 深度リソース用
 	uint32_t depthSrvIndex_ = 0;
 
-	D3D12_CPU_DESCRIPTOR_HANDLE depthHandle_;
+	D3D12_CPU_DESCRIPTOR_HANDLE depthHandle_ = {};
 
 	//========================================================
 	// ポストエフェクト用

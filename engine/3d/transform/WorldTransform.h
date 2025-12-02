@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <d3d12.h>
 #include <wrl.h>
@@ -40,9 +40,9 @@ public:
 
 	QuaternionTransform quaternionTransform;
 
-	Matrix4x4 matWorld_;
+	Matrix4x4 matWorld_ = MakeIdentity4x4();
 
-	Matrix4x4 matWorldInverse_;
+	Matrix4x4 matWorldInverse_ = MakeIdentity4x4();
 
 	bool useQuaternion_ = false;
 
@@ -57,7 +57,7 @@ private:
 
 	const WorldTransform* parent_ = nullptr;
 
-	Quaternion preRotate_;
+	Quaternion preRotate_ = {};
 
 public:
 

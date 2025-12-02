@@ -1,4 +1,4 @@
-#include "ModelDatas.h"
+ï»¿#include "ModelDatas.h"
 
 ParticleModel::ModelData ParticleModel::LoadModelFile(const std::string& directoryPath, const std::string& filename)
 {
@@ -16,21 +16,21 @@ ParticleModel::ModelData ParticleModel::LoadModelFile(const std::string& directo
 		throw std::runtime_error("Model loading failed.");
 	}
 
-	assert(scene->HasMeshes()); // ƒƒbƒVƒ…‚ª‚È‚¢‚Ì‚Í‘Î‰‚µ‚È‚¢
+	assert(scene->HasMeshes()); // ãƒ¡ãƒƒã‚·ãƒ¥ãŒãªã„ã®ã¯å¯¾å¿œã—ãªã„
 
 	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
 	{
 		aiMesh* mesh = scene->mMeshes[meshIndex];
-		assert(mesh->HasNormals()); // –@ü‚ª‚È‚¢Mesh‚Í¡‰ñ‚Í”ñ‘Î‰
-		assert(mesh->HasTextureCoords(0)); // Texcoord‚ª‚È‚¢Mesh
-		// ‚±‚±‚©‚çMesh‚Ì’†g(Face)‚Ì‰ğÍ‚ğs‚Á‚Ä‚¢‚­
+		assert(mesh->HasNormals()); // æ³•ç·šãŒãªã„Meshã¯ä»Šå›ã¯éå¯¾å¿œ
+		assert(mesh->HasTextureCoords(0)); // TexcoordãŒãªã„Mesh
+		// ã“ã“ã‹ã‚‰Meshã®ä¸­èº«(Face)ã®è§£æã‚’è¡Œã£ã¦ã„ã
 
 		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex)
 		{
 			aiFace& face = mesh->mFaces[faceIndex];
 
-			assert(face.mNumIndices == 3); // OŠpŒ`‚Ì‚İƒTƒ|[ƒg
-			// ‚±‚±‚©‚çFace‚Ì’†g(Vertex)‚Ì‰ğÍ‚ğs‚Á‚Ä‚¢‚­
+			assert(face.mNumIndices == 3); // ä¸‰è§’å½¢ã®ã¿ã‚µãƒãƒ¼ãƒˆ
+			// ã“ã“ã‹ã‚‰Faceã®ä¸­èº«(Vertex)ã®è§£æã‚’è¡Œã£ã¦ã„ã
 
 			for (uint32_t element = 0; element < face.mNumIndices; ++element)
 			{

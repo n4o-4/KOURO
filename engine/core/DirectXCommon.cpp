@@ -666,16 +666,33 @@ void DirectXCommon::PostDraw()
 	// GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入するようにSignalを送る
 	commandQueue->Signal(fence.Get(), ++fenceValue);
 
+	//// GPUの作業が完了するのを待つ
+	//if (fence->GetCompletedValue() < fenceValue)
+	//{
+	//	HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+	//	// 指定したSignalにたどり着いてないので、たどり着くまで待つようにイベントを設定する
+	//	fence->SetEventOnCompletion(fenceValue, event);
+
+	//	// イベントを待つ
+	//	WaitForSingleObject(event, INFINITE);
+	//	CloseHandle(event);
+	//}
+	
 	// GPUの作業が完了するのを待つ
 	if (fence->GetCompletedValue() < fenceValue)
 	{
 		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
-		// 指定したSignalにたどり着いてないので、たどり着くまで待つようにイベントを設定する
-		fence->SetEventOnCompletion(fenceValue, event);
-
-		// イベントを待つ
-		WaitForSingleObject(event, INFINITE);
-		CloseHandle(event);
+		if (event)
+		{
+			fence->SetEventOnCompletion(fenceValue, event);
+			WaitForSingleObject(event, INFINITE);
+			CloseHandle(event);
+		}
+		else
+		{
+			// イベント作成に失敗した場合のエラーハンドリング
+			OutputDebugStringA("CreateEvent failed.\n");
+		}
 	}
 
 	// GPUとOSに画面の交換を行うように通知する

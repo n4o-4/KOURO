@@ -51,7 +51,7 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 	LineVertex* vertexData_ = nullptr;
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_ = {};
 
 	
 

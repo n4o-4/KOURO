@@ -168,12 +168,12 @@ private:
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView = {};
 	D3D12_INDEX_BUFFER_VIEW indexBufferView = {};
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource = nullptr;
 	Material* materialData = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationResource = nullptr;
 
-	TransformationMatrix* transformationMatrixData;
+	TransformationMatrix* transformationMatrixData = nullptr;
 
 	Transform cameraTransform{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,-15.0f} };
 

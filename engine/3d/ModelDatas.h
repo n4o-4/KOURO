@@ -10,10 +10,12 @@
 #include <cassert>
 #include <optional>
 
+#include "MyMath.h"
+
 struct Node
 {
 	QuaternionTransform transform;
-	Matrix4x4 localMatrix;
+	Matrix4x4 localMatrix = MakeIdentity4x4();
 	std::string name;
 	std::vector<Node> children;
 
@@ -22,7 +24,7 @@ struct Node
 struct MaterialData
 {
 	std::string textureFilePath;
-	uint32_t textureIndex;
+	uint32_t textureIndex = 0;
 };
 
 struct Material {
@@ -61,7 +63,7 @@ struct Joint
 
 struct Skeleton
 {
-	int32_t root; //RootJointのIndex
+	int32_t root = 0; //RootJointのIndex
 	std::map<std::string, int32_t> jointMap; // Joint名とIndexとの辞書
 	std::vector<Joint> joints; // 所属しているJoint
 };

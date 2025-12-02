@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <string>
 #include <wrl.h>
 
@@ -86,9 +86,9 @@ private:
 	// テクスチャデータ
 	std::unordered_map<std::string, TextureData> textureDatas;
 
-	DirectXCommon* dxCommon_;
+	DirectXCommon* dxCommon_ = nullptr;
 
-	SrvManager* srvManager_;
+	SrvManager* srvManager_ = nullptr;
 
 	// SRVインデックスの開始番号
 	static uint32_t kSRVIndexTop;
@@ -97,6 +97,6 @@ private:
 
 	HANDLE fenceEvent = nullptr;
 
-	uint32_t fenceValue;
+	uint32_t fenceValue = 0;
 };
 

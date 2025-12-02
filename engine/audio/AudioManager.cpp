@@ -1,4 +1,4 @@
-#include "AudioManager.h"
+﻿#include "AudioManager.h"
 
 #include "StringUtility.h"
 
@@ -20,7 +20,12 @@ AudioManager* AudioManager::GetInstance()
 void AudioManager::Initialize()
 {
 
-	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	if (FAILED(hr))
+	{
+		OutputDebugStringA("CoInitializeEx failed.\n");
+		return;
+	}
 
 	MFStartup(MF_VERSION, MFSTARTUP_NOSOCKET);
 
@@ -70,8 +75,6 @@ void AudioManager::SoundLoadWave(const char* filename)
 	{
 		return;
 	}
-
-	HRESULT result;
 
 	/*-----------------------------
 	* ファイルをオープン

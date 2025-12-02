@@ -1,4 +1,4 @@
-#include "TextureManager.h"
+﻿#include "TextureManager.h"
 
 std::unique_ptr<TextureManager> TextureManager::instance = nullptr;
 
@@ -140,7 +140,7 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	}
 	else
 	{
-		srvManager_->CreateSRVforTexture2D(textureData.srvIndex, textureData.resource.Get(), textureData.metadata.format, textureData.metadata.mipLevels);
+		srvManager_->CreateSRVforTexture2D(textureData.srvIndex, textureData.resource.Get(), textureData.metadata.format, static_cast<UINT>(textureData.metadata.mipLevels));
 	}
 }
 

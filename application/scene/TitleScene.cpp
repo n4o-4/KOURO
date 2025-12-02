@@ -241,7 +241,7 @@ void TitleScene::Draw()
 
 	lineDrawer_->PreDraw(cameraManager_->GetActiveCamera()->GetViewProjection());
 
-	player_->Draw();
+	//player_->Draw();
 
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	

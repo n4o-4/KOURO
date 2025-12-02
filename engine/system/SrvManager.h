@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "DirectXCommon.h"
 
 // \brief SrvManager
@@ -17,10 +17,10 @@ private:
     DirectXCommon* dxCommon_ = nullptr;
 
 	// SRV用のデスクリプタサイズ
-	uint32_t descriptorSize;
+	uint32_t descriptorSize = 0;
 
 	// SRV用デスクリプタヒープ
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap = nullptr;
 
 	// 次に使用するSRVインデックス
 	uint32_t useIndex = 0;

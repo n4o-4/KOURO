@@ -253,7 +253,7 @@ void Dissolve::DrawImGui()
 
 		// ↓↓↓↓↓↓ここに調整項目を追加↓↓↓↓↓↓
 
-		ImGui::ColorEdit3("edgeColor", &edgeColor.x, 0.01f);
+		ImGui::ColorEdit3("edgeColor", &edgeColor.x);
 	    ImGui::DragFloat("threshold", &threshold, 0.01f);
 	    ImGui::DragFloat("thresholdWidth", &thresholdWidth, 0.01f);
 	    ImGui::DragFloat("mask", &mask, 0.01f);
