@@ -82,7 +82,7 @@ void GpuParticle::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, Ua
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, freeListResource_.Get()->GetGPUVirtualAddress());
 
 	// Dispatchの実行
-	dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount, 1, 1);
+	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
 }
 
 void GpuParticle::Finalize()
@@ -137,7 +137,7 @@ void GpuParticle::Update(ViewProjection viewProjection)
 	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
 
 	// Dispatchの実行
-	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
+	//dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
 
 	D3D12_RESOURCE_BARRIER barrier1{};
 	barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
@@ -172,7 +172,9 @@ void GpuParticle::Update(ViewProjection viewProjection)
 	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(3, perFrameResource_.Get()->GetGPUVirtualAddress());
 
 	// Dispatchの実行
-	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
+	dxCommon_->GetCommandList()->Dispatch(512, 1, 1);
+
+	LineEmit(MakeIdentity4x4());
 }
 
 void GpuParticle::Draw()
@@ -249,7 +251,13 @@ void GpuParticle::LineEmit(Matrix4x4 world)
 
 
 	// Dispatchの実行
-	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
+	dxCommon_->GetCommandList()->Dispatch(lineSegments_.size(), 1, 1);
+
+	D3D12_RESOURCE_BARRIER barrier1{};
+	barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+	barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier1.UAV.pResource = particleResource_.Get();
+	dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier1);
 }
 
 void GpuParticle::CreateResource()
@@ -333,7 +341,7 @@ void GpuParticle::CreateEmitterResource()
 	emitter_ = nullptr;
 	emitterResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&emitter_));
 	emitter_->emit = 0;
-	emitter_->frequency = 1.0f;
+	emitter_->frequency = 0.0f;
 	emitter_->frequencyTime = 0.0f;
 	emitter_->count = 512;
 }
@@ -357,6 +365,7 @@ void GpuParticle::CreateLineSegmentResource()
 	lineSegmentResource_ = dxCommon_->CreateBufferResource(sizeof(Particle::LineSegment) * lineSegments_.size());
 	Particle::LineSegment* lineSegmentData;
 	lineSegmentResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&lineSegmentData));
+	std::memcpy(lineSegmentData, lineSegments_.data(), sizeof(Particle::LineSegment) * lineSegments_.size());
 
 	lineSegmentSrvIndex_ = srvManager_->Allocate();
 

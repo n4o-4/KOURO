@@ -81,7 +81,7 @@ class GpuParticle
 public:
 
 	// 最大パーティクル数
-	const uint32_t kMaxParticleCount = 1024;
+	const uint32_t kMaxParticleCount = 524288;
 
 public:
 
