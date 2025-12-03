@@ -70,6 +70,7 @@
     <ClCompile Include="engine\system\LineModelManager.cpp" />
     <ClCompile Include="engine\system\LineObjectFactory.cpp" />
     <ClCompile Include="engine\system\LineObjectManager.cpp" />
+    <ClCompile Include="GpuParticleManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\model\Model.cpp" />
     <ClCompile Include="engine\3d\model\ModelCommon.cpp" />
@@ -204,6 +205,7 @@
     <ClInclude Include="engine\3d\object\ObjectLine.h" />
     <ClInclude Include="application\base\Rail.h" />
     <ClInclude Include="engine\system\UavManager.h" />
+    <ClInclude Include="GpuParticleManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

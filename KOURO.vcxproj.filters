@@ -339,6 +339,7 @@
     <ClCompile Include="engine\system\GpuParticle.cpp" />
     <ClCompile Include="engine\system\UavManager.cpp" />
     <ClCompile Include="engine\system\ModelLoader.cpp" />
+    <ClCompile Include="GpuParticleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -612,6 +613,7 @@
     <ClInclude Include="engine\system\GpuParticle.h" />
     <ClInclude Include="engine\system\UavManager.h" />
     <ClInclude Include="engine\system\ModelLoader.h" />
+    <ClInclude Include="GpuParticleManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
