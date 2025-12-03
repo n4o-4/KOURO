@@ -34,6 +34,12 @@ void Player::Initialize(LineModel* model)
 	//colliderTransform_->SetParent(rail.GetWorldTransform());
 
 	hp_ = 1000;
+
+	quickMoveData_ = std::make_unique<QuickMoveData>();
+	quickMoveData_->isQuickMoving = false;
+	quickMoveData_->duration = 1.0f;
+	quickMoveData_->coolTime = 3.0f;
+	quickMoveData_->actionTimer = 0.0f;
 }
 
 void Player::Update()
@@ -58,6 +64,36 @@ void Player::Update()
 	{
 		hitintervalTimer_ = 0.0f;
 		objectLine_->SetColor({ 0.071f, 0.429f, 1.0f,1.0f });
+	}
+
+	// quickMove中の場合
+	if (quickMoveData_->isQuickMoving)
+	{
+		// 時間計測用の変数にdeltaTimeを加算
+		quickMoveData_->actionTimer += kDeltaTime;
+
+
+		float duration = quickMoveData_->duration;
+		float coolTime = quickMoveData_->coolTime;
+		float timer = quickMoveData_->actionTimer;
+
+		// timerがquickMoveの全体動作時間を超えていたら再使用可能に
+		if (duration + coolTime < timer)
+		{
+			quickMoveData_->actionTimer = 0.0f;
+			quickMoveData_->isQuickMoving = false;
+		}
+	}
+	// quickMove中じゃない場合
+	else
+	{
+		// lShiftを押していたら
+		if (Input::GetInstance()->Triggerkey(DIK_LSHIFT))
+		{
+			// quickMove中に変更
+			quickMoveData_->isQuickMoving = true;
+		}
+
 	}
 
 	// 移動

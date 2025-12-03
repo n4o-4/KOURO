@@ -28,6 +28,18 @@ public:
 	// 描画
 	void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
 
+	/**
+	* \brief  MaterialDataを取得する
+	* \return Matrialの値
+	*/
+	const Radial::Material GetMaterial() { return *data_; }
+
+	/**
+	* \brief  Materialの値を設定する
+	* \param  material : マテリアル
+	*/
+	void SetMaterialData(Radial::Material material) { data_->blurWidth = material.blurWidth, data_->numSamples = material.numSamples; }
+
 	// リソースの解放
 	void Reset() override { resource_.Reset(); }
 

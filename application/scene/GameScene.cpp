@@ -291,8 +291,7 @@ void GameScene::Initialize() {
 
 	fade_->Start(Fade::Status::WhiteFadeIn, 1.0f);
 
-	auto* dissolve = static_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
-	dissolve->threshold = -0.5;
+	sceneManager_->GetPostEffect()->ApplyEffect("blur", PostEffect::EffectType::RadialBlur);
 
 	stage_ = std::make_unique<ObjectLine>();
 	stage_->Initialize(lineModelManager_->FindLineModel("stage/stage.obj"));
@@ -321,6 +320,41 @@ void GameScene::Update()
 
 	GpuParticle::GetInstance()->Update(cameraManager_->GetActiveCamera()->GetViewProjection());
 
+	// postEffectの処理
+	RadialBlur* blur = static_cast<RadialBlur*>(sceneManager_->GetPostEffect()->GetEffectData("blur"));
+	Radial::Material material = blur->GetMaterial();
+
+	const QuickMoveData* data = player_->GetQuickMoveData();
+
+	if (data->isQuickMoving)
+	{
+		if (data->actionTimer < data->duration)
+		{
+			// 経過割合 (1.0f → 0.0f) に反転
+			float t = 1.0f - (data->actionTimer / data->duration);
+
+			// サインカーブを使って自然な減衰に（始め強く→ゆっくり消える）
+			float blurIntensity = sinf(t * 3.14159f * 0.5f); // 半サイン波でふわっと減衰
+			blurIntensity = std::clamp(blurIntensity, 0.0f, 1.0f);
+
+			// ブラー設定（全体的に控えめ）
+			material.blurWidth = 0.01f + 0.03f * blurIntensity; // 0.01〜0.04程度
+			material.numSamples = 2 + int(blurIntensity * 3);    // 2〜5サンプル
+		}
+		else
+		{
+			// 終了時リセット
+			material.blurWidth = 0.0f;
+			material.numSamples = 1;
+		}
+	}
+	else
+	{
+		material.blurWidth = 0.0f;
+		material.numSamples = 1;
+	}
+	
+	blur->SetMaterialData(material);
 
 	//========================================
 	// ライト

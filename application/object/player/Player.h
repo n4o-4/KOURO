@@ -7,8 +7,24 @@
 
 #include "Rail.h"
 
-// \brief Player プレイヤークラス
+#include "PostEffect.h"
 
+/**
+* \brief  QuickMoveData
+* \param  bool  isQuickMoving 現在QuickMove状態かのフラグ
+* \param  float duration      QuickMoveの動作時間
+* \param  float coolTime      クールタイム
+* \param  float actionTimer   時間測定用
+*/
+struct QuickMoveData
+{
+	bool isQuickMoving = false; //!< 現在 QuickMove 中かどうか
+	float duration = 0.0f;      //!< QuickMove の継続時間
+	float coolTime = 0.0f;      //!< クールタイム（再使用までの待機時間）
+	float actionTimer = 0.0f;   //!< 経過時間の計測用タイマー
+};
+
+// \brief Player プレイヤークラス
 class Player : public BaseCharacter, public AABBCollider
 {
 public: // 公開メンバ関数
@@ -48,6 +64,12 @@ public: // 公開メンバ関数
 	* \return bool 生存フラグ
 	*/
 	bool GetIsAlive();
+
+	/**
+	* \brief  QuickMoveのデータを取得する
+	* \return QuickMoveDataのポインタ
+	*/
+	const QuickMoveData* GetQuickMoveData() { return quickMoveData_.get(); }
 
 private: // 非公開メンバ関数
 
@@ -121,6 +143,8 @@ private: // 非公開メンバ変数
 	const float kHitInterval_ = 0.1f; //!< 被弾アクション間隔
 
 	float hitintervalTimer_ = 0.0f; //!< 被弾アクションタイマー
+
+	std::unique_ptr<QuickMoveData> quickMoveData_ = nullptr;
 
 private: 
 	

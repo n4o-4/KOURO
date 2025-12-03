@@ -50,8 +50,6 @@ void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID)
 
     // ワールド行列で変換
     pos = mul(float4(pos, 1.0f), gTransform.world).xyz;
-
-    //float4x4 mat = gTransform.world;
     
     // FreeList から空きを取得
     uint freeListIndex;

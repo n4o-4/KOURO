@@ -17,9 +17,9 @@ void Dissolve::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 
     edgeColor = (1.0f,0.3f,0.25f);
 
-	threshold = 0.3f;
+	threshold = -0.5f;
 
-    thresholdWidth= 0.03f;
+    thresholdWidth= 0.0f;
 
 	data_->threshold = 0.3f;
 	data_->thresholdWidth = 0.03f;
