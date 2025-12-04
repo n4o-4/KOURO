@@ -13,6 +13,8 @@ void Framework::Initialize()
 	DirectXCommon::GetInstance()->Initialize(winApp.get());
 	dxCommon_ = DirectXCommon::GetInstance();
 
+	engineContext = dxCommon_->CreateEngineContext();
+
 	// Inputの生成と初期化
 	Input::GetInstance()->Initialize(winApp.get());
 

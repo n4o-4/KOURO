@@ -260,29 +260,6 @@ void GpuParticle::LineEmit(Matrix4x4 world)
 
 void GpuParticle::CreateResource()
 {
-    //D3D12_HEAP_PROPERTIES heapProperties{};
-    //heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
-
-    //D3D12_RESOURCE_DESC resourceDesc{};
-    //resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-    //resourceDesc.Width = sizeof(ParticleCS) * kMaxParticleCount;
-    //resourceDesc.Height = 1;
-    //resourceDesc.DepthOrArraySize = 1;
-    //resourceDesc.MipLevels = 1;
-    //resourceDesc.SampleDesc.Count = 1;
-    //resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-    //resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS; // UAV�Ƃ��Ďg��
-
-    //// UAV�Ƃ��Ďg����悤�ɏ����X�e�[�g��UNORDERED_ACCESS�ɂ��Ă���
-    //dxCommon_->GetDevice()->CreateCommittedResource(
-    //    &heapProperties,
-    //    D3D12_HEAP_FLAG_NONE,
-    //    &resourceDesc,
-    //    D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-    //    nullptr,
-    //    IID_PPV_ARGS(&particleResource_)
-    //);
-
 	particleResource_ = dxCommon_->CreateComputeBufferResource(sizeof(ParticleCS) * kMaxParticleCount);
 
 	counterResource_ = dxCommon_->CreateComputeBufferResource(sizeof(uint32_t));

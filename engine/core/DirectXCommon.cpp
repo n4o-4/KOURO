@@ -59,6 +59,14 @@ void DirectXCommon::Finalize()
 	instance.reset();
 }
 
+EngineContext DirectXCommon::CreateEngineContext() const
+{
+	EngineContext context;
+	context.device = device.Get();
+	context.commandList = commandList.Get();
+	return context;
+}
+
 void DirectXCommon::InitializeDevice()
 {
 	HRESULT hr;

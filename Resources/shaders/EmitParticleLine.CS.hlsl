@@ -27,7 +27,7 @@ ConstantBuffer<EmitterSphere> gEmitter : register(b1);      // 5
 ConstantBuffer<PerFrame> gPerFrame : register(b2);          // 6
 ConstantBuffer<SegmentCount> gCount : register(b3);
 
-[numthreads(512, 1, 1)]
+[numthreads(1024, 1, 1)]
 
 void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID)
 {

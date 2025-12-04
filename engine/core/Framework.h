@@ -80,6 +80,9 @@ protected:
 	std::chrono::steady_clock::time_point now;
 
 	const float kDeltaTime_ = 1.0f / 60.0f;
+
+	EngineContext engineContext;
+
 public:
 
 	virtual~Framework() = default;
