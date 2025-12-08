@@ -93,8 +93,6 @@ void TitleScene::Update()
 	std::chrono::time_point<std::chrono::steady_clock> now;
 	float elapsedTime;
 
-	GpuParticle::GetInstance()->Update(cameraManager_->GetActiveCamera()->GetViewProjection());
-
 	switch (phase_)
 	{
 	case Phase::kFadeIn:

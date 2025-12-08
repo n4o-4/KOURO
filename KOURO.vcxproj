@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BaseParticleEmitter.cpp" />
     <ClCompile Include="engine\effect\Absorb.cpp" />
     <ClCompile Include="engine\line\AABBLineObject.cpp" />
     <ClCompile Include="application\collider\AABBCollider.cpp" />
@@ -104,6 +105,7 @@
     <ClCompile Include="engine\3d\object\ObjectLine.cpp" />
     <ClCompile Include="application\base\Rail.cpp" />
     <ClCompile Include="engine\system\UavManager.cpp" />
+    <ClCompile Include="ModelEdgeEmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\effect\Absorb.h" />
@@ -206,6 +208,7 @@
     <ClInclude Include="application\base\Rail.h" />
     <ClInclude Include="engine\system\UavManager.h" />
     <ClInclude Include="GpuParticleManager.h" />
+    <ClInclude Include="ModelEdgeEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -284,6 +287,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\NoiseUpdateParticle,CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\shaders\Particle.CS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
@@ -423,7 +434,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\UpdateParticle.CS.hlsl">
+    <FxCompile Include="Resources\shaders\BaseUpdateParticle.CS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>

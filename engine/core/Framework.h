@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <memory>
 
@@ -28,6 +28,7 @@
 #include "LeakChecker.h"
 
 #include "GpuParticle.h"
+#include "GpuParticleManager.h"
 
 #include <chrono>
 #include <string>
@@ -65,7 +66,7 @@ protected:
 
 	std::unique_ptr<PostEffect> postEffect_ = nullptr;
 
-	//std::unique_ptr<GpuParticle> gpuParticle_ = nullptr;
+	std::unique_ptr<GpuParticleManager> gpuParticleManager_ = nullptr;
 
 	GpuParticle* gpuParticle_ = nullptr;
 

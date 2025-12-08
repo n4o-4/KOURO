@@ -318,7 +318,7 @@ void GameScene::Update()
 
 	ParticleManager::GetInstance()->Update();
 
-	GpuParticle::GetInstance()->Update(cameraManager_->GetActiveCamera()->GetViewProjection());
+	//GpuParticle::GetInstance()->Update(cameraManager_->GetActiveCamera()->GetViewProjection());
 
 	// postEffectの処理
 	RadialBlur* blur = static_cast<RadialBlur*>(sceneManager_->GetPostEffect()->GetEffectData("blur"));

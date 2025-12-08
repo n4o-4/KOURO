@@ -1,4 +1,4 @@
-#include "MyGame.h"
+﻿#include "MyGame.h"
 
 #include "SceneFactory.h"
 
@@ -61,7 +61,7 @@ void MyGame::Draw()
 	// 基盤システムの描画
 	Framework::Draw();
 
-	gpuParticle_->Draw();
+	gpuParticleManager_->Draw();
 
 	// レンダーテクスチャへの描画後処理
 	DirectXCommon::GetInstance()->RenderTexturePostDraw();

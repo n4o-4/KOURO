@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "DirectXCommon.h"
 #include "SrvManager.h"
@@ -14,7 +14,7 @@ class GpuParticleManager
 {
 private:
 
-	const uint32_t kMaxParticleCount = 524288 * 2; //!< Å‘åƒp[ƒeƒBƒNƒ‹”
+	const uint32_t kMaxParticleCount = 524288 * 2; //!< æœ€å¤§ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æ•°
 
 	const uint32_t kCSMaxParticleCount = 1024;
 
@@ -86,63 +86,90 @@ private:
 		Microsoft::WRL::ComPtr<ID3D12Resource> counterResource = nullptr;
 		Microsoft::WRL::ComPtr<ID3D12Resource> freeListResource = nullptr;
 
+		Microsoft::WRL::ComPtr<ID3D12Resource> baseUpdateListResource = nullptr; // lifeTimeã‚„trasnformã«velocityã‚’åŠ ç®—
+		Microsoft::WRL::ComPtr<ID3D12Resource> noiseUpdateListResource = nullptr;
+
 		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
 
 		Microsoft::WRL::ComPtr<ID3D12Resource> materialResource = nullptr;
 		GpuParticleManager::Material* material = nullptr;
 
-		std::vector<uint32_t> textureIndices;
+		//std::vector<uint32_t> textureIndexList;
+		uint32_t particleSrvIndex = 0;
+		uint32_t particleUavIndex = 0;
+		uint32_t textureIndex = 0;
 	};
 
 public:
+	
+	/**
+	* \brief  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	* \param  context    : 
+	* \param  srvManager : SrvManagerã®ãƒã‚¤ãƒ³ã‚¿
+	*/
+	GpuParticleManager(EngineContext context,SrvManager* srvManager);
 
-	GpuParticleManager(EngineContext context);
-
+	/// \brief åˆæœŸåŒ–
 	void Initialize();
 
+	/// \brief æ›´æ–°
 	void Update();
 
-	void Draw();
-
+	/**
+	* \brief  æç”»
+	* \param  viewPro : ViewProjectionã®ãƒã‚¤ãƒ³ã‚¿
+	*/
+	void Draw(ViewProjection* viewPro);
 
 	void SetPerFrame(float time, float deltaTime) { perFrame_->time = time, perFrame_->deltaTime = deltaTime; };
 
-	void ParticleInitialize();
+	void ParticleInitialize(ParticleGroup group);
+
+	void CreateParticleGroup(const std::string name,const std::string textureFilePath, std::vector<VertexData> vertices);
 
 private:
 
 
 	void CreateResources();
 
-	/// \brief ƒp[ƒeƒBƒNƒ‹‚Ì‰Šú‰»—p‚ÌCSPipelineSetì¬ŠÖ”
+	void CreatePipelineSets();
+
+	/// \brief ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã®åˆæœŸåŒ–ç”¨ã®CSPipelineSetä½œæˆé–¢æ•°
 	void CreateInitializePipelineSet();
 
-	/// \brief ƒp[ƒeƒBƒNƒ‹”Ä—pXV‚ÌCSPipelineSetì¬ŠÖ”
-	void CreateUpdatePipelineSet();
+	/// \brief ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æ±ç”¨æ›´æ–°ã®CSPipelineSetä½œæˆé–¢æ•°
+	void CreateBaseUpdatePipelineSet();
+
+	/// \brief ãƒã‚¤ã‚ºãŒå…¥ã£ãŸå‹•ãã®CSPipelineSetç”Ÿæˆé–¢æ•°
+	void CreateNoiseUpdatePipelineSet();
 
 	/**
-	* \brief  ComputeShader@—p‚Ì pipelineState ”Ä—pì¬ŠÖ”
-	* \param  pipelineSet : ¶¬æ‚Ì pipelineSet ‚Ìƒ|ƒCƒ“ƒ^
-	* \param  csFileName  : g—p‚·‚éComputeShader‚Ìƒtƒ@ƒCƒ‹–¼
+	* \brief  ComputeShaderã€€ç”¨ã® pipelineState æ±ç”¨ä½œæˆé–¢æ•°
+	* \param  pipelineSet : ç”Ÿæˆå…ˆã® pipelineSet ã®ãƒã‚¤ãƒ³ã‚¿
+	* \param  csFileName  : ä½¿ç”¨ã™ã‚‹ComputeShaderã®ãƒ•ã‚¡ã‚¤ãƒ«å
 	*/
 	void CreateComputePipelineState(PipelineSet* pipelineSet, std::string csFileName);
 
-private: //!< ƒƒ“ƒo•Ï”
+	void CreateGraphicsPipelineSet();
+
+private: //!< ãƒ¡ãƒ³ãƒå¤‰æ•°
 
 	HRESULT hr = {}; //!< 
 
 	DirectXCommon* dxCommon_ = nullptr;
 
+	SrvManager* srvManager_ = nullptr;
+
+	UavManager* uavManager_ = nullptr;
+
 	ID3D12Device* device_ = nullptr;
 
 	ID3D12CommandList* commandList_ = nullptr;
 
-	std::unordered_map<std::string, std::unique_ptr<PipelineSet>> pipelineSets_ = {}; //!< ƒpƒCƒvƒ‰ƒCƒ“‚ğ–¼‘O‚ÅŠÇ—‚·‚éƒ}ƒbƒv
+	std::unordered_map<std::string, std::unique_ptr<PipelineSet>> pipelineSets_ = {}; //!< ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚’åå‰ã§ç®¡ç†ã™ã‚‹ãƒãƒƒãƒ—
 
-	//Microsoft::WRL::ComPtr<ID3D12Resource> particleResource_ = nullptr;
-	//Microsoft::WRL::ComPtr<ID3D12Resource> counterResource_ = nullptr;
-	//Microsoft::WRL::ComPtr<ID3D12Resource> freeListResource_ = nullptr;
+	std::unordered_map<std::string, ParticleGroup> particleGroups_ = {};
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> emitterResource_ = nullptr;
 	EmitterSphere* emitter_ = nullptr;
@@ -154,4 +181,7 @@ private: //!< ƒƒ“ƒo•Ï”
 	Microsoft::WRL::ComPtr<ID3D12Resource> perViewResource_ = nullptr;
 	PerView* perView_ = nullptr;
 
+	// transform
+	Microsoft::WRL::ComPtr<ID3D12Resource> transformResource_ = nullptr;
+	Transform* transform_ = nullptr;
 };

@@ -9,6 +9,7 @@
 #include <assimp\postprocess.h>
 
 #include "MyMath.h"
+#include "ModelDatas.h"
 
 namespace Line
 {
@@ -24,6 +25,13 @@ namespace Line
 	};
 }
 
+//struct VertexData
+//{
+//	Vector4 position;
+//	Vector2 texcoord;
+//	Vector3 normal;
+//};
+
 // \brief ModelLoader
 // モデルファイルを読み込み、頂点データを生成するクラス。
 // 主にラインモデル用のデータを読み込み、LoadLineModelで頂点配列を返す。
@@ -35,6 +43,8 @@ public:
 
 	// モデルデータを読み込む関数
     std::vector<Line::Vertex> LoadLineModel(std::string filePath);
+
+	std::vector<VertexData> LoadModel(std::string fileName);
 
 private:
 

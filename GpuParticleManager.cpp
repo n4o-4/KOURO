@@ -1,10 +1,14 @@
-#include "GpuParticleManager.h"
+ï»¿#include "GpuParticleManager.h"
+#include "TextureManager.h"
+#include "ModelLoader.h"
 
-GpuParticleManager::GpuParticleManager(EngineContext context)
+GpuParticleManager::GpuParticleManager(EngineContext context, SrvManager* srvManager)
 {
 	device_ = context.device;
 
 	commandList_ = context.commandList;
+
+	srvManager_ = srvManager;
 }
 
 void GpuParticleManager::Initialize()
@@ -13,85 +17,239 @@ void GpuParticleManager::Initialize()
 
 	CreateResources();
 
-	ParticleInitialize();
+	CreatePipelineSets();
+
+	ModelLoader loader;
+
+	CreateParticleGroup("normal", "Resources/circle.png", loader.LoadModel("plane.obj"));
 };
 
 void GpuParticleManager::Update()
 {
+	for (auto it = particleGroups_.begin(); it != particleGroups_.end(); ++it) {
+		auto& group = it->second;
+		
+
+
+		// noiseUpdate
+		dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("noiseUpdate")->second->rootSignature.Get());
+		dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("noiseUpdate")->second->pipelineState.Get());
+		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->Dispatch(512, 1, 1);
+
+		// baseUpdate
+		dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("baseUpdate")->second->rootSignature.Get());
+		dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("baseUpdate")->second->pipelineState.Get());
+		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->Dispatch(512, 1, 1);
+	}
 }
 
-void GpuParticleManager::ParticleInitialize()
+void GpuParticleManager::Draw(ViewProjection* viewPro)
 {
-	// RootSignature‚Ìİ’èiinitialize—pj
+	for (auto it = particleGroups_.begin(); it != particleGroups_.end(); ++it)
+	{
+		auto& group = it->second;
+
+		// rootSignature
+		dxCommon_->GetCommandList()->SetGraphicsRootSignature(pipelineSets_.find("draw")->second->rootSignature.Get());
+
+		// pipeLineState
+		dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("draw")->second->pipelineState.Get());
+
+		// 
+		dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &group.vertexBufferView);
+
+		// 
+		dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		// 
+		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, group.materialResource.Get()->GetGPUVirtualAddress());
+
+		// SRV
+		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(group.particleSrvIndex));
+
+		// 
+		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, srvManager_->GetGPUDescriptorHandle(group.textureIndex));
+
+		// 
+		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, perViewResource_.Get()->GetGPUVirtualAddress());
+
+		// 
+		dxCommon_->GetCommandList()->DrawInstanced(6, kMaxParticleCount, 0, 0);
+	}
+}
+
+void GpuParticleManager::ParticleInitialize(ParticleGroup group)
+{
+	srvManager_->PreDraw();
+
+	// RootSignatureã®è¨­å®šï¼ˆinitializeç”¨ï¼‰
 	dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("initialize")->second.get()->rootSignature.Get());
 
-	// PipelineState‚Ìİ’èiinitialize—pj
+	// PipelineStateã®è¨­å®šï¼ˆinitializeç”¨ï¼‰
 	dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_["initialize"]->pipelineState.Get());
 
-	// UAV‚Ìİ’èiu0: ƒp[ƒeƒBƒNƒ‹, u1: ƒJƒEƒ“ƒ^, u2: ƒtƒŠ[ƒŠƒXƒgj
-	//dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, particleResource_.Get()->GetGPUVirtualAddress());
-	//dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, counterResource_.Get()->GetGPUVirtualAddress());
-	//dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, freeListResource_.Get()->GetGPUVirtualAddress());
+	// UAVã®è¨­å®šï¼ˆu0: ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«, u1: ã‚«ã‚¦ãƒ³ã‚¿, u2: ãƒ•ãƒªãƒ¼ãƒªã‚¹ãƒˆ
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(4, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
 
-	// ComputeShader‚ÌÀs
+	// ComputeShaderã®å®Ÿè¡Œ
 	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
+}
+
+void GpuParticleManager::CreateParticleGroup(const std::string name, const std::string textureFilePath, std::vector<VertexData> vertices)
+{
+	// ã‚­ãƒ¼ã‚’æ¤œç´¢ ãªã‹ã£ãŸå ´åˆæ–°ã—ãã‚°ãƒ«ãƒ¼ãƒ—ã‚’ä½œã‚‹
+	if (particleGroups_.find(name) == particleGroups_.end())
+	{
+		// æ–°ã—ã„ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚°ãƒ«ãƒ¼ãƒ—
+		ParticleGroup newGroup;
+
+		newGroup.particleResource = dxCommon_->CreateComputeBufferResource(sizeof(Particle) * kMaxParticleCount);
+
+		newGroup.counterResource = dxCommon_->CreateComputeBufferResource(sizeof(uint32_t));
+
+		newGroup.freeListResource = dxCommon_->CreateComputeBufferResource(sizeof(uint32_t) * kMaxParticleCount);
+
+		newGroup.baseUpdateListResource = dxCommon_->CreateComputeBufferResource(sizeof(uint32_t) * kMaxParticleCount);
+
+		newGroup.noiseUpdateListResource = dxCommon_->CreateComputeBufferResource(sizeof(uint32_t) * kMaxParticleCount);
+
+		// SRV
+		newGroup.particleSrvIndex = srvManager_->Allocate();
+		srvManager_->CreateSRVforStructuredBuffer(newGroup.particleSrvIndex, newGroup.particleResource.Get(), kMaxParticleCount, sizeof(Particle));
+
+		// UAV
+		newGroup.particleUavIndex = uavManager_->Allocate();
+		uavManager_->CreateUAVforStructuredBuffer(newGroup.particleUavIndex, newGroup.particleResource.Get(), kMaxParticleCount, sizeof(Particle));
+
+		// vertex
+
+		newGroup.vertexResource = dxCommon_->CreateBufferResource(sizeof(VertexData) * vertices.size());
+
+		newGroup.vertexBufferView.BufferLocation = newGroup.vertexResource.Get()->GetGPUVirtualAddress();
+
+		newGroup.vertexBufferView.SizeInBytes = UINT(sizeof(VertexData) * vertices.size());
+
+		newGroup.vertexBufferView.StrideInBytes = sizeof(VertexData);
+
+		VertexData* vertexData;
+		newGroup.vertexResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+		std::memcpy(vertexData, vertices.data(), sizeof(VertexData) * vertices.size());
+
+		// material
+		newGroup.materialResource = dxCommon_->CreateBufferResource(sizeof(Material));
+		newGroup.material = nullptr;
+		newGroup.materialResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&newGroup.material));
+
+		newGroup.material->color = { 1.0f,1.0f,1.0f,1.0f };
+		newGroup.material->uvTransform = MakeIdentity4x4();
+
+		newGroup.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
+
+		ParticleInitialize(newGroup);
+
+		particleGroups_[name] = newGroup;
+	}
 }
 
 void GpuParticleManager::CreateResources()
 {
-	//// ƒp[ƒeƒBƒNƒ‹‚ÌƒŠƒ\[ƒX¶¬
-	//particleResource_ = dxCommon_->CreateComputeBufferResource(sizeof(Particle) * kMaxParticleCount);
+	perViewResource_ = dxCommon_->CreateBufferResource(sizeof(PerView));
+	perView_ = nullptr;
+	perViewResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&perView_));
 
-	//// ƒJƒEƒ“ƒ^[‚ÌƒŠƒ\[ƒX¶¬
-	//counterResource_ = dxCommon_->CreateComputeBufferResource(sizeof(uint32_t));
+	emitterResource_ = dxCommon_->CreateBufferResource(sizeof(EmitterSphere));
+	emitter_ = nullptr;
+	emitterResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&emitter_));
+	emitter_->emit = 0;
+	emitter_->frequency = 0.0f;
+	emitter_->frequencyTime = 0.0f;
+	emitter_->count = 512;
 
-	//// ƒtƒŠ[ƒŠƒXƒg‚ÌƒŠƒ\[ƒX¶¬
-	//freeListResource_ = dxCommon_->CreateComputeBufferResource(sizeof(uint32_t) * kMaxParticleCount);
+	perFrameResource_ = dxCommon_->CreateBufferResource(sizeof(PerFrame));
+	perFrame_ = nullptr;
+	perFrameResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&perFrame_));
+
+	transformResource_ = dxCommon_->CreateBufferResource(sizeof(Transform));
+	transform_ = nullptr;
+	transformResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&transform_));
+}
+
+void GpuParticleManager::CreatePipelineSets()
+{
+	CreateInitializePipelineSet();
+
+	CreateBaseUpdatePipelineSet();
+
+	CreateNoiseUpdatePipelineSet();
 }
 
 void GpuParticleManager::CreateInitializePipelineSet()
 {
-	// pipelineSet‚Ì¶¬iCompute—p‚ÌƒpƒCƒvƒ‰ƒCƒ“ƒZƒbƒg‚ğŠm•Ûj
+	// pipelineSetã®ç”Ÿæˆï¼ˆComputeç”¨ã®ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚»ãƒƒãƒˆã‚’ç¢ºä¿ï¼‰
 	std::unique_ptr<PipelineSet> pSet = std::make_unique<PipelineSet>();
 
-	// RootSignature‚Ì‹Lq\‘¢‘Ì‚ğ‰Šú‰»
+	// RootSignatureã®è¨˜è¿°æ§‹é€ ä½“ã‚’åˆæœŸåŒ–
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
-	// Input Assembleri’¸“_“ü—ÍƒŒƒCƒAƒEƒgj‚ğ‹–‰Â‚·‚éƒtƒ‰ƒO‚ğİ’è
+	// Input Assemblerï¼ˆé ‚ç‚¹å…¥åŠ›ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆï¼‰ã‚’è¨±å¯ã™ã‚‹ãƒ•ãƒ©ã‚°ã‚’è¨­å®š
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	// RootParameter”z—ñiUAV‚ğ3‚Âg—p‚·‚éj
-	D3D12_ROOT_PARAMETER rootParameters[3] = {};
+	// RootParameteré…åˆ—ï¼ˆUAVã‚’5ã¤ä½¿ç”¨ã™ã‚‹ï¼‰
+	D3D12_ROOT_PARAMETER rootParameters[5] = {};
 
-	// UAVƒŒƒWƒXƒ^0”Ô‚ğİ’èio—Í—pƒoƒbƒtƒ@‚È‚Ç‚Ég—pj
+	// UAVãƒ¬ã‚¸ã‚¹ã‚¿0ç•ªã‚’è¨­å®šï¼ˆå‡ºåŠ›ç”¨ãƒãƒƒãƒ•ã‚¡ãªã©ã«ä½¿ç”¨ï¼‰
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[0].Descriptor.ShaderRegister = 0;
 
-	// UAVƒŒƒWƒXƒ^1”Ô‚ğİ’èi•Ê‚Ìo—ÍƒŠƒ\[ƒX‚È‚Ç‚Ég—pj
+	// UAVãƒ¬ã‚¸ã‚¹ã‚¿1ç•ªã‚’è¨­å®šï¼ˆåˆ¥ã®å‡ºåŠ›ãƒªã‚½ãƒ¼ã‚¹ãªã©ã«ä½¿ç”¨ï¼‰
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[1].Descriptor.ShaderRegister = 1;
 
-	// UAVƒŒƒWƒXƒ^2”Ô‚ğİ’èi‚³‚ç‚É•Ê‚Ìo—ÍƒŠƒ\[ƒX‚È‚Ç‚Ég—pj
+	// UAVãƒ¬ã‚¸ã‚¹ã‚¿2ç•ªã‚’è¨­å®šï¼ˆã•ã‚‰ã«åˆ¥ã®å‡ºåŠ›ãƒªã‚½ãƒ¼ã‚¹ãªã©ã«ä½¿ç”¨ï¼‰
 	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[2].Descriptor.ShaderRegister = 2;
 
-	// ƒ‹[ƒgƒpƒ‰ƒ[ƒ^‚ğRootSignature‚É“o˜^
+	// UAVãƒ¬ã‚¸ã‚¹ã‚¿3ç•ªã‚’è¨­å®šï¼ˆåˆ¥ã®å‡ºåŠ›ãƒªã‚½ãƒ¼ã‚¹ãªã©ã«ä½¿ç”¨ï¼‰
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[3].Descriptor.ShaderRegister = 3;
+
+	// UAVãƒ¬ã‚¸ã‚¹ã‚¿3ç•ªã‚’è¨­å®šï¼ˆã•ã‚‰ã«åˆ¥ã®å‡ºåŠ›ãƒªã‚½ãƒ¼ã‚¹ãªã©ã«ä½¿ç”¨ï¼‰
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[4].Descriptor.ShaderRegister = 4;
+
+	// ãƒ«ãƒ¼ãƒˆãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’RootSignatureã«ç™»éŒ²
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
-	// RootSignature‚ğƒVƒŠƒAƒ‰ƒCƒYiƒoƒCƒiƒŠ‰»j
+	// RootSignatureã‚’ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºï¼ˆãƒã‚¤ãƒŠãƒªåŒ–ï¼‰
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
 
-	// ƒGƒ‰[‚ª”­¶‚µ‚½ê‡‚ÍƒƒO‚ğo—Í
+	// ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ãŸå ´åˆã¯ãƒ­ã‚°ã‚’å‡ºåŠ›
 	if (FAILED(hr)) {
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	// ƒVƒŠƒAƒ‰ƒCƒYŒ‹‰Ê‚©‚çÀÛ‚ÌRootSignature‚ğì¬
+	// ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºçµæœã‹ã‚‰å®Ÿéš›ã®RootSignatureã‚’ä½œæˆ
 	hr = dxCommon_->GetDevice()->CreateRootSignature(
 		0,
 		signatureBlob->GetBufferPointer(),
@@ -99,51 +257,56 @@ void GpuParticleManager::CreateInitializePipelineSet()
 		IID_PPV_ARGS(&pSet->rootSignature)
 	);
 
-	// ComputePipelineState‚ğì¬i‰Šú‰»—p‚ÌComputeShader‚ğw’èj
+	// ComputePipelineStateã‚’ä½œæˆï¼ˆåˆæœŸåŒ–ç”¨ã®ComputeShaderã‚’æŒ‡å®šï¼‰
 	CreateComputePipelineState(pSet.get(), "Resources/shaders/InitializeParticle.CS.hlsl");
 
-	// unordered_map ‚É’Ç‰Á
+	// unordered_map ã«è¿½åŠ 
 	pipelineSets_["initialize"] = std::move(pSet);
 }
 
-void GpuParticleManager::CreateUpdatePipelineSet()
+void GpuParticleManager::CreateBaseUpdatePipelineSet()
 {
-	// V‚µ‚¢ Compute —p‚Ì PipelineSet ‚ğ¶¬
+	// æ–°ã—ã„ Compute ç”¨ã® PipelineSet ã‚’ç”Ÿæˆ
 	std::unique_ptr<PipelineSet> pSet = std::make_unique<PipelineSet>();
 
-	// RootSignature ‚Ì‹Lq\‘¢‘Ì‚ğ‰Šú‰»
+	// RootSignature ã®è¨˜è¿°æ§‹é€ ä½“ã‚’åˆæœŸåŒ–
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
-	// Input Assembleri’¸“_“ü—ÍƒŒƒCƒAƒEƒgj‚Ìg—p‚ğ‹–‰Â‚·‚éƒtƒ‰ƒO‚ğİ’è
+	// Input Assemblerï¼ˆé ‚ç‚¹å…¥åŠ›ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆï¼‰ã®ä½¿ç”¨ã‚’è¨±å¯ã™ã‚‹ãƒ•ãƒ©ã‚°ã‚’è¨­å®š
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	// RootParameter ”z—ñ‚ğ‰Šú‰»iUAV~3 + CBV~1j
-	D3D12_ROOT_PARAMETER rootParameters[4] = {};
+	// RootParameter é…åˆ—ã‚’åˆæœŸåŒ–ï¼ˆUAVÃ—4 + CBVÃ—1ï¼‰
+	D3D12_ROOT_PARAMETER rootParameters[5] = {};
 
-	// UAV ƒŒƒWƒXƒ^ 0 ”Ô‚ğİ’èiComputeShader ‚Ìo—Íæƒoƒbƒtƒ@‚È‚Ç‚Ég—pj
+	// UAV ãƒ¬ã‚¸ã‚¹ã‚¿ 0 ç•ªã‚’è¨­å®šï¼ˆComputeShader ã®å‡ºåŠ›å…ˆãƒãƒƒãƒ•ã‚¡ãªã©ã«ä½¿ç”¨ï¼‰
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[0].Descriptor.ShaderRegister = 0;
 
-	// UAV ƒŒƒWƒXƒ^ 1 ”Ô‚ğİ’èi•Ê‚Ìo—ÍƒŠƒ\[ƒX‚È‚Ç‚Ég—pj
+	// UAV ãƒ¬ã‚¸ã‚¹ã‚¿ 1 ç•ªã‚’è¨­å®šï¼ˆåˆ¥ã®å‡ºåŠ›ãƒªã‚½ãƒ¼ã‚¹ãªã©ã«ä½¿ç”¨ï¼‰
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[1].Descriptor.ShaderRegister = 1;
 
-	// UAV ƒŒƒWƒXƒ^ 2 ”Ô‚ğİ’èi‚³‚ç‚É•Ê‚Ìo—ÍƒŠƒ\[ƒX‚È‚Ç‚Ég—pj
+	// UAV ãƒ¬ã‚¸ã‚¹ã‚¿ 2 ç•ªã‚’è¨­å®šï¼ˆã•ã‚‰ã«åˆ¥ã®å‡ºåŠ›ãƒªã‚½ãƒ¼ã‚¹ãªã©ã«ä½¿ç”¨ï¼‰
 	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[2].Descriptor.ShaderRegister = 2;
 
-	// CBV ƒŒƒWƒXƒ^ 0 ”Ô‚ğİ’èi’è”ƒoƒbƒtƒ@Fƒp[ƒeƒBƒNƒ‹‘S‘Ì‚Ì‹¤’Êƒf[ƒ^‚È‚Ç‚Ég—pj
-	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	// UAV ãƒ¬ã‚¸ã‚¹ã‚¿ 2 ç•ªã‚’è¨­å®šï¼ˆã•ã‚‰ã«åˆ¥ã®å‡ºåŠ›ãƒªã‚½ãƒ¼ã‚¹ãªã©ã«ä½¿ç”¨ï¼‰
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
 	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rootParameters[3].Descriptor.ShaderRegister = 0;
+	rootParameters[3].Descriptor.ShaderRegister = 3;
 
-	// ƒ‹[ƒgƒpƒ‰ƒ[ƒ^”z—ñ‚ğ RootSignature ‹Lq‚É“o˜^
+	// CBV ãƒ¬ã‚¸ã‚¹ã‚¿ 0 ç•ªã‚’è¨­å®šï¼ˆå®šæ•°ãƒãƒƒãƒ•ã‚¡ï¼šãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«å…¨ä½“ã®å…±é€šãƒ‡ãƒ¼ã‚¿ãªã©ã«ä½¿ç”¨ï¼‰
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[4].Descriptor.ShaderRegister = 0;
+
+	// ãƒ«ãƒ¼ãƒˆãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿é…åˆ—ã‚’ RootSignature è¨˜è¿°ã«ç™»éŒ²
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
-	// RootSignature ‚ğƒVƒŠƒAƒ‰ƒCƒYiƒoƒCƒiƒŠƒf[ƒ^‚É•ÏŠ·j
+	// RootSignature ã‚’ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºï¼ˆãƒã‚¤ãƒŠãƒªãƒ‡ãƒ¼ã‚¿ã«å¤‰æ›ï¼‰
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 	hr = D3D12SerializeRootSignature(
@@ -153,12 +316,12 @@ void GpuParticleManager::CreateUpdatePipelineSet()
 		&errorBlob
 	);
 
-	// ‚à‚µƒVƒŠƒAƒ‰ƒCƒY‚É¸”s‚µ‚½ê‡AƒGƒ‰[ƒƒO‚ğo—Í
+	// ã‚‚ã—ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã«å¤±æ•—ã—ãŸå ´åˆã€ã‚¨ãƒ©ãƒ¼ãƒ­ã‚°ã‚’å‡ºåŠ›
 	if (FAILED(hr)) {
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	// ƒVƒŠƒAƒ‰ƒCƒY‚³‚ê‚½ƒf[ƒ^‚©‚ç RootSignature ‚ğ¶¬
+	// ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ RootSignature ã‚’ç”Ÿæˆ
 	hr = dxCommon_->GetDevice()->CreateRootSignature(
 		0,
 		signatureBlob->GetBufferPointer(),
@@ -166,35 +329,282 @@ void GpuParticleManager::CreateUpdatePipelineSet()
 		IID_PPV_ARGS(&pSet->rootSignature)
 	);
 
-	// ComputePipelineState ‚ğì¬iXV—p ComputeShader ‚ğw’èj
-	CreateComputePipelineState(pSet.get(), "Resources/shaders/UpdateParticle.CS.hlsl");
+	// ComputePipelineState ã‚’ä½œæˆï¼ˆæ›´æ–°ç”¨ ComputeShader ã‚’æŒ‡å®šï¼‰
+	CreateComputePipelineState(pSet.get(), "Resources/shaders/BaseUpdateParticle.CS.hlsl");
 
-	// unordered_map ‚É’Ç‰Á
-	pipelineSets_["update"] = std::move(pSet);
+	// unordered_map ã«è¿½åŠ 
+	pipelineSets_["baseUpdate"] = std::move(pSet);
+}
+
+void GpuParticleManager::CreateNoiseUpdatePipelineSet()
+{
+	// æ–°ã—ã„ Compute ç”¨ã® PipelineSet ã‚’ç”Ÿæˆ
+	std::unique_ptr<PipelineSet> pSet = std::make_unique<PipelineSet>();
+
+	// RootSignature ã®è¨˜è¿°æ§‹é€ ä½“ã‚’åˆæœŸåŒ–
+	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
+	// Input Assemblerï¼ˆé ‚ç‚¹å…¥åŠ›ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆï¼‰ã®ä½¿ç”¨ã‚’è¨±å¯ã™ã‚‹ãƒ•ãƒ©ã‚°ã‚’è¨­å®š
+	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+	// RootParameter é…åˆ—ã‚’åˆæœŸåŒ–ï¼ˆUAVÃ—4 + CBVÃ—1ï¼‰
+	D3D12_ROOT_PARAMETER rootParameters[5] = {};
+
+	// UAV ãƒ¬ã‚¸ã‚¹ã‚¿ 0 ç•ªã‚’è¨­å®šï¼ˆComputeShader ã®å‡ºåŠ›å…ˆãƒãƒƒãƒ•ã‚¡ãªã©ã«ä½¿ç”¨ï¼‰
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[0].Descriptor.ShaderRegister = 0;
+
+	// UAV ãƒ¬ã‚¸ã‚¹ã‚¿ 1 ç•ªã‚’è¨­å®šï¼ˆåˆ¥ã®å‡ºåŠ›ãƒªã‚½ãƒ¼ã‚¹ãªã©ã«ä½¿ç”¨ï¼‰
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[1].Descriptor.ShaderRegister = 1;
+
+	// UAV ãƒ¬ã‚¸ã‚¹ã‚¿ 2 ç•ªã‚’è¨­å®šï¼ˆã•ã‚‰ã«åˆ¥ã®å‡ºåŠ›ãƒªã‚½ãƒ¼ã‚¹ãªã©ã«ä½¿ç”¨ï¼‰
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[2].Descriptor.ShaderRegister = 2;
+
+	// UAV ãƒ¬ã‚¸ã‚¹ã‚¿ 2 ç•ªã‚’è¨­å®šï¼ˆã•ã‚‰ã«åˆ¥ã®å‡ºåŠ›ãƒªã‚½ãƒ¼ã‚¹ãªã©ã«ä½¿ç”¨ï¼‰
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[3].Descriptor.ShaderRegister = 3;
+
+	// CBV ãƒ¬ã‚¸ã‚¹ã‚¿ 0 ç•ªã‚’è¨­å®šï¼ˆå®šæ•°ãƒãƒƒãƒ•ã‚¡ï¼šãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«å…¨ä½“ã®å…±é€šãƒ‡ãƒ¼ã‚¿ãªã©ã«ä½¿ç”¨ï¼‰
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[4].Descriptor.ShaderRegister = 0;
+
+	// ãƒ«ãƒ¼ãƒˆãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿é…åˆ—ã‚’ RootSignature è¨˜è¿°ã«ç™»éŒ²
+	descriptionRootSignature.pParameters = rootParameters;
+	descriptionRootSignature.NumParameters = _countof(rootParameters);
+
+	// RootSignature ã‚’ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºï¼ˆãƒã‚¤ãƒŠãƒªãƒ‡ãƒ¼ã‚¿ã«å¤‰æ›ï¼‰
+	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+	hr = D3D12SerializeRootSignature(
+		&descriptionRootSignature,
+		D3D_ROOT_SIGNATURE_VERSION_1,
+		&signatureBlob,
+		&errorBlob
+	);
+
+	// ã‚‚ã—ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã«å¤±æ•—ã—ãŸå ´åˆã€ã‚¨ãƒ©ãƒ¼ãƒ­ã‚°ã‚’å‡ºåŠ›
+	if (FAILED(hr)) {
+		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
+	}
+
+	// ã‚·ãƒªã‚¢ãƒ©ã‚¤ã‚ºã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ RootSignature ã‚’ç”Ÿæˆ
+	hr = dxCommon_->GetDevice()->CreateRootSignature(
+		0,
+		signatureBlob->GetBufferPointer(),
+		signatureBlob->GetBufferSize(),
+		IID_PPV_ARGS(&pSet->rootSignature)
+	);
+
+	// ComputePipelineState ã‚’ä½œæˆï¼ˆæ›´æ–°ç”¨ ComputeShader ã‚’æŒ‡å®šï¼‰
+	CreateComputePipelineState(pSet.get(), "Resources/shaders/NoiseUpdateParticle,CS.hlsl");
+
+	// unordered_map ã«è¿½åŠ 
+	pipelineSets_["noiseUpdate"] = std::move(pSet);
 }
 
 void GpuParticleManager::CreateComputePipelineState(PipelineSet* pipelineSet, std::string csFileName)
 {
-	// Shaderƒtƒ@ƒCƒ‹–¼iUTF-8j‚ğwstringiUTF-16j‚É•ÏŠ·
+	// Shaderãƒ•ã‚¡ã‚¤ãƒ«åï¼ˆUTF-8ï¼‰ã‚’wstringï¼ˆUTF-16ï¼‰ã«å¤‰æ›
 	std::wstring wShaderPath(csFileName.begin(), csFileName.end());
 
-	// ComputeShader‚ğƒRƒ“ƒpƒCƒ‹ics_6_0ƒvƒƒtƒ@ƒCƒ‹‚ÅƒRƒ“ƒpƒCƒ‹j
+	// ComputeShaderã‚’ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ï¼ˆcs_6_0ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã§ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ï¼‰
 	Microsoft::WRL::ComPtr<IDxcBlob> computeShaderBlob = dxCommon_->CompileShader(wShaderPath.c_str(), L"cs_6_0");
 
-	// ComputeƒpƒCƒvƒ‰ƒCƒ“ƒXƒe[ƒg‚Ì‹Lq\‘¢‘Ì‚ğ‰Šú‰»
+	// Computeãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨˜è¿°æ§‹é€ ä½“ã‚’åˆæœŸåŒ–
 	D3D12_COMPUTE_PIPELINE_STATE_DESC computePipelineStateDesc{};
-	// ƒRƒ“ƒpƒCƒ‹Ï‚İ‚ÌƒVƒF[ƒ_[ƒoƒCƒiƒŠ‚ğ“o˜^
+	// ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«æ¸ˆã¿ã®ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ãƒã‚¤ãƒŠãƒªã‚’ç™»éŒ²
 	computePipelineStateDesc.CS = {
 		.pShaderBytecode = computeShaderBlob->GetBufferPointer(),
 		.BytecodeLength = computeShaderBlob->GetBufferSize()
 	};
 
-	// g—p‚·‚éRootSignature‚ğİ’è
+	// ä½¿ç”¨ã™ã‚‹RootSignatureã‚’è¨­å®š
 	computePipelineStateDesc.pRootSignature = pipelineSet->rootSignature.Get();
 
-	// ComputePipelineState‚ğì¬
+	// ComputePipelineStateã‚’ä½œæˆ
 	hr = dxCommon_->GetDevice()->CreateComputePipelineState(
 		&computePipelineStateDesc,
 		IID_PPV_ARGS(&pipelineSet->pipelineState)
 	);
-};
+}
+void GpuParticleManager::CreateGraphicsPipelineSet()
+{
+	std::unique_ptr<PipelineSet> pSet = std::make_unique<PipelineSet>();
+
+	// rootSignatureï¿½Ìï¿½ï¿½ï¿½
+	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
+	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
+	descriptorRange[0].BaseShaderRegister = 0;
+	descriptorRange[0].NumDescriptors = 1;
+	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	D3D12_DESCRIPTOR_RANGE descriptorRangeForInstancing[1] = {};
+	descriptorRangeForInstancing[0].BaseShaderRegister = 0;
+	descriptorRangeForInstancing[0].NumDescriptors = 1;
+	descriptorRangeForInstancing[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	// rootParameterï¿½Ìï¿½ï¿½ï¿½
+	D3D12_ROOT_PARAMETER rootParameters[4] = {};
+
+	// material
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[0].Descriptor.ShaderRegister = 0;
+
+	// instancing
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	rootParameters[1].DescriptorTable.pDescriptorRanges = descriptorRangeForInstancing;
+	rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForInstancing);
+
+	// 
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;
+	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
+
+	// 
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	rootParameters[3].Descriptor.ShaderRegister = 1;
+
+	descriptionRootSignature.pParameters = rootParameters;
+	descriptionRootSignature.NumParameters = _countof(rootParameters);
+
+	// samplerï¿½Ìï¿½ï¿½ï¿½
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
+	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // ï¿½oï¿½Cï¿½iï¿½ï¿½ï¿½tï¿½Bï¿½ï¿½ï¿½^
+	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // 0~1ï¿½Ì”ÍˆÍŠOï¿½ï¿½ï¿½ï¿½sï¿½[ï¿½g
+	//staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP; // Xï¿½ï¿½ï¿½W
+	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	//staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // Yï¿½ï¿½ï¿½W
+	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // ï¿½ï¿½rï¿½ï¿½ï¿½È‚ï¿½
+	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½MipMapï¿½ï¿½gï¿½ï¿½
+	staticSamplers[0].ShaderRegister = 0;
+	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	descriptionRootSignature.pStaticSamplers = staticSamplers;
+	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
+
+	// ï¿½Vï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Cï¿½Yï¿½ï¿½ï¿½Äƒoï¿½Cï¿½iï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½
+	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+
+	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
+
+	if (FAILED(hr)) {
+		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
+	}
+
+	// ï¿½oï¿½Cï¿½iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½RootSignatureï¿½ğ¶ï¿½
+	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&pSet->rootSignature));
+	assert(SUCCEEDED(hr));
+
+	// InputLayoutï¿½Ìİ’ï¿½
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
+	inputElementDescs[0].SemanticName = "POSITION";
+	inputElementDescs[0].SemanticIndex = 0;
+	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+	inputElementDescs[1].SemanticName = "TEXCOORD";
+	inputElementDescs[1].SemanticIndex = 0;
+	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+	inputElementDescs[2].SemanticName = "NORMAL";
+	inputElementDescs[2].SemanticIndex = 0;
+	inputElementDescs[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	inputElementDescs[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
+	inputLayoutDesc.pInputElementDescs = inputElementDescs;
+	inputLayoutDesc.NumElements = _countof(inputElementDescs);
+
+	// RasterizerStateï¿½Ìİ’ï¿½
+	D3D12_RASTERIZER_DESC rasterizerDesc{};
+
+	// ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½)ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
+	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
+
+	// ï¿½Oï¿½pï¿½`ï¿½Ì’ï¿½ï¿½ï¿½hï¿½ï¿½Â‚Ô‚ï¿½
+	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+
+	// Shaderï¿½ÌƒRï¿½ï¿½ï¿½pï¿½Cï¿½ï¿½
+	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.CS.VS.hlsl", L"vs_6_0");
+
+	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.CS.PS.hlsl", L"ps_6_0");
+
+	// DepthStencilStateï¿½Ìİ’ï¿½
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
+
+	// Depthï¿½Ì‹@ï¿½\ï¿½ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	depthStencilDesc.DepthEnable = true;
+
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½Ü‚ï¿½
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+
+	// ï¿½ï¿½rï¿½Öï¿½ï¿½ï¿½LessEqualï¿½Bï¿½ß‚ï¿½ï¿½ï¿½Î•`ï¿½æ‚³ï¿½ï¿½ï¿½
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+
+
+	// BlendStateï¿½Ìİ’ï¿½
+	D3D12_BLEND_DESC blendDesc{};
+
+	// ï¿½Sï¿½Ä‚Ì—vï¿½fï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+
+
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ONE;
+
+	blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
+	graphicsPipelineStateDesc.pRootSignature = pSet->rootSignature.Get();
+	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;
+	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),vertexShaderBlob->GetBufferSize() };
+	graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(),pixelShaderBlob->GetBufferSize() };
+	graphicsPipelineStateDesc.BlendState = blendDesc;
+	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;
+
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½RTVï¿½Ìï¿½ï¿½
+	graphicsPipelineStateDesc.NumRenderTargets = 1;
+	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+
+	// ï¿½ï¿½ï¿½pï¿½ï¿½ï¿½ï¿½gï¿½|ï¿½ï¿½ï¿½Wï¿½[(ï¿½`ï¿½ï¿½)ï¿½Ìƒ^ï¿½Cï¿½vï¿½Bï¿½Oï¿½pï¿½`
+	graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+	// ï¿½Ç‚Ì‚æ‚¤ï¿½É‰ï¿½Ê‚ÉFï¿½ï¿½Â‚ï¿½ï¿½é‚©
+	graphicsPipelineStateDesc.SampleDesc.Count = 1;
+	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
+	// DepthStencilï¿½Ìİ’ï¿½
+	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
+	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+	// ï¿½ï¿½ï¿½Û‚Éï¿½ï¿½ï¿½
+	pSet->pipelineState = nullptr;
+	hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&pSet->pipelineState));
+	assert(SUCCEEDED(hr));
+
+	// unordered_map ã«è¿½åŠ 
+	pipelineSets_["draw"] = std::move(pSet);
+}

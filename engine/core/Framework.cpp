@@ -61,7 +61,10 @@ void Framework::Initialize()
 
 
 	gpuParticle_ = GpuParticle::GetInstance();
-	gpuParticle_->Initialize(dxCommon_, srvManager.get(), uavManager_.get());
+	//gpuParticle_->Initialize(dxCommon_, srvManager.get(), uavManager_.get());
+
+	gpuParticleManager_ = std::make_unique<GpuParticleManager>(engineContext, srvManager.get());
+	gpuParticleManager_->Initialize();
 
 	now = std::chrono::steady_clock::now();
 
@@ -109,11 +112,13 @@ void Framework::Update()
 
 	SceneManager::GetInstance()->Update();
 
+	gpuParticleManager_->Update();
+
 #ifdef _DEBUG
 
 	UpdateFPS();
 
-	gpuParticle_->SetPerFrame(static_cast<float >(totalTime), deltaTime);
+	gpuParticleManager_->SetPerFrame(static_cast<float >(totalTime), deltaTime);
 
 #endif _DEBUG
 }
@@ -123,6 +128,7 @@ void Framework::Draw()
 
 	SceneManager::GetInstance()->Draw();
 
+	gpuParticleManager_->
 }
 
 void Framework::DrawEffect()
