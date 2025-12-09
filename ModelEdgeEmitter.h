@@ -19,11 +19,12 @@ private:
 
 	struct Emitter
 	{
-		Vector3 translate;   // �ʒu
-		uint32_t count;      // �ˏo��
-		float frequency;     // �ˏo�Ԋu
-		float frequencyTime; // �ˏo�Ԋu�����p����
-		uint32_t emit;       // �ˏo����
+		Vector3 translate;   // 
+		float radius;        // 
+		uint32_t count;      // 
+		float frequency;     // 
+		float frequencyTime; // 
+		uint32_t emit;       // 
 	};
 
 public:

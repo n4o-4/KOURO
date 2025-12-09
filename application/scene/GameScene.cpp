@@ -258,6 +258,8 @@ void GameScene::Initialize(EngineContext context) {
 
 		enemy->SetLineModelManager(lineModelManager_.get());
 
+		enemy->SetEmitter(mEmitter.get());
+
 		std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
 
 		enemy->ChangeState(std::move(state));
@@ -285,7 +287,6 @@ void GameScene::Initialize(EngineContext context) {
 		countSprite_[i]->SetAnchorPoint({ 0.5f,0.5f });
 		countSprite_[i]->Update();
 	}
-
 	
 
 	colliderManager_->AddCollider(player_);
@@ -523,6 +524,11 @@ void GameScene::Update()
 	}
 
 	colliderManager_->Update();
+
+	if (player_->GetIsHit())
+	{
+		cameraManager_->CameraShake(0.5f);
+	}
 
 #ifdef _DEBUG
 

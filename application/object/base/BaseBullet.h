@@ -55,6 +55,6 @@ protected: // 派生用メンバ変数
 
 	float lifeTimer_ = 0.0f; //!< 弾の寿命タイマー
 
-	uint32_t damage_ = 5; //!< ダメージ量
+	uint32_t damage_ = 1; //!< ダメージ量
 };
 

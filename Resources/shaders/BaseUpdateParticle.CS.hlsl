@@ -5,6 +5,7 @@ RWStructuredBuffer<int> gFreeListIndex : register(u1);
 RWStructuredBuffer<uint> gFreeList : register(u2);
 RWStructuredBuffer<uint> gBaseUpdateList : register(u3);
 ConstantBuffer<PerFrame> gPerFrame : register(b0);
+RWStructuredBuffer<uint> gNoiseUpdateList : register(u4);
 
 [numthreads(1024, 1, 1)]
 
@@ -13,7 +14,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
     uint particleIndex = DTid.x;
     if(particleIndex < kMaxParticles)
     {
-        if (gBaseUpdateList[particleIndex] != 0) return;
+        if (gBaseUpdateList[particleIndex] == 0) return;
         
         if (gParticles[particleIndex].color.a != 0)
         {
@@ -26,6 +27,10 @@ void main( uint3 DTid : SV_DispatchThreadID )
         if (gParticles[particleIndex].currentTime >= gParticles[particleIndex].lifeTime)
         {
             gParticles[particleIndex].scale = float3(0, 0, 0);
+            
+            gBaseUpdateList[particleIndex] = 0;
+            gNoiseUpdateList[particleIndex] = 0;
+            
             uint freeListIndex;
             InterlockedAdd(gFreeListIndex[0], 1, freeListIndex);
             if (freeListIndex < kMaxParticles)
@@ -36,6 +41,6 @@ void main( uint3 DTid : SV_DispatchThreadID )
             {
                 InterlockedAdd(gFreeListIndex[0], -1);
             }
-        }
+        }   
     }
 }

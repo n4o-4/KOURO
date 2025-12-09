@@ -109,8 +109,6 @@ void Framework::Update()
 
 	SceneManager::GetInstance()->Update();
 
-	gpuParticleManager_->Update();
-
 #ifdef _DEBUG
 
 	UpdateFPS();
@@ -122,10 +120,9 @@ void Framework::Update()
 
 void Framework::Draw()
 {
+	auto sceneManager = SceneManager::GetInstance();
 
-	SceneManager::GetInstance()->Draw();
-
-	//gpuParticleManager_->
+	sceneManager->Draw();
 }
 
 void Framework::DrawEffect()

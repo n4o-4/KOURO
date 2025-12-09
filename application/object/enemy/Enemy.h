@@ -21,7 +21,6 @@ public: // 公開メンバ関数
 	*/
 	void Initialize(LineModel* model) override;
 
-	
 	// \brief Update 更新
 	void Update() override;
 
@@ -51,6 +50,8 @@ public: // 公開メンバ関数
 	* \param LineModelManager ラインモデルマネージャーのポインタ
 	*/
 	void SetLineModelManager(LineModelManager* lineModelManager) { lineModelManager_ = lineModelManager; }
+
+	void SetEmitter(ModelEdgeEmitter* emitter) { mEmitter_ = emitter; }
 
 	/**
 	* \brief GetTarget ターゲットを取得する
@@ -104,5 +105,7 @@ private: // 非公開メンバ変数
 	LineModelManager* lineModelManager_ = nullptr;
 
 	ParticleEmitter emitter_;
+
+	ModelEdgeEmitter* mEmitter_ = nullptr;
 };
 

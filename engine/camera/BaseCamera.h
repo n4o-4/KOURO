@@ -27,14 +27,16 @@ public:
 	
 	virtual void Update();
 
-
-
 	virtual ViewProjection& GetViewProjection() { return *viewProjection_; }
+
+	void SetOffset(Vector3 offset) { offset_ = offset; }
 
 protected:
 
 	std::unique_ptr<ViewProjection> viewProjection_ = nullptr;
 
 	Matrix4x4 worldMatrix = MakeIdentity4x4();
+
+	Vector3 offset_ = {};
 
 };

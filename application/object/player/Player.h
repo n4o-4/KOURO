@@ -71,6 +71,12 @@ public: // 公開メンバ関数
 	*/
 	const QuickMoveData* GetQuickMoveData() { return quickMoveData_.get(); }
 
+	/**
+	* \brief  hitフラグを取得する
+	* \return hitフラグ
+	*/
+	const bool GetIsHit() const { return isHit_; }
+
 private: // 非公開メンバ関数
 
 	// \brief  Move 移動処理
@@ -136,15 +142,13 @@ private: // 非公開メンバ変数
 
 	Rail rail;
 
-	const float kFireInterval_ = 0.2f; //!< 発射間隔
+	const float kFireInterval_ = 0.1f; //!< 発射間隔
 
 	float fireTimer_ = 0.0f; //!< 発射タイマー
 
-	const float kHitInterval_ = 0.1f; //!< 被弾アクション間隔
-
-	float hitintervalTimer_ = 0.0f; //!< 被弾アクションタイマー
-
 	std::unique_ptr<QuickMoveData> quickMoveData_ = nullptr;
+
+	bool isHit_ = false;
 
 private: 
 	

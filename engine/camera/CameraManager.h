@@ -5,7 +5,7 @@
 #include "FollowCamera.h"
 #include "RailCamera.h"
 #include "TitleCamera.h"
-
+#include <random>
 // \brief CameraManager
 // 複数カメラを管理するクラス。
 // デバッグカメラや追従カメラなどを保持し、更新・切り替え・ターゲット設定を行う。
@@ -31,7 +31,11 @@ public: /// メンバ関数
 
 	void CamerasClear();
 
+	void CameraShake(float time);
+
 public:
+
+	void Shake();
 
 	void DrawDebugUI();
 
@@ -44,5 +48,15 @@ private:
 	std::list<BaseCamera*> cameras_;
 
 	BaseCamera* activeCamera_ = nullptr;
+
+	bool isShaking = false;
+
+	float shakeTime = 0.0f;
+
+	float timer = 0.0f;
+
+	std::mt19937 randomEngine;
+
+	Vector3 shakeOffSet = {};
 };
 

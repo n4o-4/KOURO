@@ -7,7 +7,7 @@ RWStructuredBuffer<uint> gBaseUpdateList : register(u3);
 RWStructuredBuffer<uint> gNoiseUpdateList : register(u4);
 
 [numthreads(1024, 1, 1)]
-void main( uint3 DTid : SV_DispatchThreadID )
+void main(uint3 DTid : SV_DispatchThreadID)
 {
     uint particleIndex = DTid.x;
     if (particleIndex < kMaxParticles)

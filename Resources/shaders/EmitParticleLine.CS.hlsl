@@ -25,7 +25,8 @@ RWStructuredBuffer<uint> gFreeListIndex : register(u1);     // 3
 RWStructuredBuffer<uint> gFreeList : register(u2);          // 4
 ConstantBuffer<EmitterSphere> gEmitter : register(b1);      // 5
 ConstantBuffer<PerFrame> gPerFrame : register(b2);          // 6
-
+RWStructuredBuffer<uint> gNoiseUpdateList : register(u3);   // 7
+RWStructuredBuffer<uint> gBaseUpdateList : register(u4);    // 8
 [numthreads(1024, 1, 1)]
 
 void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID)
@@ -33,7 +34,6 @@ void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID)
     if (gEmitter.emit == 0) return;
 
     RandomGenerator generator;
-    //generator.seed = asuint(gPerFrame.time) + DTid.x * 13;
     generator.seed = gPerFrame.time + (float)DTid.x * 13.0f;
 
     // StructuredBuffer からコピー
@@ -61,6 +61,10 @@ void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID)
 
     uint particleIndex = gFreeList[freeListIndex - 1];
 
+    // フラグを立てる
+    gNoiseUpdateList[particleIndex] = 1;
+    gBaseUpdateList[particleIndex] = 1;
+    
     // パーティクル初期化
     gParticles[particleIndex].translate = pos;
     gParticles[particleIndex].velocity.x = 0.0f;

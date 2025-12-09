@@ -46,6 +46,8 @@ void MyGame::Update()
 	// 基盤システムの更新
 	Framework::Update();
 
+	gpuParticleManager_->Update();
+
 	// ポストエフェクトの更新
 	postEffect_->Update();
 }

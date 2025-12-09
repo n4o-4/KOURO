@@ -4,6 +4,8 @@ void ModelEdgeEmitter::Initialize(std::string groupName, EngineContext context)
 {
 	groupName_ = groupName;
 
+	context_ = context;
+
 	CreateEmitterResource();
 }
 
@@ -24,9 +26,11 @@ void ModelEdgeEmitter::Emit(Matrix4x4 mat)
 {
 	GpuParticleManager* manager = context_.gpuParticleManager;
 
+	emitter_->emit;
+
 	if (manager->GetParticleGroups().find(groupName_) == manager->GetParticleGroups().end()) return;
 
-	GpuParticleManager::ParticleGroup  group = manager->GetParticleGroups().find(groupName_)->second;
+	GpuParticleManager::ParticleGroup&  group = manager->GetParticleGroups().find(groupName_)->second;
 
 	manager->LineEmit(groupName_, srvIndex_, lineCount_, emitterResource_, mat);
 }
@@ -50,13 +54,15 @@ void ModelEdgeEmitter::CreateLineSegment(std::string filePath)
 		lineSegments_.push_back(seg);
 	}
 
+	lineCount_ = lineSegments_.size();
+
 	// lineSegment
 	CreateSegmentResource();
 }
 
 void ModelEdgeEmitter::CreateSegmentResource()
 {
-	lineSegmentResource_ = dxCommon_->CreateBufferResource(sizeof(LineSegment) * lineSegments_.size());
+	lineSegmentResource_ = context_.gpuContext.gpuResourceUtils->CreateBufferResource(sizeof(LineSegment) * lineSegments_.size());
     LineSegment* lineSegmentData;
 	lineSegmentResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&lineSegmentData));
 	std::memcpy(lineSegmentData, lineSegments_.data(), sizeof(LineSegment) * lineSegments_.size());
@@ -68,10 +74,10 @@ void ModelEdgeEmitter::CreateSegmentResource()
 
 void ModelEdgeEmitter::CreateEmitterResource()
 {
-	emitterResource_ = dxCommon_->CreateBufferResource(sizeof(Emitter));
+	emitterResource_ = context_.gpuContext.gpuResourceUtils->CreateBufferResource(sizeof(Emitter));
 	emitter_ = nullptr;
 	emitterResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&emitter_));
-	emitter_->emit = 0;
+	emitter_->emit = 1;
 	emitter_->frequency = 0.0f;
 	emitter_->frequencyTime = 0.0f;
 	emitter_->count = 512;

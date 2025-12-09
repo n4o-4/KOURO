@@ -35,10 +35,21 @@ private:
 	{
 		Vector3 translate;   // 
 		float radius;        // 
-		uint32_t count;      // 
 		float frequency;     // 
 		float frequencyTime; // 
+		float pad1[2];
+		uint32_t count;      // 
 		uint32_t emit;       // 
+		uint32_t pad2[2];
+	};
+
+	struct EmitterSphereShell
+	{
+		Vector3 translate;
+		float minRadius;
+		float maxRadius;
+
+		uint32_t emit;
 	};
 
 	struct PerFrame
@@ -148,7 +159,7 @@ public:
 
 
 
-	std::unordered_map<std::string, ParticleGroup> GetParticleGroups() const { return particleGroups_; }
+	std::unordered_map<std::string, ParticleGroup>& GetParticleGroups() { return particleGroups_; }
 
 	const Microsoft::WRL::ComPtr<ID3D12Resource> GetPerFrameResource() const { return perFrameResource_; }
 
@@ -169,6 +180,8 @@ private:
 	void CreateNoiseUpdatePipelineSet();
 
 	void CreateModelEdgeEmitterPipelineSet();
+
+	void CreateSphereShellEmitterPipelineSet();
 
 	/**
 	* \brief  ComputeShader　用の pipelineState 汎用作成関数
@@ -193,6 +206,8 @@ private: //!< メンバ変数
 
 	ID3D12CommandList* commandList_ = nullptr;
 
+	GpuResourceUtils* gpuResourceUtils_ = nullptr;
+
 	std::unordered_map<std::string, std::unique_ptr<PipelineSet>> pipelineSets_ = {}; //!< パイプラインを名前で管理するマップ
 
 	std::unordered_map<std::string, ParticleGroup> particleGroups_ = {};
@@ -210,4 +225,6 @@ private: //!< メンバ変数
 	// transform
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformResource_ = nullptr;
 	Transform* transform_ = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> emitterSphereShellResource_ = nullptr;
 };

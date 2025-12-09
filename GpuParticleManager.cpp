@@ -11,6 +11,8 @@ GpuParticleManager::GpuParticleManager(GpuContext context)
 	srvManager_ = context.srvManager;
 
 	uavManager_ = context.uavManager;
+
+	gpuResourceUtils_ = context.gpuResourceUtils;
 }
 
 void GpuParticleManager::Initialize()
@@ -24,6 +26,34 @@ void GpuParticleManager::Initialize()
 	ModelLoader loader;
 
 	CreateParticleGroup("normal", "Resources/circle.png", loader.LoadModel("plane.obj"));
+
+	emitterSphereShellResource_ = gpuResourceUtils_->CreateBufferResource(sizeof(EmitterSphereShell));
+	EmitterSphereShell* emitter = nullptr;
+	emitterSphereShellResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&emitter));
+	emitter->emit = 1;
+	emitter->maxRadius = 100000.0f;
+	emitter->minRadius = 70000.0f;
+	emitter->translate = { 0.0f,0.0f,0.0f };
+
+	auto& group = particleGroups_.find("normal")->second;
+
+	srvManager_->PreDraw();
+	uavManager_->PreDraw();
+
+	dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("sphereShellEmitter")->second->rootSignature.Get());
+	dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("sphereShellEmitter")->second->pipelineState.Get());
+
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
+
+	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(3, emitterSphereShellResource_.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
+
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(5, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(6, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
+
+	dxCommon_->GetCommandList()->Dispatch(10, 1, 1);
 };
 
 void GpuParticleManager::Update()
@@ -34,6 +64,8 @@ void GpuParticleManager::Update()
 	for (auto it = particleGroups_.begin(); it != particleGroups_.end(); ++it) {
 		auto& group = it->second;
 		
+		perFrame_;
+
 		// noiseUpdate
 		dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("noiseUpdate")->second->rootSignature.Get());
 		dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("noiseUpdate")->second->pipelineState.Get());
@@ -42,7 +74,7 @@ void GpuParticleManager::Update()
 		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
 		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
 		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->Dispatch(512, 1, 1);
+		dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount / kCSMaxParticleCount, 1, 1);
 
 		// baseUpdate
 		dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("baseUpdate")->second->rootSignature.Get());
@@ -52,7 +84,8 @@ void GpuParticleManager::Update()
 		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
 		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
 		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->Dispatch(512, 1, 1);
+		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(5, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount / kCSMaxParticleCount, 1, 1);
 	}
 }
 
@@ -190,7 +223,9 @@ void GpuParticleManager::LineEmit(std::string groupName, uint32_t lineSrvIndex, 
 
 	if (particleGroups_.find(groupName) == particleGroups_.end()) return;
 
-	ParticleGroup group = particleGroups_.find(groupName)->second;
+	ParticleGroup& group = particleGroups_.find(groupName)->second;
+
+	srvManager_->PreDraw();
 
 	// 3. Compute Root �� Descriptor / CBV / UAV 
 	dxCommon_->GetCommandList()->SetComputeRootDescriptorTable(0, srvManager_->GetGPUDescriptorHandle(lineSrvIndex));
@@ -200,7 +235,8 @@ void GpuParticleManager::LineEmit(std::string groupName, uint32_t lineSrvIndex, 
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(4, group.freeListResource.Get()->GetGPUVirtualAddress());
 	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(5, emitterResource.Get()->GetGPUVirtualAddress());
 	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(6, perFrameResource_.Get()->GetGPUVirtualAddress());
-
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(7, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(8, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
 
 	// Dispatch�̎��s
 	dxCommon_->GetCommandList()->Dispatch(static_cast<UINT>(lineCount), 1, 1);
@@ -243,7 +279,11 @@ void GpuParticleManager::CreatePipelineSets()
 
 	CreateNoiseUpdatePipelineSet();
 
+	CreateModelEdgeEmitterPipelineSet();
+
 	CreateGraphicsPipelineSet();
+
+	CreateSphereShellEmitterPipelineSet();
 }
 
 void GpuParticleManager::CreateInitializePipelineSet()
@@ -323,8 +363,8 @@ void GpuParticleManager::CreateBaseUpdatePipelineSet()
 	// Input Assembler（頂点入力レイアウト）の使用を許可するフラグを設定
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	// RootParameter 配列を初期化（UAV×4 + CBV×1）
-	D3D12_ROOT_PARAMETER rootParameters[5] = {};
+	// RootParameter 配列を初期化（UAV×5 + CBV×1）
+	D3D12_ROOT_PARAMETER rootParameters[6] = {};
 
 	// UAV レジスタ 0 番を設定（ComputeShader の出力先バッファなどに使用）
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
@@ -350,6 +390,11 @@ void GpuParticleManager::CreateBaseUpdatePipelineSet()
 	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[4].Descriptor.ShaderRegister = 0;
+
+	// UAV レジスタ 2 番を設定（さらに別の出力リソースなどに使用）
+	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[5].Descriptor.ShaderRegister = 4;
 
 	// ルートパラメータ配列を RootSignature 記述に登録
 	descriptionRootSignature.pParameters = rootParameters;
@@ -474,7 +519,7 @@ void GpuParticleManager::CreateModelEdgeEmitterPipelineSet()
 	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 	// ルートパラメータの設定
-	D3D12_ROOT_PARAMETER rootParameters[7] = {};
+	D3D12_ROOT_PARAMETER rootParameters[9] = {};
 
 	// SRV（インスタンシングデータ）
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
@@ -512,6 +557,16 @@ void GpuParticleManager::CreateModelEdgeEmitterPipelineSet()
 	rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[6].Descriptor.ShaderRegister = 2;
 
+	// UAV (u3)
+	rootParameters[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[7].Descriptor.ShaderRegister = 3;
+
+	// UAV (u4)
+	rootParameters[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[8].Descriptor.ShaderRegister = 4;
+
 	// ルートシグネチャにパラメータを登録
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
@@ -539,6 +594,82 @@ void GpuParticleManager::CreateModelEdgeEmitterPipelineSet()
 
 	// unordered_map に追加
 	pipelineSets_["modelEdgeEmitter"] = std::move(pSet);
+}
+
+void GpuParticleManager::CreateSphereShellEmitterPipelineSet()
+{
+	// 新しい Compute 用の PipelineSet を生成
+	std::unique_ptr<PipelineSet> pSet = std::make_unique<PipelineSet>();
+
+	// RootSignature の設定
+	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
+	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+	// ルートパラメータの設定
+	D3D12_ROOT_PARAMETER rootParameters[7] = {};
+
+	// UAV (u0)
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[0].Descriptor.ShaderRegister = 0;
+
+	// UAV (u1)
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[1].Descriptor.ShaderRegister = 1;
+
+	// UAV (u2)
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[2].Descriptor.ShaderRegister = 2;
+
+	// CBV (b0)
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[3].Descriptor.ShaderRegister = 0;
+
+	// CBV (b1)
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[4].Descriptor.ShaderRegister = 1;
+
+	// CBV (u3)
+	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[5].Descriptor.ShaderRegister = 3;
+
+	// CBV (u4)
+	rootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[6].Descriptor.ShaderRegister = 4;
+
+	// ルートシグネチャにパラメータを登録
+	descriptionRootSignature.pParameters = rootParameters;
+	descriptionRootSignature.NumParameters = _countof(rootParameters);
+
+	// RootSignature をシリアライズ
+	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
+
+	// エラー時はログ出力
+	if (FAILED(hr)) {
+		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
+	}
+
+	// RootSignature の生成
+	hr = device_->CreateRootSignature(
+		0,
+		signatureBlob->GetBufferPointer(),
+		signatureBlob->GetBufferSize(),
+		IID_PPV_ARGS(&pSet->rootSignature)
+	);
+
+	// ComputePipelineState の作成
+	CreateComputePipelineState(pSet.get(), "Resources/shaders/EmitParticleSphereShell.SC.hlsl");
+
+	// unordered_map に追加
+	pipelineSets_["sphereShellEmitter"] = std::move(pSet);
 }
 
 void GpuParticleManager::CreateComputePipelineState(PipelineSet* pipelineSet, std::string csFileName)

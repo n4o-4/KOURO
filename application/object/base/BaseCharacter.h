@@ -8,6 +8,15 @@
 
 class BaseCharacter : protected BaseEntity
 {
+private:
+
+	struct HitActionData
+	{
+		const float kHitInterval_ = 0.1f; //!< 被弾アクション間隔
+
+		float hitintervalTimer_ = 0.0f; //!< 被弾アクションタイマー
+	};
+
 public: // 公開メンバ関数
 
 	/**
@@ -43,5 +52,6 @@ protected: // 派生用メンバ変数
 
 	uint32_t hp_ = 0;
 
+	HitActionData actionData_ = {};
 };
 

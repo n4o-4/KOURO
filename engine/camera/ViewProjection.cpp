@@ -1,4 +1,4 @@
-#include "ViewProjection.h"
+﻿#include "ViewProjection.h"
 #include "WinApp.h"
 
 void ViewProjection::Initialize()
@@ -25,7 +25,7 @@ void ViewProjection::Update()
 {
 	worldPosition_ = transform.translate;
 
-	matWorld_ = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+	matWorld_ = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate + traslateOffset);
 
 	matView_ = Inverse(matWorld_);
 

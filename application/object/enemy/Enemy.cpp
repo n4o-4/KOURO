@@ -52,6 +52,16 @@ void Enemy::Update()
 			}, collider);
 		});
 
+	if (actionData_.hitintervalTimer_ > 0.0f)
+	{
+		actionData_.hitintervalTimer_ -= kDeltaTime;
+	}
+	else
+	{
+		actionData_.hitintervalTimer_ = 0.0f;
+		objectLine_->SetColor({ 0.196f, 0.929f, 0.369f,1.0f });
+	}
+
 	///=========================================
 	/// 親クラスA
 
@@ -131,8 +141,12 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 	// 衝突したオブジェクトがPlayerBulletの場合、弾を消す
 	if (PlayerBullet* playerBullet = dynamic_cast<PlayerBullet*>(other))
 	{
-		if(hp_ > playerBullet->GetDamage())
+		if(hp_ > playerBullet->GetDamage() && actionData_.hitintervalTimer_ <= 0.0f)
 		{
+			actionData_.hitintervalTimer_ = actionData_.kHitInterval_;
+
+			objectLine_->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+
 			hp_ -= playerBullet->GetDamage();
 
 
@@ -158,6 +172,8 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 		}
 		else
 		{
+			mEmitter_->Emit(colliderTransform_->matWorld_);
+
 			hp_ = 0;
 		}
 	}

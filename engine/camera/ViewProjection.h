@@ -36,6 +36,8 @@ public:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> &GetViewProjectionResource() { return viewProjectionResource_; }
 
+	void SetOffset(Vector3 offset) { traslateOffset = offset; }
+
 public:
 
 	Transform transform;
@@ -55,4 +57,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> viewProjectionResource_;
 
 	ConstBufferDataViewProjection* viewProjectionData_;
+
+	Vector3 traslateOffset = {};
 };

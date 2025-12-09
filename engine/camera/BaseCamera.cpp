@@ -17,5 +17,7 @@ void BaseCamera::Update()
 {
 	worldMatrix = MakeAffineMatrix(viewProjection_->transform.scale, viewProjection_->transform.rotate, viewProjection_->transform.translate);
 
+	viewProjection_->SetOffset(offset_);
+
 	viewProjection_->Update();
 }

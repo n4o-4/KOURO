@@ -44,6 +44,8 @@ void Player::Initialize(LineModel* model)
 
 void Player::Update()
 {
+	isHit_ = false;
+
 	if(fireTimer_ > 0.0f)
 	{
 		fireTimer_ -= kDeltaTime;
@@ -56,13 +58,13 @@ void Player::Update()
 		}
 	}
 
-	if(hitintervalTimer_ > 0.0f)
+	if(actionData_.hitintervalTimer_ > 0.0f)
 	{
-		hitintervalTimer_ -= kDeltaTime;
+		actionData_.hitintervalTimer_ -= kDeltaTime;
 	}
 	else
 	{
-		hitintervalTimer_ = 0.0f;
+		actionData_.hitintervalTimer_ = 0.0f;
 		objectLine_->SetColor({ 0.071f, 0.429f, 1.0f,1.0f });
 	}
 
@@ -92,6 +94,23 @@ void Player::Update()
 		{
 			// quickMove中に変更
 			quickMoveData_->isQuickMoving = true;
+
+			if (Input::GetInstance()->PushKey(DIK_A))
+			{
+				velocity_.x -= 0.3f;
+			}
+			if (Input::GetInstance()->PushKey(DIK_D))
+			{
+				velocity_.x += 0.3f;
+			}
+			if (Input::GetInstance()->PushKey(DIK_W))
+			{
+				velocity_.y += 0.3f;
+			}
+			if (Input::GetInstance()->PushKey(DIK_S))
+			{
+				velocity_.y -= 0.3f;
+			}
 		}
 
 	}
@@ -209,24 +228,32 @@ bool Player::GetIsAlive()
 
 void Player::Move()
 {
-	velocity_ = { 0.0f,0.0f,0.0f };
+	if (quickMoveData_->actionTimer > quickMoveData_->duration || !quickMoveData_->isQuickMoving)
+	{
+		velocity_ = { 0.0f,0.0f,0.0f };
 
-	if (Input::GetInstance()->PushKey(DIK_A))
-	{
-		velocity_.x -= 0.1f;
+		if (Input::GetInstance()->PushKey(DIK_A))
+		{
+			velocity_.x -= 0.1f;
+		}
+		if (Input::GetInstance()->PushKey(DIK_D))
+		{
+			velocity_.x += 0.1f;
+		}
+		if (Input::GetInstance()->PushKey(DIK_W))
+		{
+			velocity_.y += 0.1f;
+		}
+		if (Input::GetInstance()->PushKey(DIK_S))
+		{
+			velocity_.y -= 0.1f;
+		}
 	}
-	if (Input::GetInstance()->PushKey(DIK_D))
+	else
 	{
-		velocity_.x += 0.1f;
+
 	}
-	if (Input::GetInstance()->PushKey(DIK_W))
-	{
-		velocity_.y += 0.1f;
-	}
-	if (Input::GetInstance()->PushKey(DIK_S))
-	{
-		velocity_.y -= 0.1f;
-	}
+	
 }
 
 void Player::Fire()
@@ -250,12 +277,13 @@ void Player::Fire()
 
 void Player::OnCollisionEnter(BaseCollider* other)
 {
-
 	if (EnemyBullet* enemyBullet = dynamic_cast<EnemyBullet*>(other))
 	{
-		if (hp_ > 0 && hitintervalTimer_ <= 0.0f)
+		isHit_ = true;
+
+		if (hp_ > 0 && actionData_.hitintervalTimer_ <= 0.0f)
 		{
-			hitintervalTimer_ = kHitInterval_;
+			actionData_.hitintervalTimer_ = actionData_.kHitInterval_;
 
 			objectLine_->SetColor({ 1.0f,0.0f,0.0f,1.0f });
 

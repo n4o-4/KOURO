@@ -88,6 +88,7 @@
     <FxCompile Include="Resources\shaders\BaseUpdateParticle.CS.hlsl" />
     <FxCompile Include="Resources\shaders\EmitParticleLine.CS.hlsl" />
     <FxCompile Include="Resources\shaders\NoiseUpdateParticle,CS.hlsl" />
+    <FxCompile Include="Resources\shaders\EmitParticleSphereShell.SC.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
