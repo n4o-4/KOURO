@@ -18,7 +18,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
         }
         gParticles[particleIndex] = (Particle) 0;
         gFreeList[particleIndex] = particleIndex;
-        gBaseUpdateList[particleIndex] = 1; // すべてのパーティクルは更新を有効かする
+        gBaseUpdateList[particleIndex] = 0; // すべてのパーティクルは更新を有効かする
         gNoiseUpdateList[particleIndex] = 0; // いったん無効にしておく
     }
 }

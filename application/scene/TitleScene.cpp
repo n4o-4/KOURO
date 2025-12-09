@@ -33,7 +33,8 @@ void TitleScene::Initialize(EngineContext context)
 
 	player_ = std::make_unique<BaseCharacter>();
 	player_->Initialize(lineModelManager_->FindLineModel("player/player.obj"));
-	
+	player_->SetColor({ 0.071f, 0.429f, 1.0f,1.0f });
+
 	mEmitter = std::make_unique<ModelEdgeEmitter>();
 	mEmitter->Initialize("normal", context);
 	mEmitter->CreateLineSegment("enemy/enemy.obj");
@@ -242,7 +243,7 @@ void TitleScene::Draw()
 
 	lineDrawer_->PreDraw(cameraManager_->GetActiveCamera()->GetViewProjection());
 
-	//player_->Draw();
+	player_->Draw();
 
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	

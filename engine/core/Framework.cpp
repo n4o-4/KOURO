@@ -109,13 +109,10 @@ void Framework::Update()
 
 	SceneManager::GetInstance()->Update();
 
-#ifdef _DEBUG
-
 	UpdateFPS();
 
-	gpuParticleManager_->SetPerFrame(static_cast<float >(totalTime), deltaTime);
+	gpuParticleManager_->SetPerFrame(static_cast<float>(totalTime), deltaTime);
 
-#endif _DEBUG
 }
 
 void Framework::Draw()
@@ -198,6 +195,10 @@ void Framework::UpdateFPS()
 
 	lastTime = now; // lastTime をここで更新
 
+#ifdef _DEBUG
+
 	// ImGui に表示
 	ImGui::Text("FPS: %.2f TotalTime: %.2f deltaTime: %.f", fps, totalTime,deltaTime);
+
+#endif
 }

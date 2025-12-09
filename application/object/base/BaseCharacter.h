@@ -37,6 +37,10 @@ public: // 公開メンバ関数
 	*/
 	WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
+
+	void SetColor(Vector4 color) { objectLine_->SetColor({color.x,color.y,color.z,color.w}); }
+
+
 protected: // 派生用メンバ関数
 
 	// \brief DrawImGui デバッグUIの描画
