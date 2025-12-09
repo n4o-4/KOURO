@@ -59,9 +59,9 @@ void DirectXCommon::Finalize()
 	instance.reset();
 }
 
-EngineContext DirectXCommon::CreateEngineContext() const
+D3D12Context DirectXCommon::CreateD3D12Context() const
 {
-	EngineContext context;
+	D3D12Context context;
 	context.device = device.Get();
 	context.commandList = commandList.Get();
 	return context;
@@ -717,8 +717,6 @@ void DirectXCommon::PostDraw()
 
 Microsoft::WRL::ComPtr<IDxcBlob> DirectXCommon::CompileShader(const std::wstring& filePath, const wchar_t* profile)
 {
-	// これからシェーダーをコンパイル
-
 	// hlslファイルを読み込む
 	Microsoft::WRL::ComPtr<IDxcBlobEncoding> shaderSource = nullptr;
 	HRESULT hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, &shaderSource);
@@ -775,10 +773,6 @@ Microsoft::WRL::ComPtr<IDxcBlob> DirectXCommon::CompileShader(const std::wstring
 
 	// 成功したログを出す
 	//Log(ConvertString(std::format(L"Compile Succeeded, path:{},profile:{}\n", filePath, profile)));
-
-	// もう使わないリソースを解放
-	//shaderSource->Release(); /// エラーの原因の可能性
-	//shaderResult->Release(); /// エラーの原因の可能性
 
 	// 実行用のバイナリを返却
 	return shaderBlob;

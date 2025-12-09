@@ -56,12 +56,12 @@ void MyGame::Draw()
 	DirectXCommon::GetInstance()->RenderTexturePreDraw();
 
 	// SRVマネージャーの描画前処理
-    srvManager->PreDraw();
+    srvManager_->PreDraw();
 
 	// 基盤システムの描画
 	Framework::Draw();
 
-	gpuParticleManager_->Draw();
+	gpuParticleManager_->Draw(SceneManager::GetInstance()->GetViewProjection());
 
 	// レンダーテクスチャへの描画後処理
 	DirectXCommon::GetInstance()->RenderTexturePostDraw();

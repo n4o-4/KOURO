@@ -3,12 +3,13 @@
 #include "SceneManager.h"
 #include "ParticleManager.h"
 
-void BaseScene::Initialize()
+
+void BaseScene::Initialize(EngineContext context)
 {
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
-	lineDrawer_->Initialize(sceneManager_->GetDxCommon(),srvManager_);
+	lineDrawer_->Initialize(sceneManager_->GetDxCommon(), srvManager_);
 
-	cameraManager_ = std::make_unique<CameraManager>();	
+	cameraManager_ = std::make_unique<CameraManager>();
 	cameraManager_->Initialize();
 
 	fade_ = std::make_unique<Fade>();
@@ -27,9 +28,11 @@ void BaseScene::Initialize()
 	ParticleManager::GetInstance()->SetCameraManager(cameraManager_.get());
 
 	skybox_ = std::make_unique<Skybox>();
-	skybox_->Initialize(sceneManager_->GetDxCommon(),"Resources/envMap.dds");
+	skybox_->Initialize(sceneManager_->GetDxCommon(), "Resources/envMap.dds");
 
 	Object3dCommon::GetInstance()->SetEnvironmentMapPath("Resources/envMap.dds");
+
+	engineContext_ = context;
 }
 
 void BaseScene::Finalize()

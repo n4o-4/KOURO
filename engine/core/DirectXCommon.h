@@ -18,14 +18,9 @@
 
 #include "Structs.h"
 #include "OffScreenRendring.h"
+#include "D3D12Context.h"
 
 // \brief DirectXCommon DirectX12の初期化と描画処理をまとめて管理するクラス。  デバイスやスワップチェーンなどの生成・制御を一括で行う。
-
-struct EngineContext
-{
-	ID3D12Device* device = nullptr;
-	ID3D12CommandList* commandList = nullptr;
-};
 
 class DirectXCommon
 {
@@ -138,7 +133,7 @@ public:
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDepthSrvHandle() { return depthHandle_; }
 
-	EngineContext CreateEngineContext() const;
+	D3D12Context CreateD3D12Context() const;
 
 private:  
 	//デバイス初期化

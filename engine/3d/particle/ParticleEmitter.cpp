@@ -77,9 +77,7 @@ void ParticleEmitter::SetFrequency(float frequency)
 
 void ParticleEmitter::Update()
 {
-
 	particleGroups = ParticleManager::GetInstance()->GetParticleGroups();
-
 
 	emitter.frequencyTime += kDeltaTime;
 

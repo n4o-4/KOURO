@@ -4,7 +4,6 @@
 
 void Framework::Initialize()
 {
-
 	// WinAppの生成と初期化
 	winApp = std::make_unique<WinApp>();
 	winApp->Initialize();
@@ -13,21 +12,21 @@ void Framework::Initialize()
 	DirectXCommon::GetInstance()->Initialize(winApp.get());
 	dxCommon_ = DirectXCommon::GetInstance();
 
-	engineContext = dxCommon_->CreateEngineContext();
-
 	// Inputの生成と初期化
 	Input::GetInstance()->Initialize(winApp.get());
 
 	// SrvManagerの生成と初期化
-	srvManager = std::make_unique<SrvManager>();
-	srvManager->Initialize(dxCommon_);
+	srvManager_ = std::make_unique<SrvManager>();
+	srvManager_->Initialize(dxCommon_);
 
 	// UavManagerの生成と初期化
 	uavManager_ = std::make_unique<UavManager>();
 	uavManager_->Initialize(dxCommon_);
 
+	gpuResourceUtils_ = std::make_unique<GpuResourceUtils>(dxCommon_->GetDevice().Get());
+
 	// TextureManagerの初期化
-	TextureManager::GetInstance()->Initialize(dxCommon_, srvManager.get());
+	TextureManager::GetInstance()->Initialize(dxCommon_, srvManager_.get());
 
 	// SpriteCommon初期化
 	SpriteCommon::GetInstance()->Initialize(dxCommon_);
@@ -46,25 +45,23 @@ void Framework::Initialize()
 	Camera::GetInstance()->Initialize();
 
 	// ParticleManagerの生成と初期化
-	ParticleManager::GetInstance()->Initialize(dxCommon_, srvManager.get());
+	ParticleManager::GetInstance()->Initialize(dxCommon_, srvManager_.get());
 	
+	gpuParticleManager_ = std::make_unique<GpuParticleManager>(CreateGpuContext());
+	gpuParticleManager_->Initialize();
 
-	SceneManager::GetInstance()->Initialize(dxCommon_,srvManager.get(),Camera::GetInstance());
+	SceneManager::GetInstance()->Initialize(dxCommon_,srvManager_.get(),Camera::GetInstance(),CreateEngineContext());
 
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
-	lineDrawer_->Initialize(dxCommon_,srvManager.get());
+	lineDrawer_->Initialize(dxCommon_,srvManager_.get());
 
 	postEffect_ = std::make_unique<PostEffect>();
-	postEffect_->Initialize(dxCommon_,srvManager.get());
+	postEffect_->Initialize(dxCommon_,srvManager_.get());
 
 	SceneManager::GetInstance()->SetPostEffect(postEffect_.get());
 
-
 	gpuParticle_ = GpuParticle::GetInstance();
 	//gpuParticle_->Initialize(dxCommon_, srvManager.get(), uavManager_.get());
-
-	gpuParticleManager_ = std::make_unique<GpuParticleManager>(engineContext, srvManager.get());
-	gpuParticleManager_->Initialize();
 
 	now = std::chrono::steady_clock::now();
 
@@ -128,7 +125,7 @@ void Framework::Draw()
 
 	SceneManager::GetInstance()->Draw();
 
-	gpuParticleManager_->
+	//gpuParticleManager_->
 }
 
 void Framework::DrawEffect()
@@ -160,6 +157,28 @@ void Framework::Run()
 
 	// ゲームの終了
 	Finalize();
+}
+
+GpuContext Framework::CreateGpuContext()
+{
+	GpuContext gpuContext;
+
+	gpuContext.d3d12Context = DirectXCommon::GetInstance()->CreateD3D12Context();
+	gpuContext.srvManager = srvManager_.get();
+	gpuContext.uavManager = uavManager_.get();
+	gpuContext.gpuResourceUtils = gpuResourceUtils_.get();
+
+	return gpuContext;
+}
+
+EngineContext Framework::CreateEngineContext()
+{
+	EngineContext engineContext;
+	
+	engineContext.gpuContext = CreateGpuContext();
+	engineContext.gpuParticleManager = gpuParticleManager_.get();
+
+	return engineContext;
 }
 
 void Framework::UpdateFPS()

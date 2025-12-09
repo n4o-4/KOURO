@@ -1,8 +1,8 @@
 #include "GameClear.h"
 
-void GameClear::Initialize()
+void GameClear::Initialize(EngineContext context)
 {
-	BaseScene::Initialize();
+	BaseScene::Initialize(context);
 
 	TextureManager::GetInstance()->LoadTexture("Resources/GameClear.png");
 	TextureManager::GetInstance()->LoadTexture("Resources/score.png");

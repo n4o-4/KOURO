@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "SrvManager.h"
+#include "EngineContext.h"
 #include "Camera.h"
 
 #include "CameraManager.h"
@@ -15,6 +15,8 @@
 #include "PostEffect.h"
 
 #include "Skybox.h"
+
+
 
 class SceneManager;
 
@@ -48,7 +50,7 @@ public:
 	virtual ~BaseScene() = default;
 
 	// \brief Initialize 初期化
-	virtual void Initialize();
+	virtual void Initialize(EngineContext context);
 
 	// \brief Finalize 終了
 	virtual void Finalize();
@@ -76,6 +78,8 @@ public:
 	* \return SrvManager
 	*/
 	virtual SrvManager* GetSrvManager() { return srvManager_; }
+
+	const ViewProjection GetViewProjection() const { return cameraManager_->GetActiveCamera()->GetViewProjection(); }
 
 protected:
 
@@ -109,7 +113,7 @@ protected:
 
 	std::unique_ptr<Skybox> skybox_ = nullptr;
 
+	EngineContext engineContext_;
+
 private:
-
-
 };

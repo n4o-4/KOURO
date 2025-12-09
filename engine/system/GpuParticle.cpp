@@ -114,8 +114,6 @@ void GpuParticle::Update(ViewProjection viewProjection)
 		emitter_->emit = 0;
 	}
 
-	perFrame_;
-
 	// �q�[�v�̐ݒ�
 	srvManager_->PreDraw();
 
@@ -227,7 +225,7 @@ void GpuParticle::CreateLineSegment(std::string filePath)
 	CreateLineSegmentResource();
 }
 
-void GpuParticle::LineEmit(Matrix4x4 world)
+void GpuParticle::LineEmit(std::string groupName, Matrix4x4 world)
 {
 	transform_->matWorld = world;
 

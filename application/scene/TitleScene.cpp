@@ -5,9 +5,9 @@
 
 #include "GpuParticle.h"
 
-void TitleScene::Initialize()
+void TitleScene::Initialize(EngineContext context)
 {
-	BaseScene::Initialize();
+	BaseScene::Initialize(context);
 
 	TextureManager::GetInstance()->LoadTexture("Resources/StartButton.png");
 	TextureManager::GetInstance()->LoadTexture("Resources/num.png");
@@ -34,6 +34,9 @@ void TitleScene::Initialize()
 	player_ = std::make_unique<BaseCharacter>();
 	player_->Initialize(lineModelManager_->FindLineModel("player/player.obj"));
 	
+	mEmitter = std::make_unique<ModelEdgeEmitter>();
+	mEmitter->Initialize("normal", context);
+	mEmitter->CreateLineSegment("enemy/enemy.obj");
 
 	titleCamera_ = std::make_unique<TitleCamera>();
 	titleCamera_->SetTarget(player_->GetWorldTransform());
@@ -216,7 +219,7 @@ void TitleScene::Update()
 
 	if (ImGui::Button("emit"))
 	{
-		GpuParticle::GetInstance()->LineEmit(MakeIdentity4x4());
+		mEmitter->Emit(MakeIdentity4x4());
 	}
 
 	ImGui::End();

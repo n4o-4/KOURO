@@ -30,6 +30,8 @@
 #include "GpuParticle.h"
 #include "GpuParticleManager.h"
 
+#include "EngineContext.h"
+
 #include <chrono>
 #include <string>
 #include <wrl.h>
@@ -46,11 +48,13 @@ protected:
 
 	DirectXCommon* dxCommon_ = nullptr;
 
-	std::unique_ptr<SrvManager> srvManager = nullptr;
+	std::unique_ptr<SrvManager> srvManager_ = nullptr;
 
 	std::unique_ptr<ModelCommon> modelCommon = nullptr;
 
 	std::unique_ptr<UavManager> uavManager_ = nullptr;
+
+	std::unique_ptr<GpuResourceUtils> gpuResourceUtils_ = nullptr;
 
 #ifdef _DEBUG
 
@@ -82,8 +86,6 @@ protected:
 
 	const float kDeltaTime_ = 1.0f / 60.0f;
 
-	EngineContext engineContext;
-
 public:
 
 	virtual~Framework() = default;
@@ -109,6 +111,10 @@ public:
 	void Run();
 
 	const float GetDeltaTime() const { return kDeltaTime_; }
+
+	GpuContext CreateGpuContext();
+
+	EngineContext CreateEngineContext();
 
 private:
 

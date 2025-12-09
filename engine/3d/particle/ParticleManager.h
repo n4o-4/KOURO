@@ -11,6 +11,8 @@
 
 #include "ModelManager.h"
 
+#include "EngineContext.h"
+
 // \brief ParticleManager
 // CPU側でパーティクルを管理し、GPUにインスタンシングして描画するシステムクラス。
 // パーティクルグループの生成、発生、更新、描画、リセットを提供。

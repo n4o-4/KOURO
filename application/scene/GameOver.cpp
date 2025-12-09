@@ -1,8 +1,8 @@
 #include "GameOver.h"
 
-void GameOver::Initialize()
+void GameOver::Initialize(EngineContext context)
 {
-	BaseScene::Initialize();
+	BaseScene::Initialize(context);
 
 	TextureManager::GetInstance()->LoadTexture("Resources/GameOver.png");
 

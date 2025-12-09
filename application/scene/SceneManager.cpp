@@ -13,13 +13,15 @@ SceneManager* SceneManager::GetInstance()
 	return instance.get();
 }
 
-void SceneManager::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager, Camera* camera)
+void SceneManager::Initialize(DirectXCommon* dxCommon,SrvManager* srvManager, Camera* camera,EngineContext context)
 {
 	dxCommon_ = dxCommon;
 
 	srvManager_ = srvManager;
 
 	camera_ = camera;
+
+	engineContext_ = context;
 }
 
 void SceneManager::Finalize()
@@ -81,7 +83,7 @@ void SceneManager::Update()
 		scene_->SetSceneManager(this);
 		scene_->SetSrvManager(srvManager_);
 
-		scene_->Initialize();
+		scene_->Initialize(engineContext_);
 	}
 
 	// 実行中のシーンの更新

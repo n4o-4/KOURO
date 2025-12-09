@@ -66,6 +66,7 @@ private:
 	std::unique_ptr<ParticleEmitter> hitEffect1_Circle_ = nullptr;
 	std::unique_ptr<ParticleEmitter> hitEffect1_CenterCircle_ = nullptr;
 
+	std::unique_ptr<ModelEdgeEmitter> mEmitter = nullptr;
 
 	std::unique_ptr<ParticleEmitter> hitEffect2_Circle1_ = nullptr;
 	std::unique_ptr<ParticleEmitter> hitEffect2_Circle2_ = nullptr;
@@ -112,7 +113,7 @@ private:
 public: // メンバ関数
 
 	// \brief Initialzie 初期化
-	void Initialize() override;
+	void Initialize(EngineContext context) override;
 
 	// \brief Finialize 終了
 	void Finalize() override;

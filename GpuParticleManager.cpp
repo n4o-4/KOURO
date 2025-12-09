@@ -2,13 +2,15 @@
 #include "TextureManager.h"
 #include "ModelLoader.h"
 
-GpuParticleManager::GpuParticleManager(EngineContext context, SrvManager* srvManager)
+GpuParticleManager::GpuParticleManager(GpuContext context)
 {
-	device_ = context.device;
+	device_ = context.d3d12Context.device;
 
-	commandList_ = context.commandList;
+	commandList_ = context.d3d12Context.commandList;
 
-	srvManager_ = srvManager;
+	srvManager_ = context.srvManager;
+
+	uavManager_ = context.uavManager;
 }
 
 void GpuParticleManager::Initialize()
@@ -26,11 +28,12 @@ void GpuParticleManager::Initialize()
 
 void GpuParticleManager::Update()
 {
+	srvManager_->PreDraw();
+	uavManager_->PreDraw();
+
 	for (auto it = particleGroups_.begin(); it != particleGroups_.end(); ++it) {
 		auto& group = it->second;
 		
-
-
 		// noiseUpdate
 		dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("noiseUpdate")->second->rootSignature.Get());
 		dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("noiseUpdate")->second->pipelineState.Get());
@@ -53,8 +56,18 @@ void GpuParticleManager::Update()
 	}
 }
 
-void GpuParticleManager::Draw(ViewProjection* viewPro)
+void GpuParticleManager::Draw(ViewProjection viewPro)
 {
+	Matrix4x4 view = viewPro.matView_;
+
+	Matrix4x4 projection = viewPro.matProjection_;
+
+	perView_->viewProjection = Multiply(view, projection);
+
+	Matrix4x4 backToFrontMatrix = MakeRotateZMatrix(std::numbers::pi_v<float>);
+
+	perView_->billboardMatrix = Multiply(backToFrontMatrix, viewPro.matWorld_);
+
 	for (auto it = particleGroups_.begin(); it != particleGroups_.end(); ++it)
 	{
 		auto& group = it->second;
@@ -106,7 +119,7 @@ void GpuParticleManager::ParticleInitialize(ParticleGroup group)
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(4, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
 
 	// ComputeShaderの実行
-	dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
+	dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount / kCSMaxParticleCount, 1, 1);
 }
 
 void GpuParticleManager::CreateParticleGroup(const std::string name, const std::string textureFilePath, std::vector<VertexData> vertices)
@@ -165,6 +178,40 @@ void GpuParticleManager::CreateParticleGroup(const std::string name, const std::
 	}
 }
 
+void GpuParticleManager::LineEmit(std::string groupName, uint32_t lineSrvIndex, uint32_t lineCount, Microsoft::WRL::ComPtr<ID3D12Resource> emitterResource, Matrix4x4 world)
+{
+	transform_->matWorld = world;
+
+	// 1. Compute RootSignature ��Z�b�g
+	dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("modelEdgeEmitter")->second.get()->rootSignature.Get());
+
+	// 2. Pipeline State ��Z�b�g
+	dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("modelEdgeEmitter")->second.get()->pipelineState.Get());
+
+	if (particleGroups_.find(groupName) == particleGroups_.end()) return;
+
+	ParticleGroup group = particleGroups_.find(groupName)->second;
+
+	// 3. Compute Root �� Descriptor / CBV / UAV 
+	dxCommon_->GetCommandList()->SetComputeRootDescriptorTable(0, srvManager_->GetGPUDescriptorHandle(lineSrvIndex));
+	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(1, transformResource_.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.particleResource.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.counterResource.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(4, group.freeListResource.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(5, emitterResource.Get()->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(6, perFrameResource_.Get()->GetGPUVirtualAddress());
+
+
+	// Dispatch�̎��s
+	dxCommon_->GetCommandList()->Dispatch(static_cast<UINT>(lineCount), 1, 1);
+
+	D3D12_RESOURCE_BARRIER barrier1{};
+	barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+	barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier1.UAV.pResource = group.particleResource.Get();
+	dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier1);
+}
+
 void GpuParticleManager::CreateResources()
 {
 	perViewResource_ = dxCommon_->CreateBufferResource(sizeof(PerView));
@@ -195,6 +242,8 @@ void GpuParticleManager::CreatePipelineSets()
 	CreateBaseUpdatePipelineSet();
 
 	CreateNoiseUpdatePipelineSet();
+
+	CreateGraphicsPipelineSet();
 }
 
 void GpuParticleManager::CreateInitializePipelineSet()
@@ -406,6 +455,90 @@ void GpuParticleManager::CreateNoiseUpdatePipelineSet()
 
 	// unordered_map に追加
 	pipelineSets_["noiseUpdate"] = std::move(pSet);
+}
+
+void GpuParticleManager::CreateModelEdgeEmitterPipelineSet()
+{
+	// 新しい Compute 用の PipelineSet を生成
+	std::unique_ptr<PipelineSet> pSet = std::make_unique<PipelineSet>();
+
+	// RootSignature の設定
+	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
+	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+	// SRV（インスタンシング用）のディスクリプタレンジ設定
+	D3D12_DESCRIPTOR_RANGE descriptorRangeForInstancing[1] = {};
+	descriptorRangeForInstancing[0].BaseShaderRegister = 0;                         // t0
+	descriptorRangeForInstancing[0].NumDescriptors = 1;                             // 1つだけ
+	descriptorRangeForInstancing[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;    // SRVタイプ
+	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	// ルートパラメータの設定
+	D3D12_ROOT_PARAMETER rootParameters[7] = {};
+
+	// SRV（インスタンシングデータ）
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRangeForInstancing;
+	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForInstancing);
+
+	// CBV (b0)
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[1].Descriptor.ShaderRegister = 0;
+
+	// UAV (u0)
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[2].Descriptor.ShaderRegister = 0;
+
+	// UAV (u1)
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[3].Descriptor.ShaderRegister = 1;
+
+	// UAV (u2)
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[4].Descriptor.ShaderRegister = 2;
+
+	// CBV (b1)
+	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[5].Descriptor.ShaderRegister = 1;
+
+	// CBV (b2)
+	rootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	rootParameters[6].Descriptor.ShaderRegister = 2;
+
+	// ルートシグネチャにパラメータを登録
+	descriptionRootSignature.pParameters = rootParameters;
+	descriptionRootSignature.NumParameters = _countof(rootParameters);
+
+	// RootSignature をシリアライズ
+	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
+
+	// エラー時はログ出力
+	if (FAILED(hr)) {
+		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
+	}
+
+	// RootSignature の生成
+	hr = device_->CreateRootSignature(
+		0,
+		signatureBlob->GetBufferPointer(),
+		signatureBlob->GetBufferSize(),
+		IID_PPV_ARGS(&pSet->rootSignature)
+	);
+
+	// ComputePipelineState の作成
+	CreateComputePipelineState(pSet.get(), "Resources/shaders/EmitParticleLine.CS.hlsl");
+
+	// unordered_map に追加
+	pipelineSets_["modelEdgeEmitter"] = std::move(pSet);
 }
 
 void GpuParticleManager::CreateComputePipelineState(PipelineSet* pipelineSet, std::string csFileName)

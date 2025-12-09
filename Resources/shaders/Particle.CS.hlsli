@@ -26,6 +26,15 @@ struct EmitterSphere
     uint emit;           // 射出許可
 };
 
+struct Emitter
+{
+    float3 translate; // 位置
+    uint count; // 射出数
+    float frequency; // 射出間隔
+    float frequencyTime; // 射出間隔調整用時間
+    uint emit; // 射出許可
+};
+
 struct PerView
 {
     float4x4 viewProjection;

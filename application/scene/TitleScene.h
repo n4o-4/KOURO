@@ -17,7 +17,7 @@
 #include "LineModelManager.h"
 #include "Player.h"
 #include "NumUi.h"
-
+#include "ModelEdgeEmitter.h"
 // \brief TitleScene タイトルシーンクラス
 
 class TitleScene : public BaseScene
@@ -28,7 +28,7 @@ private:
 public: // メンバ関数
 
 	// \brief Initialzie 初期化
-	void Initialize() override;
+	void Initialize(EngineContext context) override;
 
 	// \brief Finialize 終了
 	void Finalize() override;
@@ -72,4 +72,6 @@ private:
 	std::unique_ptr<LineModelManager> lineModelManager_ = nullptr;
 
 	std::unique_ptr<NumUi> scoreUi_ = nullptr;
+
+	std::unique_ptr<ModelEdgeEmitter> mEmitter = nullptr;
 };

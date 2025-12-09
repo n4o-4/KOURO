@@ -343,6 +343,9 @@
     <ClCompile Include="GpuParticleManager.cpp" />
     <ClCompile Include="BaseParticleEmitter.cpp" />
     <ClCompile Include="ModelEdgeEmitter.cpp" />
+    <ClCompile Include="ShaderCompiler.cpp" />
+    <ClCompile Include="GpuResourceUtils.cpp" />
+    <ClCompile Include="GpuResourceInternal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -618,6 +621,12 @@
     <ClInclude Include="engine\system\ModelLoader.h" />
     <ClInclude Include="GpuParticleManager.h" />
     <ClInclude Include="ModelEdgeEmitter.h" />
+    <ClInclude Include="engine\core\D3D12Context.h" />
+    <ClInclude Include="ShaderCompiler.h" />
+    <ClInclude Include="EngineContext.h" />
+    <ClInclude Include="GpuContext.h" />
+    <ClInclude Include="GpuResourceUtils.h" />
+    <ClInclude Include="GpuResourceInternal.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

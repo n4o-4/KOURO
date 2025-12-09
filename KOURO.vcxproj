@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GpuResourceInternal.cpp" />
     <ClCompile Include="BaseParticleEmitter.cpp" />
     <ClCompile Include="engine\effect\Absorb.cpp" />
     <ClCompile Include="engine\line\AABBLineObject.cpp" />
@@ -72,6 +73,7 @@
     <ClCompile Include="engine\system\LineObjectFactory.cpp" />
     <ClCompile Include="engine\system\LineObjectManager.cpp" />
     <ClCompile Include="GpuParticleManager.cpp" />
+    <ClCompile Include="GpuResourceUtils.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\model\Model.cpp" />
     <ClCompile Include="engine\3d\model\ModelCommon.cpp" />
@@ -106,9 +108,17 @@
     <ClCompile Include="application\base\Rail.cpp" />
     <ClCompile Include="engine\system\UavManager.cpp" />
     <ClCompile Include="ModelEdgeEmitter.cpp" />
+    <ClCompile Include="ShaderCompiler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GpuResourceInternal.h" />
+    <ClInclude Include="EngineContext.h" />
+    <ClInclude Include="engine\core\D3D12Context.h" />
     <ClInclude Include="engine\effect\Absorb.h" />
+    <ClInclude Include="GpuContext.h" />
     <ClInclude Include="engine\math\Easing.h" />
     <ClInclude Include="engine\line\AABBLineObject.h" />
     <ClInclude Include="application\collider\AABBCollider.h" />
@@ -208,7 +218,12 @@
     <ClInclude Include="application\base\Rail.h" />
     <ClInclude Include="engine\system\UavManager.h" />
     <ClInclude Include="GpuParticleManager.h" />
+    <ClInclude Include="GpuResourceUtils.h" />
     <ClInclude Include="ModelEdgeEmitter.h" />
+    <ClInclude Include="ShaderCompiler.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

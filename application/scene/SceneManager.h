@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "SrvManager.h"
 #include "PostEffect.h"
+#include "EngineContext.h"
 
 // \brief SceneManager
 // ゲーム内のシーン管理を行うシングルトンクラス。
@@ -23,7 +24,7 @@ public:
 	* \param  SrvManager Srvマネージャーのポインタ
 	* \param  Camera カメラのポインタ
 	*/
-	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,Camera* camera);
+	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,Camera* camera,EngineContext context);
 
 	// \brief Finalize 終了
 	void Finalize();
@@ -76,6 +77,8 @@ public:
 	*/
 	PostEffect* GetPostEffect() { return postEffect_; }
 
+	const ViewProjection GetViewProjection() const { return scene_->GetViewProjection(); }
+
 private:
 
 	static std::unique_ptr<SceneManager> instance;
@@ -104,4 +107,6 @@ private:
 	Camera* camera_ = nullptr;
 
 	PostEffect* postEffect_ = nullptr;
+
+	EngineContext engineContext_;
 };

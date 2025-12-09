@@ -25,8 +25,6 @@ void Enemy::Initialize(LineModel* model)
 	fireTimer_ = 0.0f; // 弾の発射タイマー初期化
 
 	hp_ = 5;
-
-	emitter_.Initialize("HitEffect");
 }
 
 void Enemy::Update()
@@ -167,7 +165,7 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 	if (hp_ == 0)
 	{
 		BaseEntity::isAlive_ = false;
-		GpuParticle::GetInstance()->LineEmit(colliderTransform_->matWorld_);
+		//GpuParticle::GetInstance()->LineEmit(colliderTransform_->matWorld_);
 	}
 }
 

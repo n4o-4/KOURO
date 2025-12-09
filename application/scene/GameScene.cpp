@@ -26,10 +26,10 @@ static void ShowMatrix4x4(const Matrix4x4 &matrix, const char *label) {
 
 ///=============================================================================
 ///						初期化
-void GameScene::Initialize() {
+void GameScene::Initialize(EngineContext context) {
 	//========================================
 	// 基底シーン
-	BaseScene::Initialize();
+	BaseScene::Initialize(context);
 
 	//========================================
 	// テクスチャの読み込み
@@ -130,6 +130,9 @@ void GameScene::Initialize() {
 	emitter1_->SetLifeTimeRange({ 10.0f,10.0f });
 	emitter1_->SetFrequency(0.07f);
 	
+	mEmitter = std::make_unique<ModelEdgeEmitter>();
+	mEmitter->Initialize("normal", context);
+	mEmitter->CreateLineSegment("enemy/enemy.obj");
 
 	ParticleManager::GetInstance()->CreateParticleGroup("HitEffect", "Resources/gradationLine.png", ParticleManager::ParticleType::Ring);
 
@@ -564,7 +567,7 @@ void GameScene::Update()
 
 		Matrix4x4 world = MakeAffineMatrix(scale, rotate, translate);
 
-		GpuParticle::GetInstance()->LineEmit(world);
+		//GpuParticle::GetInstance()->LineEmit(world);
 	}
 	
 #endif

@@ -1,14 +1,14 @@
 ﻿#pragma once
 
 #include "DirectXCommon.h"
-#include "SrvManager.h"
-#include "UavManager.h"
 #include "Vectors.h"
 
 #include "ModelDatas.h"
 #include "ViewProjection.h"
 
 #include "LineModelManager.h"
+
+#include "GpuContext.h"
 
 class GpuParticleManager
 {
@@ -29,7 +29,6 @@ private:
 		Vector3 velocity;  float pad3;
 		float currentTime; float pad4[3];
 		Vector4 color;
-		uint32_t textureIndex;
 	};
 
 	struct EmitterSphere
@@ -80,6 +79,8 @@ private:
 		Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState = nullptr;
 	};
 
+public:
+
 	struct ParticleGroup
 	{
 		Microsoft::WRL::ComPtr<ID3D12Resource> particleResource = nullptr;
@@ -108,7 +109,7 @@ public:
 	* \param  context    : 
 	* \param  srvManager : SrvManagerのポインタ
 	*/
-	GpuParticleManager(EngineContext context,SrvManager* srvManager);
+	GpuParticleManager(GpuContext context);
 
 	/// \brief 初期化
 	void Initialize();
@@ -120,13 +121,36 @@ public:
 	* \brief  描画
 	* \param  viewPro : ViewProjectionのポインタ
 	*/
-	void Draw(ViewProjection* viewPro);
+	void Draw(ViewProjection viewPro);
 
-	void SetPerFrame(float time, float deltaTime) { perFrame_->time = time, perFrame_->deltaTime = deltaTime; };
-
+	/**
+	* \brief  指定したグループのパーティクルを初期化
+	* \param  group : 指定するパーティクルのグループ
+	*/
 	void ParticleInitialize(ParticleGroup group);
 
+	/**
+	* \brief  パーティクルグループの作成とparticleGrous_への追加
+	* \param  name            : particleGrous_に追加する際のキー
+	* \param  textureFilePath : 使用するテクスチャのパス
+	* \param  vertices        : 使用するパーティクル形状の頂点
+	*/
 	void CreateParticleGroup(const std::string name,const std::string textureFilePath, std::vector<VertexData> vertices);
+
+	void LineEmit(std::string groupName, uint32_t lineSrvIndex, uint32_t lineCount, Microsoft::WRL::ComPtr<ID3D12Resource> emitterResource, Matrix4x4 world);
+
+	/**
+	* \brief  perFrameの値を設定する
+	* \param  time      : 合計時間
+	* \param  deltaTime : 前フレームからの経過時間
+	*/
+	void SetPerFrame(float time, float deltaTime) { perFrame_->time = time, perFrame_->deltaTime = deltaTime; };
+
+
+
+	std::unordered_map<std::string, ParticleGroup> GetParticleGroups() const { return particleGroups_; }
+
+	const Microsoft::WRL::ComPtr<ID3D12Resource> GetPerFrameResource() const { return perFrameResource_; }
 
 private:
 
@@ -143,6 +167,8 @@ private:
 
 	/// \brief ノイズが入った動きのCSPipelineSet生成関数
 	void CreateNoiseUpdatePipelineSet();
+
+	void CreateModelEdgeEmitterPipelineSet();
 
 	/**
 	* \brief  ComputeShader　用の pipelineState 汎用作成関数

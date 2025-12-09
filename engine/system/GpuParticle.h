@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "D3D12Context.h"
 #include "DirectXCommon.h"
 #include "SrvManager.h"
 #include "UavManager.h"
@@ -23,12 +24,6 @@ struct PerView
 {
 	Matrix4x4 viewProjection;
 	Matrix4x4 billboardMatrix;
-};
-
-struct PipelineSet
-{
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState = nullptr;
 };
 
 namespace Particle
@@ -107,7 +102,7 @@ public:
 
 	void CreateLineSegment(std::string filePath);
 
-	void LineEmit(Matrix4x4 world);
+	void LineEmit(std::string groupName, Matrix4x4 world);
 
 private: // ����J�����o�֐�
 

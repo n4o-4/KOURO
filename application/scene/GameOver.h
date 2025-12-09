@@ -23,7 +23,7 @@ class GameOver : public BaseScene {
 public: 
 
 	// \brief Initialzie 初期化
-	void Initialize() override;
+	void Initialize(EngineContext context) override;
 
 	// \brief Finialize 終了
 	void Finalize() override;
