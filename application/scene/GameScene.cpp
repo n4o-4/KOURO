@@ -78,7 +78,7 @@ void GameScene::Initialize(EngineContext context) {
 	lineModelManager_->LoadLineModel("player/player.obj");
 	lineModelManager_->LoadLineModel("enemy/enemy.obj");
 	lineModelManager_->LoadLineModel("playerbullet/playerbullet.obj");
-	lineModelManager_->LoadLineModel("stage/stage.obj");
+	lineModelManager_->LoadLineModel("stage.gltf");
 
 	ModelManager::GetInstance()->LoadModel("terrain.obj");
 
@@ -298,7 +298,7 @@ void GameScene::Initialize(EngineContext context) {
 	sceneManager_->GetPostEffect()->ApplyEffect("blur", PostEffect::EffectType::RadialBlur);
 
 	stage_ = std::make_unique<ObjectLine>();
-	stage_->Initialize(lineModelManager_->FindLineModel("stage/stage.obj"));
+	stage_->Initialize(lineModelManager_->FindLineModel("stage.gltf"));
 
 }
 
