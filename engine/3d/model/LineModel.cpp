@@ -44,25 +44,30 @@ void LineModel::LoadLineModelFile(const std::string& directoryPath, const std::s
 	assert(scene->HasMeshes());
 
 	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
+
 		aiMesh* mesh = scene->mMeshes[meshIndex];
 		assert(mesh->HasNormals());
+		std::string name = mesh->mName.C_Str();
 
-		// 頂点の追加
-		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex) {
-			aiVector3D& position = mesh->mVertices[vertexIndex];
-			aiVector3D& normal = mesh->mNormals[vertexIndex];
+		if (name.find("Pattern") == std::string::npos)
+		{
+			// 頂点の追加
+			for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex) {
+				aiVector3D& position = mesh->mVertices[vertexIndex];
+				aiVector3D& normal = mesh->mNormals[vertexIndex];
 
-			LineVertex vertex;
-			vertex.position = { position.x, position.y, position.z, 1.0f };
-			modelData.vertices.push_back(vertex);
-		}
+				LineVertex vertex;
+				vertex.position = { position.x, position.y, position.z, 1.0f };
+				modelData.vertices.push_back(vertex);
+			}
 
-		// インデックス（三角形）を追加
-		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
-			aiFace& face = mesh->mFaces[faceIndex];
-			assert(face.mNumIndices == 3);
-			for (uint32_t element = 0; element < face.mNumIndices; ++element) {
-				modelData.indices.push_back(face.mIndices[element]);
+			// インデックス（三角形）を追加
+			for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
+				aiFace& face = mesh->mFaces[faceIndex];
+				assert(face.mNumIndices == 3);
+				for (uint32_t element = 0; element < face.mNumIndices; ++element) {
+					modelData.indices.push_back(face.mIndices[element]);
+				}
 			}
 		}
 	}
