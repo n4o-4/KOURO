@@ -17,9 +17,9 @@ void main(uint3 DTid : SV_DispatchThreadID)
         
         if (gParticles[particleIndex].color.a != 0)
         {   
-            float3 noisePos = gParticles[particleIndex].translate * 0.9f + gPerFrame.time * 0.3f;
+            float3 noisePos = gParticles[particleIndex].translate * 0.4f + gPerFrame.time * 0.1f;
             float3 curl = CurlNoise3D(noisePos);
-            gParticles[particleIndex].velocity += curl * 0.5f;
+            gParticles[particleIndex].velocity += curl * 0.3f;
         }
     }
 }

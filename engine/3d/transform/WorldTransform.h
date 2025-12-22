@@ -23,15 +23,25 @@ struct ConstBufferDataWorldTransform
 class WorldTransform
 {
 public:
-
+	/// \brief 初期化
 	void Initialize();
 
+	/// \brief 更新
 	void UpdateMatrix();
 
+	/// \brief 行列転送
 	void TransferMatrix();
 
+	/**
+	* \brief  GetTransformResource ワールド変換のリソース取得
+	* \return transformResource_ ワールド変換のリソース
+	*/
 	const Microsoft::WRL::ComPtr<ID3D12Resource>& GetTransformResource() { return transformResource_; }
 
+	/**
+	* \brief  SetParent 親ワールド変換の設定
+	* \param  parent 親ワールド変換のポインタ
+	*/
 	void SetParent(const WorldTransform* parent) { parent_ = parent; }
 
 public:

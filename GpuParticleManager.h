@@ -148,6 +148,14 @@ public:
 	*/
 	void CreateParticleGroup(const std::string name,const std::string textureFilePath, std::vector<VertexData> vertices);
 
+	/**
+	* \brief  ライン上にパーティクルを放出する
+	* \param  groupName     : パーティクルグループの名前
+	* \param  lineSrvIndex  : ラインモデルのSRVインデックス
+	* \param  lineCount     : ラインモデルのライン数
+	* \param  emitterResource : エミッター情報のリソース
+	* \param  world         : ラインモデルのワールド行列
+	*/
 	void LineEmit(std::string groupName, uint32_t lineSrvIndex, uint32_t lineCount, Microsoft::WRL::ComPtr<ID3D12Resource> emitterResource, Matrix4x4 world);
 
 	/**
@@ -157,17 +165,24 @@ public:
 	*/
 	void SetPerFrame(float time, float deltaTime) { perFrame_->time = time, perFrame_->deltaTime = deltaTime; };
 
-
-
+	/**
+	* \brief  particleGroups_を取得する
+	* \return particleGroups_の参照
+	*/
 	std::unordered_map<std::string, ParticleGroup>& GetParticleGroups() { return particleGroups_; }
 
+	/**
+	* \brief  perFrameResource_を取得する
+	* \return perFrameResource_
+	*/
 	const Microsoft::WRL::ComPtr<ID3D12Resource> GetPerFrameResource() const { return perFrameResource_; }
 
 private:
 
-
+	/// \brief リソース作成関数
 	void CreateResources();
 
+	/// \brief パイプラインセット作成関数
 	void CreatePipelineSets();
 
 	/// \brief パーティクルの初期化用のCSPipelineSet作成関数
@@ -179,8 +194,10 @@ private:
 	/// \brief ノイズが入った動きのCSPipelineSet生成関数
 	void CreateNoiseUpdatePipelineSet();
 
+	/// \brief モデルエッジエミッター用のCSPipelineSet作成関数
 	void CreateModelEdgeEmitterPipelineSet();
 
+	/// \brief 球体シェルエミッター用のCSPipelineSet作成関数
 	void CreateSphereShellEmitterPipelineSet();
 
 	/**
@@ -190,6 +207,7 @@ private:
 	*/
 	void CreateComputePipelineState(PipelineSet* pipelineSet, std::string csFileName);
 
+	/// \brief グラフィックスパイプラインセット作成関数
 	void CreateGraphicsPipelineSet();
 
 private: //!< メンバ変数

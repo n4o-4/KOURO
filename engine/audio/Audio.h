@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <fstream>
 #include <wrl.h>
 #include <xaudio2.h>
@@ -22,16 +22,29 @@ private:
 
 public:
 
+	/// \brief  Initialize 初期化
 	void Initialize();
 
+	/// \brief  Finalize 終了処理
 	void Finalize();
 	
-	// 音声再生
-
+	/**
+	* \brief  SoundPlay 音声再生
+	* \param  filename 音声ファイル名
+	* \param  loopCount ループ回数
+	*/
 	void SoundPlay(const char* filename,int loopCount);
 
+	/**
+	* \brief  SoundStop 音声停止
+	* \param  filename 音声ファイル名
+	*/
 	void SoundStop(const char* filename);
 
+	/**
+	* \brief  SetVolume 音量設定
+	* \param  volume 音量
+	*/
 	void SetVolume(float volume);
 
 private:

@@ -11,25 +11,49 @@ class SpriteCommon
 {
 public: // メンバ関数
 
-	// シングルトンインスタンスの取得
+	/**
+	* \brief  インスタンス取得
+	* \return インスタンス
+	*/
 	static SpriteCommon* GetInstance();
 
-	// 初期化
+	/**
+	* \brief  初期化
+	* \param  dxCommon DirectX共通クラスへのポインタ
+	*/
 	void Initialize(DirectXCommon* dxCommon);
 
+	/// \brief 終了処理
 	void Finalize();
 
+	/// \brief 前景ビュー設定
 	void SetForegroundView();
 
+	/// \brief 背景ビュー設定
 	void SetBackgroundView();
 
+	/// \brief 前景描画
 	void DrawForeground();
 
+	/// \brief 背景描画
 	void DrawBackground();
 
+	/**
+	* \brief  directXCommon取得
+	* \return directXCommon
+	*/
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
 
-	bool GetIsDrawBackground() const { return isDrawBackground; }	
+	/**
+	* \brief  背景描画フラグ取得
+	* \return 背景描画フラグ
+	*/
+	bool GetIsDrawBackground() const { return isDrawBackground; }
+
+	/**
+	* \brief  前景描画フラグ取得
+	* \return 前景描画フラグ
+	*/
 	bool GetIsDrawForeground() const { return isDrawForeground; }	
 
 private:
@@ -44,13 +68,13 @@ private:
 	SpriteCommon(SpriteCommon&) = delete;
 	SpriteCommon& operator=(SpriteCommon&) = delete;
 
-	// ルートシグネチャの生成
+	/// \brief ルートシグネチャ作成
 	void CreateRootSignature();
 
-	// グラフィックスパイプラインの生成
+	/// \brief グラフィックスパイプライン作成（前景）
 	void CreateGraphicsPipelineForeground();
 
-	// グラフィックスパイプラインの生成
+	/// \brief グラフィックスパイプライン作成（背景）
 	void CreateGraphicsPipelineBackground();
 
 private:

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <map>
 #include <string>
 #include <memory>
@@ -12,18 +12,32 @@
 class ModelManager
 {
 public:
-	// シングルトンインスタンスの取得
+
+	/**
+	* \brief  インスタンス取得
+	* \return インスタンス
+	*/
 	static ModelManager* GetInstance();
 
-	// 初期化
+	/**
+	* \brief  初期化
+	* \param  dxCommon DirectX共通クラスへのポインタ
+	*/
 	void Initialize(DirectXCommon* dxCommon);
 
-	// 終了
+	/// \brief 終了処理
 	void Finalize();
 
-	// モデルファイル読み込み
+	/**
+	* \brief  モデルの読み込み
+	* \param  filePath モデルファイルのパス
+	*/
 	void LoadModel(const std::string& filePath);
 
+	/**
+	* \brief  モデルの取得
+	* \param  filePath モデルファイルのパス
+	*/
 	Model* FindModel(const std::string& filePath);
 
 private:

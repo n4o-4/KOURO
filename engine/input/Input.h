@@ -57,60 +57,101 @@ public:
 	};
 
 public: // メンバ変数
-	// シングルトンインスタンスの取得
+	
+	/// \brief GetInstance インスタンスの取得
 	static Input* GetInstance();
 
-	// 初期化
+	/**
+	* \brief  Initialize 初期化
+	* \param  winApp WinAppのポインタ
+	*/
 	void Initialize(WinApp* winApp);
 
+	/// \brief  Finalize 終了処理
 	void Finalize();
 
-	// 更新
+	/// \brief  Update 入力情報の更新
 	void Update();
 
+	/**
+	* \brief  SetIsReception 入力受付フラグの設定
+	* \param  flag 入力受付フラグ
+	*/
 	void SetIsReception(bool flag) { isReception_ = flag; }
 
 	///===============================
 	/// キーボード
 	
-	// キーが押されているかを判定
+	/**
+	* \brief  引数のキーが現在押されているかを判定
+	* \param  keyNumber 判定するキーの番号
+	*/
 	bool PushKey(BYTE keyNumber);
 
-	// キーが押された瞬間を判定
+	/**
+	* \brief 引数のキーが押された瞬間を判定
+	* \param keyNumber 判定するキーの番号
+	*/
 	bool Triggerkey(BYTE keyNumber);
 
 
 	///===============================
 	/// マウス
 	
-	// マウスカーソルのスクリーン位置を取得
+	/**
+	* \brief  GetMousePos マウスの座標取得
+	* \return マウスの座標
+	*/
 	Vector2 GetMousePos() { return Vector2(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)); }
 
-	// マウスのボタンが押されているかを判定
+	/**
+	* \brief  PushMouseButton マウスのボタンが押されているかを判定
+	* \param  mouseButton 判定するマウスボタン
+	*/
 	bool PushMouseButton(MouseButton mouseButton);
 
-	// マウスのボタンが押された瞬間を判定
+	/**
+	* \brief  TriggerMouseButton マウスのボタンが押された瞬間を判定
+	* \param  mouseButton 判定するマウスボタン
+	*/
 	bool TriggerMouseButton(MouseButton mouseButton);
 
 	///===============================
 	/// ゲームパッド
 	
-	// ゲームパッドのボタンが押されているかを判定
+	/**
+	*\brief  PushGamePadButton ゲームパッドのボタンが押されているかを判定
+	* \param  button 判定するゲームパッドボタン
+	*/
 	bool PushGamePadButton(GamePadButton button);
 
-	// ゲームパッドのボタンが押された瞬間を判定
+	/**
+	* \brief  TriggerGamePadButton ゲームパッドのボタンが押された瞬間を判定
+	* \param  button 判定するゲームパッドボタン
+	*/
 	bool TriggerGamePadButton(GamePadButton button);
 
-	// ゲームパッドのスティックの成分を取得
+	/**
+	* \brief  GetLeftStick 左スティックの入力値を取得
+	* \return 左スティックの入力値
+	*/
 	Vector3 GetLeftStick() { return leftStick; }	
+
+	/**
+	* \brief  GetRightStick 右スティックの入力値を取得
+	* \return 右スティックの入力値
+	*/
 	Vector3 GetRightStick() { return rightStick; }
 
 private:
 
+	/// \brief MouseUpdate マウスの状態更新
 	void MouseUpdate();
 
+	/// \brief KeyBoardUpdate キーボードの状態更新
 	void KeyBoardUpdate();
 
+	/// \brief GamePadUpdate ゲームパッドの状態更新
 	void GamePadUpdate();	
 
 private:

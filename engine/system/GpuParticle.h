@@ -36,131 +36,142 @@ namespace Particle
 
 	struct EmitterSphere
 	{
-		Vector3 translate;   // �ʒu
-		float radius;        // �ˏo���a
-		uint32_t count;      // �ˏo��
-		float frequency;     // �ˏo�Ԋu
-		float frequencyTime; // �ˏo�Ԋu�����p����
-		uint32_t emit;       // �ˏo����
+		Vector3 translate;   //!< 球の中心座標
+		float radius;        //!< 発射する半径
+		uint32_t count;      //!< 発射する数
+		float frequency;     //!< 発射間隔
+		float frequencyTime; //!< 発射タイマー
+		uint32_t emit;       //!< 発射フラグ
 	};
 
 	struct PerFrame
 	{
-		float time;
-		float deltaTime;
+		float time;      //!< 現在の時間
+		float deltaTime; //!< 前フレームからの経過時間
 	};
 
 	struct Transform
 	{
-		Matrix4x4 matWorld;
+		Matrix4x4 matWorld; //!< ワールド行列
 	};
 
 	struct LineSegment
 	{
-		Vector3 start;
+		Vector3 start;     //!< 線分の始点
 		float pad1 = 0.0f;
-		Vector3 end;
+		Vector3 end;       //!< 線分の終点
 		float pad2 = 0.0f;
 	};
 }
 
-// \brief GpuParticle
-// GPU��Ńp�[�e�B�N����Ǘ��E�`�悷��V���O���g���N���X�B
-// �ő�p�[�e�B�N������Ǘ����AComputeShader�ɂ�鏉�����A�����A�X�V������s���B
-// �܂��A����p�[�e�B�N��(LineSegment)�̔�����`���T�|�[�g�B
-// ����Ŋe�탊�\�[�X�i�p�[�e�B�N���A�J�E���^�[�A�t���X�g�A���_�A�}�e���A���A�G�~�b�^�[�Atransform�AlineSegment�Ȃǁj��Ǘ��B
-// PipelineSet��p���āAGPU����Compute��Graphics�p�C�v���C����\�����A�����I�ȑ�ʃp�[�e�B�N���`���\�ɂ���B
+
 
 class GpuParticle
 {
 public:
 
-	// �ő�p�[�e�B�N����
-	const uint32_t kMaxParticleCount = 524288;
+	const uint32_t kMaxParticleCount = 524288; //!< 最大パーティクル数
 
 public:
 
+	/// \brief  シングルトンインスタンスの取得
 	static GpuParticle* GetInstance();
 
 	/**
-	* \brief  Initialize ������
-	* \param  dxCommon DirectXCommon�̃|�C���^
-	* \param  srvManager SrvManager�̃|�C���^
-	* \param  uavManagedr UavManager�̃|�C���^
+	* \brief  初期化 
+	* \param  dxCommon DirectXCommonのポインタ
+	* \param  srvManager SrvManagerのポインタ
+	* \param  uavManagedr UavManagerのポインタ
 	*/
 	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,UavManager* uavManagedr);
 
-	// \brief  Finalize �I��
+	// \brief  終了
 	void Finalize();
 
-	// \brief  Update �X�V
+	/// \brief  更新
 	void Update(ViewProjection viewProjection);
 
+	/// \brief  描画
 	void Draw();
 
+	/**
+	* \brief  
+	* \param  time      : 現在の時間
+	* \param  deltaTime : 前フレームからの経
+	*/
 	void SetPerFrame(float time, float deltaTime) { perFrame_->time = time, perFrame_->deltaTime = deltaTime; }
 
+	/**
+	* \brief  線分を作成する
+	* \param  filePath : 線分データのファイルパス
+	*/
 	void CreateLineSegment(std::string filePath);
 
+	/// \brief  線分を発生させる
 	void LineEmit(std::string groupName, Matrix4x4 world);
 
-private: // ����J�����o�֐�
+private: // 
 
-	// \brief  CreateResourc0e ���\�[�X�̐���
+	/// \brief particleリソースの作成
 	void CreateResource();
 
-	// \brief  CreateVertexResource ���_���\�[�X�̐���
+	/// \brief 頂点リソースの作成
 	void CreateVertexResource();
 
-	// \brief  CreateVertexBufferView ���_�o�b�t�@�r���[�̐���
+	/// \brief 頂点バッファビューの作成
 	void CreateVertexBufferView();
 
-	// \brief  CreatePerViewResource �p�[�r���\���\�[�X�̐���
+	/// \brief perViewリソースの作成
 	void CreatePerViewResource();
 
-	// \brief  CreateMaterialResource �}�e���A�����\�[�X�̐���
+	/// \brief materialリソースの作成
 	void CreateMaterialResource();
 
-	// \brief  CreateEmitterResource �G�~�b�^�[���\�[�X�̐���
+	/// \brief Emitterリソースの作成
 	void CreateEmitterResource();
 
-	// \brief  CreatePerFrameResource perFrame���\�[�X�̐���
+	/// \brief perFrameリソースの作成
 	void CreatePerFrameResource();
 
-	// \brief  CreateTransformResource transform���\�[�X�̐���
+	/// \brief transformリソースの作成
 	void CreateTransformResource();
 
-	// \brief  CreateLineSegmentResource lineSegment���\�[�X�̐���
+	/// \brief 線分用リソースの作成
 	void CreateLineSegmentResource();
 
-	//
+	/// \brief  線分カウント用リソースの作成
 	void CreateLineCountResource();
 
-	/// Compute
+	/// --------------- コンピュートシェーダー用
 
-	// initialize
+	/// \brief  初期化用のPipelineSetを作成
 	void CreateInitializePipelineSet();
 
-	// emit
+	/// \brief  発生用のPipelineSetを作成
 	void CreateEmitPipelineSet();
 
+	/// \brief  線分発生用のPipelineSetを作成
 	void CreateLineEmitPipelineSet();
 
-	// update
+	/// \brief  更新用のPipelineSetを作成
 	void CreateUpdatePipelineSet();
 
-	/// Graphics
+	/// --------------- 描画用
 
-	// \brief  CreateGraphicsRootSignature �`��p���[�g�V�O�l�`���̍쐬
+	/// \brief 描画用ルートシグネチャの作成
 	void CreateGraphicsRootSignature();
 
-	// \brief  CreateGraphicsPipelineState �`��p�p�C�v���C���X�e�[�g�̍쐬
+	/// \brief  
 	void CreateGraphicsPipelineState();
 
-	// \brief  CreateComputePipelineState Compute�p�C�v���C���X�e�[�g�̍쐬
+	/**
+	* \brief  ComputePipelineStateの作成
+	* \param  pipelineSet : PipelineSetのポインタ
+	* \param  shaderPath  : シェーダーファイルのパス
+	*/
 	void CreateComputePipelineState(PipelineSet* pipelineSet,std::string shaderPath);
 
-	// \brief  CreatePipelineSet �p�C�v���C���Z�b�g�̍쐬
+	/// \brief  パイプラインセットの作成
 	void CreatePipelineSet();
 
 private:
@@ -222,19 +233,19 @@ private:
 
 	uint32_t uavIndex_ = 0;
 
-	// ComputeShader�p(InitializeParticle)
+
 	std::unique_ptr<PipelineSet> initializePipelineSet_;
 	
-	// ComputeShader�p(EmitParticle)
+	
 	std::unique_ptr<PipelineSet> emitPipelineSet_;
 
-	// ComputeShader�p(���㔭��)
+	
 	std::unique_ptr<PipelineSet> lineEmitPipelineSet_;
 
-	// ComputeShader�p(UpdateParticle)
+	
 	std::unique_ptr<PipelineSet> updatePipelineSet_;
 
-	// �`��p
+	
 	std::unique_ptr<PipelineSet> graphicsPipelineSet_;
 
 	const float kDeltaTime_ = 1.0f / 60.0f;

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Vectors.h"
 #include "Matrixs.h"
 #include "ModelCommon.h"
@@ -19,21 +19,46 @@
 class Model
 {
 public:
-	// 初期化
-	void Initialize(ModelCommon* modelCommon,const std::string& directoryPath,const std::string& filename);
 
-	// 描画
-	void Draw(WorldTransform worldTransform);	
+	/**
+	* \brief  初期化
+	* \param  modelCommon モデル共通情報クラスへのポインタ
+	* \param  directoryPath モデルファイルのディレクトリパス
+	* \param  filename モデルファイル名
+	*/
+	void Initialize(ModelCommon* modelCommon, const std::string& directoryPath, const std::string& filename);
+
+	/**
+	* \brief  描画
+	* \param  worldTransform ワールド変換情報
+	*/
+	void Draw(WorldTransform worldTransform);
 
 private:
 
-	// .mtlファイルの読み込み
+	/**
+	* \brief  マテリアルテンプレートファイルの読み込み
+	* \param  directoryPath ディレクトリパス
+	* \param  filename ファイル名
+	* \return 読み込んだマテリアルデータ
+	*/
 	static MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
+	/**
+	* \brief  モデルファイルの読み込み
+	* \param  directoryPath ディレクトリパス
+	* \param  filename ファイル名
+	* \return 読み込んだモデルデータ
+	*/
 	static ModelData LoadModelFile(const std::string& directoryPath, const std::string& filename);
 
 public:
 
+	/**
+	* \brief  ノード情報の読み込み
+	* \param  node aiNodeのポインタ
+	* \return 読み込んだノード情報
+	*/
 	static Node ReadNode(aiNode* node);
 
 private:

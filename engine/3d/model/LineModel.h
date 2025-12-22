@@ -33,14 +33,31 @@ class LineModel
 {
 public:
 
+	/**
+	* \brief  初期化
+	* \param  lienDrawer ラインドロワーベースクラスのポインタ
+	* \param  directoryPath ラインモデルファイルのディレクトリパス
+	* \param  filePath ラインモデルファイル名
+	*/
 	void Initialize(LineDrawerBase* lienDrawer, const std::string& directoryPath, const std::string& filePath);
 
+	
+	/// \brief 描画
 	void Draw();
 
+	/**
+	* \brief  directXCommonのポインタ取得
+	* \return directXCommonのポインタ
+	*/
 	DirectXCommon* GetdxCommon() { return dxCommon_; }
 
 private:
 
+	/**
+	* \brief  ラインモデルファイルの読み込み
+	* \param  directoryPath ディレクトリパス
+	* \param  filePath ファイル名
+	*/
 	void LoadLineModelFile(const std::string& directoryPath, const std::string& filePath);
 
 private:

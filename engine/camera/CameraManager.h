@@ -14,29 +14,51 @@ class CameraManager
 {
 public: /// メンバ関数	
 
-	// 初期化
+	/// \brief  Initialize 初期化
 	void Initialize();
 
-	// 更新
+	/// \brief  Update 更新
 	void Update();
 
-	// アクティブカメラの取得
+	/**
+	* \brief  GetActiveCamera アクティブなカメラの取得
+	* \return activeCamera_ アクティブなカメラのポインタ
+	*/
 	BaseCamera* GetActiveCamera() { return activeCamera_; }
 
+	/**
+	* \brief  SetFollowCameraTarget 追従カメラのターゲット設定
+	* \param  target ターゲットのワールド変換のポインタ
+	*/
 	void SetFollowCameraTarget(WorldTransform* target) { followCamera_->SetTarget(target); }
 
+	/**
+	* \brief  GetFollowCamera 追従カメラの取得
+	* \return followCamera_ 追従カメラのポインタ
+	*/
 	FollowCamera* GetFollowCamera() { return followCamera_.get(); }
 
+	/**
+	* \brief  SetActiveCamera アクティブなカメラの設定
+	* \param  camera アクティブにするカメラのポインタ
+	*/
 	void SetActiveCamera(BaseCamera* camera) { activeCamera_ = camera; }
 
+	/// \brief  CamerasClear カメラのクリア
 	void CamerasClear();
 
+	/**
+	* \brief  CameraShake カメラシェイクの開始
+	* \param  time シェイク時間
+	*/
 	void CameraShake(float time);
 
 public:
 
+	/// \brief  Shake カメラシェイク処理
 	void Shake();
 
+	/// \brief  DrawDebugUI デバッグUIの描画
 	void DrawDebugUI();
 
 private:

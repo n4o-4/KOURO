@@ -44,6 +44,7 @@ public:
 	// モデルデータを読み込む関数
     std::vector<Line::Vertex> LoadLineModel(std::string filePath);
 
+
 	std::vector<VertexData> LoadModel(std::string fileName);
 
 private:

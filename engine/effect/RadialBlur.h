@@ -19,13 +19,21 @@ class RadialBlur : public BaseEffect
 {
 public:
 
-	// 初期化
+	/**
+	* \brief  初期化
+	* \param  dxCommon DirectXCommonのポインタ
+	* \param  srvManager SrvManagerのポインタ
+	*/
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) override;
 
-	// 更新
+	/// \brief  更新
 	void Update() override;
 
-	// 描画
+	/**
+	* \brief  描画
+	* \param  renderTargetIndex レンダーターゲットのインデックス
+	* \param  renderResourceIndex レンダーリソースのインデックス
+	*/
 	void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
 
 	/**
@@ -48,15 +56,22 @@ private:
 	// パイプラインの生成
 	void CreatePipeline();
 
-	// ルートシグネチャの生成と設定
+	/**
+	* \brief  CreateRootSignature ルートシグネチャの生成
+	* \param  pipeline パイプライン構造体のポインタ
+	*/
 	void CreateRootSignature(Pipeline* pipeline);
 
-	// パイプラインステートの生成と設定
+	/**
+	* \brief  CreatePipeLineState パイプラインステートの生成
+	* \param  pipeline パイプライン構造体のポインタ
+	*/
 	void CreatePipeLineState(Pipeline* pipeline);
 
 	// マテリアルの生成
 	void CreateMaterial();
 
+	/// \brief  DrawImGui ImGui描画
 	void DrawImGui() override;
 
 private: // メンバ変数

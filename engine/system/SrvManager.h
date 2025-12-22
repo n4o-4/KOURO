@@ -124,6 +124,7 @@ public:
 	uint32_t GetDescriptorSize() { return descriptorSize; }
 private:
 
+	/// \brief 深度バッファ用のSRVを作成する
 	void CreateSrvForDepth();
 
 

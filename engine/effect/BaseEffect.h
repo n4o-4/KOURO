@@ -17,24 +17,38 @@ class BaseEffect
 {
 public:
 
+	/// \brief デストラクタ
 	virtual ~BaseEffect() = default;
 
-	// 初期化
+	/**
+	* \brief  初期化
+	* \param  dxCommon DirectXCommonのポインタ
+	* \param  srvManager SrvManagerのポインタ
+	*/
 	virtual void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
-	// 更新
+	/// \brief  更新
 	virtual void Update() = 0;
 
-	// 描画
+	/**
+	* \brief  描画
+	* \param  renderTargetIndex レンダーターゲットのインデックス
+	* \param  renderResourceIndex レンダーリソースのインデックス
+	*/
 	virtual void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) = 0;
 
-	// カメラマネージャの設定
+	/**
+	* \brief  カメラマネージャーのセット
+	* \param  cameraManager カメラマネージャーのポインタ
+	*/
 	virtual void SetCameraManager(CameraManager* cameraManager);
 
+	/// \brief  リセット
 	virtual void Reset();
 
 private:
 
+	/// \brief  DrawImGui ImGui描画
 	virtual void DrawImGui() = 0;  // 追加
 
 protected:

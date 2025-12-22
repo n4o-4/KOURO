@@ -37,7 +37,7 @@ void TitleScene::Initialize(EngineContext context)
 
 	mEmitter = std::make_unique<ModelEdgeEmitter>();
 	mEmitter->Initialize("normal", context);
-	mEmitter->CreateLineSegment("enemy/enemy.obj");
+	mEmitter->CreateLineSegment("sphere.obj");
 
 	titleCamera_ = std::make_unique<TitleCamera>();
 	titleCamera_->SetTarget(player_->GetWorldTransform());
@@ -226,6 +226,11 @@ void TitleScene::Update()
 	ImGui::End();
 #endif
 
+	if (Input::GetInstance()->Triggerkey(DIK_V))
+	{
+		mEmitter->Emit(MakeIdentity4x4());
+	}
+
 	scoreUi_->Update();
 
 	BaseScene::Update();
@@ -243,7 +248,7 @@ void TitleScene::Draw()
 
 	lineDrawer_->PreDraw(cameraManager_->GetActiveCamera()->GetViewProjection());
 
-	player_->Draw();
+	//player_->Draw();
 
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	

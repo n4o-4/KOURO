@@ -78,7 +78,7 @@ void GameScene::Initialize(EngineContext context) {
 	lineModelManager_->LoadLineModel("player/player.obj");
 	lineModelManager_->LoadLineModel("enemy/enemy.obj");
 	lineModelManager_->LoadLineModel("playerbullet/playerbullet.obj");
-	lineModelManager_->LoadLineModel("stage.gltf");
+	lineModelManager_->LoadLineModel("stage.obj");
 
 	ModelManager::GetInstance()->LoadModel("terrain.obj");
 
@@ -89,9 +89,9 @@ void GameScene::Initialize(EngineContext context) {
 
 	transform_ = std::make_unique<WorldTransform>();
 	transform_->Initialize();
-	transform_->transform.translate = { 250.0f,0.0f,250.0f };
+	transform_->transform.translate = { 0.0f,0.0f,0.0f };
 
-	transform_->transform.scale = { 273.0f,300.0f,273.0f };
+	transform_->transform.scale = { 300.0f,300.0f,100.0f };
 	///========================================
 	///		パーティクル
 	
@@ -228,10 +228,10 @@ void GameScene::Initialize(EngineContext context) {
 	railCamera_->Initialize();
 
 	cameraManager_->CamerasClear();
-	//cameraManager_->SetActiveCamera(railCamera_.get());
+	cameraManager_->SetActiveCamera(railCamera_.get());
 	cameraManager_->Update();
 	cameraManager_->GetActiveCamera()->GetViewProjection().transform.translate.z = 280.0f;
-	//player_->SetParentTransform(railCamera_->GetWorldTransform());
+	player_->SetParentTransform(railCamera_->GetWorldTransform());
 
 
 	LevelLoader loader;
@@ -298,7 +298,7 @@ void GameScene::Initialize(EngineContext context) {
 	sceneManager_->GetPostEffect()->ApplyEffect("blur", PostEffect::EffectType::RadialBlur);
 
 	stage_ = std::make_unique<ObjectLine>();
-	stage_->Initialize(lineModelManager_->FindLineModel("stage.gltf"));
+	stage_->Initialize(lineModelManager_->FindLineModel("stage.obj"));
 
 }
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <cassert>
 #include <dxcapi.h>
 #include <dxgi1_6.h>
@@ -9,17 +9,21 @@ class ShaderCompiler
 {
 public:
 
+	/**
+	* \brief  åˆæœŸåŒ–
+	*/
 	void Initialize();
 
 	/**
-	* \brief  ƒVƒF[ƒ_[‚ğƒRƒ“ƒpƒCƒ‹
-	* \param  filePath : Compiler‚Ég—p‚·‚éProfile
-	* \param  profile  : Compiler‚·‚éShaderƒtƒ@ƒCƒ‹‚Ö‚ÌƒpƒX
+	* \brief  ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+	* \param  filePath : Compilerã«ä½¿ç”¨ã™ã‚‹Profile
+	* \param  profile  : Compilerã™ã‚‹Shaderãƒ•ã‚¡ã‚¤ãƒ«ã¸ã®ãƒ‘ã‚¹
 	*/
 	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
 
 private:
 
+	/// \brief DXCãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£ãƒ¼ã®ä½œæˆ
 	void CreateDXCCompiler();
 
 private:

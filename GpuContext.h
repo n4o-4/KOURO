@@ -1,9 +1,8 @@
-#pragma once
+﻿#pragma once
 #include "D3D12Context.h"
 #include "SrvManager.h"
 #include "UavManager.h"
 #include "GpuResourceUtils.h"
-
 
 struct GpuContext
 {

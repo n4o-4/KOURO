@@ -27,7 +27,7 @@ ConstantBuffer<EmitterSphere> gEmitter : register(b1);      // 5
 ConstantBuffer<PerFrame> gPerFrame : register(b2);          // 6
 RWStructuredBuffer<uint> gNoiseUpdateList : register(u3);   // 7
 RWStructuredBuffer<uint> gBaseUpdateList : register(u4);    // 8
-[numthreads(1024, 1, 1)]
+[numthreads(512, 1, 1)]
 
 void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID)
 {

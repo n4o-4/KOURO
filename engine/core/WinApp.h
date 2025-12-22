@@ -12,15 +12,29 @@ public: // 静的メンバ関数
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 public:
+	
+	/// \brief 初期化
 	void Initialize();
 
+	/// \brief 終了処理
 	void Finalize();
 	
+	/**
+	* \brief  ウィンドウハンドル取得
+	* \return ウィンドウハンドル
+	*/
 	HWND GetHWND() const { return hwnd; }
 
+	/**
+	* \brief  HINSTANCE取得
+	* \return HINSTANCE
+	*/
 	HINSTANCE GetHInstance() const { return wc.hInstance; }
 
-	// メッセージ処理
+	/**
+	* \brief  メッセージ処理
+	* \return メッセージが存在していたらtrue、なければfalse
+	*/
 	bool ProcessMessage();
 
 public: // 定数

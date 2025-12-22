@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <string>
 #include <fstream>
 #include <wrl.h>
@@ -60,29 +60,45 @@ private:
 
 public:
 
-	// シングルトンインスタンスの取得
+	/// \brief インスタンス取得
 	static AudioManager* GetInstance();
 
+	/// \brief 初期化
 	void Initialize();
 
+	/// \brief 終了処理
 	void Finalize();
 
+	/**
+	* \brief 音声ファイル読み込み
+	* \param filename ファイル名
+	*/
 	void SoundLoadFile(const char* filename);
 
+	/// \brief 音声データ解放
 	void SoundUnload();
 
+	/**
+	* \brief 音声データ取得
+	* \return soundDatas 音声データ群
+	*/
 	std::unordered_map<std::string, SoundData> GetSoundData() { return soundDatas; }
 
 private:
 
+	/**
+	* \brief WAVファイル読み込み
+	* \param filename ファイル名
+	*/
 	void SoundLoadWave(const char* filename);
 
+	/**
+	* \brief MP3ファイル読み込み
+	* \param filename ファイル名
+	*/
 	void SoundLoadMP3(const char* filename);
 
-
-
 private:
-
 
 	static std::unique_ptr<AudioManager> instance;
 

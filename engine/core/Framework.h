@@ -90,30 +90,40 @@ public:
 
 	virtual~Framework() = default;
 
-	// 初期化
+	/// \brief 初期化
 	virtual void Initialize();
 
-	// 終了
+	/// \brief 終了
 	virtual void Finalize();
 
-	// 毎フレーム更新
+	/// \brief 更新
 	virtual void Update();
 
-	// 描画
+	/// \brief 描画
 	virtual void Draw();
 
+	/// \brief エフェクト描画
 	virtual void DrawEffect();
 
-	// 終了チェック
+	/**
+	* \brief  終了要求が来ているかどうか取得
+	* \return endRequest_ 終了要求が来ているかどうか
+	*/
 	virtual bool IsEndRequest() { return endRequest_; }
 
-	// 実行
+	/// \brief Run メインループ
 	void Run();
 
+	/**
+	* \brief  デルタタイムの取得する
+	* \return kDeltaTime_ デルタタイム
+	*/
 	const float GetDeltaTime() const { return kDeltaTime_; }
 
+	/// \brief GpuContextの作成
 	GpuContext CreateGpuContext();
 
+	/// \brief EngineContextの作成
 	EngineContext CreateEngineContext();
 
 private:

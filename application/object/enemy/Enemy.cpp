@@ -31,7 +31,7 @@ void Enemy::Update()
 {
 	if (fireTimer_ >= kFireInterval)
 	{
-		Fire();
+		//Fire();
 		fireTimer_ = 0.0f; // タイマーをリセット
 	}
 	else
@@ -150,25 +150,25 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 			hp_ -= playerBullet->GetDamage();
 
 
-			ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->enableDeceleration = true;
+			//ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->enableDeceleration = true;
 
 			
-			emitter_.SetPosition(worldTransform_->transform.translate);
-			emitter_.SetParticleCount(1);
-			emitter_.SetVelocityRange({ {0.0f,0.0f,0.0f },{0.0f,0.0f,0.0f} });
-			emitter_.SetStartScaleRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
-			emitter_.SetFinishScaleRange({ {3.0f,3.0f,3.0f},{3.0f,3.0f,3.0f} });
-			emitter_.SetRotateRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
+			//emitter_.SetPosition(worldTransform_->transform.translate);
+			//emitter_.SetParticleCount(1);
+			//emitter_.SetVelocityRange({ {0.0f,0.0f,0.0f },{0.0f,0.0f,0.0f} });
+			//emitter_.SetStartScaleRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
+			//emitter_.SetFinishScaleRange({ {3.0f,3.0f,3.0f},{3.0f,3.0f,3.0f} });
+			//emitter_.SetRotateRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
 
 
-			emitter_.SetTranslateRange({ { 0.0f,0.0f,0.0f },{ 0.0f,0.0f,0.0f } });
+			//emitter_.SetTranslateRange({ { 0.0f,0.0f,0.0f },{ 0.0f,0.0f,0.0f } });
 
-			emitter_.SetStartColorRange({ {1.0f,1.0f,1.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f} });
-			emitter_.SetFinishColorRange({ {1.0f,1.0f,1.0f,0.0f},{1.0f,1.0f,1.0f,0.0f} }); /*{ 1.0f, 0.72f, 0.19f, 1.0f }*/
-			emitter_.SetLifeTimeRange({ 0.5f,0.5f });
-			emitter_.SetFrequency(0.2f);
+			//emitter_.SetStartColorRange({ {1.0f,1.0f,1.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f} });
+			//emitter_.SetFinishColorRange({ {1.0f,1.0f,1.0f,0.0f},{1.0f,1.0f,1.0f,0.0f} }); /*{ 1.0f, 0.72f, 0.19f, 1.0f }*/
+			//emitter_.SetLifeTimeRange({ 0.5f,0.5f });
+			//emitter_.SetFrequency(0.2f);
 
-			emitter_.Emit();
+			//emitter_.Emit();
 		}
 		else
 		{

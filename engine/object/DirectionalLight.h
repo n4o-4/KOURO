@@ -19,17 +19,20 @@ private:
 		float intensity;
 	};
 
-public:
+public: // 公開メンバ関数
 
+	/// \brief 初期化
 	void Initilaize();
 
+	/// \brief 更新
 	void Update();
 
 	/**
-	* \brief  ���s������resource��擾����
+	* \brief  DirectionalLight用リソースの取得
 	* \return directionalLightResource
 	*/
 	const Microsoft::WRL::ComPtr<ID3D12Resource>& GetDirectionalLightResource() { return directionalLightResource_; }
+
 public:
 
 	Vector4 color_;

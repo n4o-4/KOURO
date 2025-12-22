@@ -28,20 +28,15 @@ public: // 公開メンバ関数
 	 * \brief  Initialize 初期化
 	 * \param  dxCommon DirectXCommonのインスタンス
 	 */
-
 	virtual void Initialize(DirectXCommon* dxCommon);
 
-	/**
-	 * \brief  Update 更新
-	 */
-
+	/// \brief  Update 更新
 	virtual void Update();
 
 	/**
 	 * \brief  Draw 描画
 	 * \param  viewProjection ビュープロジェクション行列
 	 */
-
 	virtual void Draw(const ViewProjection& viewProjection);
 
 protected:

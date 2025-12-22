@@ -27,7 +27,7 @@ void Player::Initialize(LineModel* model)
 
 	rail.Initialize(controlPoints_);
 
-	colliderTransform_->transform.translate = { 0.0f,0.0f,300.0f };
+	colliderTransform_->transform.translate = { 0.0f,0.0f,25.0f };
 
 	colliderTransform_->UpdateMatrix();
 

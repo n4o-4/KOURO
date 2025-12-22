@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "DirectXCommon.h"
 #include "Camera.h"
 
@@ -11,23 +11,37 @@ class Object3dCommon
 {
 public: // メンバ関数
 
-	// シングルトンインスタンスの取得
+	/// \brief インスタンス取得
 	static Object3dCommon* GetInstance();
 
-	// 初期化
+	/**
+	* \brief  初期化
+	* \param  dxCommon DirectX共通クラスへのポインタ
+	*/
 	void Initialize(DirectXCommon* dxCommon);
 
+	/// \brief 終了処理
 	void Finalize();
 
-	// 共通描画設定
+	/// \brief ビュー行列設定
 	void SetView();
 
+	/**
+	* \brief  directXCommon取得
+	* \return directXCommon
+	*/
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
 
-	//void SetDefaultCamera(Camera* camera) { this->defaultCamera_ = camera; }
-
+	/**
+	* \brief  デフォルトカメラ取得
+	* \return デフォルトカメラ
+	*/
 	Camera* GetDefaultCamera() const { return defaultCamera_.get(); }
 
+	/**
+	* \brief  環境マップパスを設定する
+	* \param  path 環境マップパス
+	*/
 	void SetEnvironmentMapPath(const std::string& path) { environmentMapPath_ = path; }
 
 private:
@@ -42,10 +56,10 @@ private:
 	Object3dCommon(Object3dCommon&) = delete;
 	Object3dCommon& operator=(Object3dCommon&) = delete;
 
-	// グラフィックスパイプラインの生成
+	/// \brief グラフィックスパイプライン作成
 	void CreateGraphicsPipeline();
 
-	// ルートシグネチャの生成
+	/// \brief ルートシグネチャ作成
 	void CreateRootSignature();
 
 private: // メンバ変数

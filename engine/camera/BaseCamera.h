@@ -13,22 +13,22 @@ class BaseCamera
 {
 public:
 
-	/// <summary>
-	/// 初期化
-	/// viewProjectionの生成と初期化
-	/// </summary>
-	
+	/// \brief 初期化
 	virtual void Initialize();
 
-	/// <summary>
-	/// 更新
-	/// viewProjectionの更新	
-	/// </summary>
-	
+	/// \brief 更新
 	virtual void Update();
 
+	/**
+	* \brief ViewProjection取得
+	* \return ViewProjection
+	*/
 	virtual ViewProjection& GetViewProjection() { return *viewProjection_; }
 
+	/**
+	* \brief オフセット設定
+	* \param offset オフセット値
+	*/
 	void SetOffset(Vector3 offset) { offset_ = offset; }
 
 protected:

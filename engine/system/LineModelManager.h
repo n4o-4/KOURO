@@ -10,10 +10,22 @@ class LineModelManager
 {
 public:
 
+	/**
+	* \brief  初期化
+	* \param  lineDrawerBase : LineDrawerBaseのポインタ
+	*/
 	void Initialize(LineDrawerBase* lineDrawerBase);
 
+	/**
+	* \brief  ラインモデルの読み込み
+	* \param  filePath : ラインモデルのファイルパス
+	*/
 	void LoadLineModel(std::string filePath);
 
+	/**
+	* \brief  ラインモデルの検索
+	* \param  filePath : ラインモデルのファイルパス
+	*/
 	LineModel* FindLineModel(const std::string filePath);
 private:
 

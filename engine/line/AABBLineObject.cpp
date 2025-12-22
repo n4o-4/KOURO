@@ -57,6 +57,11 @@ void AABBLineObject::Update()
     }
 }
 
+void AABBLineObject::Draw(const ViewProjection& viewProjection)
+{
+   
+}
+
 void AABBLineObject::CreateVertexResource()
 {
     // 頂点データの確保

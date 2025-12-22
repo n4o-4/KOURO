@@ -16,16 +16,36 @@ class NumUi
 {
 public:
 
+	/**
+	* \brief  Initialize 初期化
+	* \param  maxDigits 最大桁数
+	*/
 	void Initialize(size_t maxDigits);
 
+	/// \brief Update 更新
 	void Update();
 
+	/// \brief Draw 描画
 	void Draw();
 
+	/**
+	* \brief  SetPosition スプライトの位置を設定する
+	* \param  x 位置x
+	* \param  y 位置y
+	*/
 	void SetTexSize(float width, float height) {};
 
+	/**
+	* \brif SetDestinationValue 目標値を設定し、カウントアップを開始する
+	* \param  value 目標値
+	* \param  countTime カウントアップにかける時間（秒）
+	*/
 	void SetDestinationValue(uint32_t value,float countTime);
 
+	/**
+	* \brief  GetIsCountFinished カウントアップが終了したか取得する
+	* \return カウントアップが終了していればtrue、そうでなければfalse
+	*/
 	bool GetIsCountFinished() const { return isCountFinished_; }
 
 private:

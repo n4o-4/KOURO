@@ -25,10 +25,10 @@ public: // メンバ関数
 	*/
 	void Initialize(SpriteCommon* spriteCommon,std::string textureFilePath);
 
-	// \brief Update 更新
+	/// \brief Update 更新
 	void Update();
 
-	// \brief Draw 描画
+	/// \brief Draw 描画
 	void Draw();
 
 	/**
@@ -84,47 +84,75 @@ public: // メンバ関数
 	*/
 	const Vector2& GetTexSize() { return textureSize; }
 
+	/**
+	* \brief  SetPosition スプライトの位置を設定する
+	* \param  position スプライトの位置
+	*/
 	void SetPosition(const Vector2& position) { this->position = position; }
 	
+	/**
+	* \brief  SetRotation スプライトの回転を設定する
+	* \param  rotation スプライトの回転
+	*/
 	void SetRotation(float rotation) { this->rotation = rotation; }
 
+	/**
+	* \brief  SetColor スプライトの色を設定する
+	* \param  color スプライトの色
+	*/
 	void SetColor(const Vector4& color) { materialData->color = color; }
 
+	/**
+	* \brief  SetSize 描画サイズを設定する
+	* \param  size 描画サイズ
+	*/
 	void SetSize(const Vector2& size) { this->size = size; }
 
-	// getter
-	
-
-	// setter
+	/**
+	* \brief  SetAnchorPoint アンカーポイントを設定
+	* \param  anchorPoint アンカーポイント
+	*/
 	void SetAnchorPoint(const Vector2& anchorPoint) { this->anchorPoint = anchorPoint; }
 
-	
-
-	// setter
+	/**
+	* \brief  SetIsFlipX X方向の反転フラグを設定
+	* \param isFlipX X方向の反転フラグ
+	*/
 	void SetIsFlipX(bool isFlipX) { isFlipX_ = isFlipX; }
+
+	/**
+	* \brief  SetIsFlipY Y方向の反転フラグを設定
+	* \param isFlipY Y方向の反転フラグ
+	*/
 	void SetIsFlipY(bool isFlipY) { isFlipY_ = isFlipY; }
 
-	
-
-	// setter
+	/**
+	* \brief  SetTexLeftTop スプライト上の左上切り出し位置を設定
+	* \param textureLeftTop スプライト上の左上切り出し位置
+	*/
 	void SetTexLeftTop(const Vector2& leftTop) { textureLeftTop = leftTop; }
 
 	/*
 	 * \brief  SetTexSize テクスチャの切り出しサイズを設定
+	 * \param textureSize テクスチャの切り出しサイズ
 	*/
 	void SetTexSize(const Vector2& TexSize) { textureSize = TexSize; }
 
 private: 
 
+	/// \brief CreateVertexData 頂点データ作成
 	void CreateVertexData();
 
+	/// \brief CreateIndexData インデックスデータ作成
 	void CreateIndexData();
 
+	/// \brief CreateMaterialData マテリアルデータ作成
 	void CreateMaterialData();
 
+	/// \brief CreateTransformationMatrixData 変換行列データ作成
 	void CreateTransformationMatrixData();
 
-	// 
+	/// \brief AdjustTextureSize テクスチャサイズ調整
 	void AdjustTextureSize();
 
 private:

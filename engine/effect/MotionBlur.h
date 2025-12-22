@@ -22,35 +22,47 @@ class MotionBlur : public BaseEffect
 {
 public:
 
-	// 初期化
+	/**
+	* \brief	初期化
+	* \param	dxCommon DirectXCommonのポインタ
+	* \param	srvManager SrvManagerのポインタ
+	*/
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) override;
 
-	// 更新
+	/// \brief  更新
 	void Update() override;
 
-	// 描画
+	/**
+	* \brief  描画
+	* \param  renderTargetIndex レンダーターゲットのインデックス
+	* \param  renderResourceIndex レンダーリソースのインデックス
+	*/
 	void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
 
-	// カメラマネージャの設定
-	void SetCameraManager(CameraManager* cameraManager) override { cameraManager_ = cameraManager; }
-
-	// リソースの解放
+	/// \brief  リセット
 	void Reset() override { resource_.Reset(); }
 
-private:
+private: // 非公開メンバ関数
 
-	// パイプラインの生成
+	/// \brief  CreatePipeline パイプラインの作成
 	void CreatePipeline();
 
-	// ルートシグネチャの生成と設定
+	/**
+	* \brief  CreateRootSignature ルートシグネチャの作成
+	* \param  pipeline パイプライン構造体のポインタ
+	*/
 	void CreateRootSignature(Pipeline* pipeline);
 
-	// パイプラインステートの生成と設定
+	/**
+	* \brief  CreatePipeLineState パイプラインステートの作成
+	* \param  pipeline パイプライン構造体のポインタ
+	*/
 	void CreatePipeLineState(Pipeline* pipeline);
 
-	// マテリアルの生成
+	/// \brief  CreateMaterial マテリアルの作成
 	void CreateMaterial();
 
+	/// \brief  DrawImGui ImGui描画
 	void DrawImGui() override;
 
 private: // メンバ変数

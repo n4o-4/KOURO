@@ -29,16 +29,31 @@ public:
 
 public: // 公開メンバ関数
 	
+	/**
+	* \brief  初期化
+	* \param  dxCommon DirectX共通クラスへのポインタ
+	* \param  filePath モデルファイルのパス
+	*/
 	void Initialize(DirectXCommon* dxCommon, const std::string& filePath);
 
+	/**
+	* \brief  描画
+	* \param  viewProjection ビュープロジェクション情報
+	* \param  directionalLight ディレクショナルライト情報
+	* \param  pointLight ポイントライト情報
+	* \param  spotLight スポットライト情報
+	*/
 	void Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight);
 
 private:
 
+	/// \brief 頂点バッファの作成
 	void CreateRootSignature();
 
+	/// \brief グラフィックスパイプラインの作成
 	void CreateGraphicsPipeline();
 
+	/// \brief 頂点バッファの初期化
 	void InitializeIndexBuffer();
 
 private:

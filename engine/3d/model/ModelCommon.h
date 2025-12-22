@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "DirectXCommon.h"
 
 // \brief ModelCommon
@@ -8,9 +8,17 @@
 class ModelCommon
 {
 public:
-	// 初期化
+	
+	/**
+	* \brief  初期化
+	* \param  dxCommon DirectX共通クラスへのポインタ
+	*/
 	void Initialize(DirectXCommon* dxCommon);
 
+	/**
+	* \brief  directXCommon取得
+	* \return directXCommon
+	*/
 	DirectXCommon* GetDxCommon() { return dxCommon_; }
 
 private:

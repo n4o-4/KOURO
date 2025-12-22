@@ -12,12 +12,16 @@ class DebugCamera : public BaseCamera
 {
 public:
 
-	// 初期化
+	/// \brief 初期化
 	void Initialize() override;
 
-	// 更新
+	/// \brief 更新
 	void Update() override;
 
+	/**
+	* \brief ターゲット設定
+	* \param target ターゲットのワールド変換のポインタ
+	*/
 	ViewProjection& GetViewProjection() { return *viewProjection_; }
 
 private:

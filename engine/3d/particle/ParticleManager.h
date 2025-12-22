@@ -62,7 +62,7 @@ public:
 
 		float stretch;
 
-		float padding4[3]; 
+		float padding4[3];
 	};
 
 	struct CameraForGPU {
@@ -149,7 +149,7 @@ public:
 		bool enableDeceleration = false; // 減速を有効にするかどうか
 		float speed = 20.0f; // パーティクルの速度
 
-		
+
 
 		bool enablePulse = false; // 輝きを有効にするかどうか
 
@@ -190,26 +190,63 @@ public:
 	};
 
 public:
+	/**
+	* \brief  シングルトンインスタンスの取得
+	* \return ParticleManagerのインスタンス
+	*/
 	static ParticleManager* GetInstance();
 
+	/**
+	* \brief  ParticleManagerの初期化
+	* \param  dxCommon DirectXCommonのポインタ
+	*/
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
+	/// \brief パーティクルの更新
 	void Update();
 
+	/**
+	* \brief  パーティクルの描画
+	* \param  filePath シェーダーファイルのパス
+	*/
 	void Draw(std::string filePath);
 
-	// パーティクルグループの生成関数
+	/**
+	* \brief  パーティクルグループの作成
+	* \param  name パーティクルグループの名前
+	* \param  textureFilePath テクスチャファイルのパス
+	* \param  type パーティクルのタイプ
+	*/
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath, ParticleType type);
 
+	/**
+	* \brief  パーティクルの発生
+	* \param  name パーティクルグループの名前
+	* \param  position 発生位置
+	* \param  count 発生数
+	* \param  states パーティクルの状態情報
+	*/
 	void Emit(const std::string name, const Vector3& position, uint32_t count, ParticleStates states);
 
+	/**
+	* \brief  放射状にパーティクルを発生させる
+	* \param  name パーティクルグループの名前
+	* \param  position 発生位置
+	* \param  count 発生数
+	* \param  states パーティクルの状態情報
+	*/
 	void RadialEmit(const std::string name, const Vector3& position, uint32_t count, ParticleStates states);
 
+	/**
+	* \brief  パーティクルグループの取得
+	* \return particleGroups パーティクルグループ群
+	*/
 	std::unordered_map<std::string, ParticleGroup> GetParticleGroups() { return particleGroups; }
 
+	/// \brief 終了処理
 	void Finalize();
 
-	// particleGroupsをリセット
+	/// \brief パーティクルグループのリセット
 	void ResetParticleGroups() {
 		for (auto& group : particleGroups) {
 			// MaterialDataのリセット
@@ -235,8 +272,16 @@ public:
 		}
 	}
 
+	/**
+	* \brief  CameraManagerのセット
+	* \param  cameraManager CameraManagerのポインタ
+	*/
 	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
 
+	/**
+	* \brief  パーティクルグループの取得
+	* \param  name パーティクルグループの名前
+	*/
 	ParticleGroup* GetParticleGroup(const std::string& name) {
 		auto it = particleGroups.find(name);
 		if (it != particleGroups.end()) {
@@ -256,33 +301,52 @@ private:
 	ParticleManager(ParticleManager&) = delete;
 	ParticleManager& operator= (ParticleManager&) = delete;
 
-	// シグネチャの生成関数
+	/// \brief ルートシグネチャの作成
 	void CreateRootSignature();
 
-	// パイプラインの生成関数
+	/// \brief パイプラインステートの作成
 	void CreatePipeline();
 
-	// 頂点データの初期化関数
+	///	\brief 頂点データの初期化
 	void InitializeVertexData();
 
-	// 頂点リソースの生成関数
+	/// \brief 頂点リソースの作成
 	void CreateVertexResource();
 
-	// 頂点バッファビューの生成関数
+	/// \brief 頂点バッファビューの作成
 	void CreateVertexBufferView();
 
-	// 頂点リソースに頂点データを書き込む関数
+	/// \brief マテリアルリソースの作成
 	void WriteDataInResource();
 
+	/// \brief ビルボード行列の計算
 	void calculationBillboardMatrix();
 
+	/**
+	* \brief  新しいパーティクルの作成
+	* \param  translate 発生位置
+	* \param  states パーティクルの状態情報
+	* \param  sameScale スケールを同じにするかどうか
+	* \param  speed パーティクルの速度
+	*/
 	Particle MakeNewParticle(const Vector3& translate, ParticleStates states,bool sameScale, float speed);
 
+	/**
+	* \brief  新しい放射状パーティクルの作成
+	* \param  translate 発生位置
+	* \param  states パーティクルの状態情報
+	* \param  sameScale スケールを同じにするかどうか
+	* \param  speed パーティクルの速度
+	*/
 	Particle MakeNewRadialParticle(const Vector3& translate, ParticleStates states, bool sameScale, float speed);
 
-	private:
+private:
 
-		void DecelerationUpdate(Particle& particle);
+	/**
+	* \brief  減速の更新
+	* \param  particle パーティクル参照
+	*/
+	void DecelerationUpdate(Particle& particle);
 
 private:
 

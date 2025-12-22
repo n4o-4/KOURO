@@ -65,7 +65,7 @@ void PlayerBullet::OnCollisionEnter(BaseCollider* other)
 	}
 
 	emitter_->SetPosition(worldTransform_->transform.translate);
-	emitter_->Emit();
+	//emitter_->Emit();
 }
 
 void PlayerBullet::OnCollisionStay(BaseCollider* other)

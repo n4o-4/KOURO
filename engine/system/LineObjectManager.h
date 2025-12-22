@@ -11,6 +11,7 @@ class LineObjectManager
 {
 public:
 
+	/// \brief Update 更新
 	void Update();
 
 	//void AddLineObject(std::unique_ptr<BaseLineObject> lineObject);

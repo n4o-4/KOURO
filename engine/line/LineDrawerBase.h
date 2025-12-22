@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #define NOMINMAX
 #include "DirectXCommon.h"
 #include "SrvManager.h"
@@ -88,18 +88,31 @@ private:
 	
 public: // メンバ関数
 
-	// 初期化
+	/**
+	* \brief  初期化
+	* \param  dxCommon DirectXCommonのポインタ
+	* \param  srvManager SrvManagerのポインタ
+	*/
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
-	// 描画
+	/**
+	* \brief  描画前処理
+	* \param  viewProjection ビュープロジェクション行列
+	*/
 	void PreDraw(ViewProjection viewProjection);
 
+	/**
+	* \brief  directXCommonのポインタ取得
+	* \return directXCommonのポインタ
+	*/
 	DirectXCommon* GetdxCommon() { return dxCommon_; }
 
 private: // メンバ関数
 
+	/// \brief ルートシグネチャの作成
 	void CreateRootSignature();
 
+	/// \brief パイプラインステートの作成
 	void CreatePipellineState();
 
 private: // メンバ変数

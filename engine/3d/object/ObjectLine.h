@@ -27,19 +27,22 @@ class ObjectLine
 {
 public:
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="lineDrawer"></param>
+	/**
+	* \brief  初期化
+	* \param  model ラインモデル
+	*/
 	void Initialize(LineModel* model);
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="worldTransform"></param>
-
+	/**
+	* \brief  描画
+	* \param  worldTransform ワールド変換情報
+	*/
 	void Draw(WorldTransform* worldTransform);
 
+	/**
+	* \brief  色の設定
+	* \param  color ラインの色
+	*/
 	void SetColor(const Vector4& color)
 	{
 		lineData_->color = color;

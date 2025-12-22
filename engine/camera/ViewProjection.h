@@ -30,12 +30,22 @@ class ViewProjection
 {
 public:
 
+	/// \brief  Initialize 初期化
 	void Initialize();
 
+	/// \brief  Update 更新
 	void Update();
 
+	/**
+	* \brief  GetViewProjectionResource ビュー・プロジェクション行列のリソース取得
+	* \return viewProjectionResource_ ビュー・プロジェクション行列のリソース
+	*/
 	Microsoft::WRL::ComPtr<ID3D12Resource> &GetViewProjectionResource() { return viewProjectionResource_; }
 
+	/**
+	* \brief  SetOffset オフセット設定
+	* \param  offset オフセット値
+	*/
 	void SetOffset(Vector3 offset) { traslateOffset = offset; }
 
 public:
