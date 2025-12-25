@@ -53,22 +53,6 @@ bool IsCollision(const OBB& obb1, const OBB& obb2)
 
 bool IsCollision(const AABB& aabb, const Sphere& sphere)
 {
-	//// AABB内でSphere中心に最も近い点を求める
-	//Vector3 closestPoint{
-	//	std::clamp(sphere.center.x, aabb.min.x + aabb.center.x, aabb.max.x + aabb.center.x),
-	//	std::clamp(sphere.center.y, aabb.min.y + aabb.center.y, aabb.max.y + aabb.center.y),
-	//	std::clamp(sphere.center.z, aabb.min.z + aabb.center.z, aabb.max.z + aabb.center.z)
-	//};
-
-	//// 最近接点と球の中心の距離を計算
-	//float dx = closestPoint.x - sphere.center.x;
-	//float dy = closestPoint.y - sphere.center.y;
-	//float dz = closestPoint.z - sphere.center.z;
-	//float distanceSq = dx * dx + dy * dy + dz * dz;
-
-	//// 距離の2乗が半径の2乗以下なら衝突
-	//return distanceSq <= (sphere.radius * sphere.radius);
-
     // AABBのワールド空間でのmin/maxを求める
     Vector3 aabbMinWorld = aabb.min + aabb.center;
     Vector3 aabbMaxWorld = aabb.max + aabb.center;

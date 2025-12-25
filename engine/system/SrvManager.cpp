@@ -1,4 +1,4 @@
-#include "SrvManager.h"
+﻿#include "SrvManager.h"
 
 const uint32_t SrvManager::kMaxSRVCount = 512;
 
@@ -33,6 +33,8 @@ uint32_t SrvManager::Allocate()
 D3D12_CPU_DESCRIPTOR_HANDLE SrvManager::GetCPUDescriptorHandle(uint32_t index)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE handleCPU = descriptorHeap->GetCPUDescriptorHandleForHeapStart();
+
+	// index分だけオフセットを加算
 	handleCPU.ptr += (descriptorSize * index);
 
 	return handleCPU;
@@ -41,6 +43,8 @@ D3D12_CPU_DESCRIPTOR_HANDLE SrvManager::GetCPUDescriptorHandle(uint32_t index)
 D3D12_GPU_DESCRIPTOR_HANDLE SrvManager::GetGPUDescriptorHandle(uint32_t index)
 {
 	D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap->GetGPUDescriptorHandleForHeapStart();
+
+	// index分だけオフセットを加算
 	handleGPU.ptr += (descriptorSize * index);
 
 	return handleGPU;
@@ -117,23 +121,31 @@ void SrvManager::SetGraphicsRootDescriptorTable(UINT RootParameterIndex, uint32_
 
 bool SrvManager::CheckSrvCount()
 {
+	// 使用中のSRV数が上限に達していないか確認
 	if (useIndex < kMaxSRVCount)
 	{
+		// 上限に達していない
 		return true;
 	}
-	else {
+	else
+	{
+		// 上限に達している
 		return false;
 	}
 }
 
 void SrvManager::CreateSrvForDepth()
 {
+	// 空いているIndexを取得
 	uint32_t index = Allocate();
 
+	// 深度ステンシルビュー用テクスチャリソースを取得
     ID3D12Resource* depthStencilResource = dxCommon_->GetDepthStencilResource().Get();
 
+	// リソース名を設定
 	depthStencilResource->SetName(L"DepthTexture");
 
+	// SRVの設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
 	depthTextureSrvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 	depthTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -142,5 +154,6 @@ void SrvManager::CreateSrvForDepth()
 	dxCommon_->GetDevice()->CreateShaderResourceView(depthStencilResource, &depthTextureSrvDesc, GetCPUDescriptorHandle(index));
 
 	dxCommon_->SetDepthSrvIndex(index);
+
 	dxCommon_->SetDepthHandle(GetCPUDescriptorHandle(index));
 }

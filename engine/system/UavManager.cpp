@@ -50,6 +50,8 @@ void UavManager::CreateUAVforStructuredBuffer(uint32_t uavIndex, ID3D12Resource*
 D3D12_CPU_DESCRIPTOR_HANDLE UavManager::GetCPUDescriptorHandle(uint32_t index)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE handleCPU = descriptorHeap_->GetCPUDescriptorHandleForHeapStart();
+
+	// インデックス分だけオフセットを進める
 	handleCPU.ptr += (descriptorSize_ * index);
 
 	return handleCPU;
@@ -59,6 +61,8 @@ D3D12_GPU_DESCRIPTOR_HANDLE UavManager::GetGPUDescriptorHandle(uint32_t index)
 {
 
 	D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap_->GetGPUDescriptorHandleForHeapStart();
+
+	// インデックス分だけオフセットを進める
 	handleGPU.ptr += (descriptorSize_ * index);
 
 	return handleGPU;
@@ -66,12 +70,15 @@ D3D12_GPU_DESCRIPTOR_HANDLE UavManager::GetGPUDescriptorHandle(uint32_t index)
 
 bool UavManager::CheckUavCount()
 {
+	// 使用しているUAVインデックスが上限に達しているかどうか確認する
 	if (useIndex_ < kMaxUAVCount)
 	{
+		// 上限に達していない
 		return true;
 	}
 	else
 	{
+		// 上限に達している
 		return false;
 	}
 }

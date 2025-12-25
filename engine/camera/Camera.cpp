@@ -1,4 +1,4 @@
-#include "Camera.h"
+﻿#include "Camera.h"
 #include "WinApp.h"
 
 std::unique_ptr<Camera> Camera::instance = nullptr;
@@ -14,8 +14,7 @@ Camera* Camera::GetInstance()
 
 void Camera::Initialize()
 {
-
-
+	// 基底クラスの初期化
 	BaseCamera::Initialize();
 }
 
@@ -29,9 +28,6 @@ void Camera::Finalize()
 
 void Camera::Update()
 {
-
-
-
-
+	// 基底クラスの更新
 	BaseCamera::Update();
 }

@@ -44,11 +44,6 @@ void TextureManager::Finalize()
 
 void TextureManager::LoadTexture(const std::string& filePath)
 {
-
-	/*if (textureDatas.find(filePath) != textureDatas.end()) {
-		return;
-	}*/
-
 	if (textureDatas.contains(filePath))
 	{
 		return;
@@ -160,7 +155,6 @@ uint32_t TextureManager::GetTextureIndexByFilePath(const std::string& filePath)
 		return it->second.srvIndex;
 	}
 
-	//assert(0);
 	return 0;
 }
 

@@ -203,9 +203,11 @@ void Skybox::CreateRootSignature()
 void Skybox::CreateGraphicsPipeline()
 {
 	HRESULT hr;
-
+	
+	// RootSignatureの作成
 	CreateRootSignature();
 
+	// InputLayoutの設定
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
@@ -299,6 +301,7 @@ void Skybox::CreateGraphicsPipeline()
 
 void Skybox::InitializeIndexBuffer()
 {
+	// インデックスバッファの生成
 	indexResource_ = dxCommon_->CreateBufferResource(sizeof(uint32_t) * 36);
 
 	indexBufferView_.BufferLocation = indexResource_.Get()->GetGPUVirtualAddress();

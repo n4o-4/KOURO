@@ -1,4 +1,4 @@
-#include "DirectionalLight.h"
+﻿#include "DirectionalLight.h"
 
 void DirectionalLight::Initilaize()
 {
@@ -20,6 +20,7 @@ void DirectionalLight::Initilaize()
 
 void DirectionalLight::Update()
 {
+	// データ転送
 	directionalLightData_->color = color_;
 	directionalLightData_->direction = direction_;
 	directionalLightData_->intensity = intensity_;

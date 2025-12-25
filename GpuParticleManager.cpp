@@ -19,14 +19,18 @@ void GpuParticleManager::Initialize()
 {
 	dxCommon_ = DirectXCommon::GetInstance();
 
+	// リソースの作成
 	CreateResources();
 
+	// パイプラインセットの作成
 	CreatePipelineSets();
 
 	ModelLoader loader;
 
+	// パーティクルグループの作成
 	CreateParticleGroup("normal", "Resources/circle.png", loader.LoadModel("plane.obj"));
 
+	// エミッター用リソースの作成と初期化
 	emitterSphereShellResource_ = gpuResourceUtils_->CreateBufferResource(sizeof(EmitterSphereShell));
 	EmitterSphereShell* emitter = nullptr;
 	emitterSphereShellResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&emitter));
@@ -37,6 +41,7 @@ void GpuParticleManager::Initialize()
 
 	auto& group = particleGroups_.find("normal")->second;
 
+	// パーティクルの初期化
 	srvManager_->PreDraw();
 	uavManager_->PreDraw();
 
@@ -58,6 +63,7 @@ void GpuParticleManager::Initialize()
 
 void GpuParticleManager::Update()
 {
+	// 定数バッファの更新
 	srvManager_->PreDraw();
 	uavManager_->PreDraw();
 
@@ -95,41 +101,26 @@ void GpuParticleManager::Draw(ViewProjection viewPro)
 
 	Matrix4x4 projection = viewPro.matProjection_;
 
+	// ビュープロジェクション行列の計算
 	perView_->viewProjection = Multiply(view, projection);
 
+	// ビルボード行列の計算
 	Matrix4x4 backToFrontMatrix = MakeRotateZMatrix(std::numbers::pi_v<float>);
-
 	perView_->billboardMatrix = Multiply(backToFrontMatrix, viewPro.matWorld_);
 
+	// 定数バッファの転送
 	for (auto it = particleGroups_.begin(); it != particleGroups_.end(); ++it)
 	{
 		auto& group = it->second;
 
-		// rootSignature
 		dxCommon_->GetCommandList()->SetGraphicsRootSignature(pipelineSets_.find("draw")->second->rootSignature.Get());
-
-		// pipeLineState
 		dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("draw")->second->pipelineState.Get());
-
-		// 
 		dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &group.vertexBufferView);
-
-		// 
 		dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		// 
 		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, group.materialResource.Get()->GetGPUVirtualAddress());
-
-		// SRV
 		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(group.particleSrvIndex));
-
-		// 
 		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, srvManager_->GetGPUDescriptorHandle(group.textureIndex));
-
-		// 
 		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, perViewResource_.Get()->GetGPUVirtualAddress());
-
-		// 
 		dxCommon_->GetCommandList()->DrawInstanced(6, kMaxParticleCount, 0, 0);
 	}
 }
@@ -238,7 +229,6 @@ void GpuParticleManager::LineEmit(std::string groupName, uint32_t lineSrvIndex, 
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(7, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(8, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
 
-	// Dispatch�̎��s
 	dxCommon_->GetCommandList()->Dispatch(static_cast<UINT>(lineCount), 1, 1);
 
 	D3D12_RESOURCE_BARRIER barrier1{};
@@ -701,7 +691,7 @@ void GpuParticleManager::CreateGraphicsPipelineSet()
 {
 	std::unique_ptr<PipelineSet> pSet = std::make_unique<PipelineSet>();
 
-	// rootSignature�̐���
+	// rootSignature
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
@@ -717,7 +707,7 @@ void GpuParticleManager::CreateGraphicsPipelineSet()
 	descriptorRangeForInstancing[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRangeForInstancing[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	// rootParameter�̐���
+	// rootParameter
 	D3D12_ROOT_PARAMETER rootParameters[4] = {};
 
 	// material
@@ -731,13 +721,13 @@ void GpuParticleManager::CreateGraphicsPipelineSet()
 	rootParameters[1].DescriptorTable.pDescriptorRanges = descriptorRangeForInstancing;
 	rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeForInstancing);
 
-	// 
+	// texture
 	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;
 	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
 
-	// 
+	// transform
 	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 	rootParameters[3].Descriptor.ShaderRegister = 1;
@@ -745,23 +735,22 @@ void GpuParticleManager::CreateGraphicsPipelineSet()
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
-	// sampler�̐���
+	// sampler
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
-	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // �o�C�i���t�B���^
-	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // 0~1�͈̔͊O����s�[�g
-	//staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP; // X���W
+	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	//staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-	//staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // Y���W
+	//staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // ��r���Ȃ�
-	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX; // ������MipMap��g��
+	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
 	staticSamplers[0].ShaderRegister = 0;
 	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	descriptionRootSignature.pStaticSamplers = staticSamplers;
 	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
 
-	// �V���A���C�Y���ăo�C�i���ɂ���
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 
@@ -771,11 +760,10 @@ void GpuParticleManager::CreateGraphicsPipelineSet()
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
-	// �o�C�i�������RootSignature�𐶐�
 	hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&pSet->rootSignature));
 	assert(SUCCEEDED(hr));
 
-	// InputLayout�̐ݒ�
+	// InputLayout
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
@@ -796,42 +784,32 @@ void GpuParticleManager::CreateGraphicsPipelineSet()
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
 
-	// RasterizerState�̐ݒ�
+	// RasterizerState
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
 
-	// ����(���v���)��\�����Ȃ�
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 
-	// �O�p�`�̒���h��Ԃ�
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
-	// Shader�̃R���p�C��
 	Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.CS.VS.hlsl", L"vs_6_0");
 
 	Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Particle.CS.PS.hlsl", L"ps_6_0");
 
-	// DepthStencilState�̐ݒ�
+	// DepthStencilState
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 
-	// Depth�̋@�\��L��������
 	depthStencilDesc.DepthEnable = true;
 
-	// �������݂��܂�
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 
-	// ��r�֐���LessEqual�B�߂���Ε`�悳���
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
 
-	// BlendState�̐ݒ�
+	// BlendState
 	D3D12_BLEND_DESC blendDesc{};
 
-	// �S�Ă̗v�f�����������
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-
-
 	blendDesc.RenderTarget[0].BlendEnable = TRUE;
-
 
 	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
@@ -849,22 +827,18 @@ void GpuParticleManager::CreateGraphicsPipelineSet()
 	graphicsPipelineStateDesc.BlendState = blendDesc;
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;
 
-	// ��������RTV�̏��
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 
-	// ���p����g�|���W�[(�`��)�̃^�C�v�B�O�p�`
 	graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-	// �ǂ̂悤�ɉ�ʂɐF����邩
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-	// DepthStencil�̐ݒ�
+	// DepthStencil
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	// ���ۂɐ���
 	pSet->pipelineState = nullptr;
 	hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&pSet->pipelineState));
 	assert(SUCCEEDED(hr));

@@ -15,9 +15,12 @@ void BaseCamera::Initialize()
 
 void BaseCamera::Update()
 {
+	// ワールド行列の計算
 	worldMatrix = MakeAffineMatrix(viewProjection_->transform.scale, viewProjection_->transform.rotate, viewProjection_->transform.translate);
 
+	// オフセット設定
 	viewProjection_->SetOffset(offset_);
 
+	// viewProjectionの更新
 	viewProjection_->Update();
 }

@@ -59,14 +59,17 @@ void WinApp::Finalize()
 
 bool WinApp::ProcessMessage()
 {
+	// メッセージ処理
 	MSG msg{};
 
+	// メッセージがあるか
 	if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
 
+	// 終了メッセージが来たらtrueを返す
 	if (msg.message == WM_QUIT)
 	{
 		return true;

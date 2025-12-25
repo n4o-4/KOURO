@@ -1,4 +1,4 @@
-#include "AnimationManager.h"
+﻿#include "AnimationManager.h"
 
 void AnimationManager::Update()
 {
@@ -57,10 +57,13 @@ void AnimationManager::LoadAnimationFile(const std::string& directoryPath, const
         }
     }
    
+	// モデルデータの読み込み
     animation.modelData = LoadModelFile(directoryPath, filename);
 
+	// モデルのスケールを調整
     animation.modelData.rootNode.transform.scale = { 0.5f,0.5f,0.5f };
 
+	// スケルトンの作成
 	animation.skeleton = CreateSkeleton(animation.modelData.rootNode);
 
     // 解析完了
@@ -73,6 +76,7 @@ ModelData AnimationManager::LoadModelFile(const std::string& directoryPath, cons
 
     Assimp::Importer importer;
 
+	// ファイルパスの生成
     std::string filePath = directoryPath + "/" + filename;
 
     const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
@@ -112,6 +116,7 @@ ModelData AnimationManager::LoadModelFile(const std::string& directoryPath, cons
         }
     }
 
+	// マテリアル情報の取得
     for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex)
     {
         aiMaterial* material = scene->mMaterials[materialIndex];
@@ -122,6 +127,7 @@ ModelData AnimationManager::LoadModelFile(const std::string& directoryPath, cons
             modelData.material.textureFilePath = directoryPath + "/" + textureFilePath.C_Str();
         }
     }
+	// ノード情報の取得
 
     modelData.rootNode = Model::ReadNode(scene->mRootNode);
 
@@ -168,16 +174,19 @@ void AnimationManager::PlayAnimation()
 {
     for (auto it = activeAnimations.begin(); it != activeAnimations.end();)
     {
+		// フレーム時間の取得
         AnimationState animationState = it->second;
 
         animationState.animationTime += deltaTime; // 後に可変フレームに対応させる
 
+		// アニメーションの終了判定
         if (animationState.isInfiniteLoop)
         {
             animationState.animationTime = fmod(animationState.animationTime, animationState.animation.duration);
         }
         else
         {
+			// ループ回数に達していたら終了
             if (animationState.animationTime = fmod(animationState.animationTime, animationState.animation.duration))
             {
                 ++animationState.currentLoopCount;
@@ -193,6 +202,7 @@ void AnimationManager::PlayAnimation()
         Vector3 translate;
         Quaternion rotate;
 
+		// ルートノードのローカル行列を更新
         if (auto it = animationState.animation.nodeAnimations.find(animationState.animation.modelData.rootNode.name); it != animationState.animation.nodeAnimations.end())
         {
             const NodeAnimation& nodeAnimation = it->second;
@@ -208,6 +218,7 @@ void AnimationManager::PlayAnimation()
         Quaternion rotate = CalculateQuaternion(rootNodeAnimation.rotate.keyframes, animationState.animationTime);
         Vector3 scale= CalculateValue(rootNodeAnimation.scale.keyframes, animationState.animationTime);*/
 
+		// SkeletonのJointを更新
         for (Joint& joint : animationState.animation.skeleton.joints)
         {
             // 対象のJointのAnimationがあれば、値の適用を行う
@@ -220,6 +231,7 @@ void AnimationManager::PlayAnimation()
 			}
         }
 
+		// Skeletonの更新
         SkeletonUpdate(animationState.animation.skeleton);
 
         it->second = animationState;

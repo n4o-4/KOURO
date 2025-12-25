@@ -19,7 +19,7 @@ AudioManager* AudioManager::GetInstance()
 
 void AudioManager::Initialize()
 {
-
+	// COMライブラリの初期化
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	if (FAILED(hr))
 	{
@@ -27,8 +27,8 @@ void AudioManager::Initialize()
 		return;
 	}
 
+	// Media Foundationの初期化
 	MFStartup(MF_VERSION, MFSTARTUP_NOSOCKET);
-
 }
 
 void AudioManager::Finalize()
@@ -41,6 +41,7 @@ void AudioManager::SoundLoadFile(const char* filename)
 	// filenameをstringに変換
 	std::string fileStr = filename;
 
+	// 拡張子で分岐
 	if (fileStr.size() >= 4 && fileStr.substr(fileStr.size() - 4) == ".wav")
 	{
 		SoundLoadWave(filename);
@@ -53,9 +54,10 @@ void AudioManager::SoundLoadFile(const char* filename)
 
 void AudioManager::SoundUnload()
 {
-
+	// 全ての音声データを解放
 	for (auto& [key, soundData] : soundDatas)
 	{
+		// バッファが存在すれば解放
 		if (soundData.pBuffer)
 		{
 			delete[] soundData.pBuffer;
@@ -176,6 +178,7 @@ void AudioManager::SoundLoadMP3(const char* filename)
 	IMFSourceReader* pSourceReader = nullptr;
 	MFCreateSourceReaderFromURL(wFileStr.c_str(), NULL, &pSourceReader);
 
+	// 出力メディアタイプの設定
 	IMFMediaType* pMediaType = nullptr;
 	MFCreateMediaType(&pMediaType);
 	pMediaType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
@@ -195,6 +198,7 @@ void AudioManager::SoundLoadMP3(const char* filename)
 
 	while (true)
 	{
+		// サンプルの読み込み
 		IMFSample* pMFSample{ nullptr };
 		DWORD dwStreamFlags{ 0 };
 		HRESULT hr = pSourceReader->ReadSample(
@@ -206,6 +210,7 @@ void AudioManager::SoundLoadMP3(const char* filename)
 			break;
 		}
 
+		// サンプルからメディアバッファを取得
 		IMFMediaBuffer* pMFMediaBuffer{ nullptr };
 		if (pMFSample)
 		{
@@ -216,6 +221,7 @@ void AudioManager::SoundLoadMP3(const char* filename)
 			}
 		}
 
+		// メディアバッファのロック
 		BYTE* pBuffer{ nullptr };
 		DWORD cbCurrentLength{ 0 };
 		hr = pMFMediaBuffer->Lock(&pBuffer, nullptr, &cbCurrentLength);

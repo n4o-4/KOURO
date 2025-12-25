@@ -1,4 +1,4 @@
-#include "SpotLight.h"
+﻿#include "SpotLight.h"
 
 void SpotLight::Initialize()
 {
@@ -7,7 +7,8 @@ void SpotLight::Initialize()
 
 	// データをマップ
 	spotLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&spotLightData_));
-
+	
+	// 初期値設定	
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
 	position_ = { 2.0f,1.25f,0.0f };
 	intensity_ = 1.0f;
@@ -29,6 +30,7 @@ void SpotLight::Initialize()
 
 void SpotLight::Update()
 {
+	// データ転送
 	spotLightData_->color = color_;
 	spotLightData_->position = position_;
 	spotLightData_->intensity = intensity_;

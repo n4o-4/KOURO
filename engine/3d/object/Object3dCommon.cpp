@@ -1,4 +1,4 @@
-#include "Object3dCommon.h"
+﻿#include "Object3dCommon.h"
 
 #include "TextureManager.h"
 
@@ -128,8 +128,10 @@ void Object3dCommon::CreateGraphicsPipeline()
 {
 	HRESULT hr;
 
+	// RootSignatureの作成
 	CreateRootSignature();
 
+	// InputLayoutの設定
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;

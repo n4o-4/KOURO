@@ -1,4 +1,4 @@
-#include "Object3d.h"
+﻿#include "Object3d.h"
 #include "MyMath.h"
 #include "TextureManager.h"
 #include "ModelDatas.h"
@@ -37,26 +37,11 @@ void Object3d::Initialize(Object3dCommon* object3dCommon)
 
 void Object3d::Update()
 {
+	// ワールド行列の計算
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 	Matrix4x4 worldViewProjectionMatrix;
 	
 #ifdef _DEBUG
-
-	//ImGui::DragFloat3("light.Direction", &directionLightData->direction.x);
-
-	//if (ImGui::DragFloat3("light.Direction", &directionLightData->direction.x,0.01f)) {
-	//	// Normalize the direction vector
-	//	Vector3& dir = directionLightData->direction;
-	//	float length = std::sqrt(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
-	//	if (length > 0.0f) {
-	//		dir.x /= length;
-	//		dir.y /= length;
-	//		dir.z /= length;
-	//	}
-	//}
-
-	//ImGui::DragFloat("light.intensity", &directionLightData->intensity, 0.01f);
-
 
 #endif
 
@@ -68,14 +53,16 @@ void Object3d::Update()
 
 		worldViewProjectionMatrix = worldMatrix;
 	}
-	//transformationMatrixData->WVP = worldViewProjectionMatrix;
 }
 
 void Object3d::Draw(WorldTransform worldTransform,ViewProjection viewProjection,DirectionalLight directionalLight ,PointLight pointLight,SpotLight spotLight)
 {
+	// ワールド行列を計算
 	worldTransform.matWorld_ = localMatrix * worldTransform.matWorld_;
 
+	// 行列の転送
 	worldTransform.TransferMatrix();
+
 
 	object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_.Get()->GetGPUVirtualAddress());
 
@@ -87,6 +74,7 @@ void Object3d::Draw(WorldTransform worldTransform,ViewProjection viewProjection,
 
 	object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(6, spotLight.GetSpotLightResource()->GetGPUVirtualAddress());
 
+	// モデルの描画
 	if (model) {
 		model->Draw(worldTransform);
 	}
@@ -94,6 +82,7 @@ void Object3d::Draw(WorldTransform worldTransform,ViewProjection viewProjection,
 
 void Object3d::SetModel(const std::string& filePath)
 {
+	// モデルの取得して設定
 	model = ModelManager::GetInstance()->FindModel(filePath);
 }
 

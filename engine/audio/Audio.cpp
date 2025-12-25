@@ -1,4 +1,4 @@
-#include "Audio.h"
+﻿#include "Audio.h"
 
 #include "assert.h"
 
@@ -12,6 +12,7 @@ void Audio::Initialize()
 	// マスターボイスを生成
 	result = xAudio2->CreateMasteringVoice(&masterVoice);
 
+	// マスターボイスの音量を設定
 	masterVoice->SetVolume(1.0f);
 
 }
@@ -67,12 +68,12 @@ void Audio::SoundPlay(const char* filename,int loopCount)
 
 void Audio::SoundStop(const char* filename)
 {
-
+	// 波系フォーマットを元にSourceVoiceの生成
 	auto soundDatas = AudioManager::GetInstance()->GetSoundData();
 
 	if (soundDatas.find(filename) != soundDatas.end())
 	{
-
+		// 再生する波形データの設定
 		XAUDIO2_BUFFER buf{};
 		buf.pAudioData = soundDatas.find(filename)->second.pBuffer;
 		buf.AudioBytes = soundDatas.find(filename)->second.bufferSize;

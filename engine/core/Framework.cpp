@@ -101,12 +101,15 @@ void Framework::Update()
 
 	Camera::GetInstance()->Update();
 
+	// メッセージ処理
 	if (winApp->ProcessMessage()) {
 		endRequest_ = true;
 	}
-
+	
+	// 入力情報の更新
 	Input::GetInstance()->Update();
-
+	
+	// シーンマネージャーの更新
 	SceneManager::GetInstance()->Update();
 
 	UpdateFPS();
@@ -155,6 +158,7 @@ void Framework::Run()
 
 GpuContext Framework::CreateGpuContext()
 {
+	// GpuContextの作成
 	GpuContext gpuContext;
 
 	gpuContext.d3d12Context = DirectXCommon::GetInstance()->CreateD3D12Context();
@@ -167,6 +171,7 @@ GpuContext Framework::CreateGpuContext()
 
 EngineContext Framework::CreateEngineContext()
 {
+	// EngineContextの作成
 	EngineContext engineContext;
 	
 	engineContext.gpuContext = CreateGpuContext();

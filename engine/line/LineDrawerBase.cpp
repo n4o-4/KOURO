@@ -1,4 +1,4 @@
-#include "LineDrawerBase.h"
+﻿#include "LineDrawerBase.h"
 #include "ModelDatas.h"
 #include <algorithm>
 
@@ -174,34 +174,3 @@ void LineDrawerBase::CreatePipellineState()
 
 	assert(SUCCEEDED(hr));
 }
-
-//void LineDrawerBase::CreateCatmullRomLine(std::vector<Vector3> points, WorldTransform* transform)
-//{
-//	auto newObject = CreateBaseLineData(Type::CatmullRom);
-//	int vertexIndex = 0;
-//	const int segments = 1024;
-//
-//	for (uint32_t i = 0; i < segments; ++i)
-//	{
-//		float t = (1.0f / segments) * i;
-//
-//		Vector3 position = CatmullRomPosition(points, t);
-//
-//		newObject.get()->vertexData[vertexIndex++].position = { position.x, position.y, position.z, 1.0f };
-//	}
-//
-//	newObject.get()->vertexIndex = vertexIndex;
-//
-//	CreateLineResource(newObject.get()); 
-//
-//	if (transform == nullptr)
-//	{ 
-//		newObject.get()->transform = worldTransform_.get();
-//	}
-//	else
-//	{
-//		newObject.get()->transform = transform;
-//	}
-//
-//	lineObjects_.push_back(std::move(newObject));
-//}

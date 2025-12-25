@@ -55,6 +55,8 @@ void DebugCamera::Update()
    }
 
 #endif
+
+   // マウスの左ボタンが押されている間、カメラを回転
    if (Input::GetInstance()->PushMouseButton(Input::MouseButton::LEFT))  
    {  
        Vector3 rotate = { static_cast<float>(Input::GetInstance()->mouseState.lY) * 0.0008f, static_cast<float>(Input::GetInstance()->mouseState.lX) * 0.0008f,0.0f };  
@@ -63,8 +65,6 @@ void DebugCamera::Update()
 
       
    }  
-
-
 
    // カメラの角度から回転行列を計算  
    rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);

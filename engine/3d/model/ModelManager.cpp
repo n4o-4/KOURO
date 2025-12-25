@@ -1,4 +1,4 @@
-#include "ModelManager.h"
+﻿#include "ModelManager.h"
 
 std::unique_ptr<ModelManager> ModelManager::instance = nullptr;
 
@@ -16,6 +16,7 @@ void ModelManager::Initialize(DirectXCommon* dxCommon)
 	/*modelCommon = new ModelCommon;
 	modelCommon->Initialize(dxCommon);*/
 
+	// モデル共通情報の初期化
 	modelCommon = std::make_unique<ModelCommon>();
 	modelCommon->Initialize(dxCommon);
 }

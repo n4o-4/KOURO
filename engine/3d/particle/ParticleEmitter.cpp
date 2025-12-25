@@ -1,4 +1,4 @@
-#include "ParticleEmitter.h"
+﻿#include "ParticleEmitter.h"
 
 void ParticleEmitter::Initialize(std::string name)
 {
@@ -11,6 +11,7 @@ void ParticleEmitter::Initialize(std::string name)
 
 	this->name = name;
 
+	// エミッタの初期設定
 	emitter.count = 3;
 	emitter.frequency = 0.5f;
 	emitter.frequencyTime = 0.0f;
@@ -38,13 +39,13 @@ void ParticleEmitter::Initialize(std::string name)
 
 void ParticleEmitter::Emit()
 {
-
+	// ParticleManagerのEmit関数を呼び出してパーティクルを放出
 	ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count,particleStates);
-
 }
 
 void ParticleEmitter::RadialEmit()
 {
+	// ParticleManagerのRadialEmit関数を呼び出して放射状にパーティクルを放出
 	ParticleManager::GetInstance()->RadialEmit(name, emitter.transform.translate, emitter.count, particleStates);
 }
 
@@ -62,31 +63,38 @@ void ParticleEmitter::Emit(uint32_t count,Vector3 startColor,Vector3 finishColor
 
 void ParticleEmitter::SetPosition(const Vector3& position)
 {
+	// エミッタの位置を設定
     emitter.transform.translate = position;
 }
 
 void ParticleEmitter::SetParticleCount(uint32_t count)
 {
+	// 発生数を設定
     emitter.count = count;
 }
 
 void ParticleEmitter::SetFrequency(float frequency)
 {
+	// 発生頻度を設定
     emitter.frequency = frequency;
 }
 
 void ParticleEmitter::Update()
 {
+	// パーティクルグループの取得
 	particleGroups = ParticleManager::GetInstance()->GetParticleGroups();
 
+	// 発生頻度に基づいてパーティクルを放出
 	emitter.frequencyTime += kDeltaTime;
 
+	// 発生頻度に達した場合、パーティクルを放出
 	if (emitter.frequency <= emitter.frequencyTime) {
 		
 		emitter.frequencyTime -= emitter.frequency;
 
 		if (particleGroups.find(name) != particleGroups.end())
 		{
+			// ParticleManagerのEmit関数を呼び出してパーティクルを放出
 			ParticleManager::GetInstance()->Emit(name, emitter.transform.translate, emitter.count, particleStates);
 		}
 	}
