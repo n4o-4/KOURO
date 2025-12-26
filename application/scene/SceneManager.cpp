@@ -1,4 +1,4 @@
-#include "SceneManager.h"
+﻿#include "SceneManager.h"
 #include <assert.h>
 
 std::unique_ptr<SceneManager> SceneManager::instance = nullptr;
@@ -65,9 +65,10 @@ void SceneManager::Update()
 
 #endif
 
+	// nextScene_がある場合はシーン切り替え処理
 	if (nextScene_)
 	{
-		// 
+		//	現在のシーンがある場合は終了処理
 		if (scene_)
 		{
 			scene_->Finalize();	
@@ -75,14 +76,16 @@ void SceneManager::Update()
 			scene_ = nullptr;
 		}
 
+		// シーン切り替え
 		scene_ = std::move(nextScene_);
 		nextScene_ = nullptr;
 		
+		// ポストエフェクトのアクティブエフェクトをリセット
 		postEffect_->ResetActiveEffect();
 
+		// シーンの初期化
 		scene_->SetSceneManager(this);
 		scene_->SetSrvManager(srvManager_);
-
 		scene_->Initialize(engineContext_);
 	}
 

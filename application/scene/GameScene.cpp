@@ -314,12 +314,10 @@ void GameScene::Finalize()
 ///						更新
 void GameScene::Update()
 {
+	// 基底クラスの更新
 	BaseScene::Update();
 
-	//emitter1_->Update();
-
-	//emitter2_->Update();
-
+	// パーティクルマネージャーの更新
 	ParticleManager::GetInstance()->Update();
 
 	//GpuParticle::GetInstance()->Update(cameraManager_->GetActiveCamera()->GetViewProjection());
@@ -377,18 +375,20 @@ void GameScene::Update()
 
 	transform_->UpdateMatrix();
 
-	
-
+	// プレイヤーが死亡していたら
 	if (!player_->GetIsAlive())
 	{
+		// Dissolveエフェクトの取得
 		auto* dissolve = static_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
 		dissolve->edgeColor = { 1.0f,0.0f,0.0f };
 		dissolve->thresholdWidth = 0.25f;
 
 		k += 0.01f;
 
+		// Dissolveエフェクトの閾値をイージングで増加させる
 		dissolve->threshold = Easing::EaseInQuad(k);
 
+		// 閾値が1.0f以上になったらシーンをゲームオーバーに変更
 		if (dissolve->threshold >= 1.0f)
 		{
 			sceneManager_->ChangeScene("OVER");
@@ -424,6 +424,7 @@ void GameScene::Update()
 
 #endif
 
+	// 敵の数を取得
 	size_t enemyCount = enemies_.size();
 
 	switch (phase_)
@@ -486,10 +487,12 @@ void GameScene::Update()
 			}
 		}
 
+		// 生存していない敵をリストから削除
 		std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {
 			return !enemy->GetIsAlive();
 			});
 
+		// 敵が全滅したらフェードアウトへ
 		if (enemyCount == 0)
 		{
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
@@ -501,6 +504,7 @@ void GameScene::Update()
 
 		if (fade_->IsFinished())
 		{
+			// 敵の数が0ならクリアシーンへ
 			if(enemyCount == 0)
 			{
 				grobalVariables_.SaveFile("ELIMINATED_ENEMY_COUNT", eliminatedEnemyCount_);
@@ -601,19 +605,23 @@ void GameScene::Draw()
 	DrawObject();
 	/// オブジェクト描画
 
+	// 線描画前設定
 	lineDrawer_->PreDraw(cameraManager_->GetActiveCamera()->GetViewProjection());
 
 	player_->Draw();
 
+	// 生存していない敵をリストから削除
 	enemies_.erase(std::remove_if(enemies_.begin(), enemies_.end(),
 		[](const std::shared_ptr<Enemy>& enemy) { return !enemy->GetIsAlive(); }),
 		enemies_.end());
 
+	// 敵の描画
 	for (auto& enemy : enemies_)
 	{
 		enemy->Draw();
 	}
 
+	// ステージの描画
 	stage_->Draw(transform_.get());
 
 	DrawForegroundSprite();

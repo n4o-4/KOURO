@@ -13,24 +13,27 @@ void Fade::Initialize()
 	// スプライトのアンカーポイントを真ん中に設定
 	curtain_->SetAnchorPoint(Vector2(0.5f, 0.5f));
 
+	// スプライトのサイズ、位置、色を設定
 	curtain_->SetSize(Vector2(1280.0f, 720.0f));
 
+	// TODO: WindowWidth, WindowHeightを使うように変更する
 	curtain_->SetTexSize(Vector2(1280.0f, 720.0f));
-
 	curtain_->SetPosition(Vector2(640.0f, 360.0f));
-
 	curtain_->SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
+	// スプライトの更新
 	curtain_->Update();
 
-
+	// フェードの初期ステータスをNoneに設定
 	Status status_ = Status::None;
 }
 
 void Fade::Update()
 {
+	// Fade処理の更新
 	UpdateFade();
-
+	
+	// スプライトの更新
 	curtain_->Update();
 }
 
@@ -47,6 +50,7 @@ void Fade::Draw()
 
 void Fade::Start(Status status, float duration)
 {
+	// フェードのステータスと持続時間を設定
 	status_ = status;
 	duration_ = duration;
 	counter_ = 0.0f;
@@ -54,6 +58,7 @@ void Fade::Start(Status status, float duration)
 
 bool Fade::IsFinished() const
 {
+	// ステータスでの個別の終了判定
 	switch (status_)
 	{
 	case Status::FadeIn:

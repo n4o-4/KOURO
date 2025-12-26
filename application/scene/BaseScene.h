@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <memory>
 #include "EngineContext.h"
@@ -59,7 +59,7 @@ public:
 	virtual void Update();
 
 	// \brief Draw 描画
-	virtual void Draw();
+	virtual void Draw() = 0;
 
 	/**
 	* \brief  SetSceneManager シーンマネージャーの設定

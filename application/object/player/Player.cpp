@@ -19,22 +19,28 @@ void Player::Initialize(LineModel* model)
 
 	SetCollisionAttribute(0b1); // コリジョン属性を設定
 
-	SetCollisionMask(0b1 << 1);
+	SetCollisionMask(0b1 << 1); // コリジョンマスクの設定
 
+	// AABBのサイズの設定
 	SetAABB(AABB({}, { -1.0f,-1.0f,-1.0f }, {1.0f,1.0f,1.0f}));
 
+	// 線モデルの色を設定
 	objectLine_->SetColor({ 0.071f, 0.429f, 1.0f,1.0f });
 
+	// レールのコントロールポイントを設定
 	rail.Initialize(controlPoints_);
 
+	// 座標の位置を設定
 	colliderTransform_->transform.translate = { 0.0f,0.0f,25.0f };
 
+	// 座標を一度更新
 	colliderTransform_->UpdateMatrix();
 
 	//colliderTransform_->SetParent(rail.GetWorldTransform());
 
 	hp_ = 1000;
 
+	// ブースト用の構造体の生成と初期化
 	quickMoveData_ = std::make_unique<QuickMoveData>();
 	quickMoveData_->isQuickMoving = false;
 	quickMoveData_->duration = 1.0f;
@@ -44,27 +50,40 @@ void Player::Initialize(LineModel* model)
 
 void Player::Update()
 {
+	// ヒットフラグをfalseに設定
 	isHit_ = false;
 
+	// 発射タイマーが0より大きい場合
 	if(fireTimer_ > 0.0f)
 	{
+		// 発射タイマーから経過時間を減算
 		fireTimer_ -= kDeltaTime;
 	}
+	// 発射タイマーが0以下だった場合
 	else
 	{
+		// スペースキーを押していたら
 		if (Input::GetInstance()->/*PushKey*/Triggerkey(DIK_SPACE) || Input::GetInstance()->PushKey(DIK_SPACE))
 		{
+			// 発射処理
 			Fire();
 		}
 	}
 
+	// ヒットのインターバルタイマーが0より大きい場合
 	if(actionData_.hitintervalTimer_ > 0.0f)
 	{
+		// インターバルのタイマーから経過時間を減算
 		actionData_.hitintervalTimer_ -= kDeltaTime;
 	}
+	
+	// ヒットのインターバルタイマーが0以下だったら
 	else
 	{
+		// タイマーを0に設定
 		actionData_.hitintervalTimer_ = 0.0f;
+
+		// 線モデルの色を設定
 		objectLine_->SetColor({ 0.071f, 0.429f, 1.0f,1.0f });
 	}
 
@@ -159,6 +178,7 @@ void Player::Update()
 
 	//worldTransform_->transform.rotate = { pitch, yaw, roll };
 
+	// 弾の更新
 	for (auto& bullet : bullets_)
 	{
 		bullet->Update();

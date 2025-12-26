@@ -1,11 +1,14 @@
-#include "GameOver.h"
+﻿#include "GameOver.h"
 
 void GameOver::Initialize(EngineContext context)
 {
+	// 基底クラスの初期化
 	BaseScene::Initialize(context);
 
+	// テクスチャの読み込み
 	TextureManager::GetInstance()->LoadTexture("Resources/GameOver.png");
 
+	// ゲームオーバー用のスプライトの生成と初期化
 	gameOverSprite_ = std::make_unique<Sprite>();
 	gameOverSprite_->Initialize(SpriteCommon::GetInstance(), "Resources/GameOver.png");
 	gameOverSprite_->SetSize({ 1280.0f,720.0f });
@@ -22,47 +25,71 @@ void GameOver::Finalize() {
 
 void GameOver::Update()
 {
+
 	switch (phase_)
 	{
+		// フェードイン中の処理
 	case Phase::kFadeIn:
 
+		// フェードが終了していたら
 		if (fade_->IsFinished())
 		{
+			// 入力の受付を有効に
 			Input::GetInstance()->SetIsReception(true);
+
+			// フェーズをメインに変更
 			phase_ = Phase::kMain;
 		}
 
 		break;
+
+		// メインの処理
 	case Phase::kMain:
 
+		// エンターキーかAボタンを押してたら
 		if (Input::GetInstance()->Triggerkey(DIK_RETURN) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
 		{
+			// フェードのステータスを設定して始める
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+
+			// フェーズをフェードアウトに
 			phase_ = Phase::kFadeOut;
 		}
 
+		// タイマーに経過時間を加算
 		timer_ += kDeltaTime;
 
+		// タイマーの時間が3以上だったら
 		if(timer_ > 3.0f)
 		{
+			// フェードのステータスを設定して始める
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+
+			// フェーズをフェードアウトに
 			phase_ = Phase::kFadeOut;
 		}
 
 		break;
+
+		// フェードアウト中の処理
 	case Phase::kFadeOut:
 
+		// フェードが終了したら
 		if (fade_->IsFinished())
 		{
-			SceneManager::GetInstance()->ChangeScene("GAME");
+			// シーンをタイトルにする
+			SceneManager::GetInstance()->ChangeScene("TITLE");
 
 			return;
 		}
 
 		break;
 
+		// プレイ中の処理
 	case Phase::kPlay:
 		break;
+
+		// ポーズ中の処理
 	case Phase::kPose:
 		break;
 	}

@@ -19,10 +19,5 @@ std::unique_ptr<BaseScene> SceneFactory::CreateScene(const std::string& sceneNam
         newScene = std::make_unique<GameOver>();
     }
 
-
-	/// 各個人のシーン
-
-	
-
     return newScene;
 }
