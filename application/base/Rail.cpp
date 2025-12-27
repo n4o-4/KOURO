@@ -22,20 +22,20 @@ void Rail::Update()
 
 	if (distanceTravelled >= arcLengthTable_.totalLength)
 	{
-		distanceTravelled = 0.0f;
+		distanceTravelled = kStartDistance;
 	}
 
 	// ------------------------------
 	// 現在位置 t を累積距離から逆算
 	// ------------------------------
-	float t = 1.0f; // デフォルトは最後
+	float t = kEndOfCurveT; // デフォルトは最後
 	for (int i = 1; i < arcLengthTable_.lengths.size(); ++i)
 	{
 		if (distanceTravelled <= arcLengthTable_.lengths[i])
 		{
-			float segmentLength = arcLengthTable_.lengths[i] - arcLengthTable_.lengths[i - 1];
-			float segmentT = (distanceTravelled - arcLengthTable_.lengths[i - 1]) / segmentLength;
-			t = (float)(i - 1 + segmentT) / (arcLengthTable_.lengths.size() - 1);
+			float segmentLength = arcLengthTable_.lengths[i] - arcLengthTable_.lengths[i - kPreviousIndexOffset];
+			float segmentT = (distanceTravelled - arcLengthTable_.lengths[i - kPreviousIndexOffset]) / segmentLength;
+			t = (float)(i - kPreviousIndexOffset + segmentT) / (arcLengthTable_.lengths.size() - 1);
 			break;
 		}
 	}
@@ -46,7 +46,7 @@ void Rail::Update()
 	// ------------------------------
 	// 次フレームのターゲット位置（進行方向）
 	// ------------------------------
-	float lookAheadDistance = moveSpeed * kDeltaTime * 2.0f;
+	float lookAheadDistance = moveSpeed * kDeltaTime * kLookAheadMultiplier;
 	float distanceAhead;
 
 	distanceAhead = distanceTravelled + lookAheadDistance;
@@ -56,9 +56,9 @@ void Rail::Update()
 	{
 		if (distanceAhead <= arcLengthTable_.lengths[i])
 		{
-			float segmentLength = arcLengthTable_.lengths[i] - arcLengthTable_.lengths[i - 1];
-			float segmentT = (distanceAhead - arcLengthTable_.lengths[i - 1]) / segmentLength;
-			tNext = (float)(i - 1 + segmentT) / (arcLengthTable_.lengths.size() - 1);
+			float segmentLength = arcLengthTable_.lengths[i] - arcLengthTable_.lengths[i - kPreviousIndexOffset];
+			float segmentT = (distanceAhead - arcLengthTable_.lengths[i - kPreviousIndexOffset]) / segmentLength;
+			tNext = (float)(i - kPreviousIndexOffset + segmentT) / (arcLengthTable_.lengths.size() - 1);
 			break;
 		}
 	}
@@ -84,10 +84,10 @@ void Rail::Update()
 
 void Rail::CreateArcLengthTable(int samplePerSegment)
 {
-	int numSegments = static_cast<int>(controlPoints_.size()) - 3;
+	int numSegments = static_cast<int>(controlPoints_.size()) - kCatmullRomPointOffset;
 	int totalSamples = numSegments * samplePerSegment;
 
-	arcLengthTable_.lengths.resize(totalSamples + 1);
+	arcLengthTable_.lengths.resize(totalSamples + kIncludeStartPoint);
 	arcLengthTable_.lengths[0] = 0.0f;
 	arcLengthTable_.totalLength = 0.0f;
 

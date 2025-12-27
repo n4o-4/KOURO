@@ -2,6 +2,14 @@
 
 #include "WorldTransform.h"
 
+constexpr float kEndOfCurveT = 1.0f;             //!< 曲線tの終端
+constexpr float kLookAheadMultiplier = 2.0f;     //!< 先読み距離倍率
+constexpr float kStartDistance = 0.0f;           //!< 開始距離
+constexpr int kPreviousIndexOffset = 1;          //!< インデックス補正
+
+constexpr int kCatmullRomPointOffset = 3; //!< Catmull-Romスプラインの有効区間補正値
+constexpr int kIncludeStartPoint = 1;     //!< サンプル数に始点を含める補正値
+
 struct ArcLengthTable
 {
 	std::vector<float> lengths; // 各セグメントの長さ
