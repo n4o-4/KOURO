@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "BaseScene.h"
 
@@ -13,7 +13,6 @@
 #include "ParticleManager.h"
 #include "ParticleEmitter.h"
 #include "SceneManager.h"
-#include "Audio.h"
 #include "LineModelManager.h"
 #include "Player.h"
 #include "NumUi.h"

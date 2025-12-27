@@ -14,7 +14,7 @@ private:
 	{
 		const float kHitInterval_ = 0.1f; //!< 被弾アクション間隔
 
-		float hitintervalTimer_ = 0.0f; //!< 被弾アクションタイマー
+		float hitIntervalTimer_ = 0.0f; //!< 被弾アクションタイマー
 	};
 
 public: // 公開メンバ関数

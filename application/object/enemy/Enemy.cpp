@@ -29,6 +29,7 @@ void Enemy::Initialize(LineModel* model)
 
 void Enemy::Update()
 {
+	// 発射インターバル計測用の
 	if (fireTimer_ >= kFireInterval)
 	{
 		//Fire();
@@ -52,13 +53,13 @@ void Enemy::Update()
 			}, collider);
 		});
 
-	if (actionData_.hitintervalTimer_ > 0.0f)
+	if (actionData_.hitIntervalTimer_ > 0.0f)
 	{
-		actionData_.hitintervalTimer_ -= kDeltaTime;
+		actionData_.hitIntervalTimer_ -= kDeltaTime;
 	}
 	else
 	{
-		actionData_.hitintervalTimer_ = 0.0f;
+		actionData_.hitIntervalTimer_ = 0.0f;
 		objectLine_->SetColor({ 0.196f, 0.929f, 0.369f,1.0f });
 	}
 
@@ -141,12 +142,16 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 	// 衝突したオブジェクトがPlayerBulletの場合、弾を消す
 	if (PlayerBullet* playerBullet = dynamic_cast<PlayerBullet*>(other))
 	{
-		if(hp_ > playerBullet->GetDamage() && actionData_.hitintervalTimer_ <= 0.0f)
+		// プレイヤーの弾のダメージよりhpが大きかったら && ヒットインターバル計測用タイマーがヒットインターバルの定数以上だった場合
+		if(hp_ > playerBullet->GetDamage() && actionData_.hitIntervalTimer_ > actionData_.kHitInterval_)
 		{
-			actionData_.hitintervalTimer_ = actionData_.kHitInterval_;
+			// ヒットインターバル計測用タイマーを0に設定
+			actionData_.hitIntervalTimer_ = 0.0f;
 
+			// ヒットリアクションの色に変更
 			objectLine_->SetColor({ 1.0f,0.0f,0.0f,1.0f });
 
+			// hpをプレイヤーの弾のダメージ分減算
 			hp_ -= playerBullet->GetDamage();
 
 
@@ -170,7 +175,8 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 
 			//emitter_.Emit();
 		}
-		else
+
+		else if(actionData_.hitIntervalTimer_ > actionData_.kHitInterval_)
 		{
 			mEmitter_->Emit(colliderTransform_->matWorld_);
 

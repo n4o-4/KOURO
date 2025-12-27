@@ -53,13 +53,13 @@ void Player::Update()
 	// ヒットフラグをfalseに設定
 	isHit_ = false;
 
-	// 発射タイマーが0より大きい場合
-	if(fireTimer_ > 0.0f)
+	// 発射タイマーが発射インターバルの定数未満だった場合
+	if(fireTimer_ < kFireInterval_)
 	{
 		// 発射タイマーから経過時間を減算
-		fireTimer_ -= kDeltaTime;
+		fireTimer_ += kDeltaTime;
 	}
-	// 発射タイマーが0以下だった場合
+	// 発射タイマーが発射インターバル以上だった場合
 	else
 	{
 		// スペースキーを押していたら
@@ -70,19 +70,16 @@ void Player::Update()
 		}
 	}
 
-	// ヒットのインターバルタイマーが0より大きい場合
-	if(actionData_.hitintervalTimer_ > 0.0f)
+	// ヒットインターバルタイマーがヒットインターバルの定数未満だった場合
+	if(actionData_.hitIntervalTimer_ < actionData_.kHitInterval_)
 	{
 		// インターバルのタイマーから経過時間を減算
-		actionData_.hitintervalTimer_ -= kDeltaTime;
+		actionData_.hitIntervalTimer_ += kDeltaTime;
 	}
 	
-	// ヒットのインターバルタイマーが0以下だったら
+	// ヒットインターバルタイマーがヒットインターバル以上だった場合
 	else
 	{
-		// タイマーを0に設定
-		actionData_.hitintervalTimer_ = 0.0f;
-
 		// 線モデルの色を設定
 		objectLine_->SetColor({ 0.071f, 0.429f, 1.0f,1.0f });
 	}
@@ -238,20 +235,28 @@ void Player::Draw()
 
 bool Player::GetIsAlive()
 {
+	// hpが0より大きい場合
 	if (hp_ > 0)
 	{
+		// trueを返す
 		return true;
 	}
 
+	// それ以外の時はfalseを返す
 	return false;
 }
 
 void Player::Move()
 {
+
+	// ブースト時間を過ぎていたら || ブースト中のフラグでなければ
 	if (quickMoveData_->actionTimer > quickMoveData_->duration || !quickMoveData_->isQuickMoving)
 	{
+		// velocityを初期化
 		velocity_ = { 0.0f,0.0f,0.0f };
 
+		// 押しているキーによってvelocityに数値を加算または減算
+		// TODO : 移動量をplayerSpeedとdeltaTimeで計算する
 		if (Input::GetInstance()->PushKey(DIK_A))
 		{
 			velocity_.x -= 0.1f;
@@ -278,6 +283,7 @@ void Player::Move()
 
 void Player::Fire()
 {
+	// 計測用のタイマーをインターバルタイマーの定数に設定
 	fireTimer_ = kFireInterval_;
 
 	// 弾の生成
@@ -286,27 +292,38 @@ void Player::Fire()
 	// 初期化
 	bullet->Initialize(lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
 
+	// プレイヤーが向いている方向にvelocityを変換する
 	Vector3 velocity = TransformNormal({ 0.0f,0.0f,5.0f }, worldTransform_->matWorld_);
 
+	// 弾に計算したvelocityを設定する
 	bullet->SetVelocity(velocity);
 
+	// コライダーマネージャーに弾を追加する
 	colliderManager_->AddCollider(bullet);
 
+	// 弾のリストに今回作った弾を移動する
 	bullets_.push_back(std::move(bullet));
 }
 
 void Player::OnCollisionEnter(BaseCollider* other)
 {
+	// otherが敵の弾に型変換できた場合
 	if (EnemyBullet* enemyBullet = dynamic_cast<EnemyBullet*>(other))
 	{
+		// ヒットフラグをtrueに
 		isHit_ = true;
 
-		if (hp_ > 0 && actionData_.hitintervalTimer_ <= 0.0f)
+		// hpが0以外 && ヒットインターバル中で無ければ
+		if (hp_ > 0 && actionData_.hitIntervalTimer_ >= actionData_.kHitInterval_)
 		{
-			actionData_.hitintervalTimer_ = actionData_.kHitInterval_;
 
+			// ヒットインターバルの計測用タイマーを0に設定する
+			actionData_.hitIntervalTimer_ = 0.0f;
+
+			// 線モデルの色をヒットアクションの色に変更
 			objectLine_->SetColor({ 1.0f,0.0f,0.0f,1.0f });
 
+			// hpを減算
 			--hp_;
 		}
 	}

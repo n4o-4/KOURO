@@ -27,13 +27,16 @@ void TitleCamera::Update()
 
     if(isRotate_)
     {
+        // カメラを回転させる
 		viewProjection_->transform.rotate.y += 0.002f;
 	}
 
     if(isDeparture_)
     {
+        // 吸収されるような演出
 		viewProjection_->fovY += 0.007f;
 
+        // ターゲットに追従する
 		FollowTarget();
     }
     
@@ -52,6 +55,7 @@ void TitleCamera::Update()
 
 Vector3 TitleCamera::CalculationOffset()
 {
+
     Vector3 offset = offset_;
 
     Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);

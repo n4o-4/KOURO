@@ -2,6 +2,7 @@
 
 void ColliderManager::Update()
 {
+    // 生きていないコライダーをリストから削除する
     std::erase_if(colliders_, [](const ColliderVariant& collider) {
         return std::visit([](auto& ptr) {
             return ptr && !ptr->GetIsAlive();

@@ -37,6 +37,7 @@ void BaseBullet::Update()
 	///========================================
 	/// ワールドトランスフォーム
 
+	// クォータニオン／行列どちらの変換を使うかで移動先を更新
 	if (worldTransform_->useQuaternion_)
 	{
 		worldTransform_->quaternionTransform.translate += velocity_;
