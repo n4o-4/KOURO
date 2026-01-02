@@ -628,6 +628,7 @@
     <ClInclude Include="GpuContext.h" />
     <ClInclude Include="GpuResourceUtils.h" />
     <ClInclude Include="GpuResourceInternal.h" />
+    <ClInclude Include="engine\object\SpotLightDefaults.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

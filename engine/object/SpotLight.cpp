@@ -1,4 +1,5 @@
 ﻿#include "SpotLight.h"
+#include "SpotLightDefaults.h"
 
 void SpotLight::Initialize()
 {
@@ -9,14 +10,14 @@ void SpotLight::Initialize()
 	spotLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&spotLightData_));
 	
 	// 初期値設定	
-	color_ = { 1.0f,1.0f,1.0f,1.0f };
-	position_ = { 0.0f,0.0f,0.0f };
-	intensity_ = 1.0f;
-	direction_ = Normalize({ -1.0f,-1.0f,0.0f });
-	distance_ = 7.0f;
-	decay_ = 2.0f;
-	cosAngle_ = std::cos(std::numbers::pi_v<float> / 3.0f);
-	cosFalloffStart_ = 1.0f;
+	color_ = SpotLightDefaults::kDefaultColor;
+	position_ = SpotLightDefaults::kDefaultPosition;
+	intensity_ = SpotLightDefaults::kDefaultIntensity;
+	direction_ = Normalize(SpotLightDefaults::kDefaultDirection);
+	distance_ = SpotLightDefaults::kDefaultDistance;
+	decay_ = SpotLightDefaults::kDefaultDecay;
+	cosAngle_ = std::cos(SpotLightDefaults::kDefaultAngle);
+	cosFalloffStart_ = SpotLightDefaults::kDefaultCosFalloffStart;
 
 	spotLightData_->color = color_;
 	spotLightData_->position = position_;
