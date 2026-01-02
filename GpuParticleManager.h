@@ -10,6 +10,7 @@
 
 #include "GpuContext.h"
 
+
 class GpuParticleManager
 {
 private:
@@ -245,4 +246,8 @@ private: //!< メンバ変数
 	Transform* transform_ = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> emitterSphereShellResource_ = nullptr;
+
+	static constexpr float kMaxRadius = 100000.0f; //!< エミッターの最大半径
+
+	static constexpr float kMinRadius = 70000.0f; //!< エミッターの最小半径
 };

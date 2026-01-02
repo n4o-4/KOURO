@@ -2,6 +2,11 @@
 #include "TextureManager.h"
 #include "ModelLoader.h"
 
+// ComputeShaderで1パッチあたり処理できる最大スレッド数（=512スレッド）
+constexpr uint32_t kMaxThreadsPerGroup = 512;
+
+
+
 GpuParticleManager::GpuParticleManager(GpuContext context)
 {
 	device_ = context.d3d12Context.device;
@@ -34,9 +39,9 @@ void GpuParticleManager::Initialize()
 	emitterSphereShellResource_ = gpuResourceUtils_->CreateBufferResource(sizeof(EmitterSphereShell));
 	EmitterSphereShell* emitter = nullptr;
 	emitterSphereShellResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&emitter));
-	emitter->emit = 1;
-	emitter->maxRadius = 100000.0f;
-	emitter->minRadius = 70000.0f;
+	emitter->emit = 1; // true
+	emitter->maxRadius = kMaxRadius;
+	emitter->minRadius = kMinRadius;
 	emitter->translate = { 0.0f,0.0f,0.0f };
 
 	auto& group = particleGroups_.find("normal")->second;
@@ -58,7 +63,7 @@ void GpuParticleManager::Initialize()
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(5, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(6, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
 
-	dxCommon_->GetCommandList()->Dispatch(10, 1, 1);
+	dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount / kCSMaxParticleCount, 1, 1);
 };
 
 void GpuParticleManager::Update()
@@ -205,11 +210,11 @@ void GpuParticleManager::CreateParticleGroup(const std::string name, const std::
 void GpuParticleManager::LineEmit(std::string groupName, uint32_t lineSrvIndex, uint32_t lineCount, Microsoft::WRL::ComPtr<ID3D12Resource> emitterResource, Matrix4x4 world)
 {
 	transform_->matWorld = world;
-
-	// 1. Compute RootSignature ��Z�b�g
+	 
+	// 1. Compute RootSignature
 	dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("modelEdgeEmitter")->second.get()->rootSignature.Get());
 
-	// 2. Pipeline State ��Z�b�g
+	// 2. Pipeline State
 	dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("modelEdgeEmitter")->second.get()->pipelineState.Get());
 
 	if (particleGroups_.find(groupName) == particleGroups_.end()) return;
@@ -218,7 +223,7 @@ void GpuParticleManager::LineEmit(std::string groupName, uint32_t lineSrvIndex, 
 
 	srvManager_->PreDraw();
 
-	// 3. Compute Root �� Descriptor / CBV / UAV 
+	// 3. Compute Root Descriptor / CBV / UAV 
 	dxCommon_->GetCommandList()->SetComputeRootDescriptorTable(0, srvManager_->GetGPUDescriptorHandle(lineSrvIndex));
 	dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(1, transformResource_.Get()->GetGPUVirtualAddress());
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.particleResource.Get()->GetGPUVirtualAddress());
@@ -247,10 +252,10 @@ void GpuParticleManager::CreateResources()
 	emitterResource_ = dxCommon_->CreateBufferResource(sizeof(EmitterSphere));
 	emitter_ = nullptr;
 	emitterResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&emitter_));
-	emitter_->emit = 0;
+	emitter_->emit = 0; // false
 	emitter_->frequency = 0.0f;
 	emitter_->frequencyTime = 0.0f;
-	emitter_->count = 512;
+	emitter_->count = kMaxThreadsPerGroup;
 
 	perFrameResource_ = dxCommon_->CreateBufferResource(sizeof(PerFrame));
 	perFrame_ = nullptr;

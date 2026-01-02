@@ -10,7 +10,7 @@ void SpotLight::Initialize()
 	
 	// 初期値設定	
 	color_ = { 1.0f,1.0f,1.0f,1.0f };
-	position_ = { 2.0f,1.25f,0.0f };
+	position_ = { 0.0f,0.0f,0.0f };
 	intensity_ = 1.0f;
 	direction_ = Normalize({ -1.0f,-1.0f,0.0f });
 	distance_ = 7.0f;

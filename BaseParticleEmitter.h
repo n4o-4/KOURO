@@ -4,6 +4,15 @@
 #include "EngineContext.h"
 
 /**
+* \brief ComputeShader用
+*/
+namespace CS
+{
+	// ComputeShaderで1パッチあたり処理できる最大スレッド数（=512スレッド）
+	constexpr uint32_t kMaxThreadsPerGroup = 512;
+}
+
+/**
 * \class Gpuパーティクルエミッターの基底クラス
 */
 

@@ -16,11 +16,12 @@ void ModelEdgeEmitter::Update()
 	if (emitter_->frequency <= emitter_->frequencyTime)
 	{
 		emitter_->frequencyTime -= emitter_->frequency;
-		emitter_->emit = 1;
+
+		emitter_->emit = 1; // true
 	}
 	else
 	{
-		emitter_->emit = 0;
+		emitter_->emit = 0; // false
 	}
 }
 
@@ -46,6 +47,7 @@ void ModelEdgeEmitter::CreateLineSegment(std::string filePath)
 	// ラインモデル読み込み
 	std::vector<Line::Vertex> vertices = loader.LoadLineModel(filePath);
 
+	// 
 	for (size_t i = 0; i + 1 < vertices.size(); i += 2)
 	{
 		LineSegment seg;
@@ -86,8 +88,8 @@ void ModelEdgeEmitter::CreateEmitterResource()
 	emitterResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&emitter_));
 
 	// エミッターデータ設定
-	emitter_->emit = 1;
+	emitter_->emit = 1; // true
 	emitter_->frequency = 0.0f;
 	emitter_->frequencyTime = 0.0f;
-	emitter_->count = 512;
+	emitter_->count = CS::kMaxThreadsPerGroup;
 }
