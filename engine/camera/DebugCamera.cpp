@@ -9,7 +9,7 @@ void DebugCamera::Initialize()
    targetTransform_->Initialize();  
 
    // ターゲットからのオフセットを初期化  
-   offset = { 0.0f,0.0f,-10.0f }; 
+   offset = { 0.0f, 0.0f, kDefaultCameraDistance };
 }  
 
 void DebugCamera::Update()  
@@ -21,12 +21,12 @@ void DebugCamera::Update()
 
    if (Input::GetInstance()->mouseState.lZ != 0.0f)  
    {  
-	   float scrollAmount = static_cast<float>(Input::GetInstance()->mouseState.lZ) * 0.01f;
+       float scrollAmount = static_cast<float>(Input::GetInstance()->mouseState.lZ) * kScrollSensitivity;
 
        // マウスホイールの回転量でオフセットを変更  
        offset.z += scrollAmount;
 
-       offset.z = std::clamp(offset.z, -100000.0f, -1.0f); // 修正: float 型のリテラルに変更
+       offset.z = std::clamp(offset.z, kMinZoomDistance, kMaxZoomDistance);
 
        Input::GetInstance()->mouseState.lZ = static_cast<LONG>(0.0f);
    }  
@@ -59,7 +59,11 @@ void DebugCamera::Update()
    // マウスの左ボタンが押されている間、カメラを回転
    if (Input::GetInstance()->PushMouseButton(Input::MouseButton::LEFT))  
    {  
-       Vector3 rotate = { static_cast<float>(Input::GetInstance()->mouseState.lY) * 0.0008f, static_cast<float>(Input::GetInstance()->mouseState.lX) * 0.0008f,0.0f };  
+       Vector3 rotate = {
+    static_cast<float>(Input::GetInstance()->mouseState.lY) * kMouseRotateSensitivity,
+    static_cast<float>(Input::GetInstance()->mouseState.lX) * kMouseRotateSensitivity,
+    0.0f
+       };
 
        viewProjection_->transform.rotate = viewProjection_->transform.rotate + rotate;  
 

@@ -57,5 +57,7 @@ private: // 非公開メンバ変数
 
 	std::unique_ptr<ParticleEmitter> emitter_; //!< パーティクルエミッター
 
+	static constexpr Vector4 kDefaultColor = (0.971f, 1.0f, 0.089f, 1.0f);
+
 };
 

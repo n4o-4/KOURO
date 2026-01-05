@@ -43,7 +43,7 @@ void TitleScene::Initialize(EngineContext context)
 	// パーティクルエミッターの生成
 	mEmitter = std::make_unique<ModelEdgeEmitter>();
 	mEmitter->Initialize("normal", context);
-	mEmitter->CreateLineSegment("sphere.obj");
+	mEmitter->CreateLineSegment("enemy/enemy.obj");
 
 	// titleCameraの生成
 	titleCamera_ = std::make_unique<TitleCamera>();
@@ -286,7 +286,7 @@ void TitleScene::Draw()
 
 	lineDrawer_->PreDraw(cameraManager_->GetActiveCamera()->GetViewProjection());
 
-	//player_->Draw();
+	player_->Draw();
 
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	

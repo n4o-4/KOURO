@@ -1,4 +1,5 @@
-#include "PointLight.h"
+﻿#include "PointLight.h"]
+#include "InitialLightSetting.h"
 
 void PointLight::Initilize()
 {
@@ -9,11 +10,11 @@ void PointLight::Initilize()
 	pointLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData_));
 
 	// 数値を初期化
-	color_ = { 1.0f,1.0f,1.0f,1.0f};
-	position_ = { 0.0f,2.0f,0.0f };
-	intensity_ = 1.0f;
-	radius_ = 2.8f;
-	decay_ = 0.95f;
+	color_ = LightDefault::kDefaultColor;
+	position_ = LightDefault::PointLight::kDefaultPosition;
+	intensity_ = LightDefault::kDefaultIntensity;
+	radius_ = LightDefault::PointLight::kDefaultRadius;
+	decay_ = LightDefault::PointLight::kDefaultDecay;
 
 	// 数値をデータに代入
 	pointLightData_->color = color_;

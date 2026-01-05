@@ -91,5 +91,5 @@ void ModelEdgeEmitter::CreateEmitterResource()
 	emitter_->emit = 1; // true
 	emitter_->frequency = 0.0f;
 	emitter_->frequencyTime = 0.0f;
-	emitter_->count = CS::kMaxThreadsPerGroup;
+	emitter_->count = 10;
 }

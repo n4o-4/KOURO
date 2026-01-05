@@ -2,11 +2,6 @@
 #include "TextureManager.h"
 #include "ModelLoader.h"
 
-// ComputeShaderで1パッチあたり処理できる最大スレッド数（=512スレッド）
-constexpr uint32_t kMaxThreadsPerGroup = 512;
-
-
-
 GpuParticleManager::GpuParticleManager(GpuContext context)
 {
 	device_ = context.d3d12Context.device;
@@ -63,7 +58,7 @@ void GpuParticleManager::Initialize()
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(5, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
 	dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(6, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
 
-	dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount / kCSMaxParticleCount, 1, 1);
+	dxCommon_->GetCommandList()->Dispatch(10, 1, 1);
 };
 
 void GpuParticleManager::Update()
@@ -255,7 +250,7 @@ void GpuParticleManager::CreateResources()
 	emitter_->emit = 0; // false
 	emitter_->frequency = 0.0f;
 	emitter_->frequencyTime = 0.0f;
-	emitter_->count = kMaxThreadsPerGroup;
+	emitter_->count = 512;
 
 	perFrameResource_ = dxCommon_->CreateBufferResource(sizeof(PerFrame));
 	perFrame_ = nullptr;

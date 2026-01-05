@@ -10,11 +10,11 @@ void ViewProjection::Initialize()
 	// 初期化
 	transform.scale = { 1.0f,1.0f,1.0f };
 	transform.rotate = { 0.0f,0.0f,0.0f };
-	transform.translate = { 0.0f,0.0f,-15.0f };
-	fovY = 0.85f;
+	transform.translate = { 0.0f, 0.0f, kDefaultCameraDistance };
+	fovY = kDefaultFovY;
 	aspectRation = static_cast<float>(WinApp::kClientWidth) / static_cast<float>(WinApp::kClientHeight);
-	nearClip = 0.1f;
-	farClip = 100.0f;
+	nearClip = kDefaultNearClip;
+	farClip = kDefaultFarClip;
 	viewProjectionData_->matViewProjection = MakeIdentity4x4();
 }
 

@@ -30,7 +30,7 @@ void Object3d::Initialize(Object3dCommon* object3dCommon)
 
 	materialData_->uvTransform = MakeIdentity4x4();
 
-	materialData_->shininess = 48.3f;
+	materialData_->shininess = kDefaultShininess;
 
 	materialData_->specularColor = { 1.0f,1.0f,1.0f };
 }

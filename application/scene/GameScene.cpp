@@ -478,6 +478,12 @@ void GameScene::Update()
 			enemy->Update();
 		}
 		
+		colliderManager_->Update();
+
+		// 生存していない敵をリストから削除
+		std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {
+			return !enemy->GetIsAlive();
+			});
 
 		for (auto& enemy : enemies_)
 		{
@@ -486,11 +492,6 @@ void GameScene::Update()
  				++eliminatedEnemyCount_;
 			}
 		}
-
-		// 生存していない敵をリストから削除
-		std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {
-			return !enemy->GetIsAlive();
-			});
 
 		// 敵が全滅したらフェードアウトへ
 		if (enemyCount == 0)
@@ -527,7 +528,7 @@ void GameScene::Update()
 		break;
 	}
 
-	colliderManager_->Update();
+	
 
 	if (player_->GetIsHit())
 	{

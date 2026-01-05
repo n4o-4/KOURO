@@ -19,6 +19,8 @@
 // 3Dオブジェクトを表すクラス。
 // モデルの設定、スケール・回転・平行移動の設定、描画、ライティングやマテリアルの設定を行う。
 
+constexpr float kDefaultShininess = 48.3f;
+
 class Object3d
 {
 private:

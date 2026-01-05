@@ -32,7 +32,7 @@ RWStructuredBuffer<uint> gBaseUpdateList : register(u4);    // 8
 void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID)
 {
     if (gEmitter.emit == 0) return;
-
+    
     RandomGenerator generator;
     generator.seed = gPerFrame.time + (float)DTid.x * 13.0f;
 

@@ -12,7 +12,7 @@ private:
 
 	struct HitActionData
 	{
-		const float kHitInterval_ = 0.1f; //!< 被弾アクション間隔
+		const float kHitInterval_ = 0.001f; //!< 被弾アクション間隔
 
 		float hitIntervalTimer_ = 0.0f; //!< 被弾アクションタイマー
 	};

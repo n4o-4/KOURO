@@ -150,8 +150,13 @@ private: // 非公開メンバ変数
 
 	bool isHit_ = false;
 
-private: 
-	
+	static constexpr float kDefaultScale = 0.5f; //!< プレイヤーのデフォルトのスケール
+	static constexpr Vector4 kDefaultColor = { 0.071f, 0.429f, 1.0f, 1.0f };
+	static constexpr Vector4 kHitColor = { 1.0f, 0.0f, 0.0f, 1.0f };
+	static constexpr float kDefaultOffset = 25.0f;
+	static constexpr float kDefaultPlayerSpeed = 0.1f;
+	static constexpr float kBoostPlayerSpeed = 0.3f;
 
+	static constexpr float bulletSpeed = 5.0f;
 };
 

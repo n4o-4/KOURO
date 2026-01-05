@@ -1,6 +1,8 @@
 ﻿#include "AABBLineObject.h"
 
-static const uint32_t kMaxVertexNum = 24; // AABBの8頂点 * 3辺 = 24ライン
+static constexpr uint32_t kVertexCount = 8;             //!< OBBの頂点数
+static constexpr uint32_t kEdgesPerFace = 3;            //!< 1面あたりの辺数
+static constexpr uint32_t kLineVertexCount = kVertexCount * kEdgesPerFace; //!< ライン描画用頂点数
 
 void AABBLineObject::Initialize(DirectXCommon* dxCommon)
 {
@@ -44,13 +46,13 @@ void AABBLineObject::Update()
     };
 
     // AABBの辺を構成するインデックス（24個のライン）
-    constexpr int lineIndices[24] = {
+    constexpr int lineIndices[kLineVertexCount] = {
         0, 1, 1, 2, 2, 3, 3, 0, // 下面
         4, 5, 5, 6, 6, 7, 7, 4, // 上面
         0, 4, 1, 5, 2, 6, 3, 7  // 側面
     };
 
-    for (int i = 0; i < 24; ++i) {
+    for (int i = 0; i < kLineVertexCount; ++i) {
         const Vector3& v = vertices[lineIndices[i]];
         vertexData_[i].position = { v.x, v.y, v.z, 1.0f };
 		vertexData_[i].color = aabbCollider_->GetColor(); // AABBColliderの色を使用
@@ -65,7 +67,7 @@ void AABBLineObject::Draw(const ViewProjection& viewProjection)
 void AABBLineObject::CreateVertexResource()
 {
     // 頂点データの確保
-    vertexResource_ = dxCommon_->CreateBufferResource(sizeof(LineDrawer::VertexData) * kMaxVertexNum);
+    vertexResource_ = dxCommon_->CreateBufferResource(sizeof(LineDrawer::VertexData) * kLineVertexCount);
 
 	// 頂点データのマッピング
     vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
@@ -76,7 +78,7 @@ void AABBLineObject::CreateVertexBufferView()
     // VertexBufferViewの生成
     vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 
-    vertexBufferView_.SizeInBytes = UINT(sizeof(LineDrawer::VertexData) * kMaxVertexNum);
+    vertexBufferView_.SizeInBytes = UINT(sizeof(LineDrawer::VertexData) * kLineVertexCount);
 
     vertexBufferView_.StrideInBytes = sizeof(LineDrawer::VertexData);
 }

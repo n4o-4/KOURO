@@ -5,6 +5,12 @@
 #include "BaseCamera.h"
 #include "WorldTransform.h"
 
+//constexpr float kDefaultCameraDistance = -10.0f;
+constexpr float kScrollSensitivity = 0.01f; //!< ホイール感度
+constexpr float kMinZoomDistance = -100000.0f; //!< ズームアウトの下限距離
+constexpr float kMaxZoomDistance = -1.0f;      //!< ズームインの上限距離
+constexpr float kMouseRotateSensitivity = 0.0008f;
+
 // \brief DebugCamera
 // デバッグ用カメラ。自由に移動・回転が可能で、ターゲットの位置に応じた追従もできる。
 

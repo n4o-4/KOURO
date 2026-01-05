@@ -70,7 +70,7 @@ void CameraManager::Shake()
 	Vector3 translate = activeCamera_->GetViewProjection().transform.translate;
 
 	// ランダムなオフセットを生成
-	std::uniform_real_distribution<float> dist(-0.2f, 0.2f);
+	std::uniform_real_distribution<float> dist(-kShakeAmplitude, kShakeAmplitude);
 
 	// シェイクオフセットを設定
 	shakeOffSet = { dist(randomEngine),dist(randomEngine),dist(randomEngine) };

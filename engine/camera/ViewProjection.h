@@ -7,6 +7,11 @@
 
 #include "MyMath.h"
 
+constexpr float kDefaultCameraDistance = -15.0f;
+constexpr float kDefaultFovY = 0.85f; //!< 視野角（約49°）
+constexpr float kDefaultNearClip = 0.1f;
+constexpr float kDefaultFarClip = 100.0f;
+
 //struct ConstBufferDataViewProjection
 //{
 //	Vector3 worldPosition;

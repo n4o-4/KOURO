@@ -13,7 +13,7 @@ void Player::Initialize(LineModel* model)
 	worldTransform_->useQuaternion_ = false;
 
 	worldTransform_->quaternionTransform.scale = { 1.0f,1.0f,1.0f };
-	worldTransform_->transform.scale = { 0.5f,0.5f,0.5f };
+	worldTransform_->transform.scale = { kDefaultScale,kDefaultScale,kDefaultScale };
 
 	AABBCollider::Initialize(worldTransform_.get(),this);
 
@@ -25,13 +25,13 @@ void Player::Initialize(LineModel* model)
 	SetAABB(AABB({}, { -1.0f,-1.0f,-1.0f }, {1.0f,1.0f,1.0f}));
 
 	// 線モデルの色を設定
-	objectLine_->SetColor({ 0.071f, 0.429f, 1.0f,1.0f });
+	objectLine_->SetColor(kDefaultColor);
 
 	// レールのコントロールポイントを設定
 	rail.Initialize(controlPoints_);
 
 	// 座標の位置を設定
-	colliderTransform_->transform.translate = { 0.0f,0.0f,25.0f };
+	colliderTransform_->transform.translate = { 0.0f,0.0f, kDefaultOffset };
 
 	// 座標を一度更新
 	colliderTransform_->UpdateMatrix();
@@ -81,7 +81,7 @@ void Player::Update()
 	else
 	{
 		// 線モデルの色を設定
-		objectLine_->SetColor({ 0.071f, 0.429f, 1.0f,1.0f });
+		objectLine_->SetColor(kDefaultColor);
 	}
 
 	// quickMove中の場合
@@ -113,19 +113,19 @@ void Player::Update()
 
 			if (Input::GetInstance()->PushKey(DIK_A))
 			{
-				velocity_.x -= 0.3f;
+				velocity_.x -= kBoostPlayerSpeed;
 			}
 			if (Input::GetInstance()->PushKey(DIK_D))
 			{
-				velocity_.x += 0.3f;
+				velocity_.x += kBoostPlayerSpeed;
 			}
 			if (Input::GetInstance()->PushKey(DIK_W))
 			{
-				velocity_.y += 0.3f;
+				velocity_.y += kBoostPlayerSpeed;
 			}
 			if (Input::GetInstance()->PushKey(DIK_S))
 			{
-				velocity_.y -= 0.3f;
+				velocity_.y -= kBoostPlayerSpeed;
 			}
 		}
 
@@ -259,19 +259,19 @@ void Player::Move()
 		// TODO : 移動量をplayerSpeedとdeltaTimeで計算する
 		if (Input::GetInstance()->PushKey(DIK_A))
 		{
-			velocity_.x -= 0.1f;
+			velocity_.x -= kDefaultPlayerSpeed;
 		}
 		if (Input::GetInstance()->PushKey(DIK_D))
 		{
-			velocity_.x += 0.1f;
+			velocity_.x += kDefaultPlayerSpeed;
 		}
 		if (Input::GetInstance()->PushKey(DIK_W))
 		{
-			velocity_.y += 0.1f;
+			velocity_.y += kDefaultPlayerSpeed;
 		}
 		if (Input::GetInstance()->PushKey(DIK_S))
 		{
-			velocity_.y -= 0.1f;
+			velocity_.y -= kDefaultPlayerSpeed;
 		}
 	}
 	else
@@ -293,7 +293,7 @@ void Player::Fire()
 	bullet->Initialize(lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
 
 	// プレイヤーが向いている方向にvelocityを変換する
-	Vector3 velocity = TransformNormal({ 0.0f,0.0f,5.0f }, worldTransform_->matWorld_);
+	Vector3 velocity = TransformNormal({ 0.0f,0.0f,bulletSpeed }, worldTransform_->matWorld_);
 
 	// 弾に計算したvelocityを設定する
 	bullet->SetVelocity(velocity);
@@ -321,7 +321,7 @@ void Player::OnCollisionEnter(BaseCollider* other)
 			actionData_.hitIntervalTimer_ = 0.0f;
 
 			// 線モデルの色をヒットアクションの色に変更
-			objectLine_->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+			objectLine_->SetColor(kHitColor);
 
 			// hpを減算
 			--hp_;

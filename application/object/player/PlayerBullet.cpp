@@ -30,7 +30,7 @@ void PlayerBullet::Initialize(LineModel* model,Vector3 spawnPos)
 	emitter_->SetLifeTimeRange({ 0.5f,0.8f });
 	emitter_->SetFrequency(1.0f);
 
-	objectLine_->SetColor({ 0.971f, 1.0f, 0.089f,1.0f });
+	objectLine_->SetColor(kDefaultColor);
 }
 
 void PlayerBullet::Update()

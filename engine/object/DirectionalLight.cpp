@@ -1,4 +1,5 @@
 ﻿#include "DirectionalLight.h"
+#include "InitialLightSetting.h"
 
 void DirectionalLight::Initilaize()
 {
@@ -9,9 +10,9 @@ void DirectionalLight::Initilaize()
 	directionalLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData_));
 
 	// 数値を初期化
-	color_ = { 1.0f,1.0f,1.0f,1.0f };
-	direction_ = { 1.0f,0.0f,0.0f };
-	intensity_ = 1.0f;
+	color_ = LightDefault::kDefaultColor;
+	direction_ = LightDefault::DirectionalLight::kDefaultDirection;
+	intensity_ = LightDefault::kDefaultIntensity;
 	
 	directionalLightData_->color = color_;
 	directionalLightData_->direction = direction_;
