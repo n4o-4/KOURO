@@ -51,13 +51,35 @@ public: // 公開メンバ関数
 	*/
 	void SetLineModelManager(LineModelManager* lineModelManager) { lineModelManager_ = lineModelManager; }
 
+	/**
+	* \brief  エミッターの設定
+	*/
 	void SetEmitter(ModelEdgeEmitter* emitter) { mEmitter_ = emitter; }
+
+	/**
+	* \brief 
+	*/
+	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; };
+
+	/**
+	* \brief  
+	* \param  
+	*/
+	void SetGoalOffset(const Vector3 offset) { kGoalOffset_ = offset; };
 
 	/**
 	* \brief GetTarget ターゲットを取得する
 	* \return BaseCharacter キャラクターのポインタ
 	*/
 	BaseCharacter* GetTarget() const { return target_; }
+
+	/**
+	* \brief  カメラマネージャーの取得
+	* \return カメラマネージャーのポインタ
+	*/
+	const CameraManager* GetCameraManager() const { return cameraManager_; }
+
+	const Vector3 GetGoalOffset() const { return kGoalOffset_; }
 
 	/**
 	* \brief ChangeState 状態を変える
@@ -107,5 +129,9 @@ private: // 非公開メンバ変数
 	ParticleEmitter emitter_;
 
 	ModelEdgeEmitter* mEmitter_ = nullptr;
+
+	CameraManager* cameraManager_ = nullptr;
+
+	Vector3 kGoalOffset_ = {0.0f,0.0f,40.0f};
 };
 

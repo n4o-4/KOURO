@@ -1,4 +1,5 @@
 ﻿#include "ParticleEmitter.h"
+#include "SpawnManager.h"
 
 void ParticleEmitter::Initialize(std::string name)
 {

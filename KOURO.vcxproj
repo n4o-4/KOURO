@@ -108,10 +108,12 @@
     <ClCompile Include="application\base\Rail.cpp" />
     <ClCompile Include="engine\system\UavManager.cpp" />
     <ClCompile Include="ModelEdgeEmitter.cpp" />
+    <ClCompile Include="RailFollower.cpp" />
     <ClCompile Include="ShaderCompiler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="SpawnManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\object\InitialLightSetting.h" />
@@ -221,10 +223,12 @@
     <ClInclude Include="GpuParticleManager.h" />
     <ClInclude Include="GpuResourceUtils.h" />
     <ClInclude Include="ModelEdgeEmitter.h" />
+    <ClInclude Include="RailFollower.h" />
     <ClInclude Include="ShaderCompiler.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="SpawnManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

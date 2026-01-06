@@ -53,6 +53,9 @@ public:
 	*/
 	void SetOffset(Vector3 offset) { traslateOffset = offset; }
 
+	/// \brief 行列転送
+	void TransferMatrix();
+
 public:
 
 	Transform transform;

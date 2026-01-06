@@ -68,6 +68,8 @@ void Enemy::Update()
 	// 更新
 	BaseCharacter::Update();
 
+	state_->Update(this);
+
 	AABBCollider::Update();
 }
 
@@ -101,13 +103,16 @@ void Enemy::ChangeState(std::unique_ptr<EnemyState> state)
 	if (!state_)
 	{
 		state_ = std::move(state);
-		state_->Enter(this);
+
+		RailCamera* railCamera = dynamic_cast<RailCamera*>(cameraManager_->GetActiveCamera());
+		state_->Enter(this,railCamera->GetWorldTransform());
 	}
 	else
 	{
 		state_->Exit(this);
 		state_ = std::move(state);
-		state_->Enter(this);
+		RailCamera* railCamera = dynamic_cast<RailCamera*>(cameraManager_->GetActiveCamera());
+		state_->Enter(this,railCamera->GetWorldTransform());
 	}
 }
 

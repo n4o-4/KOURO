@@ -2,20 +2,18 @@
 
 #include "WorldTransform.h"
 
-constexpr float kEndOfCurveT = 1.0f;             //!< 曲線tの終端
-constexpr float kLookAheadMultiplier = 2.0f;     //!< 先読み距離倍率
-constexpr float kStartDistance = 0.0f;           //!< 開始距離
-constexpr int kPreviousIndexOffset = 1;          //!< インデックス補正
-
 constexpr int kCatmullRomPointOffset = 3; //!< Catmull-Romスプラインの有効区間補正値
 constexpr int kIncludeStartPoint = 1;     //!< サンプル数に始点を含める補正値
 
-struct ArcLengthTable
+namespace RailData
 {
-	std::vector<float> lengths; // 各セグメントの長さ
+	struct ArcLengthTable
+	{
+		std::vector<float> lengths; // 各セグメントの長さ
 
-	float totalLength;          // 全体の長さ
-};
+		float totalLength;          // 全体の長さ
+	};
+}
 
 // \brief Rail
 // 3次ベジェ曲線やスプラインに基づくカメラやオブジェクトの軌道管理クラス。
@@ -26,11 +24,24 @@ class Rail
 {
 public:
 
+	/**
+	* \brief  初期化
+	* \param  controlPoints    : コントロールポイントのリスト
+	* \param  samplePerSegment : サンプリングの数
+	*/
 	void Initialize(const std::vector<Vector3>& controlPoints, int samplePerSegment = 100);
 
-	void Update();
+	/**
+	* \brief  弧長データを取得する
+	* \return 弧長データ
+	*/
+	const RailData::ArcLengthTable& GetArcLengthTable() const { return arcLengthTable_; }
 
-	WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
+	/**
+	* \brief  コントロールポイントのリストを取得する
+	* \return コントロールポイントのリスト
+	*/
+	const std::vector<Vector3>& GetControlPoints() const { return controlPoints_; }
 
 private:
 
@@ -38,16 +49,8 @@ private:
 
 private:
 
-	std::vector<Vector3> controlPoints_; //!< カメラの制御点
+	std::vector<Vector3> controlPoints_; //!< コントロールポイントのリスト
 
-	const float kMoveTime = 50.0f;
-
-	float moveTimer_ = 0.0f; //!< カメラの移動時間
-
-	ArcLengthTable arcLengthTable_;
-
-	std::unique_ptr<WorldTransform> worldTransform_;
-
-	float distanceTravelled = 0.0f;
+	RailData::ArcLengthTable arcLengthTable_; //!< 弧長データ
 };
 

@@ -39,6 +39,13 @@ public:
 	const Microsoft::WRL::ComPtr<ID3D12Resource>& GetTransformResource() { return transformResource_; }
 
 	/**
+	* \brief  ワールド座標での位置を取得
+	*/
+	const Vector3 GetWorldPosition() const { return Vector3(matWorld_.m[3][0], matWorld_.m[3][1], matWorld_.m[3][2]); }
+
+	Matrix4x4 GetWorldRotationMatrix() const;
+
+	/**
 	* \brief  SetParent 親ワールド変換の設定
 	* \param  parent 親ワールド変換のポインタ
 	*/

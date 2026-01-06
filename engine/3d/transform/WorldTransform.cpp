@@ -65,3 +65,20 @@ void WorldTransform::TransferMatrix()
 	transformData_->matWorld = matWorld_;
 	transformData_->matWorldInverse = matWorldInverse_;
 }
+
+Matrix4x4 WorldTransform::GetWorldRotationMatrix() const
+{
+	Matrix4x4 rotationMatrix;
+
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			rotationMatrix.m[i][j] = matWorld_.m[i][j];
+		}
+	}
+
+	rotationMatrix.m[3][0] = rotationMatrix.m[3][1] = rotationMatrix.m[3][2] = 0.0f;
+	rotationMatrix.m[0][3] = rotationMatrix.m[1][3] = rotationMatrix.m[2][3] = 0.0f;
+	rotationMatrix.m[3][3] = 1.0f;
+
+	return rotationMatrix;
+}

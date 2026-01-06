@@ -35,3 +35,9 @@ void ViewProjection::Update()
 	// ビュー・プロジェクション行列の計算
 	viewProjectionData_->matViewProjection = Multiply(matView_,matProjection_);
 }
+
+void ViewProjection::TransferMatrix()
+{
+	// ビュー・プロジェクション行列の計算
+	viewProjectionData_->matViewProjection = Multiply(matView_, matProjection_);
+}

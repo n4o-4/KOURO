@@ -134,46 +134,7 @@ void Player::Update()
 	// 移動
 	Move();
 
-	
-
-	//rail.Update();
-
 	colliderTransform_->transform;
-
-	//worldTransform_->deltaRotate_ = { 0.01f,0.0f,0.0f };
-
-
-	//if (moveTimer_ < kMoveTime)
-	//{
-	//	moveTimer_ += kDeltaTime;
-	//}
-	//else
-	//{
-	//	moveTimer_ = 0.0f;
-	//}
-
-	//float t = moveTimer_ / kMoveTime;
-
-	//worldTransform_->transform.translate = CatmullRomPosition(controlPoints_, t);
-
-	//float nextT = (moveTimer_ + (kDeltaTime * 100.0f)) / kMoveTime;
-
-	//Vector3 viewTarget = CatmullRomPosition(controlPoints_, nextT);
-
-	//// 現在位置
-	//Vector3 position = worldTransform_->transform.translate;
-	//// 次の位置
-	//Vector3 target = viewTarget;
-
-	//// forwardベクトル（進行方向）
-	//Vector3 forward = Normalize(target - position);
-
-	//// Y軸を上方向と仮定し、forwardからオイラー角を算出
-	//float yaw = std::atan2(forward.x, forward.z);
-	//float pitch = std::asin(-forward.y);
-	//float roll = 0.0f; // 必要に応じて
-
-	//worldTransform_->transform.rotate = { pitch, yaw, roll };
 
 	// 弾の更新
 	for (auto& bullet : bullets_)
@@ -284,7 +245,7 @@ void Player::Move()
 void Player::Fire()
 {
 	// 計測用のタイマーをインターバルタイマーの定数に設定
-	fireTimer_ = kFireInterval_;
+	fireTimer_ = 0.0f;
 
 	// 弾の生成
 	std::shared_ptr<PlayerBullet> bullet = std::make_shared<PlayerBullet>();
@@ -297,6 +258,14 @@ void Player::Fire()
 
 	// 弾に計算したvelocityを設定する
 	bullet->SetVelocity(velocity);
+
+	// forward ベクトルからオイラー角を計算
+	Vector3 forward = Normalize(velocity);
+	float yaw = std::atan2(forward.x, forward.z);
+	float pitch = std::asin(-forward.y);
+	float roll = 0.0f;
+
+	bullet->GetWorldTransform()->transform.rotate = { pitch, yaw, roll };
 
 	// コライダーマネージャーに弾を追加する
 	colliderManager_->AddCollider(bullet);

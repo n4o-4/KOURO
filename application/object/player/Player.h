@@ -142,7 +142,7 @@ private: // 非公開メンバ変数
 
 	Rail rail;
 
-	const float kFireInterval_ = 0.1f; //!< 発射間隔
+	const float kFireInterval_ = 0.05f; //!< 発射間隔
 
 	float fireTimer_ = 0.0f; //!< 発射タイマー
 
@@ -153,7 +153,7 @@ private: // 非公開メンバ変数
 	static constexpr float kDefaultScale = 0.5f; //!< プレイヤーのデフォルトのスケール
 	static constexpr Vector4 kDefaultColor = { 0.071f, 0.429f, 1.0f, 1.0f };
 	static constexpr Vector4 kHitColor = { 1.0f, 0.0f, 0.0f, 1.0f };
-	static constexpr float kDefaultOffset = 25.0f;
+	static constexpr float kDefaultOffset = 15.0f;
 	static constexpr float kDefaultPlayerSpeed = 0.1f;
 	static constexpr float kBoostPlayerSpeed = 0.3f;
 

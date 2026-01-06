@@ -6,6 +6,7 @@
 #include "ApproachState.h"
 #include "Easing.h"
 #include "GpuParticle.h"
+#include "SpawnManager.h"
 
 ///=============================================================================
 ///						マトリックス表示
@@ -226,6 +227,9 @@ void GameScene::Initialize(EngineContext context) {
 
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
+	Rail rail;
+	rail.Initialize(controlPoints_);
+	railCamera_->SetRail(rail);
 
 	cameraManager_->CamerasClear();
 	cameraManager_->SetActiveCamera(railCamera_.get());
@@ -261,6 +265,8 @@ void GameScene::Initialize(EngineContext context) {
 		enemy->SetEmitter(mEmitter.get());
 
 		std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
+
+		enemy->SetCameraManager(cameraManager_.get());
 
 		enemy->ChangeState(std::move(state));
 
@@ -404,22 +410,35 @@ void GameScene::Update()
 
 	if (Input::GetInstance()->Triggerkey(DIK_E))
 	{
-		std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
-		enemy->Initialize(lineModelManager_->FindLineModel("enemy/enemy.obj"));
+		SpawnManager spawnManager;
 
-		enemy->SetTarget(player_.get());
+		std::vector<Vector3> enemies = spawnManager.LoadFile("spawnPattern1.json");
 
-		enemy->SetColliderManager(colliderManager_.get());
+		for (size_t i = 0; i < enemies.size(); i++)
+		{
+			std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
+			enemy->Initialize(lineModelManager_->FindLineModel("enemy/enemy.obj"));
 
-		std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
+			enemy->SetGoalOffset(enemies[i]);
 
-		enemy->ChangeState(std::move(state));
+			enemy->SetTarget(player_.get());
 
-		colliderManager_->AddCollider(enemy);
+			enemy->SetColliderManager(colliderManager_.get());
 
-		enemy->SetLineModelManager(lineModelManager_.get());
+			enemy->SetLineModelManager(lineModelManager_.get());
 
-		enemies_.push_back(std::move(enemy));
+			enemy->SetEmitter(mEmitter.get());
+
+			std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
+
+			enemy->SetCameraManager(cameraManager_.get());
+
+			enemy->ChangeState(std::move(state));
+
+			colliderManager_->AddCollider(enemy);
+
+			enemies_.push_back(std::move(enemy));
+		}
 	}
 
 #endif
@@ -580,7 +599,6 @@ void GameScene::Update()
 
 		//GpuParticle::GetInstance()->LineEmit(world);
 	}
-	
 #endif
 
 	//emitter1_->Update();
