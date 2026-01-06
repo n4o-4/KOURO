@@ -1,23 +1,26 @@
-#include "ApproachState.h"
+ï»¿#include "ApproachState.h"
+
+#include "RandomMoveState.h"
+
 #include "Enemy.h"
 #include "Player.h"
 
 void ApproachState::Enter(Enemy* enemy, const WorldTransform* worldTransform)
 {
-    // ƒJƒƒ‰‚ÌTransform‚ğe‚Æ‚µ‚Ä“o˜^
+    // ã‚«ãƒ¡ãƒ©ã®Transformã‚’è¦ªã¨ã—ã¦ç™»éŒ²
     parent_ = worldTransform;
 
     enemy->GetWorldTransform()->SetParent(worldTransform);
 
     Vector3 offsetDir = TransformNormal({ 0.0f, 0.0f, -kApproachRadius }, parent_->matWorld_);
 
-    // ƒJƒƒ‰‚ÌˆÊ’u‚ğæ“¾
+    // ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã‚’å–å¾—
     Vector3 parentPos = { parent_->matWorld_.m[3][0], parent_->matWorld_.m[3][1], parent_->matWorld_.m[3][2] };
 
-    // ƒ[ƒ‹ƒhÀ•W‚Å‚Ì“GˆÊ’u = ƒJƒƒ‰ˆÊ’u + ‰ñ“]‚³‚ê‚½ƒIƒtƒZƒbƒg•ûŒü
+    // ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã§ã®æ•µä½ç½® = ã‚«ãƒ¡ãƒ©ä½ç½® + å›è»¢ã•ã‚ŒãŸã‚ªãƒ•ã‚»ãƒƒãƒˆæ–¹å‘
     Vector3 worldPos = parentPos + offsetDir;
 
-    // “G‚ÌTransformXV
+    // æ•µã®Transformæ›´æ–°
     WorldTransform* enemyTransform = enemy->GetWorldTransform();
     enemyTransform->transform.translate = worldPos;
     enemyTransform->UpdateMatrix();
@@ -29,24 +32,24 @@ void ApproachState::Update(Enemy* enemy)
 
     //WorldTransform* enemyTransform = enemy->GetWorldTransform();
 
-    //// Œo‰ßŠÔ‚É‰‚¶‚ÄŠp“x‚ği‚ß‚é
-    //angle_ += kApproachSpeed * 1.0f / 60.0f;  // deltaTime_ ‚Í Enemy‘¤‚Å“n‚·‘z’è
+    //// çµŒéæ™‚é–“ã«å¿œã˜ã¦è§’åº¦ã‚’é€²ã‚ã‚‹
+    //angle_ += kApproachSpeed * 1.0f / 60.0f;  // deltaTime_ ã¯ Enemyå´ã§æ¸¡ã™æƒ³å®š
     //if (angle_ > kEndAngle) { angle_ = kEndAngle; }
 
-    //// Šp“x‚ğƒ‰ƒWƒAƒ“‚É•ÏŠ·
+    //// è§’åº¦ã‚’ãƒ©ã‚¸ã‚¢ãƒ³ã«å¤‰æ›
     //float rad = ToRadians(angle_);
 
-    //// ‰~ŒÊ‚ğ•`‚­‚æ‚¤‚ÉˆÚ“®iXZ•½–Êj
+    //// å††å¼§ã‚’æãã‚ˆã†ã«ç§»å‹•ï¼ˆXZå¹³é¢ï¼‰
     //enemyTransform->transform.translate.x = kApproachRadius * sinf(rad);
     //enemyTransform->transform.translate.z = -kApproachRadius * cosf(rad);
 
-    //// ã‰º•ûŒü‚É­‚µ‚¤‚Ë‚èisin”gj
+    //// ä¸Šä¸‹æ–¹å‘ã«å°‘ã—ã†ã­ã‚Šï¼ˆsinæ³¢ï¼‰
     //enemyTransform->transform.translate.y = kApproachHeight * sinf(rad * 0.5f);
 
-    //// XV
+    //// æ›´æ–°
     //enemyTransform->UpdateMatrix();
 
-    //// ‘O•û‚É“’B‚µ‚½‚çŸ‚ÌƒXƒe[ƒg‚Ö
+    //// å‰æ–¹ã«åˆ°é”ã—ãŸã‚‰æ¬¡ã®ã‚¹ãƒ†ãƒ¼ãƒˆã¸
     //if (angle_ >= kEndAngle) {
     //    // enemy->ChangeState(...);
     //}
@@ -54,31 +57,31 @@ void ApproachState::Update(Enemy* enemy)
     //ver2.0
     //WorldTransform* enemyTransform = enemy->GetWorldTransform();
 
-    //Vector3 startPos = {0.0f,0.0f,-40.0f}; // oŒ»ˆÊ’uiEnter‚ÅŒˆ’èÏ‚İj
-    //Vector3 goalPos = enemy->GetGoalOffset();             // –Ú•WˆÊ’u
+    //Vector3 startPos = {0.0f,0.0f,-40.0f}; // å‡ºç¾ä½ç½®ï¼ˆEnterã§æ±ºå®šæ¸ˆã¿ï¼‰
+    //Vector3 goalPos = enemy->GetGoalOffset();             // ç›®æ¨™ä½ç½®
 
     //angle_ += kApproachSpeed * (1.0f / 60.0f);
     //if (angle_ > kEndAngle) angle_ = kEndAngle;
 
     //float rad = ToRadians(angle_);
 
-    //// XZ•½–Ê‚Ì•ûŒüƒxƒNƒgƒ‹
+    //// XZå¹³é¢ã®æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
     //Vector3 horizontal = { goalPos.x - startPos.x, 0.0f, goalPos.z - startPos.z };
     //float distanceXZ =Length(horizontal);
     //if (distanceXZ < 0.001f) distanceXZ = 0.001f;
     //horizontal = Normalize(horizontal);
 
-    //// ŒÊ‚Ì’†S = start‚Ægoal‚Ì’†ŠÔ + ã•ûŒüƒIƒtƒZƒbƒg
+    //// å¼§ã®ä¸­å¿ƒ = startã¨goalã®ä¸­é–“ + ä¸Šæ–¹å‘ã‚ªãƒ•ã‚»ãƒƒãƒˆ
     //Vector3 midPos = {
     //    (startPos.x + goalPos.x) / 2.0f,
     //    (startPos.y + goalPos.y) / 2.0f + kApproachHeight,
     //    (startPos.z + goalPos.z) / 2.0f
     //};
 
-    //// horizontal ‚É‚’¼‚ÈXZ•ûŒüƒxƒNƒgƒ‹
+    //// horizontal ã«å‚ç›´ãªXZæ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
     //Vector3 ortho = { -horizontal.z, 0.0f, horizontal.x };
 
-    //// ŒÊ‚É‰ˆ‚Á‚½ˆÊ’u
+    //// å¼§ã«æ²¿ã£ãŸä½ç½®
     //Vector3 offset;
     //offset.x = midPos.x + (-horizontal.x * kApproachRadius * cosf(rad)) + (ortho.x * kApproachRadius * sinf(rad));
     //offset.y = midPos.y + kApproachHeight * sinf(rad * 0.5f);
@@ -93,22 +96,22 @@ void ApproachState::Update(Enemy* enemy)
 
     WorldTransform* enemyTransform = enemy->GetWorldTransform();
 
-    Vector3 startPos = { 0.0f, 0.0f, -kApproachRadius }; // oŒ»ˆÊ’u
-    Vector3 goalPos = enemy->GetGoalOffset();         // –Ú•WˆÊ’u
+    Vector3 startPos = { 0.0f, 0.0f, -kApproachRadius }; // å‡ºç¾ä½ç½®
+    Vector3 goalPos = enemy->GetGoalOffset();         // ç›®æ¨™ä½ç½®
 
-    // ³‹K‰»ƒxƒNƒgƒ‹
+    // æ­£è¦åŒ–ãƒ™ã‚¯ãƒˆãƒ«
     Vector3 startDir = Normalize(startPos);
     Vector3 goalDir = Normalize(goalPos);
 
-    // ‘å‰~‚ÌŠp“x
+    // å¤§å††ã®è§’åº¦
     float dotProd = Dot(startDir, goalDir);
-    dotProd = std::clamp(dotProd, -1.0f, 1.0f); // ˆÀ‘S
+    dotProd = std::clamp(dotProd, -1.0f, 1.0f); // å®‰å…¨
     float theta = acosf(dotProd);
 
-    // is“x t (0->1)
+    // é€²è¡Œåº¦ t (0->1)
     angle_ += kApproachSpeed * (1.0f / 60.0f); // deg/frame
     if (angle_ > kEndAngle) angle_ = kEndAngle;
-    float t = angle_ / kEndAngle; // 0¨1
+    float t = angle_ / kEndAngle; // 0â†’1
 
     Vector3 pos;
     if (theta > 0.001f) {
@@ -116,21 +119,26 @@ void ApproachState::Update(Enemy* enemy)
         pos = (startDir * sinf((1 - t) * theta) + goalDir * sinf(t * theta)) / sinTheta;
     }
     else {
-        pos = goalDir; // ‚Ù‚Ú“¯‚¶ê‡
+        pos = goalDir; // ã»ã¼åŒã˜å ´åˆ
     }
 
-    // ƒXƒP[ƒ‹i”¼Œaj‚ğ kApproachRadius ‚É
+    // ã‚¹ã‚±ãƒ¼ãƒ«ï¼ˆåŠå¾„ï¼‰ã‚’ kApproachRadius ã«
     pos = pos * kApproachRadius;
 
-    // Y•ûŒü‚Ì‚¤‚Ë‚è
-    pos.y += kApproachHeight * sinf(t * 3.14159f); // ”¼”g
+    // Yæ–¹å‘ã®ã†ã­ã‚Š
+    pos.y += kApproachHeight * sinf(t * 3.14159f); // åŠæ³¢
 
     enemyTransform->transform.translate = pos;
     enemyTransform->transform.rotate.y += 0.01f;
     enemyTransform->UpdateMatrix();
 
-    if (angle_ >= kEndAngle) {
-        // enemy->ChangeState(...);
+    if (angle_ >= kEndAngle)
+    {
+        std::unique_ptr<RandomMoveState> newState;
+
+        newState = std::make_unique<RandomMoveState>();
+
+        enemy->ChangeState(std::move(newState));
     }
 }
 

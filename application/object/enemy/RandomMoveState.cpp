@@ -1,0 +1,34 @@
+﻿#include "RandomMoveState.h"
+
+#include "AttackState.h"
+#include "Enemy.h"
+
+void RandomMoveState::Enter(Enemy* enemy, const WorldTransform* worldTransform)
+{
+	randomGenerate.Initialize();
+
+	stateTimer_ = randomGenerate.Random(2.0f, 3.0f);
+}
+
+void RandomMoveState::Update(Enemy* enemy)
+{
+	stateTimer_ -= 1.0f / 60.0f;
+
+	if (stateTimer_ <= 0.0f)
+	{
+		std::unique_ptr<AttackState> newState = std::make_unique<AttackState>();
+		enemy->ChangeState(std::move(newState));
+	}
+
+	WorldTransform* enemyTransform = enemy->GetWorldTransform();
+
+	Vector3 velocity = randomGenerate.RandomVector3(-0.3f, 0.3f);
+
+	enemyTransform->transform.translate += velocity;
+
+
+}
+
+void RandomMoveState::Exit(Enemy* enemy)
+{
+}

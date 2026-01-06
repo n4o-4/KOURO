@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="GpuResourceInternal.cpp" />
     <ClCompile Include="BaseParticleEmitter.cpp" />
     <ClCompile Include="engine\effect\Absorb.cpp" />
@@ -109,6 +110,8 @@
     <ClCompile Include="engine\system\UavManager.cpp" />
     <ClCompile Include="ModelEdgeEmitter.cpp" />
     <ClCompile Include="RailFollower.cpp" />
+    <ClCompile Include="application\object\enemy\RandomMoveState.cpp" />
+    <ClCompile Include="RandomGenerate.cpp" />
     <ClCompile Include="ShaderCompiler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -116,6 +119,7 @@
     <ClCompile Include="SpawnManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AttackState.h" />
     <ClInclude Include="engine\object\InitialLightSetting.h" />
     <ClInclude Include="GpuResourceInternal.h" />
     <ClInclude Include="EngineContext.h" />
@@ -224,6 +228,8 @@
     <ClInclude Include="GpuResourceUtils.h" />
     <ClInclude Include="ModelEdgeEmitter.h" />
     <ClInclude Include="RailFollower.h" />
+    <ClInclude Include="application\object\enemy\RandomMoveState.h" />
+    <ClInclude Include="RandomGenerate.h" />
     <ClInclude Include="ShaderCompiler.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

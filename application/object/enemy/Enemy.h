@@ -87,10 +87,12 @@ public: // 公開メンバ関数
 	*/
 	void ChangeState(std::unique_ptr<EnemyState> state);
 
-private: // 非公開メンバ関数
-
 	// \brief Fire 弾の発射処理
 	void Fire();
+
+private: // 非公開メンバ関数
+
+	
 
 	/**
 	* \brief  OnCollisionEnter 衝突開始時
