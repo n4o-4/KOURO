@@ -306,6 +306,35 @@ void GameScene::Initialize(EngineContext context) {
 	stage_ = std::make_unique<ObjectLine>();
 	stage_->Initialize(lineModelManager_->FindLineModel("stage.obj"));
 
+	SpawnManager spawnManager;
+
+	std::vector<Vector3> enemies = spawnManager.LoadFile("spawnPattern1.json");
+
+	for (size_t i = 0; i < enemies.size(); i++)
+	{
+		std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
+		enemy->Initialize(lineModelManager_->FindLineModel("enemy/enemy.obj"));
+
+		enemy->SetGoalOffset(enemies[i]);
+
+		enemy->SetTarget(player_.get());
+
+		enemy->SetColliderManager(colliderManager_.get());
+
+		enemy->SetLineModelManager(lineModelManager_.get());
+
+		enemy->SetEmitter(mEmitter.get());
+
+		std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
+
+		enemy->SetCameraManager(cameraManager_.get());
+
+		enemy->ChangeState(std::move(state));
+
+		colliderManager_->AddCollider(enemy);
+
+		enemies_.push_back(std::move(enemy));
+	}
 }
 
 ///=============================================================================
