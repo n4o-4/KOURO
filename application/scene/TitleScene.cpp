@@ -7,12 +7,8 @@
 
 void TitleScene::Initialize(EngineContext context)
 {
-	// 基底クラスの初期化
+	/// 基底クラスの初期化
 	BaseScene::Initialize(context);
-
-	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture("Resources/StartButton.png");
-	TextureManager::GetInstance()->LoadTexture("Resources/num.png");
 
 	// ライン描画の初期化
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
@@ -22,8 +18,15 @@ void TitleScene::Initialize(EngineContext context)
 	lineModelManager_ = std::make_unique<LineModelManager>();
 	lineModelManager_->Initialize(lineDrawer_.get());
 
+	/// 各種素材の読み込み
+	// テクスチャの読み込み
+	TextureManager::GetInstance()->LoadTexture("Resources/StartButton.png");
+	TextureManager::GetInstance()->LoadTexture("Resources/num.png");
+
 	// ラインモデルの読み込み
 	lineModelManager_->LoadLineModel("player/player.obj");
+	lineModelManager_->LoadLineModel("tunnel.obj");
+
 
 	// スタートボタンの生成
 	startBotton_ = std::make_unique<Sprite>();
@@ -39,6 +42,10 @@ void TitleScene::Initialize(EngineContext context)
 	player_ = std::make_unique<BaseCharacter>();
 	player_->Initialize(lineModelManager_->FindLineModel("player/player.obj"));
 	player_->SetColor({ 0.071f, 0.429f, 1.0f,1.0f });
+
+	// トンネル用のモデル
+	tonnel_ = std::make_unique<ObjectLine>();
+	tonnel_->Initialize(lineModelManager_->FindLineModel("tunnel.obj"));
 
 	// パーティクルエミッターの生成
 	mEmitter = std::make_unique<ModelEdgeEmitter>();
@@ -287,6 +294,8 @@ void TitleScene::Draw()
 	lineDrawer_->PreDraw(cameraManager_->GetActiveCamera()->GetViewProjection());
 
 	player_->Draw();
+
+	tonnel_->Draw(defaultTransform_.get());
 
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	

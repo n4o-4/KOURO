@@ -24,6 +24,9 @@ void BaseScene::Initialize(EngineContext context)
 	// フェードを設定してスタート
 	fade_->Start(Fade::Status::FadeIn, fadeTime_);
 
+	defaultTransform_ = std::make_unique<WorldTransform>();
+	defaultTransform_->Initialize();
+
 	// 入力の受付を無効に
 	Input::GetInstance()->SetIsReception(false);
 

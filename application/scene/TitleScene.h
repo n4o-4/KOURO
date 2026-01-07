@@ -73,4 +73,6 @@ private:
 	std::unique_ptr<NumUi> scoreUi_ = nullptr;
 
 	std::unique_ptr<ModelEdgeEmitter> mEmitter = nullptr;
+
+	std::unique_ptr<ObjectLine> tonnel_ = nullptr;
 };

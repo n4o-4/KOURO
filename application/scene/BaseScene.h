@@ -105,6 +105,8 @@ protected:
 
 	std::unique_ptr<Fade> fade_ = nullptr;
 
+	std::unique_ptr<WorldTransform> defaultTransform_ = nullptr;
+
 	float fadeTime_ = 1.5f;
 
 	Phase phase_ = Phase::kFadeIn;
