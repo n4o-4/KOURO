@@ -352,6 +352,8 @@
     <ClCompile Include="application\object\enemy\RandomMoveState.cpp" />
     <ClCompile Include="RandomGenerate.cpp" />
     <ClCompile Include="AttackState.cpp" />
+    <ClCompile Include="ICameraState.cpp" />
+    <ClCompile Include="RotateCameraState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -639,6 +641,8 @@
     <ClInclude Include="application\object\enemy\RandomMoveState.h" />
     <ClInclude Include="RandomGenerate.h" />
     <ClInclude Include="AttackState.h" />
+    <ClInclude Include="ICameraState.h" />
+    <ClInclude Include="RotateCameraState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

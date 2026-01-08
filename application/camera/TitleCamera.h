@@ -2,6 +2,9 @@
 #include "BaseCamera.h"
 #include "WorldTransform.h"
 
+#include "ICameraState.h"
+#include "RotateCameraState.h"
+
 // \brief TitleCamera タイトルで使うカメラ
 
 class TitleCamera : public BaseCamera
@@ -18,7 +21,7 @@ public:
 	* \brief  SetTarget ターゲットの設定
 	* \param  target ターゲットのワールド変換のポインタ
 	*/
-	void SetTarget(WorldTransform* target) { target_ = target; }
+	//void SetTarget(WorldTransform* target) { target_ = target; }
 
 	/**
 	* \brief  SetIsRotate 回転フラグの設定
@@ -58,13 +61,10 @@ private:
 private:
 
 	// ターゲット
-	WorldTransform* target_ = nullptr;
+	//WorldTransform* target_ = nullptr;
 
 	// 追従対象の残像座標
 	Vector3 interTarget_ = {};
-
-	// オフセット
-	Vector3 offset_ = {};
 
 	// デフォルトのオフセット（元の値を保持）
 	Vector3 defaultOffset_ = { 0.0f, 3.0f, -30.0f };
@@ -83,6 +83,8 @@ private:
 
 	// 回転フラグ
 	bool isRotate_ = false;
+
+	bool isRun_ = false;
 
 	// 離脱フラグ
 	bool isDeparture_ = false;

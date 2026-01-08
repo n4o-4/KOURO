@@ -5,6 +5,8 @@
 #include "MyMath.h"	
 #include "ViewProjection.h"	
 
+#include "ICameraState.h"
+
 // \brief BaseCamera
 // カメラの基底クラス。
 // ViewProjection行列の生成・保持・更新を提供し、派生カメラで共通処理を実装可能。
@@ -26,10 +28,28 @@ public:
 	virtual ViewProjection& GetViewProjection() { return *viewProjection_; }
 
 	/**
+	* \brief  オフセットの取得
+	* \return オフセット
+	*/
+	const Vector3 GetOffset() const { return offset_; }
+
+
+	const Vector3 GetShakeOffset() const { return shakeOffset_; }
+
+
+	void SetShakeOffset(Vector3 offset) { shakeOffset_ = offset; }
+
+	/**
 	* \brief オフセット設定
 	* \param offset オフセット値
 	*/
 	void SetOffset(Vector3 offset) { offset_ = offset; }
+
+	/**
+	* \brief  状態の変更
+	* \param  newState : 新しい状態 
+	*/
+	void ChangeState(std::unique_ptr<ICameraState> newState);
 
 protected:
 
@@ -37,6 +57,9 @@ protected:
 
 	Matrix4x4 worldMatrix = MakeIdentity4x4();
 
+	Vector3 shakeOffset_ = {};
+
 	Vector3 offset_ = {};
 
+	std::unique_ptr<ICameraState> state_ = nullptr;
 };

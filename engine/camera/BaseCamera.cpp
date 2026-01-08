@@ -19,8 +19,24 @@ void BaseCamera::Update()
 	worldMatrix = MakeAffineMatrix(viewProjection_->transform.scale, viewProjection_->transform.rotate, viewProjection_->transform.translate);
 
 	// オフセット設定
-	viewProjection_->SetOffset(offset_);
+	viewProjection_->SetOffset(shakeOffset_);
 
 	// viewProjectionの更新
 	viewProjection_->Update();
+}
+
+void BaseCamera::ChangeState(std::unique_ptr<ICameraState> newState)
+{
+	if (!newState) return;
+
+	// もし既存のステートがあれば
+	if (state_)
+	{
+		state_->Exit();
+	}
+
+	state_ = std::move(newState);
+
+
+	state_->Enter();
 }

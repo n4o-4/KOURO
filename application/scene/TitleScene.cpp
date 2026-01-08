@@ -54,8 +54,10 @@ void TitleScene::Initialize(EngineContext context)
 
 	// titleCameraの生成
 	titleCamera_ = std::make_unique<TitleCamera>();
-	titleCamera_->SetTarget(player_->GetWorldTransform());
+	//titleCamera_->SetTarget(player_->GetWorldTransform());
 	titleCamera_->Initialize();
+	std::unique_ptr<RotateCameraState> newState = std::make_unique<RotateCameraState>(titleCamera_.get(), player_->GetWorldTransform());
+	titleCamera_->ChangeState(std::move(newState));
 
 	/*debugCamera_ = std::make_unique<DebugCamera>();
 	debugCamera_->Initialize();*/
@@ -145,6 +147,8 @@ void TitleScene::Update()
 			{
 				// カメラの回転を停止
 				titleCamera_->SetIsRotate(false);
+
+
 
 				// 離脱フラグを有効にする
 				titleCamera_->SetIsDeparture(true);

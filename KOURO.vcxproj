@@ -75,6 +75,7 @@
     <ClCompile Include="engine\system\LineObjectManager.cpp" />
     <ClCompile Include="GpuParticleManager.cpp" />
     <ClCompile Include="GpuResourceUtils.cpp" />
+    <ClCompile Include="ICameraState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\model\Model.cpp" />
     <ClCompile Include="engine\3d\model\ModelCommon.cpp" />
@@ -112,6 +113,7 @@
     <ClCompile Include="RailFollower.cpp" />
     <ClCompile Include="application\object\enemy\RandomMoveState.cpp" />
     <ClCompile Include="RandomGenerate.cpp" />
+    <ClCompile Include="RotateCameraState.cpp" />
     <ClCompile Include="ShaderCompiler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -226,10 +228,12 @@
     <ClInclude Include="engine\system\UavManager.h" />
     <ClInclude Include="GpuParticleManager.h" />
     <ClInclude Include="GpuResourceUtils.h" />
+    <ClInclude Include="ICameraState.h" />
     <ClInclude Include="ModelEdgeEmitter.h" />
     <ClInclude Include="RailFollower.h" />
     <ClInclude Include="application\object\enemy\RandomMoveState.h" />
     <ClInclude Include="RandomGenerate.h" />
+    <ClInclude Include="RotateCameraState.h" />
     <ClInclude Include="ShaderCompiler.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

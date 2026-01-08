@@ -28,7 +28,7 @@ void CameraManager::Update()
 	Shake();
 
 	// シェイクオフセットをアクティブカメラに適用
-	activeCamera_->SetOffset(shakeOffSet);
+	activeCamera_->SetShakeOffset(shakeOffSet);
 
 	// アクティブカメラの更新
 	activeCamera_->Update();
