@@ -1,4 +1,4 @@
-#include "RotateCameraState.h"
+﻿#include "RotateCameraState.h"
 #include "BaseCamera.h"
 
 void RotateCameraState::Enter()
@@ -18,6 +18,8 @@ void RotateCameraState::Update(float deltaTime)
 	offset = TransformNormal(offset, rotateMatrix);
 
 	viewPro->transform.translate = offset;
+
+	viewPro->Update();
 }
 
 void RotateCameraState::Exit()

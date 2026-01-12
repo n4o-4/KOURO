@@ -4,6 +4,8 @@
 #include <cmath>
 
 #include "GpuParticle.h"
+#include "RotateCameraState.h"
+#include "FollowCameraState.h"
 
 void TitleScene::Initialize(EngineContext context)
 {
@@ -142,13 +144,15 @@ void TitleScene::Update()
 		// スペースキーまたはゲームパッドのAボタンが押されたら
 		if (Input::GetInstance()->Triggerkey(DIK_SPACE) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
 		{
+			
+
 			// 移動開始フラグが無効なら
 			if(!isMoveActive_)
 			{
+				cameraManager_->GetActiveCamera()->ChangeState(std::make_unique<FollowCameraState>(cameraManager_->GetActiveCamera(), player_->GetWorldTransform()));
+
 				// カメラの回転を停止
 				titleCamera_->SetIsRotate(false);
-
-
 
 				// 離脱フラグを有効にする
 				titleCamera_->SetIsDeparture(true);

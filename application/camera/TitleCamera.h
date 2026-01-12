@@ -3,7 +3,6 @@
 #include "WorldTransform.h"
 
 #include "ICameraState.h"
-#include "RotateCameraState.h"
 
 // \brief TitleCamera タイトルで使うカメラ
 

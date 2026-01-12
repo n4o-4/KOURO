@@ -354,6 +354,7 @@
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="ICameraState.cpp" />
     <ClCompile Include="RotateCameraState.cpp" />
+    <ClCompile Include="FollowCameraState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -643,6 +644,7 @@
     <ClInclude Include="AttackState.h" />
     <ClInclude Include="ICameraState.h" />
     <ClInclude Include="RotateCameraState.h" />
+    <ClInclude Include="FollowCameraState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

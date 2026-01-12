@@ -1,5 +1,8 @@
 ﻿#include "TitleCamera.h"
 
+#include "RotateCameraState.h"
+#include "FollowCameraState.h"
+
 void TitleCamera::Initialize()
 {
     // カメラの初期オフセット設定
@@ -58,7 +61,7 @@ void TitleCamera::Update()
  //   }
 
     // 基底クラスの更新
-    BaseCamera::Update();
+    //BaseCamera::Update();
 }
 
 Vector3 TitleCamera::CalculationOffset()

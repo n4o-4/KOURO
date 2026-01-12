@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AttackState.cpp" />
+    <ClCompile Include="FollowCameraState.cpp" />
     <ClCompile Include="GpuResourceInternal.cpp" />
     <ClCompile Include="BaseParticleEmitter.cpp" />
     <ClCompile Include="engine\effect\Absorb.cpp" />
@@ -123,6 +124,7 @@
   <ItemGroup>
     <ClInclude Include="AttackState.h" />
     <ClInclude Include="engine\object\InitialLightSetting.h" />
+    <ClInclude Include="FollowCameraState.h" />
     <ClInclude Include="GpuResourceInternal.h" />
     <ClInclude Include="EngineContext.h" />
     <ClInclude Include="engine\core\D3D12Context.h" />
