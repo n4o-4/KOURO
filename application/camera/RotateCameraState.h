@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 #include "ICameraState.h"
 class RotateCameraState : public ICameraState
 {
-public: // ƒƒ“ƒoŠÖ”
+public: // ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	/**
-	* \brief  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	* \brief  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	* \param  camera
 	* \param  target
 	*/
@@ -18,8 +18,8 @@ public: // ƒƒ“ƒoŠÖ”
 
 	void Exit() override;
 
-private: // ƒƒ“ƒo’è”
+private: // ãƒ¡ãƒ³ãƒå®šæ•°
 
-	static constexpr float kRotateSpeed_ = 0.1f; //!< ‰ñ“]‘¬“x
+	static constexpr float kRotateSpeed_ = 0.1f; //!< å›è»¢é€Ÿåº¦
 };
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "WorldTransform.h"
 
 class BaseCamera;
@@ -9,22 +9,22 @@ public:
 
 	ICameraState(BaseCamera* camera, const WorldTransform* target) : camera_(camera), target_(target) {};
 
-	/// \brief ƒfƒXƒgƒ‰ƒNƒ^
+	/// \brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	virtual ~ICameraState() = default;
 
-	/// \brief ŠJnˆ—
+	/// \brief é–‹å§‹å‡¦ç†
 	virtual void Enter() = 0;
 
-	/// \brief XVˆ—
+	/// \brief æ›´æ–°å‡¦ç†
 	virtual void Update(float deltaTime) = 0;
 
-	/// \brief I—¹ˆ—
+	/// \brief çµ‚äº†å‡¦ç†
 	virtual void Exit() = 0;
 
 protected:
 
-	BaseCamera* camera_ = nullptr; //!< ˆ—‚·‚éƒJƒƒ‰‚Ìƒ|ƒCƒ“ƒ^
+	BaseCamera* camera_ = nullptr; //!< å‡¦ç†ã™ã‚‹ã‚«ãƒ¡ãƒ©ã®ãƒã‚¤ãƒ³ã‚¿
 
-	const WorldTransform* target_ = nullptr; //!< ‹“_‚Ìƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ìƒ|ƒCƒ“ƒ^
+	const WorldTransform* target_ = nullptr; //!< è¦–ç‚¹ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®ãƒã‚¤ãƒ³ã‚¿
 };
 
