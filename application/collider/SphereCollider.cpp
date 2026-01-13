@@ -1,4 +1,6 @@
 ﻿#include "SphereCollider.h"
+#include "AABBCollider.h"
+#include "OBBCollider.h"
 
 void SphereCollider::Initialize(WorldTransform* worldTransform, BaseEntity* owner)
 {
@@ -22,4 +24,33 @@ void SphereCollider::Update()
 		colliderTransform_->matWorld_.m[3][1],
 		colliderTransform_->matWorld_.m[3][2]
 	);
+}
+
+bool SphereCollider::CheckCollision(BaseCollider* other)
+{
+	return other->CheckCollisionWithSphere(this);
+}
+
+bool SphereCollider::CheckCollisionWithAABB(BaseCollider* other)
+{
+	auto c = dynamic_cast<AABBCollider*>(other);
+	if (!c) return false;
+
+	return IsCollision(GetSphere(), c->GetAABB());
+}
+
+bool SphereCollider::CheckCollisionWithSphere(BaseCollider* other)
+{
+	auto c = dynamic_cast<SphereCollider*>(other);
+	if (!c) return false;
+
+	return IsCollision(GetSphere(), c->GetSphere());
+}
+
+bool SphereCollider::CheckCollisionWithOBB(BaseCollider* other)
+{
+	auto c = dynamic_cast<OBBCollider*>(other);
+	if (!c) return false;
+
+	return IsCollision(GetSphere(), c->GetOBB());
 }

@@ -95,13 +95,6 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
-	
-
-	constexpr float kMoveTime = 5.0f;
-
-	static float moveTimer_ = 0.0f; //!< カメラの移動時間
-
-	float t = moveTimer_ / kMoveTime;
 
 	float nextT;
 	Vector3 viewTarget;
@@ -144,8 +137,6 @@ void TitleScene::Update()
 		// スペースキーまたはゲームパッドのAボタンが押されたら
 		if (Input::GetInstance()->Triggerkey(DIK_SPACE) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
 		{
-			
-
 			// 移動開始フラグが無効なら
 			if(!isMoveActive_)
 			{
@@ -162,6 +153,8 @@ void TitleScene::Update()
 
 				// 移動開始フラグを有効にする
 				isMoveActive_ = true;
+
+				speedFactor_ = kDeltaTime * 0.1f;
 			}
 		}
 
@@ -220,25 +213,21 @@ void TitleScene::Update()
 
 	if (isMoveActive_) /// 移動開始フラグが有効なら
 	{
-		// 移動時間が移動完了時間未満なら
-		if (moveTimer_ < kMoveTime)
+		if (progressFactor_ < 1.0f)
 		{
-			// 移動時間を加算
-			moveTimer_ += kDeltaTime;
-		}
-		else
-		{
-			moveTimer_ = 0.0f;
+			progressFactor_ += speedFactor_;
+
+			speedFactor_ *= kMultiplyFactor_;
 		}
 
 		// ワールド変換情報を取得
 		auto transform_ = player_->GetWorldTransform();
 
 		// 現在位置をCatmull-Rom補間で取得
-		transform_->transform.translate = CatmullRomPosition(controlPoints_, t);
+		transform_->transform.translate = CatmullRomPosition(controlPoints_, progressFactor_);
 
 		// 次のフレームの位置をCatmull-Rom補間で取得
-		nextT = (moveTimer_ + (kDeltaTime * 26.0f)) / kMoveTime;
+		nextT = progressFactor_ + speedFactor_;
 
 		// 目標位置
 		viewTarget = CatmullRomPosition(controlPoints_, nextT);

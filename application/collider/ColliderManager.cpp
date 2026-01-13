@@ -84,43 +84,63 @@ void ColliderManager::CheckCollision(ColliderVariant a, ColliderVariant b)
         {
             if (!colliderA || !colliderB) return;
 
-            using A = std::decay_t<decltype(*colliderA)>;
-            using B = std::decay_t<decltype(*colliderB)>;
+            // BaseCollider* に変換
+            BaseCollider* baseA = colliderA.get();
+            BaseCollider* baseB = colliderB.get();
 
-            bool isHit = false;
-
-            if constexpr (std::is_same_v<A, AABBCollider> && std::is_same_v<B, AABBCollider>) {
-                isHit = IsCollision(colliderA->GetAABB(), colliderB->GetAABB());
-            }
-            else if constexpr (std::is_same_v<A, SphereCollider> && std::is_same_v<B, SphereCollider>) {
-                isHit = IsCollision(colliderA->GetSphere(), colliderB->GetSphere());
-            }
-            else if constexpr (std::is_same_v<A, OBBCollider> && std::is_same_v<B, OBBCollider>) {
-                isHit = IsCollision(colliderA->GetOBB(), colliderB->GetOBB());
-            }
-            else if constexpr (std::is_same_v<A, AABBCollider> && std::is_same_v<B, SphereCollider>) {
-                isHit = IsCollision(colliderA->GetAABB(), colliderB->GetSphere());
-            }
-            else if constexpr (std::is_same_v<A, SphereCollider> && std::is_same_v<B, AABBCollider>) {
-                isHit = IsCollision(colliderA->GetSphere(), colliderB->GetAABB());
-            }
-            else if constexpr (std::is_same_v<A, SphereCollider> && std::is_same_v<B, OBBCollider>) {
-                isHit = IsCollision(colliderA->GetSphere(), colliderB->GetOBB());
-            }
-            else if constexpr (std::is_same_v<A, OBBCollider> && std::is_same_v<B, SphereCollider>) {
-                isHit = IsCollision(colliderA->GetOBB(), colliderB->GetSphere());
-            }
-            else if constexpr (std::is_same_v<A, AABBCollider> && std::is_same_v<B, OBBCollider>) {
-                isHit = IsCollision(colliderA->GetAABB(), colliderB->GetOBB());
-            }
-            else if constexpr (std::is_same_v<A, OBBCollider> && std::is_same_v<B, AABBCollider>) {
-                isHit = IsCollision(colliderA->GetOBB(), colliderB->GetAABB());
-            }
-
-            if (isHit) {
-                colliderA->AddCollision(colliderB.get());
-                colliderB->AddCollision(colliderA.get());
+            // ダブルディスパッチで衝突判定
+            if (baseA->CheckCollision(baseB))
+            {
+                baseA->AddCollision(baseB);
+                baseB->AddCollision(baseA);
             }
 
         }, a, b);
+
+    //// 型を分岐して衝突判定
+    //std::visit([](auto& colliderA, auto& colliderB)
+    //    {
+    //        if (!colliderA || !colliderB) return;
+
+    //        using A = std::decay_t<decltype(*colliderA)>;
+    //        using B = std::decay_t<decltype(*colliderB)>;
+
+    //        bool isHit = false;
+
+    //        /*if constexpr (std::is_same_v<A, AABBCollider> && std::is_same_v<B, AABBCollider>) {
+    //            isHit = IsCollision(colliderA->GetAABB(), colliderB->GetAABB());
+    //        }
+    //        else if constexpr (std::is_same_v<A, SphereCollider> && std::is_same_v<B, SphereCollider>) {
+    //            isHit = IsCollision(colliderA->GetSphere(), colliderB->GetSphere());
+    //        }
+    //        else if constexpr (std::is_same_v<A, OBBCollider> && std::is_same_v<B, OBBCollider>) {
+    //            isHit = IsCollision(colliderA->GetOBB(), colliderB->GetOBB());
+    //        }
+    //        else if constexpr (std::is_same_v<A, AABBCollider> && std::is_same_v<B, SphereCollider>) {
+    //            isHit = IsCollision(colliderA->GetAABB(), colliderB->GetSphere());
+    //        }
+    //        else if constexpr (std::is_same_v<A, SphereCollider> && std::is_same_v<B, AABBCollider>) {
+    //            isHit = IsCollision(colliderA->GetSphere(), colliderB->GetAABB());
+    //        }
+    //        else if constexpr (std::is_same_v<A, SphereCollider> && std::is_same_v<B, OBBCollider>) {
+    //            isHit = IsCollision(colliderA->GetSphere(), colliderB->GetOBB());
+    //        }
+    //        else if constexpr (std::is_same_v<A, OBBCollider> && std::is_same_v<B, SphereCollider>) {
+    //            isHit = IsCollision(colliderA->GetOBB(), colliderB->GetSphere());
+    //        }
+    //        else if constexpr (std::is_same_v<A, AABBCollider> && std::is_same_v<B, OBBCollider>) {
+    //            isHit = IsCollision(colliderA->GetAABB(), colliderB->GetOBB());
+    //        }
+    //        else if constexpr (std::is_same_v<A, OBBCollider> && std::is_same_v<B, AABBCollider>) {
+    //            isHit = IsCollision(colliderA->GetOBB(), colliderB->GetAABB());
+    //        }*/
+
+    //        colliderA->CheckCollision(colliderB.get());
+
+    //        if (isHit) {
+    //            colliderA->AddCollision(colliderB.get());
+    //            colliderB->AddCollision(colliderA.get());
+    //        }
+
+    //    }, a, b);
 }

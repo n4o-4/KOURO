@@ -38,6 +38,17 @@ public: /// 公開メンバ関数
 	*/
 	void UpdateCollisionStates();
 
+	/**
+	* \brief  当たり判定
+	* \param  collider 
+	*/
+	virtual bool CheckCollision(BaseCollider* other) = 0;
+
+	virtual bool CheckCollisionWithAABB(BaseCollider* other) = 0;
+
+	virtual bool CheckCollisionWithSphere(BaseCollider* other) = 0;
+
+	virtual bool CheckCollisionWithOBB(BaseCollider* other) = 0;
 
 	///================================================================================
 	///                                        setter

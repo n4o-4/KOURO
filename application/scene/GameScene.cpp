@@ -34,8 +34,7 @@ void GameScene::Initialize(EngineContext context) {
 
 	//========================================
 	// テクスチャの読み込み
-	
-	ModelManager::GetInstance()->LoadModel("terrain.obj");
+
 	ModelManager::GetInstance()->LoadModel("player/player.obj");
 	ModelManager::GetInstance()->LoadModel("playerbullet/playerbullet.obj");
 
@@ -62,13 +61,6 @@ void GameScene::Initialize(EngineContext context) {
 	// postエフェクトの適用
 	sceneManager_->GetPostEffect()->ApplyEffect("dissolve",PostEffect::EffectType::Dissolve);
 
-
-	///========================================
-	///	    アニメーション
-	animationManager = std::make_unique<AnimationManager>();
-	animationManager->LoadAnimationFile("./Resources/human", "walk.gltf");
-	animationManager->StartAnimation("walk.gltf",0);
-
 	///========================================
 	///		ライン描画
 	lineDrawer_ = std::make_unique<LineDrawerBase>();
@@ -80,13 +72,6 @@ void GameScene::Initialize(EngineContext context) {
 	lineModelManager_->LoadLineModel("enemy/enemy.obj");
 	lineModelManager_->LoadLineModel("playerbullet/playerbullet.obj");
 	lineModelManager_->LoadLineModel("stage.obj");
-
-	ModelManager::GetInstance()->LoadModel("terrain.obj");
-
-	ground_ = std::make_unique<Object3d>();
-	ground_->Initialize(Object3dCommon::GetInstance());
-	ground_->SetModel(ModelManager::GetInstance()->FindModel("terrain.obj"));
-	ground_->SetLocalMatrix(MakeIdentity4x4());
 
 	transform_ = std::make_unique<WorldTransform>();
 	transform_->Initialize();
@@ -406,7 +391,6 @@ void GameScene::Update()
 	// スポットライト
 	spotLight->Update();
 
-	ground_->Update();
 
 	transform_->UpdateMatrix();
 

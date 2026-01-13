@@ -61,7 +61,11 @@ private:
 		{0.0f,0.0f,420.0f},
 		{0.0f,0.0f,480.0f},
 		{0.0f,0.0f,540.0f},
-		{0.0f,0.0f,600.0f}
+		{0.0f,0.0f,600.0f},
+		{0.0f,0.0f,900.0f},
+		{0.0f,30.0f,1200.0f},
+		{0.0f,300.0f,1500.0f},
+		{0.0f,900.0f,2100.0f}
 	}; //!< 
 
 	std::unique_ptr<Sprite> startBotton_ = nullptr;
@@ -79,4 +83,10 @@ private:
 	std::unique_ptr<ModelEdgeEmitter> mEmitter = nullptr;
 
 	std::unique_ptr<ObjectLine> tonnel_ = nullptr;
+
+	float progressFactor_ = 0.0f; //!< 
+
+	float speedFactor_ = 0.0f;
+
+	static constexpr float kMultiplyFactor_ = 1.005f;
 };

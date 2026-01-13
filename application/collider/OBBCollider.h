@@ -16,6 +16,14 @@ public: /// 公開メンバ関数
 	// \brief  Update 更新
 	void Update() override;
 
+	bool CheckCollision(BaseCollider* other) override;
+
+	bool CheckCollisionWithAABB(BaseCollider* other) override;
+
+	bool CheckCollisionWithSphere(BaseCollider* other) override;
+
+	bool CheckCollisionWithOBB(BaseCollider* other) override;
+
 	///================================================================================
 	///                                        setter
 
