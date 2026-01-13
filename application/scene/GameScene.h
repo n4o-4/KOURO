@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "BaseScene.h"
 #include "Kouro.h"
@@ -83,7 +83,11 @@ private:
 
 	std::unique_ptr<Sprite> countSprite_[3];
 
-	
+	Vector4 kDfaultUIColor_ = { 0.612f, 0.000f, 0.357f, 1.0f };
+
+	std::unique_ptr<Sprite> WASD_ = nullptr;
+
+	std::unique_ptr<Sprite> fireUI_ = nullptr;
 
 	float countScale_[3] = { 0.0f, 0.0f, 0.0f };
 	float countRotation_[3] = { 0.0f, 0.0f, 0.0f };

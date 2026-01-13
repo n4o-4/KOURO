@@ -35,6 +35,9 @@ void GameScene::Initialize(EngineContext context) {
 	//========================================
 	// テクスチャの読み込み
 
+	TextureManager::GetInstance()->LoadTexture("Resources/WASD.png");
+
+
 	ModelManager::GetInstance()->LoadModel("player/player.obj");
 	ModelManager::GetInstance()->LoadModel("playerbullet/playerbullet.obj");
 
@@ -279,6 +282,25 @@ void GameScene::Initialize(EngineContext context) {
 		countSprite_[i]->Update();
 	}
 	
+	WASD_ = std::make_unique<Sprite>();
+	WASD_->Initialize(SpriteCommon::GetInstance(), "Resources/WASD.png");
+	WASD_->SetAnchorPoint(Vector2(0.5f, 0.5f));
+	WASD_->SetTexSize(Vector2(1024.0f, 1024.0f));
+	WASD_->SetSize(Vector2(200.0f, 200.0f));
+	WASD_->SetPosition(Vector2(120.0f, 600.0f));
+	WASD_->SetColor(Vector4(kDfaultUIColor_));
+	WASD_->Update();
+
+	
+
+	fireUI_ = std::make_unique<Sprite>();
+	fireUI_->Initialize(SpriteCommon::GetInstance(), "Resources/FireUI.png");
+	fireUI_->SetAnchorPoint(Vector2(0.5f, 0.5f));
+	fireUI_->SetTexSize(Vector2(1536.0f, 1024.0f));
+	fireUI_->SetSize(Vector2(300.0f, 200.0f));
+	fireUI_->SetPosition(Vector2(640.0f, 600.0f));
+	fireUI_->SetColor(kDfaultUIColor_);
+	fireUI_->Update();
 
 	colliderManager_->AddCollider(player_);
 
@@ -614,6 +636,18 @@ void GameScene::Update()
 	}
 #endif
 
+	float interval = player_->GetFireInterval();
+	float fireTimer = player_->GetFireIntervalTimer();
+
+	float factor = fireTimer / interval;
+
+	factor = std::clamp(factor, 0.0f, 1.0f);
+
+	Vector3 uiColor = Lerp(Vector3(kDfaultUIColor_.x, kDfaultUIColor_.y, kDfaultUIColor_.z), Vector3(1.0f, 1.0f, 1.0f), factor);
+
+	fireUI_->SetColor({ uiColor.x,uiColor.y,uiColor.z,1.0f });
+	fireUI_->Update();
+
 	//emitter1_->Update();
 
 	//emitter2_->Update();
@@ -672,7 +706,8 @@ void GameScene::Draw()
 		countSprite_[0]->Draw();
 	}
 
-	
+	WASD_->Draw();
+	fireUI_->Draw();
 
 	// フェード描画
 	DrawFade();

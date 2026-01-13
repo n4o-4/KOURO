@@ -77,6 +77,10 @@ public: // 公開メンバ関数
 	*/
 	const bool GetIsHit() const { return isHit_; }
 
+
+	const float GetFireInterval()const { return kFireInterval_; }
+	const float GetFireIntervalTimer() const { return fireTimer_; }
+
 private: // 非公開メンバ関数
 
 	// \brief  Move 移動処理
