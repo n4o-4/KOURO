@@ -11,7 +11,7 @@ public: // メンバ関数
 	*/
 	RotateCameraState(BaseCamera* camera, const WorldTransform* target) : ICameraState(camera, target) {};
 
-
+	/// \brief 開始処理
 	void Enter() override;
 
 	void Update(float deltaTime) override;

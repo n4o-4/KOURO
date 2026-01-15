@@ -59,7 +59,7 @@ public:
 	* \brief  スワップチェーン設定の取得
 	* \return スワップチェーン設定
 	*/
-	DXGI_SWAP_CHAIN_DESC1 GetSeapChainDesc() { return swapChainDesc; }
+	DXGI_SWAP_CHAIN_DESC1 GetSwapChainDesc() { return swapChainDesc; }
 
 	/**
 	* \brief  コマンドキュー取得
@@ -154,7 +154,7 @@ public:
 	* \param  index インデックス
 	* \return CPUデスクリプタハンドル
 	*/
-	static D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index)
+	static D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap,const  uint32_t descriptorSize,const  uint32_t index)
 	{
 		D3D12_CPU_DESCRIPTOR_HANDLE handleCPU = descriptorHeap->GetCPUDescriptorHandleForHeapStart();
 		handleCPU.ptr += (descriptorSize * index);
@@ -168,7 +168,7 @@ public:
 	* \param  index インデックス
 	* \return GPUデスクリプタハンドル
 	*/
-	static D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index) {
+	static D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap,const  uint32_t descriptorSize,const  uint32_t index) {
 		D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap.Get()->GetGPUDescriptorHandleForHeapStart();
 		handleGPU.ptr += (descriptorSize * index);
 		return handleGPU;
@@ -179,13 +179,13 @@ public:
 	* \param  index インデックス
 	* \return レンダーターゲットビューのCPUハンドル
 	*/
-	D3D12_CPU_DESCRIPTOR_HANDLE* GetRTVHandle(int index) { return &rtvHandles[index]; }
+	D3D12_CPU_DESCRIPTOR_HANDLE* GetRTVHandle(const int index) { return &rtvHandles[index]; }
 
 	/**
 	* \brief  レンダーターゲットビューのCPUハンドル設定
 	* \param  index インデックス
 	*/
-	void SetRTVHandle(int index) { rtvHandles[index].ptr = rtvHandles[index - 1].ptr + device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV); }
+	void SetRTVHandle(const int index) { rtvHandles[index].ptr = rtvHandles[index - 1].ptr + device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV); }
 
 	/**
 	* \brief  レンダーターゲットビューの設定取得

@@ -288,7 +288,7 @@ void GameScene::Initialize(EngineContext context) {
 	WASD_->SetTexSize(Vector2(1024.0f, 1024.0f));
 	WASD_->SetSize(Vector2(200.0f, 200.0f));
 	WASD_->SetPosition(Vector2(120.0f, 600.0f));
-	WASD_->SetColor(Vector4(kDfaultUIColor_));
+	WASD_->SetColor(Vector4(kDefaultUIColor_));
 	WASD_->Update();
 
 	
@@ -299,7 +299,7 @@ void GameScene::Initialize(EngineContext context) {
 	fireUI_->SetTexSize(Vector2(1536.0f, 1024.0f));
 	fireUI_->SetSize(Vector2(300.0f, 200.0f));
 	fireUI_->SetPosition(Vector2(640.0f, 600.0f));
-	fireUI_->SetColor(kDfaultUIColor_);
+	fireUI_->SetColor(kDefaultUIColor_);
 	fireUI_->Update();
 
 	colliderManager_->AddCollider(player_);
@@ -643,7 +643,7 @@ void GameScene::Update()
 
 	factor = std::clamp(factor, 0.0f, 1.0f);
 
-	Vector3 uiColor = Lerp(Vector3(kDfaultUIColor_.x, kDfaultUIColor_.y, kDfaultUIColor_.z), Vector3(1.0f, 1.0f, 1.0f), factor);
+	Vector3 uiColor = Lerp(Vector3(kDefaultUIColor_.x, kDefaultUIColor_.y, kDefaultUIColor_.z), Vector3(1.0f, 1.0f, 1.0f), factor);
 
 	fireUI_->SetColor({ uiColor.x,uiColor.y,uiColor.z,1.0f });
 	fireUI_->Update();

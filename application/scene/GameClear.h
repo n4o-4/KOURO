@@ -22,7 +22,7 @@ class GameClear : public BaseScene {
 
 public:
 
-	// \brief Initialzie 初期化
+	// \brief 初期化
 	void Initialize(EngineContext context) override;
 
 	// \brief Finialize 終了

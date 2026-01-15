@@ -2,7 +2,7 @@
 // Engine
 #include "Kouro.h"
 
-// 全てのオブジェkとの基底クラス
+// 全てのオブジェクトの基底クラス
 
 class BaseEntity
 {

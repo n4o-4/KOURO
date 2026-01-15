@@ -16,7 +16,7 @@ class Enemy : public BaseCharacter, public AABBCollider
 public: // 公開メンバ関数
 
 	/**
-	* \brief  Initialzie 初期化
+	* \brief  初期化
 	* \param  LineModel 線モデル
 	*/
 	void Initialize(LineModel* model) override;

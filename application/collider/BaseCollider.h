@@ -61,7 +61,7 @@ public: /// 公開メンバ関数
 
 	/**
 	 * \brief  SetCollisionMask コリジョンマスクを設定する
-	 * \parma  CollisionMask(コリジョンマスク)
+	 * \param  CollisionMask(コリジョンマスク)
 	 */
 	void SetCollisionMask(uint32_t collisionMask) { collisionMask_ = collisionMask; }
 

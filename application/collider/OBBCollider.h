@@ -29,7 +29,7 @@ public: /// 公開メンバ関数
 
 	/**
 	 * \brief OBBの情報を設定する
-	 * \parma OBB OBBの最小座標と最大座標
+	 * \param OBB OBBの最小座標と最大座標
 	*/
 	void SetOBB(const OBB& obb) { obb_ = obb; }
 

@@ -26,7 +26,7 @@ private:
 private:
 public: // メンバ関数
 
-	// \brief Initialzie 初期化
+	// \brief 初期化
 	void Initialize(EngineContext context) override;
 
 	// \brief Finialize 終了
@@ -49,24 +49,7 @@ private:
 	// グローバルまたはクラスメンバとして開始時刻を記録
 	std::chrono::steady_clock::time_point startTime;
 
-	std::vector<Vector3> controlPoints_
-	{
-		{0.0f,0.0f,0.0f},
-		{0.0f,0.0f,60.0f},
-		{0.0f,0.0f,120.0f},
-		{0.0f,0.0f,180.0f},
-		{0.0f,0.0f,240.0f},
-		{0.0f,0.0f,300.0f},
-		{0.0f,0.0f,360.0f},
-		{0.0f,0.0f,420.0f},
-		{0.0f,0.0f,480.0f},
-		{0.0f,0.0f,540.0f},
-		{0.0f,0.0f,600.0f},
-		{0.0f,0.0f,900.0f},
-		{0.0f,30.0f,1200.0f},
-		{0.0f,300.0f,1500.0f},
-		{0.0f,900.0f,2100.0f}
-	}; //!< 
+	std::vector<Vector3> controlPoints_ = {};
 
 	std::unique_ptr<Sprite> startBotton_ = nullptr;
 

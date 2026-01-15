@@ -31,7 +31,7 @@ public: /// 公開メンバ関数
 
 	/**
 	 * \brief Sphereの情報を設定する
-	 * \parma Sphere Sphereの数値を設定
+	 * \param Sphere Sphereの数値を設定
 	*/
 	void SetSphere(const Sphere& sphere) { sphere_ = sphere; }
 

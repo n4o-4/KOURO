@@ -2,7 +2,7 @@
 
 #include "DirectXCommon.h"
 
-void OffScreenRendring::Initialzie()
+void OffScreenRendring::Initialize()
 {
 }
 

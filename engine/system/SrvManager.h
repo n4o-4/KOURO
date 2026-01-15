@@ -48,7 +48,7 @@ public:
 
 	/**
 	* \brief  indexからGPU Descriptor Handleを取得する
-	* \parma  index : DescriptorHeap上のindex
+	* \param  index : DescriptorHeap上のindex
 	* \return GPU Descriptor Handle
 	+*/
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(uint32_t index);

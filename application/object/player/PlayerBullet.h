@@ -15,7 +15,7 @@ public: // 公開メンバ関数
 	// \brief  Update 更新
 	void Update() override;
 
-	// \brief  Fraw 描画
+	// \brief 描画
 	void Draw() override;
 
 	 ///================================================================================

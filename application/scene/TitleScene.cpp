@@ -7,6 +7,9 @@
 #include "RotateCameraState.h"
 #include "FollowCameraState.h"
 
+#include "YamlLoader.h"
+#include "Vector3Yaml.h"
+
 void TitleScene::Initialize(EngineContext context)
 {
 	/// 基底クラスの初期化
@@ -29,6 +32,9 @@ void TitleScene::Initialize(EngineContext context)
 	lineModelManager_->LoadLineModel("player/player.obj");
 	lineModelManager_->LoadLineModel("tunnel.obj");
 
+	YAML::Node config = KOURO::YamlLoader::LoadYamlFile("title_config.yaml");
+
+	controlPoints_ = config["control_points"].as<std::vector<Vector3>>();
 
 	// スタートボタンの生成
 	startBotton_ = std::make_unique<Sprite>();

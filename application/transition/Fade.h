@@ -28,7 +28,7 @@ public:
 
 public:
 
-	// \brief Initialzie 初期化
+	// \brief 初期化
 	void Initialize();
 
 	// \brief Update 更新

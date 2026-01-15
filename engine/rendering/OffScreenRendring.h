@@ -15,7 +15,7 @@ class OffScreenRendring
 public: // 公開メンバ関数
 
 	/// \brief 初期化
-	void Initialzie();
+	void Initialize();
 
 	/// \brief 描画前処理
 	void PreDraw();

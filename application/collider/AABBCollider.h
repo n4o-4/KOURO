@@ -29,7 +29,7 @@ public: /// 公開メンバ関数
 
 	/**
 	 * \brief AABBの情報を設定する
-	 * \parma AABB AABBの最小座標と最大座標
+	 * \param AABB AABBの最小座標と最大座標
 	*/
 	void SetAABB(const AABB& aabb) { aabb_ = aabb; }
 

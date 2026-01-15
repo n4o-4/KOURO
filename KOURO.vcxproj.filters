@@ -427,6 +427,38 @@
     <ClCompile Include="engine\3d\model\LineModel.cpp">
       <Filter>engine\3d\model</Filter>
     </ClCompile>
+    <ClCompile Include="JsonLoader.cpp" />
+    <ClCompile Include="YamlLoader.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\binary.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\convert.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\depthguard.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\directives.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\emit.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\emitfromevents.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\emitter.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\emitterstate.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\emitterutils.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\exceptions.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\exp.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\fptostring.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\memory.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\node.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\node_data.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\nodebuilder.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\nodeevents.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\null.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\ostream_wrapper.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\parse.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\parser.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\regex_yaml.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\scanner.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\scanscalar.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\scantag.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\scantoken.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\simplekey.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\singledocparser.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\stream.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\tag.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -777,6 +809,31 @@
     <ClInclude Include="engine\object\InitialLightSetting.h">
       <Filter>engine\object</Filter>
     </ClInclude>
+    <ClInclude Include="JsonLoader.h" />
+    <ClInclude Include="YamlLoader.h" />
+    <ClInclude Include="externals\yaml-cpp\src\collectionstack.h" />
+    <ClInclude Include="externals\yaml-cpp\src\directives.h" />
+    <ClInclude Include="externals\yaml-cpp\src\emitterstate.h" />
+    <ClInclude Include="externals\yaml-cpp\src\emitterutils.h" />
+    <ClInclude Include="externals\yaml-cpp\src\exp.h" />
+    <ClInclude Include="externals\yaml-cpp\src\indentation.h" />
+    <ClInclude Include="externals\yaml-cpp\src\nodebuilder.h" />
+    <ClInclude Include="externals\yaml-cpp\src\nodeevents.h" />
+    <ClInclude Include="externals\yaml-cpp\src\ptr_vector.h" />
+    <ClInclude Include="externals\yaml-cpp\src\regex_yaml.h" />
+    <ClInclude Include="externals\yaml-cpp\src\regeximpl.h" />
+    <ClInclude Include="externals\yaml-cpp\src\scanner.h" />
+    <ClInclude Include="externals\yaml-cpp\src\scanscalar.h" />
+    <ClInclude Include="externals\yaml-cpp\src\scantag.h" />
+    <ClInclude Include="externals\yaml-cpp\src\setting.h" />
+    <ClInclude Include="externals\yaml-cpp\src\singledocparser.h" />
+    <ClInclude Include="externals\yaml-cpp\src\stream.h" />
+    <ClInclude Include="externals\yaml-cpp\src\streamcharsource.h" />
+    <ClInclude Include="externals\yaml-cpp\src\stringsource.h" />
+    <ClInclude Include="externals\yaml-cpp\src\tag.h" />
+    <ClInclude Include="externals\yaml-cpp\src\token.h" />
+    <ClInclude Include="engine\math\Vector3.h" />
+    <ClInclude Include="engine\math\Vector3Yaml.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -807,6 +864,7 @@
     <None Include="Resources\shaders\Random.hlsli">
       <Filter>resources\shaders</Filter>
     </None>
+    <None Include="Resources\config\title_config.yaml" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="application">

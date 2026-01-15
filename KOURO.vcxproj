@@ -77,6 +77,37 @@
     <ClCompile Include="engine\3d\particle\GpuParticleManager.cpp" />
     <ClCompile Include="engine\core\GpuResourceUtils.cpp" />
     <ClCompile Include="application\camera\ICameraState.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\binary.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\convert.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\depthguard.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\directives.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\emit.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\emitfromevents.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\emitter.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\emitterstate.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\emitterutils.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\exceptions.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\exp.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\fptostring.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\memory.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\node.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\nodebuilder.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\nodeevents.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\node_data.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\null.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\ostream_wrapper.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\parse.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\parser.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\regex_yaml.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\scanner.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\scanscalar.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\scantag.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\scantoken.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\simplekey.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\singledocparser.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\stream.cpp" />
+    <ClCompile Include="externals\yaml-cpp\src\tag.cpp" />
+    <ClCompile Include="JsonLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\model\Model.cpp" />
     <ClCompile Include="engine\3d\model\ModelCommon.cpp" />
@@ -120,9 +151,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="application\system\SpawnManager.cpp" />
+    <ClCompile Include="YamlLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\enemy\AttackState.h" />
+    <ClInclude Include="engine\math\Vector3.h" />
+    <ClInclude Include="engine\math\Vector3Yaml.h" />
     <ClInclude Include="engine\object\InitialLightSetting.h" />
     <ClInclude Include="application\camera\FollowCameraState.h" />
     <ClInclude Include="engine\core\GpuResourceInternal.h" />
@@ -241,9 +275,33 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="application\system\SpawnManager.h" />
+    <ClInclude Include="externals\yaml-cpp\src\collectionstack.h" />
+    <ClInclude Include="externals\yaml-cpp\src\directives.h" />
+    <ClInclude Include="externals\yaml-cpp\src\emitterstate.h" />
+    <ClInclude Include="externals\yaml-cpp\src\emitterutils.h" />
+    <ClInclude Include="externals\yaml-cpp\src\exp.h" />
+    <ClInclude Include="externals\yaml-cpp\src\indentation.h" />
+    <ClInclude Include="externals\yaml-cpp\src\nodebuilder.h" />
+    <ClInclude Include="externals\yaml-cpp\src\nodeevents.h" />
+    <ClInclude Include="externals\yaml-cpp\src\ptr_vector.h" />
+    <ClInclude Include="externals\yaml-cpp\src\regeximpl.h" />
+    <ClInclude Include="externals\yaml-cpp\src\regex_yaml.h" />
+    <ClInclude Include="externals\yaml-cpp\src\scanner.h" />
+    <ClInclude Include="externals\yaml-cpp\src\scanscalar.h" />
+    <ClInclude Include="externals\yaml-cpp\src\scantag.h" />
+    <ClInclude Include="externals\yaml-cpp\src\setting.h" />
+    <ClInclude Include="externals\yaml-cpp\src\singledocparser.h" />
+    <ClInclude Include="externals\yaml-cpp\src\stream.h" />
+    <ClInclude Include="externals\yaml-cpp\src\streamcharsource.h" />
+    <ClInclude Include="externals\yaml-cpp\src\stringsource.h" />
+    <ClInclude Include="externals\yaml-cpp\src\tag.h" />
+    <ClInclude Include="externals\yaml-cpp\src\token.h" />
+    <ClInclude Include="JsonLoader.h" />
+    <ClInclude Include="YamlLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+    <None Include="Resources\config\title_config.yaml" />
     <None Include="Resources\shaders\Fullscreen.hlsli" />
     <None Include="Resources\shaders\Object3d.hlsli" />
     <None Include="Resources\shaders\Particle.CS.hlsli" />
@@ -544,13 +602,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);YAML_CPP_STATIC_DEFINE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\transition;$(ProjectDir)engine\effect;$(ProjectDir)application\base\baseClass;$(ProjectDir)application\object\base;$(ProjectDir)application\object\enemy;$(ProjectDir)application\object\player;$(ProjectDIr)application\collider;$(ProjectDIr)engine\line;$(ProjectDir)engine\debug;$(ProjectDir)engine\core;$(ProjectDIr)engine\3d\animation;$(ProjectDir)engine\3d\model;$(ProjectDir)engine\3d\object;$(ProjectDir)engine\3d\particle;$(ProjectDir)engine\3d\skybox;$(ProjectDir)engine\3d\transform;$(ProjectDir)engine\rendering;$(ProjectDir)engine\system;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\transition;$(ProjectDir)engine\effect;$(ProjectDir)application\base\baseClass;$(ProjectDir)application\object\base;$(ProjectDir)application\object\enemy;$(ProjectDir)application\object\player;$(ProjectDIr)application\collider;$(ProjectDIr)engine\line;$(ProjectDir)engine\debug;$(ProjectDir)engine\core;$(ProjectDIr)engine\3d\animation;$(ProjectDir)engine\3d\model;$(ProjectDir)engine\3d\object;$(ProjectDir)engine\3d\particle;$(ProjectDir)engine\3d\skybox;$(ProjectDir)engine\3d\transform;$(ProjectDir)engine\rendering;$(ProjectDir)engine\system;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\system;$(ProjectDir)externals\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -569,13 +627,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions);YAML_CPP_STATIC_DEFINE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\transition;$(ProjectDir)engine\effect;$(ProjectDir)application\base\baseClass;$(ProjectDir)application\object\base;$(ProjectDir)application\object\enemy;$(ProjectDir)application\object\player;$(ProjectDIr)application\collider;$(ProjectDIr)engine\line;$(ProjectDir)engine\debug;$(ProjectDir)engine\core;$(ProjectDIr)engine\3d\animation;$(ProjectDir)engine\3d\model;$(ProjectDir)engine\3d\object;$(ProjectDir)engine\3d\particle;$(ProjectDir)engine\3d\skybox;$(ProjectDir)engine\3d\transform;$(ProjectDir)engine\rendering;$(ProjectDir)engine\system;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\transition;$(ProjectDir)engine\effect;$(ProjectDir)application\base\baseClass;$(ProjectDir)application\object\base;$(ProjectDir)application\object\enemy;$(ProjectDir)application\object\player;$(ProjectDIr)application\collider;$(ProjectDIr)engine\line;$(ProjectDir)engine\debug;$(ProjectDir)engine\core;$(ProjectDIr)engine\3d\animation;$(ProjectDir)engine\3d\model;$(ProjectDir)engine\3d\object;$(ProjectDir)engine\3d\particle;$(ProjectDir)engine\3d\skybox;$(ProjectDir)engine\3d\transform;$(ProjectDir)engine\rendering;$(ProjectDir)engine\system;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\system;$(ProjectDir)externals\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

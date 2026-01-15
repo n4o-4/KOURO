@@ -83,7 +83,7 @@ private:
 
 	std::unique_ptr<Sprite> countSprite_[3];
 
-	Vector4 kDfaultUIColor_ = { 0.612f, 0.000f, 0.357f, 1.0f };
+	Vector4 kDefaultUIColor_ = { 0.612f, 0.000f, 0.357f, 1.0f };
 
 	std::unique_ptr<Sprite> WASD_ = nullptr;
 
@@ -141,7 +141,7 @@ private:
 
 public: // メンバ関数
 
-	// \brief Initialzie 初期化
+	// \brief 初期化
 	void Initialize(EngineContext context) override;
 
 	// \brief Finialize 終了
