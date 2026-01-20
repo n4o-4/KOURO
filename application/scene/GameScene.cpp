@@ -72,13 +72,23 @@ void GameScene::Initialize(EngineContext context) {
 	// コントロールポイントの読み込み
 	const std::vector<Vector3>& controlPoints_ = config["control_points"].as<std::vector<Vector3>>();
 
-	enemyRailAnimation_ = std::make_unique<RailAnimation>();
-	playerRailAnimation_ = std::make_unique<RailAnimation>();
-	cameraRailAnimation_ = std::make_unique<RailAnimation>();
+	Rail rail;
 
-	enemyRailAnimation_->Initialize(controlPoints_);
-	playerRailAnimation_->Initialize(controlPoints_);
-	cameraRailAnimation_->Initialize(controlPoints_);
+	rail.Initialize(controlPoints_);
+
+	enemyRail_.Initialize(rail,60.0f);
+	playerRail_.Initialize(rail, 60.0f);
+	cameraRail_.Initialize(rail, 60.0f);
+	
+	enemyRail_.SetDistanceTravelled(20.0f);
+	playerRail_.SetDistanceTravelled(20.0f);
+	cameraRail_.SetDistanceTravelled(0.0f);
+
+	cameraRail_.SetLookAheadDistance(20.0f);
+
+	enemyRail_.Update(0.0f);
+	playerRail_.Update(0.0f);
+	cameraRail_.Update(0.0f);
 
 	///========================================
 	///		ライン描画
@@ -231,13 +241,15 @@ void GameScene::Initialize(EngineContext context) {
 
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
-	railCamera_->SetParent(cameraRailAnimation_->GetWorldTransform(playerProgress_ + cameraProgressOffset_));
+	railCamera_->SetParent(&cameraRail_.GetWorldTransform());
+
+	
 
 	cameraManager_->CamerasClear();
 	cameraManager_->SetActiveCamera(railCamera_.get());
 	cameraManager_->Update();
-	cameraManager_->GetActiveCamera()->GetWorldTransform().SetTranslate({0.0f,0.0f,280.0f });
-	player_->SetParentTransform(playerRailAnimation_->GetWorldTransform(playerProgress_));
+	//cameraManager_->GetActiveCamera()->GetWorldTransform().SetTranslate({0.0f,0.0f,280.0f });
+	player_->SetParentTransform(&playerRail_.GetWorldTransform());
 
 
 	LevelLoader loader;
@@ -252,34 +264,6 @@ void GameScene::Initialize(EngineContext context) {
 	ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
 
 	colliderManager_ = std::make_unique<ColliderManager>();
-
-	for (int i = 0; i < 5; ++i)
-	{
-		std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
-		enemy->Initialize(lineModelManager_->FindLineModel("enemy/enemy.obj"));
-
-		enemy->SetTarget(player_.get());
-
-		enemy->SetColliderManager(colliderManager_.get());
-
-		enemy->SetLineModelManager(lineModelManager_.get());
-
-		enemy->SetEmitter(mEmitter.get());
-
-		std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
-
-		enemy->SetCameraManager(cameraManager_.get());
-
-		enemy->SetParent(enemyRailAnimation_->GetWorldTransform(playerProgress_ + enemyPrrogressOffset_));
-
-		enemy->ChangeState(std::move(state));
-
-		enemy->SetPosition(Vector3(-10.0f + 5 * i, 0.0f, 400.0f));
-
-		colliderManager_->AddCollider(enemy);
-
-		enemies_.push_back(std::move(enemy));
-	}
 
 	for(uint32_t i = 0; i < 3; ++i)
 	{
@@ -342,6 +326,8 @@ void GameScene::Initialize(EngineContext context) {
 
 		enemy->SetTarget(player_.get());
 
+		enemy->SetParent(&enemyRail_.GetWorldTransform());
+
 		enemy->SetColliderManager(colliderManager_.get());
 
 		enemy->SetLineModelManager(lineModelManager_.get());
@@ -385,11 +371,7 @@ void GameScene::Update()
 	Radial::Material material = blur->GetMaterial();
 
 	const QuickMoveData* data = player_->GetQuickMoveData();
-
-	playerProgress_ += 1.0f / 60.0f;
-	playerRailAnimation_->GetWorldTransform(playerProgress_);
-	enemyRailAnimation_->GetWorldTransform(playerProgress_ + enemyPrrogressOffset_);
-	cameraRailAnimation_->GetWorldTransform(playerProgress_ + cameraProgressOffset_);
+	
 
 	if (data->isQuickMoving)
 	{
@@ -491,6 +473,8 @@ void GameScene::Update()
 
 			enemy->ChangeState(std::move(state));
 
+			enemy->SetParent(&enemyRail_.GetWorldTransform());
+
 			colliderManager_->AddCollider(enemy);
 
 			enemies_.push_back(std::move(enemy));
@@ -545,6 +529,11 @@ void GameScene::Update()
 
 		break;
 	case Phase::kMain:
+
+		enemyRail_.Update(1.0f / 60.0f);
+		playerRail_.Update(1.0f / 60.0f);
+		cameraRail_.Update(1.0f / 60.0f);
+
 
 		player_->Update();
 
@@ -655,6 +644,7 @@ void GameScene::Update()
 
 		//GpuParticle::GetInstance()->LineEmit(world);
 	}
+
 #endif
 
 	float interval = player_->GetFireInterval();

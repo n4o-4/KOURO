@@ -1,4 +1,4 @@
-﻿#include "RailFollower.h"
+#include "RailFollower.h"
 
 void RailFollower::Initialize(const Rail& rail,float moveTime)
 {
@@ -48,10 +48,7 @@ void RailFollower::Update(float deltaTime)
 	Vector3 position = CatmullRomPosition(controlPoints_, t);
 
 	// 次フレームのターゲット位置（進行方向）
-	float lookAheadDistance = speed * kLookAheadMultiplier;
-	float distanceAhead;
-
-	distanceAhead = distanceTravelled_ + lookAheadDistance;
+	float distanceAhead = distanceTravelled_ + lookAheadDistance_;
 
 	float tNext = 1.0f;
 	for (int i = 1; i < arcLengthTable_.lengths.size(); ++i)

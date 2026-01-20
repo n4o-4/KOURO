@@ -12,7 +12,6 @@ void Player::Initialize(LineModel* model)
 
 	worldTransform_->useQuaternion_ = false;
 
-	worldTransform_->quaternionTransform.scale = { 1.0f,1.0f,1.0f };
 	worldTransform_->transform.scale = { kDefaultScale,kDefaultScale,kDefaultScale };
 
 	AABBCollider::Initialize(worldTransform_.get(),this);
@@ -31,7 +30,7 @@ void Player::Initialize(LineModel* model)
 	rail.Initialize(controlPoints_);
 
 	// 座標の位置を設定
-	colliderTransform_->transform.translate = { 0.0f,0.0f, kDefaultOffset };
+	colliderTransform_->transform.translate = { 0.0f,0.0f, 0.0f };
 
 	// 座標を一度更新
 	colliderTransform_->UpdateMatrix();

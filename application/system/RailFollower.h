@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "WorldTransform.h"
 #include "Rail.h"
 
@@ -32,6 +32,18 @@ public:
 	*/
 	const WorldTransform& GetWorldTransform() { return worldTransform_; }
 
+	/**
+	* \brief  移動距離の設定
+	* \param  distance : 移動距離
+	*/
+	void SetDistanceTravelled(float distance) { distanceTravelled_ = distance; }
+
+	/**
+	* \brief  先読み距離の設定
+	* \param  lookAheadDistance : 先読み距離
+	*/
+	void SetLookAheadDistance(float lookAheadDistance) { lookAheadDistance_ = lookAheadDistance; }
+
 private: // メンバ変数
 
 	WorldTransform worldTransform_; //!< ワールドトランスフォーム
@@ -39,6 +51,8 @@ private: // メンバ変数
 	std::vector<Vector3> controlPoints_;
 	float distanceTravelled_ = 0.0f; //!< 累計移動距離
 	float moveTime_ = 0.0f; //!< 移動時間
+
+	float lookAheadDistance_ = 0.1f; //!< 先読み距離
 
 private: // メンバ定数
 };

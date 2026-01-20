@@ -114,14 +114,17 @@ private:
 
 	uint32_t eliminatedEnemyCount_ = 0;
 
-	std::unique_ptr<RailAnimation> enemyRailAnimation_ = nullptr;
+	/*std::unique_ptr<RailAnimation> enemyRailAnimation_ = nullptr;
 	std::unique_ptr<RailAnimation> playerRailAnimation_ = nullptr;
-	std::unique_ptr<RailAnimation> cameraRailAnimation_ = nullptr;
+	std::unique_ptr<RailAnimation> cameraRailAnimation_ = nullptr;*/
 
 	float playerProgress_ = 0.05f;
-	float enemyPrrogressOffset_ = 0.01f;
+	float enemyProgressOffset_ = 0.01f;
 	float cameraProgressOffset_ = -0.01f;
 
+	RailFollower enemyRail_;
+	RailFollower playerRail_;
+	RailFollower cameraRail_;
 
 private:
 

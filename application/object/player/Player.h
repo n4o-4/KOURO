@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "BaseCharacter.h"
 
 #include "PlayerBullet.h"
@@ -51,7 +51,7 @@ public: // 公開メンバ関数
 	* \brief  SetParentTransform 座標の親を設定する
 	* \param  WorldTransform ワールドトランスフォームのポインタ
 	*/
-	void SetParentTransform(WorldTransform* parent) { worldTransform_->SetParent(parent); }
+	void SetParentTransform(const WorldTransform* parent) { worldTransform_->SetParent(parent); }
 
 	/**
 	* \brief  SetLineModelManager ラインモデルマネージャーを設定する
