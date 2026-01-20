@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Structs.h"
 #include <cmath>
 #include <algorithm>
@@ -73,6 +73,29 @@ inline Vector3 Perpendicular(const Vector3& v) {
 
 	// 外積を計算して垂直なベクトルを取得
 	return Cross(v, reference);
+}
+
+inline Vector3 GetEulerFromMatrix(const Matrix4x4& mat)
+{
+	Vector3 euler;
+
+	// 1. ピッチ（X回転）
+	euler.x = std::asin(-mat.m[2][1]);
+
+	// Gimbal lock 対策
+	if (std::cos(euler.x) > 1e-6f) {
+		// 2. ヨー（Y回転）
+		euler.y = std::atan2(mat.m[2][0], mat.m[2][2]);
+		// 3. ロール（Z回転）
+		euler.z = std::atan2(mat.m[0][1], mat.m[1][1]);
+	}
+	else {
+		// 特殊ケース（Gimbal Lock）
+		euler.y = std::atan2(-mat.m[0][2], mat.m[0][0]);
+		euler.z = 0.0f;
+	}
+
+	return euler;
 }
 
 inline Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
@@ -472,6 +495,13 @@ static Matrix4x4 Transpose(const Matrix4x4& mat) {
 	return result;
 }
 
+/**
+* \brief 透視投影行列の作成
+* \param  fovY 垂直視野角（ラジアン）
+* \param  aspectRation アスペクト比（幅/高さ）
+* \param  nearClip ニアクリップ距離
+* \param  farClip ファークリップ距離
+*/
 static Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRation, float nearClip, float farClip)
 {
 	float tanHalfFovY = tanf(fovY * 0.5f);
@@ -907,7 +937,7 @@ static Vector3 CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, con
 	// t を [t1, t2] の範囲にスケール
 	float tt = std::lerp(t1, t2, std::clamp(t, 0.0f, 1.0f));
 
-	// 線形補間で逐次計算（de Casteljau風）
+	// 線形補間で逐次計算
 	Vector3 A1 = ((t1 - tt) / (t1 - t0)) * p0 + ((tt - t0) / (t1 - t0)) * p1;
 	Vector3 A2 = ((t2 - tt) / (t2 - t1)) * p1 + ((tt - t1) / (t2 - t1)) * p2;
 	Vector3 A3 = ((t3 - tt) / (t3 - t2)) * p2 + ((tt - t2) / (t3 - t2)) * p3;

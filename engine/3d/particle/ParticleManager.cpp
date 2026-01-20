@@ -79,13 +79,13 @@ void ParticleManager::Update()
 	----------------------------------------------------------*/
 	calculationBillboardMatrix();
 
-	cameraData->view = cameraManager_->GetActiveCamera()->GetViewProjection().matView_;
+	cameraData->view = cameraManager_->GetActiveCamera()->GetViewProjection().GetViewMatrix();
 
-	cameraData->Projection = cameraManager_->GetActiveCamera()->GetViewProjection().matProjection_;
+	cameraData->Projection = cameraManager_->GetActiveCamera()->GetViewProjection().GetProjectionMatrix();
 
 	cameraData->billboardMatrix = billboardMatrix;
 
-	cameraData->cameraPosition = cameraManager_->GetActiveCamera()->GetViewProjection().worldPosition_;
+	cameraData->cameraPosition = cameraManager_->GetActiveCamera()->GetViewProjection().GetWorldPosition();
 
 	for (std::unordered_map<std::string, ParticleGroup>::iterator particleGroupIterator = particleGroups.begin(); particleGroupIterator != particleGroups.end();) {
 
@@ -797,7 +797,7 @@ void ParticleManager::calculationBillboardMatrix()
 
 	Matrix4x4 backToFrontMatrix = MakeRotateZMatrix(std::numbers::pi_v<float>);
 
-	billboardMatrix = Multiply(backToFrontMatrix, cameraManager_->GetActiveCamera()->GetViewProjection().matWorld_);
+	billboardMatrix = Multiply(backToFrontMatrix, cameraManager_->GetActiveCamera()->GetViewProjection().GetWorldMatrix());
 
 	billboardMatrix.m[3][0] = 0.0f;
 	billboardMatrix.m[3][1] = 0.0f;

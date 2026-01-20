@@ -1,4 +1,4 @@
-﻿#include "LinearFog.h"
+#include "LinearFog.h"
 
 void LinearFog::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
@@ -17,7 +17,7 @@ void LinearFog::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 void LinearFog::Update()
 {
 	// アクティブなカメラかプロジェクション行列を取得して反転させてデータに代入
-	data_->projectionInverse = Inverse(cameraManager_->GetActiveCamera()->GetViewProjection().matProjection_);
+	data_->projectionInverse = Inverse(cameraManager_->GetActiveCamera()->GetViewProjection().GetProjectionMatrix());
 
 #ifdef _DEBUG
 

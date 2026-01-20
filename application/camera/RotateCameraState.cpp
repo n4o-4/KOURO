@@ -1,4 +1,4 @@
-﻿#include "RotateCameraState.h"
+#include "RotateCameraState.h"
 #include "BaseCamera.h"
 
 void RotateCameraState::Enter()
@@ -7,19 +7,23 @@ void RotateCameraState::Enter()
 
 void RotateCameraState::Update(float deltaTime)
 {
-	ViewProjection* viewPro = &camera_->GetViewProjection();
+    WorldTransform* worldTransform = &camera_->GetWorldTransform();
 
-	viewPro->transform.rotate.y += kRotateSpeed_ * deltaTime;
+	Vector3 rotate = worldTransform->GetRotate();
+
+	rotate.y += kRotateSpeed_ * deltaTime;
+
+	camera_->GetWorldTransform().SetRotate(rotate);
 
 	Vector3 offset = camera_->GetOffset();
 
-	Matrix4x4 rotateMatrix = MakeRotateMatrix(viewPro->transform.rotate);
+	Matrix4x4 rotateMatrix = MakeRotateMatrix(rotate);
 
 	offset = TransformNormal(offset, rotateMatrix);
 
-	viewPro->transform.translate = offset;
+	Vector3 translate = offset;
 
-	viewPro->Update();
+	worldTransform->SetTranslate(offset);
 }
 
 void RotateCameraState::Exit()

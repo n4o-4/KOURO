@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "BaseCamera.h"
 
 // \brief Camera
@@ -38,25 +38,25 @@ public:
 	* \brief 回転設定
 	* \param rotate 回転値
 	*/
-	void SetRotate(const Vector3& rotate) { viewProjection_->transform.rotate = rotate; }
+	void SetRotate(const Vector3& rotate) { worldTransform_->transform.rotate = rotate; }
 
 	/**
 	* \brief 位置設定
 	* \param translate 位置値
 	*/
-	void SetTranslate(const Vector3& translate) { viewProjection_->transform.translate = translate; }
+	void SetTranslate(const Vector3& translate) { worldTransform_->transform.translate = translate; }
 
 	/**
 	* \brief FOV設定
 	* \param fovY FOV値
 	*/
-	void SetFovY(float fovY) { viewProjection_->fovY = fovY; }
+	void SetFovY(float fovY) { viewProjection_->SetFovY(fovY); }
 
 	/**
 	* \brief アスペクト比設定
 	* \param aspectRation アスペクト比値
 	*/
-	void SetAspectRation(float aspectRation) { viewProjection_->aspectRation = aspectRation; }
+	void SetAspectRation(float aspectRation) { viewProjection_->SetAspectRation(aspectRation); }
 
 	/**
 	* \brief ViewProjection設定
@@ -74,14 +74,14 @@ public:
 	* \brief 回転取得
 	* \return 回転値
 	*/
-	const Vector3& GetRotate() const { return viewProjection_->transform.rotate; }
+	const Vector3& GetRotate() const { return worldTransform_->GetRotate(); }
 
 	/**
 	* \brief 位置取得
 	* \return 位置値
 	* \note 位置値はViewProjectionのtransformから取得する
 	*/
-	const Vector3& GetTranslate() const { return viewProjection_->transform.translate; }
+	const Vector3& GetTranslate() const { return worldTransform_->GetTranslate(); }
 
 	/**
 	* \brief ViewProjection取得

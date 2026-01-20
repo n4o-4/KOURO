@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "BaseCharacter.h"
 #include "EnemyBullet.h"
 
@@ -66,6 +66,12 @@ public: // 公開メンバ関数
 	* \param  
 	*/
 	void SetGoalOffset(const Vector3 offset) { kGoalOffset_ = offset; };
+
+	/**
+	* \brief  SetParent 親の設定
+	* \param  WorldTransform 親のワールドトランスフォームのポインタ
+	*/
+	void SetParent(const WorldTransform* parent) { worldTransform_->SetParent(parent); }
 
 	/**
 	* \brief GetTarget ターゲットを取得する

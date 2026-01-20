@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "BaseScene.h"
 #include "Kouro.h"
@@ -13,6 +13,8 @@
 
 #include "LevelLoader.h"
 #include "GrobalVariables.h"
+
+#include "RailAnimation.h"
 
 // \brief GameScene ゲームシーンクラス
 
@@ -112,30 +114,14 @@ private:
 
 	uint32_t eliminatedEnemyCount_ = 0;
 
-	std::vector<Vector3> controlPoints_ =
-	{
-		{0.0f,0.0f,-20.0f},
+	std::unique_ptr<RailAnimation> enemyRailAnimation_ = nullptr;
+	std::unique_ptr<RailAnimation> playerRailAnimation_ = nullptr;
+	std::unique_ptr<RailAnimation> cameraRailAnimation_ = nullptr;
 
-		{0.0f,0.0f,20.0f},
+	float playerProgress_ = 0.05f;
+	float enemyPrrogressOffset_ = 0.01f;
+	float cameraProgressOffset_ = -0.01f;
 
-		{0.0f,0.0f,480.0f},
-		{15.0f,0.0f,495.0f},
-		{20.0f,0.0,500.0f},
-
-		{480.0f,0.0f,500.0f},
-		{495.0f,0.0f,495.0f},
-		{500.0f,0.0f,480.0f},
-
-		{500.0f,0.0f,20.0f},
-		{495.0f,0.0f,5.0f},
-		{480.0f,0.0f,0.0f},
-
-		{20.0f,0.0f,0.0f},
-		{5.0f,0.0f,5.0f},
-		{0.0f,0.0f,20.0f},
-
-		{0.0f,0.0f,20.1f}, // 終了点
-	};
 
 private:
 

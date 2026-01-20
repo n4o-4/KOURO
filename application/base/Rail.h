@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "WorldTransform.h"
 
@@ -11,7 +11,7 @@ namespace RailData
 	{
 		std::vector<float> lengths; // 各セグメントの長さ
 
-		float totalLength;          // 全体の長さ
+		float totalLength = 0.0f;          // 全体の長さ
 	};
 }
 

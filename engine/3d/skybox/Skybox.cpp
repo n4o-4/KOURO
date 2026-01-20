@@ -1,4 +1,4 @@
-﻿#include "Skybox.h"
+#include "Skybox.h"
 
 void Skybox::Initialize(DirectXCommon* dxCommon,const std::string& filePath)
 {
@@ -86,7 +86,7 @@ void Skybox::Initialize(DirectXCommon* dxCommon,const std::string& filePath)
 
 void Skybox::Draw(ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 {
-	directionData_->direction = viewProjection.transform.rotate;
+	//directionData_->direction = viewProjection.transform.rotate;
 
 	// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけばいい
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

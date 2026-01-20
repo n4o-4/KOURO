@@ -1,4 +1,4 @@
-﻿#include "TitleScene.h"
+#include "TitleScene.h"
 
 #include <chrono>
 #include <cmath>
@@ -32,8 +32,10 @@ void TitleScene::Initialize(EngineContext context)
 	lineModelManager_->LoadLineModel("player/player.obj");
 	lineModelManager_->LoadLineModel("tunnel.obj");
 
+	// YAMLファイルの読み込み
 	YAML::Node config = KOURO::YamlLoader::LoadYamlFile("title_config.yaml");
 
+	// コントロールポイントの読み込み
 	controlPoints_ = config["control_points"].as<std::vector<Vector3>>();
 
 	// スタートボタンの生成

@@ -1,4 +1,4 @@
-﻿#include "Enemy.h"
+#include "Enemy.h"
 #include "PlayerBullet.h"
 
 #include "algorithm"
@@ -105,14 +105,14 @@ void Enemy::ChangeState(std::unique_ptr<EnemyState> state)
 		state_ = std::move(state);
 
 		RailCamera* railCamera = dynamic_cast<RailCamera*>(cameraManager_->GetActiveCamera());
-		state_->Enter(this,railCamera->GetWorldTransform());
+		state_->Enter(this);
 	}
 	else
 	{
 		state_->Exit(this);
 		state_ = std::move(state);
 		RailCamera* railCamera = dynamic_cast<RailCamera*>(cameraManager_->GetActiveCamera());
-		state_->Enter(this,railCamera->GetWorldTransform());
+		state_->Enter(this);
 	}
 }
 

@@ -1,4 +1,4 @@
-﻿#include "GpuParticleManager.h"
+#include "GpuParticleManager.h"
 #include "TextureManager.h"
 #include "ModelLoader.h"
 
@@ -97,16 +97,16 @@ void GpuParticleManager::Update()
 
 void GpuParticleManager::Draw(ViewProjection viewPro)
 {
-	Matrix4x4 view = viewPro.matView_;
+	Matrix4x4 view = viewPro.GetViewMatrix();
 
-	Matrix4x4 projection = viewPro.matProjection_;
+	Matrix4x4 projection = viewPro.GetProjectionMatrix();
 
 	// ビュープロジェクション行列の計算
 	perView_->viewProjection = Multiply(view, projection);
 
 	// ビルボード行列の計算
 	Matrix4x4 backToFrontMatrix = MakeRotateZMatrix(std::numbers::pi_v<float>);
-	perView_->billboardMatrix = Multiply(backToFrontMatrix, viewPro.matWorld_);
+	perView_->billboardMatrix = Multiply(backToFrontMatrix, viewPro.GetWorldMatrix());
 
 	// 定数バッファの転送
 	for (auto it = particleGroups_.begin(); it != particleGroups_.end(); ++it)

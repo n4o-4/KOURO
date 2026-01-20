@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "EnemyState.h"
 
 // \brief ApproachState 接近状態クラス
@@ -11,7 +11,7 @@ class ApproachState : public EnemyState
 		* \param  enemy  : 処理をする敵のポインタ
 		* \param  player : プレイヤー
 		*/
-		void Enter(Enemy* enemy, const WorldTransform* worldTransform) override;
+		void Enter(Enemy* enemy) override;
 
 		/**
 		* \brief  更新処理

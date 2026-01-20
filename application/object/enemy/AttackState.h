@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "EnemyState.h"
 #include "RandomGenerate.h"
 
@@ -10,7 +10,7 @@ public:
 	* \param  enemy  : 処理をする敵のポインタ
 	* \param  player : プレイヤー
 	*/
-	void Enter(Enemy* enemy, const WorldTransform* worldTransform) override;
+	void Enter(Enemy* enemy) override;
 
 	/**
 	* \brief  更新処理

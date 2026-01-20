@@ -1,4 +1,4 @@
-﻿#include "DepthBasedOutline.h"
+#include "DepthBasedOutline.h"
 
 void DepthBasedOutline::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
@@ -18,7 +18,7 @@ void DepthBasedOutline::Initialize(DirectXCommon* dxCommon, SrvManager* srvManag
 void DepthBasedOutline::Update()
 {
 	// アクティブなカメラかプロジェクション行列を取得して反転させてデータに代入
-	data_->projectionInverse = Inverse(cameraManager_->GetActiveCamera()->GetViewProjection().matProjection_);
+	data_->projectionInverse = Inverse(cameraManager_->GetActiveCamera()->GetViewProjection().GetProjectionMatrix());
 
 	data_->edgeStrength = edgeStrength;
 

@@ -10,13 +10,13 @@ struct Vector3 {
 		: x(x), y(y), z(z) {
 	}
 
-	// ?? **ベクトルの加算代入演算子を追加**
+	// ?? **繝吶け繝医Ν縺ｮ蜉邂嶺ｻ｣蜈･貍皮ｮ怜ｭ舌ｒ霑ｽ蜉**
 	Vector3& operator+=(const Vector3& v) { x += v.x; y += v.y; z += v.z; return *this; }
-	// ?? **ベクトルの減算代入演算子を追加**
+	// ?? **繝吶け繝医Ν縺ｮ貂帷ｮ嶺ｻ｣蜈･貍皮ｮ怜ｭ舌ｒ霑ｽ蜉**
 	Vector3& operator-=(const Vector3& v) { x -= v.x; y -= v.y; z -= v.z; return *this; }
-	// ?? スカラー乗算代入演算子を追加
+	// ?? 繧ｹ繧ｫ繝ｩ繝ｼ荵礼ｮ嶺ｻ｣蜈･貍皮ｮ怜ｭ舌ｒ霑ｽ蜉
 	Vector3& operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
-	// ?? **単項マイナス演算子を追加**
+	// ?? **蜊倬�繝槭う繝翫せ貍皮ｮ怜ｭ舌ｒ霑ｽ蜉**
 	//Vector3 operator-() const { return Vector3(-x, -y, -z); }
 
 	Vector3 operator/(float scalar) const {

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "Vectors.h"
 #include "Matrixs.h"
@@ -27,6 +27,8 @@ public:
 	*/
 	virtual ViewProjection& GetViewProjection() { return *viewProjection_; }
 
+	WorldTransform& GetWorldTransform() { return *worldTransform_; }
+
 	/**
 	* \brief  オフセットの取得
 	* \return オフセット
@@ -51,7 +53,15 @@ public:
 	*/
 	void ChangeState(std::unique_ptr<ICameraState> newState);
 
+	/**
+	* \brief  親ワールド変換の設定
+	* \param  
+	*/
+	void SetParent(const WorldTransform* parent) { worldTransform_->SetParent(parent); }
+
 protected:
+
+	std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
 
 	std::unique_ptr<ViewProjection> viewProjection_ = nullptr;
 

@@ -1,4 +1,4 @@
-﻿#include "WorldTransform.h"
+#include "WorldTransform.h"
 
 void WorldTransform::Initialize()
 {
@@ -39,7 +39,7 @@ void WorldTransform::UpdateMatrix()
 	// 親がいる場合は親のワールド行列を掛ける
 	if (parent_)
 	{
-		matWorld_ = Multiply(matWorld_, parent_->matWorld_);
+		matWorld_ = Multiply(matWorld_, parent_->GetWorldMatrix());
 	}
 
 	// 逆行列の計算

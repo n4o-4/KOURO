@@ -1,9 +1,9 @@
-﻿#include "RandomMoveState.h"
+#include "RandomMoveState.h"
 
 #include "AttackState.h"
 #include "Enemy.h"
 
-void RandomMoveState::Enter(Enemy* enemy, const WorldTransform* worldTransform)
+void RandomMoveState::Enter(Enemy* enemy)
 {
 	randomGenerate.Initialize();
 
@@ -25,8 +25,6 @@ void RandomMoveState::Update(Enemy* enemy)
 	Vector3 velocity = randomGenerate.RandomVector3(-0.3f, 0.3f);
 
 	enemyTransform->transform.translate += velocity;
-
-
 }
 
 void RandomMoveState::Exit(Enemy* enemy)

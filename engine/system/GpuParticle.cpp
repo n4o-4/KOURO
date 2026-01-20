@@ -1,4 +1,4 @@
-﻿#include "GpuParticle.h"
+#include "GpuParticle.h"
 #include "TextureManager.h"
 #include "ModelLoader.h"
 
@@ -92,15 +92,15 @@ void GpuParticle::Finalize()
 
 void GpuParticle::Update(ViewProjection viewProjection)
 {
-	Matrix4x4 view = viewProjection.matView_;
+	Matrix4x4 view = viewProjection.GetViewMatrix();
 
-	Matrix4x4 projection = viewProjection.matProjection_;
+	Matrix4x4 projection = viewProjection.GetProjectionMatrix();
 
 	perView_->viewProjection = Multiply(view, projection);
 
 	Matrix4x4 backToFrontMatrix = MakeRotateZMatrix(std::numbers::pi_v<float>);
 
-	perView_->billboardMatrix = Multiply(backToFrontMatrix, viewProjection.matWorld_);
+	perView_->billboardMatrix = Multiply(backToFrontMatrix, viewProjection.GetWorldMatrix());
 
 	//emitter_->frequencyTime += kDeltaTime;
 

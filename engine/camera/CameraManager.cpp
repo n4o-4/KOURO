@@ -1,4 +1,4 @@
-﻿#include "CameraManager.h"
+#include "CameraManager.h"
 
 void CameraManager::Initialize()
 {
@@ -67,7 +67,7 @@ void CameraManager::Shake()
 	if (!isShaking) return;
 
 	// カメラの現在位置を取得
-	Vector3 translate = activeCamera_->GetViewProjection().transform.translate;
+	Vector3 translate = activeCamera_->GetWorldTransform().GetTranslate();
 
 	// ランダムなオフセットを生成
 	std::uniform_real_distribution<float> dist(-kShakeAmplitude, kShakeAmplitude);

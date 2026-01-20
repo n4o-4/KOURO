@@ -1,9 +1,9 @@
-﻿#include "AttackState.h"
+#include "AttackState.h"
 
 #include "RandomMoveState.h"
 #include "Enemy.h"
 
-void AttackState::Enter(Enemy* enemy, const WorldTransform* worldTransform)
+void AttackState::Enter(Enemy* enemy)
 {
 	randomGenerate.Initialize();
 

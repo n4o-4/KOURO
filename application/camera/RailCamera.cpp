@@ -1,4 +1,4 @@
-﻿#include "RailCamera.h"
+#include "RailCamera.h"
 
 void RailCamera::Initialize()
 {
@@ -18,11 +18,11 @@ void RailCamera::Update()
         return;
     } 
 
-    railFollower_->Update(1.0f / 60.0f);
+    //railFollower_->Update(1.0f / 60.0f);
 
     worldTransform_->UpdateMatrix();
 
-    viewProjection_->matView_ = Inverse(worldTransform_->matWorld_);
+    //viewProjection_->matView_ = Inverse(worldTransform_->matWorld_);
 
     viewProjection_->TransferMatrix();
 
@@ -30,15 +30,15 @@ void RailCamera::Update()
     //viewProjection_->transform.rotate = worldTransform_->transform.rotate;
 
 #ifdef _DEBUG
-    ImGui::Begin("RailCamera_Transform");
+    /*ImGui::Begin("RailCamera_Transform");
     ImGui::DragFloat3("Position", &viewProjection_->transform.translate.x, 0.01f);
     ImGui::DragFloat3("Rotate", &viewProjection_->transform.rotate.x, 0.01f);
     ImGui::DragFloat3("Scale", &viewProjection_->transform.scale.x, 0.01f);
-    ImGui::End();
+    ImGui::End();*/
 #endif
 
 	// 基底クラスの更新
-    //BaseCamera::Update();
+    BaseCamera::Update();
 }
 
 void RailCamera::SetRail(const Rail& rail, float moveTime)

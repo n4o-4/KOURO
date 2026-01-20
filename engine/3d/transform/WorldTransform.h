@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <d3d12.h>
 #include <wrl.h>
@@ -43,13 +43,31 @@ public:
 	*/
 	const Vector3 GetWorldPosition() const { return Vector3(matWorld_.m[3][0], matWorld_.m[3][1], matWorld_.m[3][2]); }
 
+	const Vector3 GetTranslate() const { return transform.translate; }
+	const Vector3 GetRotate() const { return transform.rotate; }
+	const Vector3 GetScale() const { return transform.scale; }
+
+	/**
+	* \brief  GetWorldRotationMatrix ワールド回転行列の取得
+	* \return ワールド回転行列
+	*/
 	Matrix4x4 GetWorldRotationMatrix() const;
+
+	/**
+	* \brief  GetWorldMatrix ワールド行列の取得
+	* \return ワールド行列
+	*/
+	Matrix4x4 GetWorldMatrix() const { return matWorld_; }
+
+	void SetTranslate(const Vector3& translate) { transform.translate = translate; }
+	void SetRotate(const Vector3& rotate) { transform.rotate = rotate; }
+	void SetScale(const Vector3& scale) { transform.scale = scale; }
 
 	/**
 	* \brief  SetParent 親ワールド変換の設定
 	* \param  parent 親ワールド変換のポインタ
 	*/
-	void SetParent(const WorldTransform* parent) { parent_ = parent; }
+	void SetParent(const WorldTransform* parent) { parent_ = parent, this->UpdateMatrix(); }
 
 public:
 

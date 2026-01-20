@@ -459,6 +459,7 @@
     <ClCompile Include="externals\yaml-cpp\src\singledocparser.cpp" />
     <ClCompile Include="externals\yaml-cpp\src\stream.cpp" />
     <ClCompile Include="externals\yaml-cpp\src\tag.cpp" />
+    <ClCompile Include="RailAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -834,6 +835,7 @@
     <ClInclude Include="externals\yaml-cpp\src\token.h" />
     <ClInclude Include="engine\math\Vector3.h" />
     <ClInclude Include="engine\math\Vector3Yaml.h" />
+    <ClInclude Include="RailAnimation.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

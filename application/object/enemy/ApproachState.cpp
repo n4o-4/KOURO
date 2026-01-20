@@ -1,21 +1,18 @@
-﻿#include "ApproachState.h"
+#include "ApproachState.h"
 
 #include "RandomMoveState.h"
 
 #include "Enemy.h"
 #include "Player.h"
 
-void ApproachState::Enter(Enemy* enemy, const WorldTransform* worldTransform)
+void ApproachState::Enter(Enemy* enemy)
 {
-    // カメラのTransformを親として登録
-    parent_ = worldTransform;
+    Vector3 offsetDir = TransformNormal({ 0.0f, 0.0f, -kApproachRadius }, enemy->GetWorldTransform()->GetWorldMatrix());
 
-    enemy->GetWorldTransform()->SetParent(worldTransform);
-
-    Vector3 offsetDir = TransformNormal({ 0.0f, 0.0f, -kApproachRadius }, parent_->matWorld_);
+	Matrix4x4 matWorld = enemy->GetWorldTransform()->GetWorldMatrix();
 
     // カメラの位置を取得
-    Vector3 parentPos = { parent_->matWorld_.m[3][0], parent_->matWorld_.m[3][1], parent_->matWorld_.m[3][2] };
+    Vector3 parentPos = { matWorld.m[3][0], matWorld.m[3][1], matWorld.m[3][2] };
 
     // ワールド座標での敵位置 = カメラ位置 + 回転されたオフセット方向
     Vector3 worldPos = parentPos + offsetDir;

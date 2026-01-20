@@ -1,4 +1,4 @@
-﻿#include "Player.h"
+#include "Player.h"
 
 #include "EnemyBullet.h"
 
@@ -153,15 +153,6 @@ void Player::Update()
 	///=========================================
 	/// 親クラス
 
-
-#ifdef _DEBUG
-
-	ImGui::Begin("Player Debug");
-	ImGui::Text("Translate X: %.2f Translate Y: %.2f Translate Z: %.2f", worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2]);
-	ImGui::End();
-
-#endif
-
 	// 更新
 	BaseCharacter::Update();
 
@@ -171,9 +162,9 @@ void Player::Update()
 
 	ImGui::Begin("Player Transform");
 	
-	ImGui::DragFloat3("scale", &worldTransform_->quaternionTransform.scale.x, 0.01f);
-	ImGui::DragFloat4("rotate", &worldTransform_->quaternionTransform.rotate.x, 0.01f);
-	ImGui::DragFloat3("translate", &worldTransform_->quaternionTransform.translate.x, 0.01f);
+	ImGui::Text("scale : %.2f %.2f, %.2f", worldTransform_->GetScale().x, worldTransform_->GetScale().y, worldTransform_->GetScale().z);
+	ImGui::Text("rotate : %.2f %.2f, %.2f", worldTransform_->GetRotate().x, worldTransform_->GetRotate().y, worldTransform_->GetRotate().z);
+	ImGui::Text("translate : %.2f %.2f, %.2f", worldTransform_->GetTranslate().x, worldTransform_->GetTranslate().y, worldTransform_->GetTranslate().z);
 
 	ImGui::End();
 

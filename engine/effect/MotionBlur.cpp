@@ -1,4 +1,4 @@
-﻿#include "MotionBlur.h"
+#include "MotionBlur.h"
 
 void MotionBlur::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 {
@@ -28,12 +28,12 @@ void MotionBlur::Update()
 		prePos_ = currentPos_;
 
 		// 現在のカメラの座標を取得
-		currentPos_ = cameraManager_->GetActiveCamera()->GetViewProjection().transform.translate;
+		currentPos_ = cameraManager_->GetActiveCamera()->GetWorldTransform().GetTranslate();
 
 		// 座標の差分を計算
 		diffPos_ = currentPos_ - prePos_;
 
-		Vector3 rotate = cameraManager_->GetActiveCamera()->GetViewProjection().transform.rotate;
+		Vector3 rotate = cameraManager_->GetActiveCamera()->GetWorldTransform().GetRotate();
 
 		rotate.x = 0.0f;
 

@@ -1,4 +1,4 @@
-﻿#define _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
 #define NOMINMAX
 #include <algorithm>
 #include <cmath>
@@ -17,10 +17,10 @@ void FollowCamera::Initialize()
     // 初期位置を設定
     if (target_) {
         currentPosition_ = target_->transform.translate + offset_;
-        viewProjection_->transform.translate = currentPosition_;
+        worldTransform_->SetTranslate(currentPosition_);
     }
     //軽く傾ける
-    viewProjection_->transform.rotate = { 0.1f, 0.0f, 0.0f };
+    worldTransform_->SetRotate({ 0.1f, 0.0f, 0.0f });
 }
 
 void FollowCamera::Update()
@@ -47,7 +47,7 @@ Vector3 FollowCamera::CalculationOffset()
     Vector3 offset = offset_;
 
 	// 回転行列の作成
-    Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_->transform.rotate);
+    Matrix4x4 rotateMatrix = MakeRotateMatrix(worldTransform_->GetRotate());
 
 	// オフセットに回転を適用
     offset = TransformNormal(offset, rotateMatrix);
@@ -68,14 +68,14 @@ void FollowCamera::CalculationRotate()
     destinationRotate += rotate;
 
 	// 回転をイージングで補間
-    viewProjection_->transform.rotate = Lerp(viewProjection_->transform.rotate, destinationRotate, easingFactor_);
+    worldTransform_->SetRotate(Lerp(worldTransform_->GetRotate(), destinationRotate, easingFactor_));
 
 	// X軸の回転角度を制限
-    float clampedX = std::clamp(viewProjection_->transform.rotate.x, -1.5f, 1.5f);
-    if (clampedX != viewProjection_->transform.rotate.x) {
-        destinationRotate.x = viewProjection_->transform.rotate.x;
+    float clampedX = std::clamp(worldTransform_->GetRotate().x, -1.5f, 1.5f);
+    if (clampedX != worldTransform_->GetRotate().x)
+    {
+        destinationRotate.x = worldTransform_->GetRotate().x;
     }
-    viewProjection_->transform.rotate.x = std::clamp(viewProjection_->transform.rotate.x, -1.5f, 1.5f);
 }
 
 void FollowCamera::CalculationTranslate()
@@ -87,5 +87,5 @@ void FollowCamera::CalculationTranslate()
     Vector3 offset = CalculationOffset();
 
 	// カメラの位置を設定
-    viewProjection_->transform.translate = interTarget_ + offset;
+    //viewProjection_->transform.translate = interTarget_ + offset;
 }

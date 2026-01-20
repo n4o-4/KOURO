@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 // Engine
 #include "Kouro.h"
 
@@ -18,7 +18,6 @@ public: // 公開メンバ関数
 	 * \brief  GetWorldTransform ワールド変換情報を取得する
 	 * \return worldTransform
 	 */
-
 	WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
 protected: // 派生用メンバ関数

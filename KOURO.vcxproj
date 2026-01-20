@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="RailAnimation.cpp" />
     <ClCompile Include="application\object\enemy\AttackState.cpp" />
     <ClCompile Include="application\camera\FollowCameraState.cpp" />
     <ClCompile Include="engine\core\GpuResourceInternal.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="YamlLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="RailAnimation.h" />
     <ClInclude Include="application\object\enemy\AttackState.h" />
     <ClInclude Include="engine\math\Vector3.h" />
     <ClInclude Include="engine\math\Vector3Yaml.h" />

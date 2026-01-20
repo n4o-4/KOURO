@@ -1,4 +1,4 @@
-﻿#include "TitleCamera.h"
+#include "TitleCamera.h"
 
 #include "RotateCameraState.h"
 #include "FollowCameraState.h"
@@ -18,9 +18,7 @@ void TitleCamera::Initialize()
     //}
     //軽く傾ける
 
-
-
-    viewProjection_->transform.rotate = { 0.1f, 0.0f, 0.0f };
+    worldTransform_->SetRotate({ 0.1f, 0.0f, 0.0f });
 }
 
 void TitleCamera::Update()
@@ -61,7 +59,7 @@ void TitleCamera::Update()
  //   }
 
     // 基底クラスの更新
-    //BaseCamera::Update();
+    BaseCamera::Update();
 }
 
 Vector3 TitleCamera::CalculationOffset()

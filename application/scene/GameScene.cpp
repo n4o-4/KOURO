@@ -1,7 +1,8 @@
-﻿#include "GameScene.h"
+#include "GameScene.h"
 #include "imgui.h"
 #include <imgui_internal.h>
 
+#include "YamlLoader.h"
 // 仮
 #include "ApproachState.h"
 #include "Easing.h"
@@ -63,6 +64,21 @@ void GameScene::Initialize(EngineContext context) {
 
 	// postエフェクトの適用
 	sceneManager_->GetPostEffect()->ApplyEffect("dissolve",PostEffect::EffectType::Dissolve);
+
+
+	// YAMLファイルの読み込み
+	YAML::Node config = KOURO::YamlLoader::LoadYamlFile("game_config.yaml");
+
+	// コントロールポイントの読み込み
+	const std::vector<Vector3>& controlPoints_ = config["control_points"].as<std::vector<Vector3>>();
+
+	enemyRailAnimation_ = std::make_unique<RailAnimation>();
+	playerRailAnimation_ = std::make_unique<RailAnimation>();
+	cameraRailAnimation_ = std::make_unique<RailAnimation>();
+
+	enemyRailAnimation_->Initialize(controlPoints_);
+	playerRailAnimation_->Initialize(controlPoints_);
+	cameraRailAnimation_->Initialize(controlPoints_);
 
 	///========================================
 	///		ライン描画
@@ -215,15 +231,13 @@ void GameScene::Initialize(EngineContext context) {
 
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
-	Rail rail;
-	rail.Initialize(controlPoints_);
-	railCamera_->SetRail(rail);
+	railCamera_->SetParent(cameraRailAnimation_->GetWorldTransform(playerProgress_ + cameraProgressOffset_));
 
 	cameraManager_->CamerasClear();
 	cameraManager_->SetActiveCamera(railCamera_.get());
 	cameraManager_->Update();
-	cameraManager_->GetActiveCamera()->GetViewProjection().transform.translate.z = 280.0f;
-	player_->SetParentTransform(railCamera_->GetWorldTransform());
+	cameraManager_->GetActiveCamera()->GetWorldTransform().SetTranslate({0.0f,0.0f,280.0f });
+	player_->SetParentTransform(playerRailAnimation_->GetWorldTransform(playerProgress_));
 
 
 	LevelLoader loader;
@@ -255,6 +269,8 @@ void GameScene::Initialize(EngineContext context) {
 		std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
 
 		enemy->SetCameraManager(cameraManager_.get());
+
+		enemy->SetParent(enemyRailAnimation_->GetWorldTransform(playerProgress_ + enemyPrrogressOffset_));
 
 		enemy->ChangeState(std::move(state));
 
@@ -369,6 +385,11 @@ void GameScene::Update()
 	Radial::Material material = blur->GetMaterial();
 
 	const QuickMoveData* data = player_->GetQuickMoveData();
+
+	playerProgress_ += 1.0f / 60.0f;
+	playerRailAnimation_->GetWorldTransform(playerProgress_);
+	enemyRailAnimation_->GetWorldTransform(playerProgress_ + enemyPrrogressOffset_);
+	cameraRailAnimation_->GetWorldTransform(playerProgress_ + cameraProgressOffset_);
 
 	if (data->isQuickMoving)
 	{
