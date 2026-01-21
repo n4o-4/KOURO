@@ -836,6 +836,8 @@
     <ClInclude Include="engine\math\Vector3.h" />
     <ClInclude Include="engine\math\Vector3Yaml.h" />
     <ClInclude Include="RailAnimation.h" />
+    <ClInclude Include="engine\math\Vector2Yaml.h" />
+    <ClInclude Include="engine\math\Vector2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

@@ -1,0 +1,5 @@
+start_botton:
+  position: [640, 600]
+  size: [256, 128]           #テクスチャ描画サイズ
+  anchor_point: [0.5, 0.5]
+  texture_size: [1542, 1024] #テクスチャ切り出しサイズ

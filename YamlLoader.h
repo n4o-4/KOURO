@@ -10,22 +10,22 @@
 namespace KOURO
 {
 
-	/// \brief YamlLoader YAMLƒ[ƒ_[ƒNƒ‰ƒX
+	/// \brief YamlLoader YAMLãƒ­ãƒ¼ãƒ€ãƒ¼ã‚¯ãƒ©ã‚¹
 
 	class YamlLoader
 	{
 	public:
 
 		/**
-		* \brief  LoadYamlFile YAMLƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
-		* \param  fileName ƒtƒ@ƒCƒ‹–¼
-		* \return YAMLƒm[ƒh
+		* \brief  LoadYamlFile YAMLãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€
+		* \param  fileName ãƒ•ã‚¡ã‚¤ãƒ«å
+		* \return YAMLãƒãƒ¼ãƒ‰
 		*/
 		static YAML::Node LoadYamlFile(const std::string& fileName);
 
 	private:
 
-		static inline std::string rootPath_ = "Resources/config/"; //!< ƒ‹[ƒgƒpƒX
+		static inline std::string rootPath_ = "Resources/config/"; //!< ãƒ«ãƒ¼ãƒˆãƒ‘ã‚¹
 
 	};
 }

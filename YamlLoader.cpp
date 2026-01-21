@@ -4,39 +4,39 @@
 
 YAML::Node KOURO::YamlLoader::LoadYamlFile(const std::string& fileName)
 {
-	// —áŠOˆ—‚ğg—p‚µ‚ÄYAMLƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
+	// ä¾‹å¤–å‡¦ç†ã‚’ä½¿ç”¨ã—ã¦YAMLãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
     try{
-        // YAMLƒtƒ@ƒCƒ‹‚Ìƒtƒ‹ƒpƒX‚ğì¬
+        // YAMLãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ•ãƒ«ãƒ‘ã‚¹ã‚’ä½œæˆ
         std::filesystem::path fullPath = std::filesystem::path(rootPath_) / fileName;
 
-		// ƒtƒ@ƒCƒ‹‚Ì‘¶İŠm”F
+		// ãƒ•ã‚¡ã‚¤ãƒ«ã®å­˜åœ¨ç¢ºèª
         if (std::filesystem::exists(fullPath)) {
-            std::cout << "ƒtƒ@ƒCƒ‹‚ª‘¶İ‚µ‚Ü‚·I" << std::endl;
+            std::cout << "ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã—ã¾ã™ï¼" << std::endl;
         }
         else {
-            std::cout << "ƒtƒ@ƒCƒ‹‚ª‘¶İ‚µ‚Ü‚¹‚ñ..." << std::endl;
+            std::cout << "ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã—ã¾ã›ã‚“..." << std::endl;
         }
 
-		// YAMLƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
+		// YAMLãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€
         YAML::Node config = YAML::LoadFile(fullPath.string());
 
-		// ƒm[ƒh‚ª–¢’è‹`‚Ìê‡‚ÌƒGƒ‰[ƒƒbƒZ[ƒW
+		// ãƒãƒ¼ãƒ‰ãŒæœªå®šç¾©ã®å ´åˆã®ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
         if (!config.IsDefined())
         {
-            std::cerr << "YAMLƒ[ƒh¸”s: Node‚ª–¢’è‹`‚Å‚·I" << std::endl;
+            std::cerr << "YAMLãƒ­ãƒ¼ãƒ‰å¤±æ•—: NodeãŒæœªå®šç¾©ã§ã™ï¼" << std::endl;
         }
 
-		// “Ç‚İ‚ñ‚¾YAMLƒm[ƒh‚ğ•Ô‚·
+		// èª­ã¿è¾¼ã‚“ã YAMLãƒãƒ¼ãƒ‰ã‚’è¿”ã™
         return config;
     }
 
-	// —áŠO‚ª”­¶‚µ‚½ê‡‚Ìˆ—
+	// ä¾‹å¤–ãŒç™ºç”Ÿã—ãŸå ´åˆã®å‡¦ç†
     catch (const std::exception& e)
     {
-		// ƒGƒ‰[ƒƒbƒZ[ƒW‚ğ•\¦
+		// ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤º
         std::cerr << "YAML Load Error: " << e.what() << std::endl;
         
-        // ‹ó‚Ìƒm[ƒh‚ğ•Ô‚·
+        // ç©ºã®ãƒãƒ¼ãƒ‰ã‚’è¿”ã™
         return YAML::Node();
     }
 }

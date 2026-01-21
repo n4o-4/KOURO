@@ -67,7 +67,7 @@ void GameScene::Initialize(EngineContext context) {
 
 
 	// YAMLファイルの読み込み
-	YAML::Node config = KOURO::YamlLoader::LoadYamlFile("game_config.yaml");
+	YAML::Node config = KOURO::YamlLoader::LoadYamlFile("game/rail_config.yaml");
 
 	// コントロールポイントの読み込み
 	const std::vector<Vector3>& controlPoints_ = config["control_points"].as<std::vector<Vector3>>();

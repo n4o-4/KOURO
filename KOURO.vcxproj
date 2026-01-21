@@ -155,6 +155,8 @@
     <ClCompile Include="YamlLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\math\Vector2.h" />
+    <ClInclude Include="engine\math\Vector2Yaml.h" />
     <ClInclude Include="RailAnimation.h" />
     <ClInclude Include="application\object\enemy\AttackState.h" />
     <ClInclude Include="engine\math\Vector3.h" />

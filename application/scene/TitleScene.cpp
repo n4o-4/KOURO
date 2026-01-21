@@ -33,10 +33,12 @@ void TitleScene::Initialize(EngineContext context)
 	lineModelManager_->LoadLineModel("tunnel.obj");
 
 	// YAMLファイルの読み込み
-	YAML::Node config = KOURO::YamlLoader::LoadYamlFile("title_config.yaml");
+	YAML::Node rail_config = KOURO::YamlLoader::LoadYamlFile("title/rail_config.yaml");
 
 	// コントロールポイントの読み込み
-	controlPoints_ = config["control_points"].as<std::vector<Vector3>>();
+	controlPoints_ = rail_config["control_points"].as<std::vector<Vector3>>();
+
+	YAML::Node sprite_config = KOURO::YamlLoader::LoadYamlFile("title/sprite_config.yaml");
 
 	// スタートボタンの生成
 	startBotton_ = std::make_unique<Sprite>();
