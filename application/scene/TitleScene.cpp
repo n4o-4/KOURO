@@ -9,6 +9,7 @@
 
 #include "YamlLoader.h"
 #include "Vector3Yaml.h"
+#include "Vector2Yaml.h"
 
 void TitleScene::Initialize(EngineContext context)
 {
@@ -45,10 +46,11 @@ void TitleScene::Initialize(EngineContext context)
 	startBotton_->Initialize(SpriteCommon::GetInstance(),"Resources/StartButton.png");
 
 	// スタートボタンの各種設定
-	startBotton_->SetPosition({ 640.0f,600.0f });
-	startBotton_->SetSize({ 256.0f,128.0f });
-	startBotton_->SetAnchorPoint({ 0.5f,0.5f });
-	startBotton_->SetTexSize({ 1542.0f,1024.0f });
+	startBotton_->SetPosition(sprite_config["start_button"]["position"].as<Vector2>());
+	startBotton_->SetSize(sprite_config["start_button"]["size"].as<Vector2>());
+	startBotton_->SetAnchorPoint(sprite_config["start_button"]["anchor_point"].as<Vector2>());
+	startBotton_->SetTexSize(sprite_config["start_button"]["texture_size"].as<Vector2>());
+
 
 	// プレイヤーの生成
 	player_ = std::make_unique<BaseCharacter>();
