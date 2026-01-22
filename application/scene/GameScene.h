@@ -133,7 +133,7 @@ public: // メンバ関数
 	// \brief 初期化
 	void Initialize(EngineContext context) override;
 
-	// \brief Finialize 終了
+	// \brief Finalize 終了
 	void Finalize() override;
 
 	// \brief Update 更新

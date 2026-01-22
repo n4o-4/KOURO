@@ -12,10 +12,10 @@ class FollowCamera : public BaseCamera
 public:
 
 	// \brief  Initialize 初期化
-	void Initialize();
+	void Initialize() override;
 
 	// \brief  Update 更新
-	void Update();
+	void Update() override;
 	
 	/**
 	* \brief  SetTarget ターゲットの設定

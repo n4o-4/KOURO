@@ -5,5 +5,5 @@
 struct EngineContext
 {
 	GpuContext gpuContext;
-	GpuParticleManager* gpuParticleManager;
+	GpuParticleManager* gpuParticleManager = nullptr;
 };
