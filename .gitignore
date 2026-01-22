@@ -20,6 +20,14 @@ mono_crash.*
 
 [Ww][Ii][Nn]32/
 generated/
+x64/
+x86/
+Debug/
+Release/
+bin/
+lib/
+obj/
+out/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
