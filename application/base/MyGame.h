@@ -33,5 +33,5 @@ public: //　メンバ関数
 private:
 
 	// シーンファクトリー
-	std::unique_ptr<AbstaractSceneFactory> sceneFactory_ = nullptr;
+	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
 };

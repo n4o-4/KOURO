@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <memory>
 
@@ -61,7 +61,7 @@ protected:
 	std::unique_ptr<ImGuiManager> imGuiManager = nullptr;
 
 #endif
-	std::unique_ptr<AbstaractSceneFactory> sceneFactory_ = nullptr;
+	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
 
 	
 	bool endRequest_ = false;

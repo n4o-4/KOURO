@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <memory>
 #include "BaseScene.h"
 #include "AbstractSceneFactory.h"
@@ -20,7 +20,7 @@ public:
 
 	/**
 	* \brief  Initialize 初期化
-	* \param  DirectXCOmmon DirectXCommonのポインタ
+	* \param  DirectXCommon DirectXCommonのポインタ
 	* \param  SrvManager Srvマネージャーのポインタ
 	* \param  Camera カメラのポインタ
 	*/
@@ -29,7 +29,7 @@ public:
 	// \brief Finalize 終了
 	void Finalize();
 
-	// \brief Uodate 更新
+	// \brief Update 更新
 	void Update();
 
 	// \brief Draw 描画	
@@ -45,7 +45,7 @@ public:
 	* \brief  SetSceneFactory sceneFactoryの設定
 	* \param  sceneFactory 
 	*/
-	void SetSceneFactory(AbstaractSceneFactory& sceneFactory) { sceneFactory_ = &sceneFactory; }
+	void SetSceneFactory(AbstractSceneFactory& sceneFactory) { sceneFactory_ = &sceneFactory; }
 
 	/**
 	* \brief  SetPostEffect ポストエフェクトクラスの設定
@@ -98,7 +98,7 @@ private:
 	// 次のシーン
 	std::unique_ptr<BaseScene> nextScene_ = nullptr;
 
-	AbstaractSceneFactory* sceneFactory_ = nullptr;
+	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 	SrvManager* srvManager_ = nullptr;
 

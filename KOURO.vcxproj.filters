@@ -169,7 +169,7 @@
     <ClCompile Include="application\collider\SphereCollider.cpp">
       <Filter>application\collider</Filter>
     </ClCompile>
-    <ClCompile Include="application\scene\BaseScene.cpp">
+    <ClCompile Include="engine\scene\BaseScene.cpp">
       <Filter>application\scene</Filter>
     </ClCompile>
     <ClCompile Include="application\scene\GameScene.cpp">
@@ -178,7 +178,7 @@
     <ClCompile Include="application\scene\SceneFactory.cpp">
       <Filter>application\scene</Filter>
     </ClCompile>
-    <ClCompile Include="application\scene\SceneManager.cpp">
+    <ClCompile Include="engine\scene\SceneManager.cpp">
       <Filter>application\scene</Filter>
     </ClCompile>
     <ClCompile Include="application\scene\TitleScene.cpp">
@@ -582,7 +582,7 @@
     <ClInclude Include="application\scene\AbstractSceneFactory.h">
       <Filter>application\scene</Filter>
     </ClInclude>
-    <ClInclude Include="application\scene\BaseScene.h">
+    <ClInclude Include="engine\scene\BaseScene.h">
       <Filter>application\scene</Filter>
     </ClInclude>
     <ClInclude Include="application\scene\GameScene.h">
@@ -591,7 +591,7 @@
     <ClInclude Include="application\scene\SceneFactory.h">
       <Filter>application\scene</Filter>
     </ClInclude>
-    <ClInclude Include="application\scene\SceneManager.h">
+    <ClInclude Include="engine\scene\SceneManager.h">
       <Filter>application\scene</Filter>
     </ClInclude>
     <ClInclude Include="application\scene\TitleScene.h">
@@ -940,7 +940,7 @@
     <ClInclude Include="externals\yaml-cpp\src\tag.h">
       <Filter>extarnals\yaml-cpp</Filter>
     </ClInclude>
-    <ClInclude Include="application\scene\SceneState\ISceneState.h">
+    <ClInclude Include="engine\scene\ISceneState.h">
       <Filter>application\scene\SceneState</Filter>
     </ClInclude>
   </ItemGroup>

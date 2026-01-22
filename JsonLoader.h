@@ -1,19 +1,15 @@
 #pragma once
 
-
-
-// extarnals
+// externals
 #include <json.hpp>
 
 namespace KOURO
 {
-
-	/// \brief JsonLoader JSONローダークラス
+	/// \brief JsonLoader JSON繝ｭ繝ｼ繝繝ｼ繧ｯ繝ｩ繧ｹ
 
 	class JsonLoader
 	{
 	};
-
 }
 
 

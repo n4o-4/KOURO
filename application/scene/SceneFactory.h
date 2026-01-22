@@ -12,7 +12,7 @@
 // AbstractSceneFactoryを継承し、シーン名に応じたBaseScene派生クラスのインスタンスを生成する。
 // ゲームのシーン切り替え時に利用される。
 
-class SceneFactory : public AbstaractSceneFactory
+class SceneFactory : public AbstractSceneFactory
 {
 public:
 
