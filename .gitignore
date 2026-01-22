@@ -323,3 +323,15 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# --- Debug symbol files (.pdb) ---
+*.pdb
+
+# --- Build logs and cache ---
+*.tlog
+*.recipe
+*.lastbuildstate
+*.log
+
+# --- ImGui configuration (local settings) ---
+imgui.ini
