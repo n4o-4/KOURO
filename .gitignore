@@ -335,3 +335,4 @@ FodyWeavers.xsd
 
 # --- ImGui configuration (local settings) ---
 imgui.ini
+/imgui.ini
