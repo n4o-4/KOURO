@@ -628,7 +628,7 @@ static Quaternion Conjugate(const Quaternion& quaternion)
 	return Quaternion(-quaternion.x, -quaternion.y, -quaternion.z, quaternion.w);
 }
 
-// Quaternionのnormを返す
+// Quaternion-normを返す
 static float Norm(const Quaternion& quaternion)
 {
 	// クォータニオンのノルムを計算: √(x^2 + y^2 + z^2 + w^2)

@@ -34,7 +34,7 @@ public:
 	void Update();
 
 	/**
-	* \brief  スポットライトのresourceを取得する
+	* \brief  スポットライトのリソースを取得する
 	* \return spotLightResource
 	*/
 	Microsoft::WRL::ComPtr<ID3D12Resource> GetSpotLightResource() { return spotLightResource_; }
