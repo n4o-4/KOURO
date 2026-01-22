@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<ItemDefinitionGroup>
+		<ClCompile>
+			<AdditionalIncludeDirectories>
+				$(ProjectDir)engine;
+				$(ProjectDir)engine\2d;
+
+				$(ProjectDir)engine\3d;
+				$(ProjectDir)engine\3d\animation;
+				$(ProjectDir)engine\3d\model;
+				$(ProjectDir)engine\3d\object;
+				$(ProjectDir)engine\3d\particle;
+				$(ProjectDir)engine\3d\skybox;
+				$(ProjectDir)engine\3d\transform;
+
+				$(ProjectDir)engine\audio;
+				$(ProjectDir)engine\camera;
+				$(ProjectDir)engine\core;
+				$(ProjectDir)engine\debug;
+				$(ProjectDir)engine\effect;
+				$(ProjectDir)engine\input;
+				$(ProjectDir)engine\line;
+				$(ProjectDir)engine\math;
+				$(ProjectDir)engine\object;
+				$(ProjectDir)engine\rendering;
+				$(ProjectDir)engine\scene;
+				$(ProjectDir)engine\system;
+
+				%(AdditionalIncludeDirectories)
+			</AdditionalIncludeDirectories>
+		</ClCompile>
+	</ItemDefinitionGroup>
+
+</Project>

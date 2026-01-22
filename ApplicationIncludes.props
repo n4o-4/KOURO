@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<ItemDefinitionGroup>
+		<ClCompile>
+			<AdditionalIncludeDirectories>
+				$(ProjectDir)application\base;
+				$(ProjectDir)application\base\baseClass;
+
+				$(ProjectDir)application\camera;
+				$(ProjectDir)application\collider;
+
+				$(ProjectDir)application\object\base;
+				$(ProjectDir)application\object\enemy;
+				$(ProjectDir)application\object\player;
+
+				$(ProjectDir)application\scene;
+				$(ProjectDir)application\scene\clear;
+				$(ProjectDir)application\scene\game;
+				$(ProjectDir)application\scene\over;
+				$(ProjectDir)application\scene\title;
+
+				$(ProjectDir)application\system;
+				$(ProjectDir)application\transition;
+
+				%(AdditionalIncludeDirectories)
+			</AdditionalIncludeDirectories>
+		</ClCompile>
+	</ItemDefinitionGroup>
+
+</Project>

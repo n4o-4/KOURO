@@ -20,10 +20,10 @@
     <ClCompile Include="engine\line\AABBLineObject.cpp" />
     <ClCompile Include="application\collider\AABBCollider.cpp" />
     <ClCompile Include="engine\scene\BaseScene.cpp" />
-    <ClCompile Include="application\scene\GameScene.cpp" />
+    <ClCompile Include="application\scene\game\GameScene.cpp" />
     <ClCompile Include="application\scene\SceneFactory.cpp" />
     <ClCompile Include="engine\scene\SceneManager.cpp" />
-    <ClCompile Include="application\scene\TitleScene.cpp" />
+    <ClCompile Include="application\scene\title\TitleScene.cpp" />
     <ClCompile Include="application\object\base\BaseCharacter.cpp" />
     <ClCompile Include="application\collider\BaseCollider.cpp" />
     <ClCompile Include="application\collider\ColliderManager.cpp" />
@@ -62,8 +62,8 @@
     <ClCompile Include="engine\line\LineDrawerBase.cpp" />
     <ClCompile Include="application\transition\Fade.cpp" />
     <ClCompile Include="application\camera\FollowCamera.cpp" />
-    <ClCompile Include="application\scene\GameClear.cpp" />
-    <ClCompile Include="application\scene\GameOver.cpp" />
+    <ClCompile Include="application\scene\clear\GameClear.cpp" />
+    <ClCompile Include="application\scene\over\GameOver.cpp" />
     <ClCompile Include="engine\effect\GaussianFilter.cpp" />
     <ClCompile Include="engine\effect\Grayscale.cpp" />
     <ClCompile Include="engine\effect\LinearFog.cpp" />
@@ -172,12 +172,12 @@
     <ClInclude Include="engine\math\Easing.h" />
     <ClInclude Include="engine\line\AABBLineObject.h" />
     <ClInclude Include="application\collider\AABBCollider.h" />
-    <ClInclude Include="application\scene\AbstractSceneFactory.h" />
+    <ClInclude Include="engine\scene\AbstractSceneFactory.h" />
     <ClInclude Include="engine\scene\BaseScene.h" />
-    <ClInclude Include="application\scene\GameScene.h" />
+    <ClInclude Include="application\scene\game\GameScene.h" />
     <ClInclude Include="application\scene\SceneFactory.h" />
     <ClInclude Include="engine\scene\SceneManager.h" />
-    <ClInclude Include="application\scene\TitleScene.h" />
+    <ClInclude Include="application\scene\title\TitleScene.h" />
     <ClInclude Include="application\object\base\BaseCharacter.h" />
     <ClInclude Include="application\collider\BaseCollider.h" />
     <ClInclude Include="application\collider\ColliderManager.h" />
@@ -236,8 +236,8 @@
     <ClInclude Include="engine\line\LineDrawerBase.h" />
     <ClInclude Include="application\transition\Fade.h" />
     <ClInclude Include="application\camera\FollowCamera.h" />
-    <ClInclude Include="application\scene\GameClear.h" />
-    <ClInclude Include="application\scene\GameOver.h" />
+    <ClInclude Include="application\scene\clear\GameClear.h" />
+    <ClInclude Include="application\scene\over\GameOver.h" />
     <ClInclude Include="engine\effect\PostEffect.h" />
     <ClInclude Include="engine\effect\GaussianFilter.h" />
     <ClInclude Include="engine\effect\Grayscale.h" />
@@ -587,9 +587,15 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="ExternalIncludes.props" />
+    <Import Project="EngineIncludes.props" />
+    <Import Project="ApplicationIncludes.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="ExternalIncludes.props" />
+    <Import Project="EngineIncludes.props" />
+    <Import Project="ApplicationIncludes.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -612,7 +618,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\transition;$(ProjectDir)engine\effect;$(ProjectDir)application\base\baseClass;$(ProjectDir)application\object\base;$(ProjectDir)application\object\enemy;$(ProjectDir)application\object\player;$(ProjectDIr)application\collider;$(ProjectDIr)engine\line;$(ProjectDir)engine\debug;$(ProjectDir)engine\core;$(ProjectDIr)engine\3d\animation;$(ProjectDir)engine\3d\model;$(ProjectDir)engine\3d\object;$(ProjectDir)engine\3d\particle;$(ProjectDir)engine\3d\skybox;$(ProjectDir)engine\3d\transform;$(ProjectDir)engine\rendering;$(ProjectDir)engine\system;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\system;$(ProjectDir)externals\yaml-cpp\include;$(ProjectDir)engine\scene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -637,7 +643,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)application\base;$(ProjectDir)application\scene;$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\input;$(ProjectDir)engine\math;$(ProjectDir)engine\object;$(ProjectDir)externals\assimp\include;$(ProjectDir)engine\camera;$(ProjectDir)application\camera;$(ProjectDir)application\transition;$(ProjectDir)engine\effect;$(ProjectDir)application\base\baseClass;$(ProjectDir)application\object\base;$(ProjectDir)application\object\enemy;$(ProjectDir)application\object\player;$(ProjectDIr)application\collider;$(ProjectDIr)engine\line;$(ProjectDir)engine\debug;$(ProjectDir)engine\core;$(ProjectDIr)engine\3d\animation;$(ProjectDir)engine\3d\model;$(ProjectDir)engine\3d\object;$(ProjectDir)engine\3d\particle;$(ProjectDir)engine\3d\skybox;$(ProjectDir)engine\3d\transform;$(ProjectDir)engine\rendering;$(ProjectDir)engine\system;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\system;$(ProjectDir)externals\yaml-cpp\include;$(ProjectDir)engine\scene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

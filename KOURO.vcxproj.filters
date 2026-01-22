@@ -172,7 +172,7 @@
     <ClCompile Include="engine\scene\BaseScene.cpp">
       <Filter>application\scene</Filter>
     </ClCompile>
-    <ClCompile Include="application\scene\GameScene.cpp">
+    <ClCompile Include="application\scene\game\GameScene.cpp">
       <Filter>application\scene</Filter>
     </ClCompile>
     <ClCompile Include="application\scene\SceneFactory.cpp">
@@ -181,7 +181,7 @@
     <ClCompile Include="engine\scene\SceneManager.cpp">
       <Filter>application\scene</Filter>
     </ClCompile>
-    <ClCompile Include="application\scene\TitleScene.cpp">
+    <ClCompile Include="application\scene\title\TitleScene.cpp">
       <Filter>application\scene</Filter>
     </ClCompile>
     <ClCompile Include="engine\2d\Sprite.cpp">
@@ -313,10 +313,10 @@
     <ClCompile Include="engine\camera\ViewProjection.cpp">
       <Filter>engine\camera</Filter>
     </ClCompile>
-    <ClCompile Include="application\scene\GameClear.cpp">
+    <ClCompile Include="application\scene\clear\GameClear.cpp">
       <Filter>application\scene</Filter>
     </ClCompile>
-    <ClCompile Include="application\scene\GameOver.cpp">
+    <ClCompile Include="application\scene\over\GameOver.cpp">
       <Filter>application\scene</Filter>
     </ClCompile>
     <ClCompile Include="engine\effect\Dissolve.cpp">
@@ -579,13 +579,13 @@
     <ClInclude Include="application\collider\SphereCollider.h">
       <Filter>application\collider</Filter>
     </ClInclude>
-    <ClInclude Include="application\scene\AbstractSceneFactory.h">
+    <ClInclude Include="engine\scene\AbstractSceneFactory.h">
       <Filter>application\scene</Filter>
     </ClInclude>
     <ClInclude Include="engine\scene\BaseScene.h">
       <Filter>application\scene</Filter>
     </ClInclude>
-    <ClInclude Include="application\scene\GameScene.h">
+    <ClInclude Include="application\scene\game\GameScene.h">
       <Filter>application\scene</Filter>
     </ClInclude>
     <ClInclude Include="application\scene\SceneFactory.h">
@@ -594,7 +594,7 @@
     <ClInclude Include="engine\scene\SceneManager.h">
       <Filter>application\scene</Filter>
     </ClInclude>
-    <ClInclude Include="application\scene\TitleScene.h">
+    <ClInclude Include="application\scene\title\TitleScene.h">
       <Filter>application\scene</Filter>
     </ClInclude>
     <ClInclude Include="engine\2d\Sprite.h">
@@ -741,10 +741,10 @@
     <ClInclude Include="engine\camera\ViewProjection.h">
       <Filter>engine\camera</Filter>
     </ClInclude>
-    <ClInclude Include="application\scene\GameClear.h">
+    <ClInclude Include="application\scene\clear\GameClear.h">
       <Filter>application\scene</Filter>
     </ClInclude>
-    <ClInclude Include="application\scene\GameOver.h">
+    <ClInclude Include="application\scene\over\GameOver.h">
       <Filter>application\scene</Filter>
     </ClInclude>
     <ClInclude Include="engine\effect\Dissolve.h">

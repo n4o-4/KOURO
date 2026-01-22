@@ -1,7 +1,7 @@
-﻿#include "DirectionalLight.h"
+#include "DirectionalLight.h"
 #include "InitialLightSetting.h"
 
-void DirectionalLight::Initilaize()
+void DirectionalLight::Initialize()
 {
 	// bufferResourceの生成
 	directionalLightResource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(DirectionalLightData));

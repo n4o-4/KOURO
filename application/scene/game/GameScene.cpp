@@ -46,7 +46,7 @@ void GameScene::Initialize(EngineContext context) {
 	// ライト
 	// 指向性
 	directionalLight = std::make_unique<DirectionalLight>();
-	directionalLight->Initilaize();
+	directionalLight->Initialize();
 	directionalLight->intensity_ = 0.0f;
 	// 点光源
 	pointLight = std::make_unique<PointLight>();

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <d3d12.h>
 #include <wrl.h>
 #include "Structs.h"
@@ -22,7 +22,7 @@ private:
 public: // 公開メンバ関数
 
 	/// \brief 初期化
-	void Initilaize();
+	void Initialize();
 
 	/// \brief 更新
 	void Update();
