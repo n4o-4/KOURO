@@ -70,7 +70,7 @@
     <ClCompile Include="engine\effect\LuminanceBasedOutline.cpp" />
     <ClCompile Include="engine\system\LevelLoader.cpp" />
     <ClCompile Include="engine\system\GpuParticle.cpp" />
-    <ClCompile Include="engine\system\GrobalVariables.cpp" />
+    <ClCompile Include="engine\system\GlobalVariables.cpp" />
     <ClCompile Include="engine\3d\model\LineModel.cpp" />
     <ClCompile Include="engine\system\LineModelManager.cpp" />
     <ClCompile Include="engine\system\LineObjectFactory.cpp" />
@@ -257,7 +257,7 @@
     <ClInclude Include="engine\line\OBBLineObject.h" />
     <ClInclude Include="application\camera\TitleCamera.h" />
     <ClInclude Include="engine\system\GpuParticle.h" />
-    <ClInclude Include="engine\system\GrobalVariables.h" />
+    <ClInclude Include="engine\system\GlobalVariables.h" />
     <ClInclude Include="engine\3d\model\LineModel.h" />
     <ClInclude Include="engine\system\LineModelManager.h" />
     <ClInclude Include="engine\system\LineObjectFactory.h" />

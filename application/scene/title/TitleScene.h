@@ -21,9 +21,6 @@
 
 class TitleScene : public BaseScene
 {
-private:
-
-private:
 public: // メンバ関数
 
 	// \brief 初期化

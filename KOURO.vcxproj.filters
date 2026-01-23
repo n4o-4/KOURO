@@ -412,7 +412,7 @@
     <ClCompile Include="engine\system\NumUi.cpp">
       <Filter>engine\system</Filter>
     </ClCompile>
-    <ClCompile Include="engine\system\GrobalVariables.cpp">
+    <ClCompile Include="engine\system\GlobalVariables.cpp">
       <Filter>engine\system</Filter>
     </ClCompile>
     <ClCompile Include="engine\3d\object\ObjectLine.cpp">
@@ -852,7 +852,7 @@
     <ClInclude Include="engine\core\D3D12Context.h">
       <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\system\GrobalVariables.h">
+    <ClInclude Include="engine\system\GlobalVariables.h">
       <Filter>engine\system</Filter>
     </ClInclude>
     <ClInclude Include="engine\3d\object\ObjectLine.h">

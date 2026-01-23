@@ -12,7 +12,7 @@
 #include "Enemy.h"
 
 #include "LevelLoader.h"
-#include "GrobalVariables.h"
+#include "GlobalVariables.h"
 
 #include "RailAnimation.h"
 

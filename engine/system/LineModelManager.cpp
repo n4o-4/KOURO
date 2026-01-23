@@ -1,32 +1,35 @@
-﻿#include "LineModelManager.h"
+#include "LineModelManager.h"
 
-void LineModelManager::Initialize(LineDrawerBase* lineDrawerBase)
+namespace Kouro
 {
-	lineDrawerBase_ = lineDrawerBase;
-}
-
-void LineModelManager::LoadLineModel(std::string filePath)
-{
-	// 読み込み済みモデル検索
-	if (models_.contains(filePath)) {
-		return;
+	void LineModelManager::Initialize(LineDrawerBase* lineDrawerBase)
+	{
+		lineDrawerBase_ = lineDrawerBase;
 	}
 
-	// モデルの生成とファイル読み込み、初期化
-	std::unique_ptr<LineModel> model = std::make_unique<LineModel>();
-	model->Initialize(lineDrawerBase_, "Resources", filePath);
+	void LineModelManager::LoadLineModel(std::string filePath)
+	{
+		// 読み込み済みモデル検索
+		if (models_.contains(filePath)) {
+			return;
+		}
 
-	// モデルをmapコンテナに格納する
-	models_.insert(std::make_pair(filePath, std::move(model)));
-}
+		// モデルの生成とファイル読み込み、初期化
+		std::unique_ptr<LineModel> model = std::make_unique<LineModel>();
+		model->Initialize(lineDrawerBase_, "Resources", filePath);
 
-LineModel* LineModelManager::FindLineModel(const std::string filePath)
-{
-	// 読み込み済みモデルを検索
-	if (models_.contains(filePath)) {
-		// 読み込みモデルを戻り値としてreturn
-		return models_.at(filePath).get();
+		// モデルをmapコンテナに格納する
+		models_.insert(std::make_pair(filePath, std::move(model)));
 	}
 
-	assert(0);
+	LineModel* LineModelManager::FindLineModel(const std::string filePath)
+	{
+		// 読み込み済みモデルを検索
+		if (models_.contains(filePath)) {
+			// 読み込みモデルを戻り値としてreturn
+			return models_.at(filePath).get();
+		}
+
+		assert(0);
+	}
 }

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <string>
 #include <wrl.h>
 
@@ -17,86 +17,88 @@
 // テクスチャの読み込み、SRV生成、GPUハンドル取得、メタデータ管理を行う。
 // シングルトンとして利用され、複数のテクスチャを効率的に扱える。
 
-class TextureManager
+namespace Kouro
 {
-public:
-	// シングルトンインスタンスの取得
-	static TextureManager* GetInstance();
+	class TextureManager
+	{
+	public:
+		// シングルトンインスタンスの取得
+		static TextureManager* GetInstance();
 
-	/**
-	* \brief  テクスチャマネージャーの初期化
-	* \param  dxCommon   DirectXCommonのポインタ
-	* \param  srvManager srvManagerのポインタ
-	*/
-	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager);
+		/**
+		* \brief  テクスチャマネージャーの初期化
+		* \param  dxCommon   DirectXCommonのポインタ
+		* \param  srvManager srvManagerのポインタ
+		*/
+		void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
 
-	/// \brief Finalize 終了
-	void Finalize();
+		/// \brief Finalize 終了
+		void Finalize();
 
-	/**
-	* \brief  読み込み
-	* \param  filePath : ファイルパス
-	*/
-	void LoadTexture(const std::string& filePath);
+		/**
+		* \brief  読み込み
+		* \param  filePath : ファイルパス
+		*/
+		void LoadTexture(const std::string& filePath);
 
-	/**
-	* \brief  ファイルパスからインデックスを取得する
-	* \param  filePath : ファイルパス
-	* \return インデックス
-	*/
-	uint32_t GetTextureIndexByFilePath(const std::string& filePath);
+		/**
+		* \brief  ファイルパスからインデックスを取得する
+		* \param  filePath : ファイルパス
+		* \return インデックス
+		*/
+		uint32_t GetTextureIndexByFilePath(const std::string& filePath);
 
-	/**
-	* \brief  ファイルパスからGPUハンドルを取得する
-	* \param  filePath : ファイルパス
-	* \reutne GPUハンドル
-	*/
-	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(std::string filePath);
+		/**
+		* \brief  ファイルパスからGPUハンドルを取得する
+		* \param  filePath : ファイルパス
+		* \reutne GPUハンドル
+		*/
+		D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(std::string filePath);
 
-	/**
-	* \brief  ファイルパスからメタデータを取得する
-	* \param  filePath : ファイルパス
-	*/
-	const DirectX::TexMetadata& GetMetaData(std::string filePath);
+		/**
+		* \brief  ファイルパスからメタデータを取得する
+		* \param  filePath : ファイルパス
+		*/
+		const DirectX::TexMetadata& GetMetaData(std::string filePath);
 
-	/// \brief オフスクリーンレンダリング用のテクスチャを作る
-	void CreateRenderTextureMetaData();
+		/// \brief オフスクリーンレンダリング用のテクスチャを作る
+		void CreateRenderTextureMetaData();
 
-private:
-	static std::unique_ptr<TextureManager> instance;
+	private:
+		static std::unique_ptr<TextureManager> instance;
 
-	friend std::unique_ptr<TextureManager> std::make_unique<TextureManager>();
-	friend std::default_delete<TextureManager>;
+		friend std::unique_ptr<TextureManager> std::make_unique<TextureManager>();
+		friend std::default_delete<TextureManager>;
 
-	TextureManager() = default;
-	~TextureManager() = default;
-	TextureManager(TextureManager&) = delete;
-	TextureManager& operator=(TextureManager&) = delete;
+		TextureManager() = default;
+		~TextureManager() = default;
+		TextureManager(TextureManager&) = delete;
+		TextureManager& operator=(TextureManager&) = delete;
 
-private:
-	// テクスチャー1枚分のデータ
-	struct TextureData {
-		DirectX::TexMetadata metadata;
-		Microsoft::WRL::ComPtr<ID3D12Resource> resource;
-		uint32_t srvIndex;
-		D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU;
-		D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
+	private:
+		// テクスチャー1枚分のデータ
+		struct TextureData {
+			DirectX::TexMetadata metadata;
+			Microsoft::WRL::ComPtr<ID3D12Resource> resource;
+			uint32_t srvIndex;
+			D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU;
+			D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
+		};
+
+		// テクスチャデータ
+		std::unordered_map<std::string, TextureData> textureDatas;
+
+		DirectXCommon* dxCommon_ = nullptr;
+
+		SrvManager* srvManager_ = nullptr;
+
+		// SRVインデックスの開始番号
+		static uint32_t kSRVIndexTop;
+
+		Microsoft::WRL::ComPtr<ID3D12Fence> fence = nullptr;
+
+		HANDLE fenceEvent = nullptr;
+
+		uint32_t fenceValue = 0;
 	};
-
-	// テクスチャデータ
-	std::unordered_map<std::string, TextureData> textureDatas;
-
-	DirectXCommon* dxCommon_ = nullptr;
-
-	SrvManager* srvManager_ = nullptr;
-
-	// SRVインデックスの開始番号
-	static uint32_t kSRVIndexTop;
-
-	Microsoft::WRL::ComPtr<ID3D12Fence> fence = nullptr;
-
-	HANDLE fenceEvent = nullptr;
-
-	uint32_t fenceValue = 0;
-};
-
+}

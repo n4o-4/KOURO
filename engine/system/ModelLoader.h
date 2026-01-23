@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <string>
 #include <iostream>
 #include <vector>
@@ -37,19 +37,21 @@ namespace Line
 // 主にラインモデル用のデータを読み込み、LoadLineModelで頂点配列を返す。
 // デフォルトで"Resources/"ディレクトリから読み込む仕様。
 
-class ModelLoader
+namespace kouro
 {
-public:
+	class ModelLoader
+	{
+	public:
 
-	// モデルデータを読み込む関数
-    std::vector<Line::Vertex> LoadLineModel(std::string filePath);
+		// モデルデータを読み込む関数
+		std::vector<Line::Vertex> LoadLineModel(std::string filePath);
 
 
-	std::vector<VertexData> LoadModel(std::string fileName);
+		std::vector<VertexData> LoadModel(std::string fileName);
 
-private:
+	private:
 
-	std::string directoryPath_ = "Resources/";
+		std::string directoryPath_ = "Resources/";
 
-};
-
+	};
+}

@@ -11,6 +11,8 @@
 #include "Vector3Yaml.h"
 #include "Vector2Yaml.h"
 
+#include "title/state/FadeInState.h"
+
 void TitleScene::Initialize(EngineContext context)
 {
 	/// 基底クラスの初期化

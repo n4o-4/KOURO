@@ -13,7 +13,7 @@
 #include "ParticleManager.h"
 #include "ParticleEmitter.h"
 #include "SceneManager.h"
-#include "GrobalVariables.h"
+#include "GlobalVariables.h"
 #include "NumUi.h"
 
 // \brief GameClear ゲームクリアシーンクラス
@@ -44,7 +44,7 @@ private:
 	
 	std::unique_ptr<NumUi> scoreUi_ = nullptr;
 
-	GrobalVariables grobalVariables_;
+	GlobalVariables grobalVariables_;
 
 	uint32_t eliminatedEnemyCount_ = 0;
 

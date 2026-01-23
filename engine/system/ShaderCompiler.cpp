@@ -7,86 +7,90 @@
 #pragma comment(lib,"dxguid.lib")
 #pragma comment(lib,"dxcompiler.lib")
 
-void ShaderCompiler::Initialize()
+namespace Kouro
 {
-	CreateDXCCompiler();
-}
-
-Microsoft::WRL::ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& filePath, const wchar_t* profile)
-{
-	// hlslƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
-	Microsoft::WRL::ComPtr<IDxcBlobEncoding> shaderSource = nullptr;
-	HRESULT hr;
-	hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, &shaderSource);
-
-	// “Ç‚ß‚È‚©‚Á‚½‚ç~‚ß‚é
-	assert(SUCCEEDED(hr));
-
-	// “Ç‚İ‚ñ‚¾ƒtƒ@ƒCƒ‹‚Ì“à—e‚ğİ’è‚·‚é
-	DxcBuffer shaderSourceBuffer;
-	shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
-	shaderSourceBuffer.Size = shaderSource->GetBufferSize();
-	shaderSourceBuffer.Encoding = DXC_CP_UTF8; // UTF‚Ì•¶šƒR[ƒh‚Å‚ ‚é‚±‚Æ‚ğ’Ê’m
-
-	LPCWSTR arguments[] =
+	void ShaderCompiler::Initialize()
 	{
-		filePath.c_str(), // ƒRƒ“ƒpƒCƒ‹‘ÎÛ‚Ìhlslƒtƒ@ƒCƒ‹–¼
-		L"-E",L"main", // ƒGƒ“ƒgƒŠ[ƒ|ƒCƒ“ƒg‚Ìw’èBŠî–{“I‚ÉmainˆÈŠO‚É‚Í‚µ‚È‚¢
-		L"-T", profile, // ShaderProfile‚Ìİ’è
-		L"-Zi", L"-Qembed_debug", // ƒfƒoƒbƒO—p‚Ìî•ñ‚ğ–„‚ß‚Ş
-		L"-Od",    // Å“K‰»‚µ‚Ä‚¨‚­
-		L"-Zpr",   // ƒƒ‚ƒŠƒŒƒCƒAƒEƒg‚ÍÅ—Dæ
-	};
-
-	// ÀÛ‚ÉShader‚ğƒRƒ“ƒpƒCƒ‹‚·‚é
-	Microsoft::WRL::ComPtr<IDxcResult> shaderResult = nullptr;
-	hr = dxcCompiler.Get()->Compile(
-		&shaderSourceBuffer,
-		arguments,
-		_countof(arguments),
-		includeHandler.Get(),
-		IID_PPV_ARGS(&shaderResult)
-	);
-
-	assert(shaderResult != nullptr);
-
-	// ƒRƒ“ƒpƒCƒ‹ƒGƒ‰[‚Å‚È‚­dxc‚ª‹N“®o—ˆ‚È‚¢‚È‚Ç’v–½“I‚Èó‹µ
-	assert(SUCCEEDED(hr));
-
-	// ŒxEƒGƒ‰[‚ªo‚½‚çƒƒO‚ğo‚µ‚Ä~‚ß‚é
-	Microsoft::WRL::ComPtr<IDxcBlobUtf8> shaderError = nullptr;
-	shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
-	if (shaderError != nullptr && shaderError->GetStringLength() != 0)
-	{
-		Logger::Log(shaderError->GetStringPointer());
-
-		// ŒxEƒGƒ‰[
-		assert(false);
+		CreateDXCCompiler();
 	}
 
-	// ƒRƒ“ƒpƒCƒ‹Œ‹‰Ê‚©‚çÀs‚ÌƒoƒCƒiƒŠ•”•ª‚ğæ“¾
-	Microsoft::WRL::ComPtr<IDxcBlob> shaderBlob = nullptr;
-	hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
-	assert(SUCCEEDED(hr));
+	Microsoft::WRL::ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& filePath, const wchar_t* profile)
+	{
+		// hlslãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€
+		Microsoft::WRL::ComPtr<IDxcBlobEncoding> shaderSource = nullptr;
+		HRESULT hr;
+		hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, &shaderSource);
 
-	// ¬Œ÷‚µ‚½ƒƒO‚ğo‚·
-	Logger::Log(StringUtility::ConvertString(std::format(L"Compile Succeeded, path:{},profile:{}\n", filePath, profile)));
+		// èª­ã‚ãªã‹ã£ãŸã‚‰æ­¢ã‚ã‚‹
+		assert(SUCCEEDED(hr));
 
-	// Às—p‚ÌƒoƒCƒiƒŠ‚ğ•Ô‹p
-	return shaderBlob;
+		// èª­ã¿è¾¼ã‚“ã ãƒ•ã‚¡ã‚¤ãƒ«ã®å†…å®¹ã‚’è¨­å®šã™ã‚‹
+		DxcBuffer shaderSourceBuffer;
+		shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
+		shaderSourceBuffer.Size = shaderSource->GetBufferSize();
+		shaderSourceBuffer.Encoding = DXC_CP_UTF8; // UTFã®æ–‡å­—ã‚³ãƒ¼ãƒ‰ã§ã‚ã‚‹ã“ã¨ã‚’é€šçŸ¥
+
+		LPCWSTR arguments[] =
+		{
+			filePath.c_str(), // ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«å¯¾è±¡ã®hlslãƒ•ã‚¡ã‚¤ãƒ«å
+			L"-E",L"main", // ã‚¨ãƒ³ãƒˆãƒªãƒ¼ãƒã‚¤ãƒ³ãƒˆã®æŒ‡å®šã€‚åŸºæœ¬çš„ã«mainä»¥å¤–ã«ã¯ã—ãªã„
+			L"-T", profile, // ShaderProfileã®è¨­å®š
+			L"-Zi", L"-Qembed_debug", // ãƒ‡ãƒãƒƒã‚°ç”¨ã®æƒ…å ±ã‚’åŸ‹ã‚è¾¼ã‚€
+			L"-Od",    // æœ€é©åŒ–ã—ã¦ãŠã
+			L"-Zpr",   // ãƒ¡ãƒ¢ãƒªãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã¯æœ€å„ªå…ˆ
+		};
+
+		// å®Ÿéš›ã«Shaderã‚’ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã™ã‚‹
+		Microsoft::WRL::ComPtr<IDxcResult> shaderResult = nullptr;
+		hr = dxcCompiler.Get()->Compile(
+			&shaderSourceBuffer,
+			arguments,
+			_countof(arguments),
+			includeHandler.Get(),
+			IID_PPV_ARGS(&shaderResult)
+		);
+
+		assert(shaderResult != nullptr);
+
+		// ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚¨ãƒ©ãƒ¼ã§ãªãdxcãŒèµ·å‹•å‡ºæ¥ãªã„ãªã©è‡´å‘½çš„ãªçŠ¶æ³
+		assert(SUCCEEDED(hr));
+
+		// è­¦å‘Šãƒ»ã‚¨ãƒ©ãƒ¼ãŒå‡ºãŸã‚‰ãƒ­ã‚°ã‚’å‡ºã—ã¦æ­¢ã‚ã‚‹
+		Microsoft::WRL::ComPtr<IDxcBlobUtf8> shaderError = nullptr;
+		shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
+		if (shaderError != nullptr && shaderError->GetStringLength() != 0)
+		{
+			Logger::Log(shaderError->GetStringPointer());
+
+			// è­¦å‘Šãƒ»ã‚¨ãƒ©ãƒ¼
+			assert(false);
+		}
+
+		// ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«çµæœã‹ã‚‰å®Ÿè¡Œã®ãƒã‚¤ãƒŠãƒªéƒ¨åˆ†ã‚’å–å¾—
+		Microsoft::WRL::ComPtr<IDxcBlob> shaderBlob = nullptr;
+		hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
+		assert(SUCCEEDED(hr));
+
+		// æˆåŠŸã—ãŸãƒ­ã‚°ã‚’å‡ºã™
+		Logger::Log(StringUtility::ConvertString(std::format(L"Compile Succeeded, path:{},profile:{}\n", filePath, profile)));
+
+		// å®Ÿè¡Œç”¨ã®ãƒã‚¤ãƒŠãƒªã‚’è¿”å´
+		return shaderBlob;
+	}
+
+	void ShaderCompiler::CreateDXCCompiler()
+	{
+		HRESULT hr;
+
+		// dxCompilerã‚’åˆæœŸåŒ–
+		hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils));
+		assert(SUCCEEDED(hr));
+		hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler));
+		assert(SUCCEEDED(hr));
+
+		// ç¾æ™‚ç‚¹ã§includeã¯ã—ã¦ã„ãªã„ãŒã€includeã«å¯¾å¿œã™ã‚‹ãŸã‚ã®è¨­å®šã‚’ã—ã¦ãŠã
+		hr = dxcUtils->CreateDefaultIncludeHandler(&includeHandler);
+		assert(SUCCEEDED(hr));
+	}
 }
 
-void ShaderCompiler::CreateDXCCompiler()
-{
-	HRESULT hr;
-
-	// dxCompiler‚ğ‰Šú‰»
-	hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils));
-	assert(SUCCEEDED(hr));
-	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler));
-	assert(SUCCEEDED(hr));
-
-	// Œ»“_‚Åinclude‚Í‚µ‚Ä‚¢‚È‚¢‚ªAinclude‚É‘Î‰‚·‚é‚½‚ß‚Ìİ’è‚ğ‚µ‚Ä‚¨‚­
-	hr = dxcUtils->CreateDefaultIncludeHandler(&includeHandler);
-	assert(SUCCEEDED(hr));
-}

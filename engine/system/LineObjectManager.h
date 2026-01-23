@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "BaseLineObject.h"
 
@@ -7,18 +7,20 @@
 // LineObjectの追加や更新処理を一括で行う。
 // 内部でstd::listにラインオブジェクトを保持。
 
-class LineObjectManager
+namespace Kouro
 {
-public:
+	class LineObjectManager
+	{
+	public:
 
-	/// \brief Update 更新
-	void Update();
+		/// \brief Update 更新
+		void Update();
 
-	//void AddLineObject(std::unique_ptr<BaseLineObject> lineObject);
+		//void AddLineObject(std::unique_ptr<BaseLineObject> lineObject);
 
-private:
+	private:
 
-	std::list<std::unique_ptr<BaseLineObject>> lineObjects_;
+		std::list<std::unique_ptr<BaseLineObject>> lineObjects_;
 
-};
-
+	};
+}

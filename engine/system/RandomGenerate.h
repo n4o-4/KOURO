@@ -1,23 +1,35 @@
-﻿#pragma once
+#pragma once
 #include <random>
 #include "Vectors.h"
-class RandomGenerate
+
+/// \brief ランダム生成クラス
+
+namespace Kouro
 {
-public:
+	class RandomGenerate
+	{
+	public:
 
-	/// \brief 初期化
-	void Initialize();
+		/// \brief 初期化
+		void Initialize();
 
-	/**
-	* \brief  
-	*/
-	float Random(float min, float max);
+		/**
+		* \brief  ランダムなfloat値を生成する
+		* \param  min : 最小値
+		* \param  max : 最大値
+		*/
+		float Random(float min, float max);
 
-	Vector3 RandomVector3(float min, float max);
+		/**
+		* \brief  ランダムな3Dベクトルを生成する
+		* \param  min : 最小値
+		* \param  max : 最大値
+		*/
+		Vector3 RandomVector3(float min, float max);
 
-private:
+	private:
 
-	std::mt19937 randomEngine;
+		std::mt19937 randomEngine;
 
-};
-
+	};
+}
