@@ -12,7 +12,7 @@
 // AbstractSceneFactoryを継承し、シーン名に応じたBaseScene派生クラスのインスタンスを生成する。
 // ゲームのシーン切り替え時に利用される。
 
-class SceneFactory : public AbstractSceneFactory
+class SceneFactory : public Kouro::AbstractSceneFactory
 {
 public:
 
@@ -21,6 +21,6 @@ public:
 	* \param  string シーンの名前
 	* \return BaseScene 生成したシーンの生ポインタ
 	*/
-	std::unique_ptr<BaseScene> CreateScene(const std::string& sceneName) override;
+	std::unique_ptr<Kouro::BaseScene> CreateScene(const std::string& sceneName) override;
 
 };

@@ -9,38 +9,41 @@
 // 平行光源（太陽光のような方向性のある光）を管理するクラス。  
 // 光の色・方向・強度を設定し、シーン内での照明計算に使用される。
 
-class DirectionalLight
+namespace Kouro
 {
-private:
+	class DirectionalLight
+	{
+	private:
 
-	struct DirectionalLightData {
-		Vector4 color;
-		Vector3 direction;
-		float intensity;
+		struct DirectionalLightData {
+			Vector4 color;
+			Vector3 direction;
+			float intensity;
+		};
+
+	public: // 公開メンバ関数
+
+		/// \brief 初期化
+		void Initialize();
+
+		/// \brief 更新
+		void Update();
+
+		/**
+		* \brief  DirectionalLight用リソースの取得
+		* \return directionalLightResource
+		*/
+		const Microsoft::WRL::ComPtr<ID3D12Resource>& GetDirectionalLightResource() { return directionalLightResource_; }
+
+	public:
+
+		Vector4 color_;
+		Vector3 direction_;
+		float intensity_;
+
+	private:
+		Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_;
+
+		DirectionalLightData* directionalLightData_ = nullptr;
 	};
-
-public: // 公開メンバ関数
-
-	/// \brief 初期化
-	void Initialize();
-
-	/// \brief 更新
-	void Update();
-
-	/**
-	* \brief  DirectionalLight用リソースの取得
-	* \return directionalLightResource
-	*/
-	const Microsoft::WRL::ComPtr<ID3D12Resource>& GetDirectionalLightResource() { return directionalLightResource_; }
-
-public:
-
-	Vector4 color_;
-	Vector3 direction_;
-	float intensity_;
-
-private:
-	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_;
-
-	DirectionalLightData *directionalLightData_ = nullptr;
-};
+}

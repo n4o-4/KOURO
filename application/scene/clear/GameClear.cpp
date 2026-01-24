@@ -1,17 +1,17 @@
-﻿#include "GameClear.h"
+#include "GameClear.h"
 
-void GameClear::Initialize(EngineContext context)
+void GameClear::Initialize(Kouro::EngineContext context)
 {
 	// 基底クラスの初期化
 	BaseScene::Initialize(context);
 
 	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture("Resources/GameClear.png");
-	TextureManager::GetInstance()->LoadTexture("Resources/score.png");
+	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/GameClear.png");
+	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/score.png");
 
 	// ゲームクリア用のスプライトの生成と初期化
-	gameClearSprite_ = std::make_unique<Sprite>();
-	gameClearSprite_->Initialize(SpriteCommon::GetInstance(), "Resources/GameClear.png");
+	gameClearSprite_ = std::make_unique<Kouro::Sprite>();
+	gameClearSprite_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/GameClear.png");
 	gameClearSprite_->SetSize({ 1280.0f,720.0f });
 	gameClearSprite_->SetPosition({ 640.0f,360.0f });
 	gameClearSprite_->SetAnchorPoint({ 0.5f,0.5f });
@@ -19,14 +19,14 @@ void GameClear::Initialize(EngineContext context)
 	gameClearSprite_->Update();
 
 	// スコア(数字)UI用のクラスの生成と初期化
-	scoreUi_ = std::make_unique<NumUi>();
+	scoreUi_ = std::make_unique<Kouro::NumUi>();
 	scoreUi_->Initialize(2);
 	eliminatedEnemyCount_ = grobalVariables_.LoadFile("ELIMINATED_ENEMY_COUNT",0);
 	scoreUi_->SetDestinationValue(eliminatedEnemyCount_, 1.0f);
 
 	// スコア(文字)用のスプライトクラスの生成と初期化
-	scoreLabelSprite_ = std::make_unique<Sprite>();
-	scoreLabelSprite_->Initialize(SpriteCommon::GetInstance(), "Resources/score.png");
+	scoreLabelSprite_ = std::make_unique<Kouro::Sprite>();
+	scoreLabelSprite_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/score.png");
 	scoreLabelSprite_->SetTexSize({ 640.0f,128.0f });
 	scoreLabelSprite_->SetPosition({ 320.0f,550.0f });
 	scoreLabelSprite_->SetSize({ 480.0f,128.0f });
@@ -48,7 +48,7 @@ void GameClear::Update()
 		if (fade_->IsFinished())
 		{
 			// 入力の受付を有効に
-			Input::GetInstance()->SetIsReception(true);
+			Kouro::Input::GetInstance()->SetIsReception(true);
 
 			// フェーズを有効に
 			phase_ = Phase::kMain;
@@ -85,7 +85,7 @@ void GameClear::Update()
 		if (fade_->IsFinished())
 		{
 			// シーンをタイトルに変更
-			SceneManager::GetInstance()->ChangeScene("TITLE");
+			Kouro::SceneManager::GetInstance()->ChangeScene("TITLE");
 
 			return;
 		}

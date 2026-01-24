@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <memory>
 #include "EngineContext.h"
@@ -18,8 +18,6 @@
 
 
 
-class SceneManager;
-
 // \brief BaseScene
 // ゲームシーンの基本クラス。
 // フェーズ管理（フェードイン、メイン、プレイ、ポーズ、フェードアウト）や、
@@ -27,95 +25,100 @@ class SceneManager;
 // LineDrawer、CameraManager、Fade、Skyboxなどの共通機能を管理し、
 // 派生シーンでのオブジェクト描画やスプライト描画、フェード処理をサポート。
 
-class BaseScene
+namespace Kouro
 {
-public:
+	class SceneManager;
 
-	enum class Phase
+	class BaseScene
 	{
-		kFadeIn,   // フェードイン
+	public:
 
-		kMain,     // メイン部
+		enum class Phase
+		{
+			kFadeIn,   // フェードイン
 
-		kPlay,     // ゲームプレイ
+			kMain,     // メイン部
 
-		kPose,     // ポーズ
+			kPlay,     // ゲームプレイ
 
-		kFadeOut,  // フェードアウト
+			kPose,     // ポーズ
+
+			kFadeOut,  // フェードアウト
+		};
+
+	public:
+
+		// \brief 
+		virtual ~BaseScene() = default;
+
+		// \brief Initialize 初期化
+		virtual void Initialize(EngineContext context);
+
+		// \brief Finalize 終了
+		virtual void Finalize();
+
+		// \brief Update 更新
+		virtual void Update();
+
+		// \brief Draw 描画
+		virtual void Draw() = 0;
+
+		/**
+		* \brief  SetSceneManager シーンマネージャーの設定
+		* \ param SceneManager シーンマネージャーのポインタ
+		*/
+		virtual void SetSceneManager(SceneManager* sceneManager) { sceneManager_ = sceneManager; }
+
+		/**
+		* \brief  SetSrvManager Srvマネージャーを設定する
+		* \param  SrvManager Srvマネージャーのポインタ
+		*/
+		virtual void SetSrvManager(SrvManager* srvManager) { srvManager_ = srvManager; }
+
+		/**
+		* \brief  GetSrvManager Srvマネージャーを取得する
+		* \return SrvManager
+		*/
+		virtual SrvManager* GetSrvManager() { return srvManager_; }
+
+		const ViewProjection GetViewProjection() const { return cameraManager_->GetActiveCamera()->GetViewProjection(); }
+
+	protected:
+
+		virtual void LineDraw();
+
+		virtual void DrawObject();
+
+		virtual void DrawBackgroundSprite();
+
+		virtual void DrawForegroundSprite();
+
+		virtual void DrawFade();
+
+	protected:
+
+		SceneManager* sceneManager_ = nullptr;
+
+		SrvManager* srvManager_ = nullptr;
+
+		std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
+
+		std::unique_ptr<CameraManager> cameraManager_ = nullptr;
+
+		std::unique_ptr<Fade> fade_ = nullptr;
+
+		std::unique_ptr<WorldTransform> defaultTransform_ = nullptr;
+
+		float fadeTime_ = 1.5f;
+
+		Phase phase_ = Phase::kFadeIn;
+
+		bool isContinue = true;
+
+		std::unique_ptr<Skybox> skybox_ = nullptr;
+
+		EngineContext engineContext_;
+
+	private:
 	};
-
-public:
-
-	// \brief 
-	virtual ~BaseScene() = default;
-
-	// \brief Initialize 初期化
-	virtual void Initialize(EngineContext context);
-
-	// \brief Finalize 終了
-	virtual void Finalize();
-
-	// \brief Update 更新
-	virtual void Update();
-
-	// \brief Draw 描画
-	virtual void Draw() = 0;
-
-	/**
-	* \brief  SetSceneManager シーンマネージャーの設定
-	* \ param SceneManager シーンマネージャーのポインタ
-	*/
-	virtual void SetSceneManager(SceneManager* sceneManager) { sceneManager_ = sceneManager; }
-
-	/**
-	* \brief  SetSrvManager Srvマネージャーを設定する
-	* \param  SrvManager Srvマネージャーのポインタ
-	*/
-	virtual void SetSrvManager(SrvManager* srvManager) { srvManager_ = srvManager; }
-
-	/**
-	* \brief  GetSrvManager Srvマネージャーを取得する
-	* \return SrvManager
-	*/
-	virtual SrvManager* GetSrvManager() { return srvManager_; }
-
-	const ViewProjection GetViewProjection() const { return cameraManager_->GetActiveCamera()->GetViewProjection(); }
-
-protected:
-
-	virtual void LineDraw();
-
-	virtual void DrawObject();
-
-	virtual void DrawBackgroundSprite();
-
-	virtual void DrawForegroundSprite();
-
-	virtual void DrawFade();
-
-protected:
-
-	SceneManager* sceneManager_ = nullptr;
-
-	SrvManager* srvManager_ = nullptr;
-
-	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
-
-	std::unique_ptr<CameraManager> cameraManager_ = nullptr;
-
-	std::unique_ptr<Fade> fade_ = nullptr;
-
-	std::unique_ptr<WorldTransform> defaultTransform_ = nullptr;
-
-	float fadeTime_ = 1.5f;
-
-	Phase phase_ = Phase::kFadeIn;
-
-	bool isContinue = true;
-
-	std::unique_ptr<Skybox> skybox_ = nullptr;
-
-	EngineContext engineContext_;
-
-private:
-};
+}

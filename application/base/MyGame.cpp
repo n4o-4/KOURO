@@ -1,4 +1,4 @@
-﻿#include "MyGame.h"
+#include "MyGame.h"
 
 #include "SceneFactory.h"
 
@@ -13,17 +13,17 @@ void MyGame::Initialize()
 #ifdef _DEBUG
 	
 	// ImGuiマネージャーの生成と初期化
-	imGuiManager = std::make_unique<ImGuiManager>();
-	imGuiManager->Initialize(winApp.get(), DirectXCommon::GetInstance());
+	imGuiManager = std::make_unique<Kouro::ImGuiManager>();
+	imGuiManager->Initialize(winApp.get(), Kouro::DirectXCommon::GetInstance());
 
 #endif
 
 	// シーンファクトリーの生成とシーンマネージャーへの登録
 	sceneFactory_ = std::make_unique<SceneFactory>();
-	SceneManager::GetInstance()->SetSceneFactory(*sceneFactory_);
+	Kouro::SceneManager::GetInstance()->SetSceneFactory(*sceneFactory_);
 
 	// 初期シーンの設定
-	SceneManager::GetInstance()->ChangeScene("TITLE");
+	Kouro::SceneManager::GetInstance()->ChangeScene("TITLE");
 
 #pragma endregion
 }
@@ -55,7 +55,7 @@ void MyGame::Update()
 void MyGame::Draw()
 {
 	// レンダーテクスチャへの描画前処理
-	DirectXCommon::GetInstance()->RenderTexturePreDraw();
+	Kouro::DirectXCommon::GetInstance()->RenderTexturePreDraw();
 
 	// SRVマネージャーの描画前処理
     srvManager_->PreDraw();
@@ -63,24 +63,24 @@ void MyGame::Draw()
 	// 基盤システムの描画
 	Framework::Draw();
 
-	gpuParticleManager_->Draw(SceneManager::GetInstance()->GetViewProjection());
+	gpuParticleManager_->Draw(Kouro::SceneManager::GetInstance()->GetViewProjection());
 
 	// レンダーテクスチャへの描画後処理
-	DirectXCommon::GetInstance()->RenderTexturePostDraw();
+	Kouro::DirectXCommon::GetInstance()->RenderTexturePostDraw();
 
 	// エフェクトの描画
 	Framework::DrawEffect();
 
 	// 画面への描画前処理
-	DirectXCommon::GetInstance()->PreDraw();
+	Kouro::DirectXCommon::GetInstance()->PreDraw();
 
 #ifdef _DEBUG
 
 	// ImGuiの描画
-	imGuiManager->Draw(DirectXCommon::GetInstance());
-	
+	imGuiManager->Draw(Kouro::DirectXCommon::GetInstance());
+
 #endif
 
 	// 基盤システムの描画後処理
-	DirectXCommon::GetInstance()->PostDraw();
+	Kouro::DirectXCommon::GetInstance()->PostDraw();
 }

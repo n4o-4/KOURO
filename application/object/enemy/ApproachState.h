@@ -11,7 +11,7 @@ class ApproachState : public EnemyState
 		* \param  enemy  : 処理をする敵のポインタ
 		* \param  player : プレイヤー
 		*/
-		void Enter(Enemy* enemy) override;
+		void OnEnter(Enemy* enemy) override;
 
 		/**
 		* \brief  更新処理
@@ -23,7 +23,7 @@ class ApproachState : public EnemyState
 		* \brief  終了処理
 		* \param  処理をする敵のポインタ
 		*/
-		void Exit(Enemy* enemy) override;
+		void OnExit(Enemy* enemy) override;
 
 
 		float ToRadians(float degree)
@@ -33,11 +33,11 @@ class ApproachState : public EnemyState
 		}
 private: // 非公開メンバ変数
 
-	const WorldTransform* parent_ = nullptr;
+	const Kouro::WorldTransform* parent_ = nullptr;
 
 	float angle_ = 0.0f;
 
-	Vector3 kGoalOffset_ = {};
+	Kouro::Vector3 kGoalOffset_ = {};
 
 private: // 非公開メンバ定数
 

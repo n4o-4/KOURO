@@ -10,62 +10,62 @@
 
 #include "LineModelManager.h"
 
-struct ParticleCS
-{
-	Vector3 translate; float pad0;
-	Vector3 scale;     float pad1;
-	float lifeTime;    float pad2[3];
-	Vector3 velocity;  float pad3;
-	float currentTime; float pad4[3];
-	Vector4 color;
-};
-
-struct PerView
-{
-	Matrix4x4 viewProjection;
-	Matrix4x4 billboardMatrix;
-};
-
-namespace Particle
-{
-	struct Material
-	{
-		Vector4 color;
-		Matrix4x4 uvTransform;
-	};
-
-	struct EmitterSphere
-	{
-		Vector3 translate;   //!< 球の中心座標
-		float radius;        //!< 発射する半径
-		uint32_t count;      //!< 発射する数
-		float frequency;     //!< 発射間隔
-		float frequencyTime; //!< 発射タイマー
-		uint32_t emit;       //!< 発射フラグ
-	};
-
-	struct PerFrame
-	{
-		float time;      //!< 現在の時間
-		float deltaTime; //!< 前フレームからの経過時間
-	};
-
-	struct Transform
-	{
-		Matrix4x4 matWorld; //!< ワールド行列
-	};
-
-	struct LineSegment
-	{
-		Vector3 start;     //!< 線分の始点
-		float pad1 = 0.0f;
-		Vector3 end;       //!< 線分の終点
-		float pad2 = 0.0f;
-	};
-}
-
 namespace Kouro
 {
+	struct ParticleCS
+	{
+		Vector3 translate; float pad0;
+		Vector3 scale;     float pad1;
+		float lifeTime;    float pad2[3];
+		Vector3 velocity;  float pad3;
+		float currentTime; float pad4[3];
+		Vector4 color;
+	};
+
+	struct PerView
+	{
+		Matrix4x4 viewProjection;
+		Matrix4x4 billboardMatrix;
+	};
+
+	namespace Particle
+	{
+		struct Material
+		{
+			Vector4 color;
+			Matrix4x4 uvTransform;
+		};
+
+		struct EmitterSphere
+		{
+			Vector3 translate;   //!< 球の中心座標
+			float radius;        //!< 発射する半径
+			uint32_t count;      //!< 発射する数
+			float frequency;     //!< 発射間隔
+			float frequencyTime; //!< 発射タイマー
+			uint32_t emit;       //!< 発射フラグ
+		};
+
+		struct PerFrame
+		{
+			float time;      //!< 現在の時間
+			float deltaTime; //!< 前フレームからの経過時間
+		};
+
+		struct Transform
+		{
+			Matrix4x4 matWorld; //!< ワールド行列
+		};
+
+		struct LineSegment
+		{
+			Vector3 start;     //!< 線分の始点
+			float pad1 = 0.0f;
+			Vector3 end;       //!< 線分の終点
+			float pad2 = 0.0f;
+		};
+	}
+
 	class GpuParticle
 	{
 	public:

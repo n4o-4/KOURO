@@ -1,13 +1,17 @@
-﻿#pragma once
+#pragma once
 #include "WorldTransform.h"
 
-class BaseCamera;
+namespace Kouro
+{
+	class BaseCamera;
+
+}
 
 class ICameraState
 {
 public:
 
-	ICameraState(BaseCamera* camera, const WorldTransform* target) : camera_(camera), target_(target) {};
+	ICameraState(Kouro::BaseCamera* camera, const Kouro::WorldTransform* target) : camera_(camera), target_(target) {};
 
 	/// \brief デストラクタ
 	virtual ~ICameraState() = default;
@@ -23,8 +27,8 @@ public:
 
 protected:
 
-	BaseCamera* camera_ = nullptr; //!< 処理するカメラのポインタ
+	Kouro::BaseCamera* camera_ = nullptr; //!< 処理するカメラのポインタ
 
-	const WorldTransform* target_ = nullptr; //!< 視点のワールドトランスフォームのポインタ
+	const Kouro::WorldTransform* target_ = nullptr; //!< 視点のワールドトランスフォームのポインタ
 };
 

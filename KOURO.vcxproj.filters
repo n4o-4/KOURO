@@ -943,6 +943,7 @@
     <ClInclude Include="engine\scene\ISceneState.h">
       <Filter>application\scene\SceneState</Filter>
     </ClInclude>
+    <ClInclude Include="engine\math\Vector4.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

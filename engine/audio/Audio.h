@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <fstream>
 #include <wrl.h>
 #include <xaudio2.h>
@@ -13,46 +13,44 @@
 // \brief Audio
 // 音声再生を管理するクラス。WASAPI/XAudio2を使用して、BGMや効果音の再生・停止・音量調整が可能。
 
-class Audio {
+namespace Kouro
+{ 
+	class Audio
+	{
+	public:
 
+		/// \brief  Initialize 初期化
+		void Initialize();
 
-public:
+		/// \brief  Finalize 終了処理
+		void Finalize();
 
-private:
+		/**
+		* \brief  SoundPlay 音声再生
+		* \param  filename 音声ファイル名
+		* \param  loopCount ループ回数
+		*/
+		void SoundPlay(const char* filename, int loopCount);
 
-public:
+		/**
+		* \brief  SoundStop 音声停止
+		* \param  filename 音声ファイル名
+		*/
+		void SoundStop(const char* filename);
 
-	/// \brief  Initialize 初期化
-	void Initialize();
+		/**
+		* \brief  SetVolume 音量設定
+		* \param  volume 音量
+		*/
+		void SetVolume(float volume);
 
-	/// \brief  Finalize 終了処理
-	void Finalize();
-	
-	/**
-	* \brief  SoundPlay 音声再生
-	* \param  filename 音声ファイル名
-	* \param  loopCount ループ回数
-	*/
-	void SoundPlay(const char* filename,int loopCount);
+	private:
 
-	/**
-	* \brief  SoundStop 音声停止
-	* \param  filename 音声ファイル名
-	*/
-	void SoundStop(const char* filename);
+		Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
 
-	/**
-	* \brief  SetVolume 音量設定
-	* \param  volume 音量
-	*/
-	void SetVolume(float volume);
+		IXAudio2MasteringVoice* masterVoice;
 
-private:
+		IXAudio2SourceVoice* pSourceVoice = nullptr;
 
-	Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
-
-	IXAudio2MasteringVoice* masterVoice;
-
-	IXAudio2SourceVoice* pSourceVoice = nullptr;
-
-};
+	};
+}

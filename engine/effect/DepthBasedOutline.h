@@ -1,78 +1,84 @@
-﻿#pragma once
+#pragma once
 #include "BaseEffect.h"
 
-namespace DepthOutline
-{
-	struct Material
-	{
-		Matrix4x4 projectionInverse;
-		float edgeStrength;
-		float padding[3];
-	};
-}
+
 
 // \brief DepthBasedOutline  
 // 深度情報をもとに物体の輪郭線を描画するポストエフェクトクラス。  
 // 深度差からエッジを検出し、シーン全体にアウトライン効果を適用する。
 
-class DepthBasedOutline : public BaseEffect
+namespace Kouro
 {
-public:
+	namespace DepthOutline
+	{
+		struct Material
+		{
+			Matrix4x4 projectionInverse;
+			float edgeStrength;
+			float padding[3];
+		};
+	}
 
-	/**
-	* \brief	初期化
-	* \param	dxCommon DirectXCommonのポインタ
-	* \param	srvManager SrvManagerのポインタ
-	*/
-	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) override;
+	// =========================================
 
-	/// \brief  更新
-	void Update() override;
+	class DepthBasedOutline : public BaseEffect
+	{
+	public:
 
-	/**
-	* \brief  描画
-	* \param  renderTargetIndex レンダーターゲットのインデックス
-	* \param  renderResourceIndex レンダーリソースのインデックス
-	*/
-	void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
+		/**
+		* \brief	初期化
+		* \param	dxCommon DirectXCommonのポインタ
+		* \param	srvManager SrvManagerのポインタ
+		*/
+		void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) override;
 
-	/// \brief  リセット
-	void Reset() override { resource_.Reset(); }
+		/// \brief  更新
+		void Update() override;
 
-private: // 非公開メンバ関数
+		/**
+		* \brief  描画
+		* \param  renderTargetIndex レンダーターゲットのインデックス
+		* \param  renderResourceIndex レンダーリソースのインデックス
+		*/
+		void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
 
-	/// \brief  CreatePipeline パイプラインの作成
-	void CreatePipeline();
+		/// \brief  リセット
+		void Reset() override { resource_.Reset(); }
 
-	/**
-	* \brief  CreateRootSignature ルートシグネチャの作成
-	* \param  pipeline パイプライン構造体のポインタ
-	*/
-	void CreateRootSignature(Pipeline* pipeline);
+	private: // 非公開メンバ関数
 
-	/**
-	* \brief  CreatePipeLineState パイプラインステートの作成
-	* \param  pipeline パイプライン構造体のポインタ
-	*/
-	void CreatePipeLineState(Pipeline* pipeline);
+		/// \brief  CreatePipeline パイプラインの作成
+		void CreatePipeline();
 
-	/// \brief  CreateMaterial マテリアルの作成
-	void CreateMaterial();
+		/**
+		* \brief  CreateRootSignature ルートシグネチャの作成
+		* \param  pipeline パイプライン構造体のポインタ
+		*/
+		void CreateRootSignature(Pipeline* pipeline);
 
-	/// \brief  DrawImGui ImGui描画
-	void DrawImGui() override;
+		/**
+		* \brief  CreatePipeLineState パイプラインステートの作成
+		* \param  pipeline パイプライン構造体のポインタ
+		*/
+		void CreatePipeLineState(Pipeline* pipeline);
 
-private: // メンバ変数
+		/// \brief  CreateMaterial マテリアルの作成
+		void CreateMaterial();
 
-	// 
-	Microsoft::WRL::ComPtr<ID3D12Resource> resource_;
+		/// \brief  DrawImGui ImGui描画
+		void DrawImGui() override;
 
-	// 
-	DepthOutline::Material* data_ = nullptr;
+	private: // メンバ変数
 
-	//
-	CameraManager* cameraManager_ = nullptr;
+		// 
+		Microsoft::WRL::ComPtr<ID3D12Resource> resource_;
 
-	float edgeStrength = 6.0f;
-};
+		// 
+		DepthOutline::Material* data_ = nullptr;
 
+		//
+		CameraManager* cameraManager_ = nullptr;
+
+		float edgeStrength = 6.0f;
+	};
+}

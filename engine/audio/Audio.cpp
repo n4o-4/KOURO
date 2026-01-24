@@ -1,95 +1,98 @@
-﻿#include "Audio.h"
+#include "Audio.h"
 
 #include "assert.h"
 
-void Audio::Initialize()
+namespace Kouro
 {
-	HRESULT result;
-
-	// XAudioエンジンのインスタンスを生成
-	result = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
-
-	// マスターボイスを生成
-	result = xAudio2->CreateMasteringVoice(&masterVoice);
-
-	// マスターボイスの音量を設定
-	masterVoice->SetVolume(1.0f);
-
-}
-void Audio::Finalize()
-{
-	pSourceVoice->Stop();
-}
-
-void Audio::SoundPlay(const char* filename,int loopCount)
-{
-	HRESULT result;
-
-	// 波系フォーマットを元にSourceVoiceの生成
-	
-	auto soundDatas = AudioManager::GetInstance()->GetSoundData();
-
-	if (soundDatas.find(filename) != soundDatas.end())
+	void Audio::Initialize()
 	{
+		HRESULT result;
 
-		result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundDatas.find(filename)->second.wfex);
-		assert(SUCCEEDED(result));
+		// XAudioエンジンのインスタンスを生成
+		result = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
 
-		// 再生する波形データの設定
-		XAUDIO2_BUFFER buf{};
-		buf.pAudioData = soundDatas.find(filename)->second.pBuffer;
-		buf.AudioBytes = soundDatas.find(filename)->second.bufferSize;
-		buf.Flags = XAUDIO2_END_OF_STREAM;
+		// マスターボイスを生成
+		result = xAudio2->CreateMasteringVoice(&masterVoice);
 
-		if (loopCount != 0)
-		{
-			buf.LoopCount = loopCount;
-		}
+		// マスターボイスの音量を設定
+		masterVoice->SetVolume(1.0f);
 
-		if (loopCount >= 9999)
-		{
-			buf.LoopCount = XAUDIO2_LOOP_INFINITE;
-		}
-
-		// 波形データの再生
-		result = pSourceVoice->SubmitSourceBuffer(&buf);
-
-		if (pSourceVoice == nullptr) {
-			assert(0);
-		}
-
-		result = pSourceVoice->Start();
-
-		return;
 	}
-
-	assert(0);
-}
-
-void Audio::SoundStop(const char* filename)
-{
-	// 波系フォーマットを元にSourceVoiceの生成
-	auto soundDatas = AudioManager::GetInstance()->GetSoundData();
-
-	if (soundDatas.find(filename) != soundDatas.end())
+	void Audio::Finalize()
 	{
-		// 再生する波形データの設定
-		XAUDIO2_BUFFER buf{};
-		buf.pAudioData = soundDatas.find(filename)->second.pBuffer;
-		buf.AudioBytes = soundDatas.find(filename)->second.bufferSize;
-		buf.Flags = XAUDIO2_END_OF_STREAM;
-
-		// 波形データの再生
-		pSourceVoice->SubmitSourceBuffer(&buf);
 		pSourceVoice->Stop();
-
-		return;
 	}
-}
 
-void Audio::SetVolume(float volume)
-{
+	void Audio::SoundPlay(const char* filename, int loopCount)
+	{
+		HRESULT result;
 
-	pSourceVoice->SetVolume(volume);
+		// 波系フォーマットを元にSourceVoiceの生成
 
+		auto soundDatas = AudioManager::GetInstance()->GetSoundData();
+
+		if (soundDatas.find(filename) != soundDatas.end())
+		{
+
+			result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundDatas.find(filename)->second.wfex);
+			assert(SUCCEEDED(result));
+
+			// 再生する波形データの設定
+			XAUDIO2_BUFFER buf{};
+			buf.pAudioData = soundDatas.find(filename)->second.pBuffer;
+			buf.AudioBytes = soundDatas.find(filename)->second.bufferSize;
+			buf.Flags = XAUDIO2_END_OF_STREAM;
+
+			if (loopCount != 0)
+			{
+				buf.LoopCount = loopCount;
+			}
+
+			if (loopCount >= 9999)
+			{
+				buf.LoopCount = XAUDIO2_LOOP_INFINITE;
+			}
+
+			// 波形データの再生
+			result = pSourceVoice->SubmitSourceBuffer(&buf);
+
+			if (pSourceVoice == nullptr) {
+				assert(0);
+			}
+
+			result = pSourceVoice->Start();
+
+			return;
+		}
+
+		assert(0);
+	}
+
+	void Audio::SoundStop(const char* filename)
+	{
+		// 波系フォーマットを元にSourceVoiceの生成
+		auto soundDatas = AudioManager::GetInstance()->GetSoundData();
+
+		if (soundDatas.find(filename) != soundDatas.end())
+		{
+			// 再生する波形データの設定
+			XAUDIO2_BUFFER buf{};
+			buf.pAudioData = soundDatas.find(filename)->second.pBuffer;
+			buf.AudioBytes = soundDatas.find(filename)->second.bufferSize;
+			buf.Flags = XAUDIO2_END_OF_STREAM;
+
+			// 波形データの再生
+			pSourceVoice->SubmitSourceBuffer(&buf);
+			pSourceVoice->Stop();
+
+			return;
+		}
+	}
+
+	void Audio::SetVolume(float volume)
+	{
+
+		pSourceVoice->SetVolume(volume);
+
+	}
 }

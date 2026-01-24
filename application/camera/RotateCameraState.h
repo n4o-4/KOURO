@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "ICameraState.h"
 class RotateCameraState : public ICameraState
 {
@@ -9,7 +9,7 @@ public: // メンバ関数
 	* \param  camera
 	* \param  target
 	*/
-	RotateCameraState(BaseCamera* camera, const WorldTransform* target) : ICameraState(camera, target) {};
+	RotateCameraState(Kouro::BaseCamera* camera, const Kouro::WorldTransform* target) : ICameraState(camera, target) {};
 
 	/// \brief 開始処理
 	void Enter() override;

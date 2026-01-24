@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <memory>
 #include <algorithm>
 //==============================
@@ -70,7 +70,7 @@ private:
 private:
 
 	// フェード用のスプライト
-	std::unique_ptr<Sprite> curtain_ = nullptr;
+	std::unique_ptr<Kouro::Sprite> curtain_ = nullptr;
 
 	// フェードのステータス
 	Status status_ = Status::None;

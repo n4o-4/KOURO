@@ -1,13 +1,16 @@
 #include "BaseLineObject.h"
 
-void BaseLineObject::Initialize(DirectXCommon* dxCommon)
+namespace Kouro
 {
-}
+	void BaseLineObject::Initialize(DirectXCommon* dxCommon)
+	{
+	}
 
-void BaseLineObject::Update()
-{
-}
+	void BaseLineObject::Update()
+	{
+	}
 
-void BaseLineObject::Draw(const ViewProjection& viewProjection)
-{
+	void BaseLineObject::Draw(const ViewProjection& viewProjection)
+	{
+	}
 }

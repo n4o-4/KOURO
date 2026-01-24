@@ -3,14 +3,14 @@
 #include <algorithm>
 #include <cmath>
 
-void RailAnimation::Initialize(std::vector<Vector3> controlPoints, int samplePerSegment)
+void RailAnimation::Initialize(std::vector<Kouro::Vector3> controlPoints, int samplePerSegment)
 {
-	worldTransform_ = std::make_unique<WorldTransform>();
+	worldTransform_ = std::make_unique<Kouro::WorldTransform>();
 	worldTransform_->Initialize();
 
 	controlPoints_ = controlPoints;
 
-	worldTransform_ = std::make_unique<WorldTransform>();
+	worldTransform_ = std::make_unique<Kouro::WorldTransform>();
 
 	const float cornerRadius = 5.0f; // 調整用
 
@@ -18,9 +18,9 @@ void RailAnimation::Initialize(std::vector<Vector3> controlPoints, int samplePer
 
 	for (size_t i = 1; i + 1 < controlPoints_.size(); ++i)
 	{
-		const Vector3& prev = controlPoints_[i - 1];
-		const Vector3& curr = controlPoints_[i];
-		const Vector3& next = controlPoints_[i + 1];
+		const Kouro::Vector3& prev = controlPoints_[i - 1];
+		const Kouro::Vector3& curr = controlPoints_[i];
+		const Kouro::Vector3& next = controlPoints_[i + 1];
 
 		if (IsCorner(prev, curr, next))
 		{
@@ -49,11 +49,11 @@ void RailAnimation::Initialize(std::vector<Vector3> controlPoints, int samplePer
 	CreateArcLengthTable(samplePerSegment);
 }
 
-WorldTransform* RailAnimation::GetWorldTransform(const float progress)
+Kouro::WorldTransform* RailAnimation::GetWorldTransform(const float progress)
 {
-	Vector3 pos = GetPositionByProgress(progress);
+	Kouro::Vector3 pos = GetPositionByProgress(progress);
 
-	Vector3 look =GetPositionByProgress(progress + lookAheadDistance_);
+	Kouro::Vector3 look = GetPositionByProgress(progress + lookAheadDistance_);
 
 	worldTransform_->SetTranslate(pos);
 	worldTransform_->SetRotate(LookRotation(look - pos));
@@ -72,12 +72,12 @@ void RailAnimation::CreateArcLengthTable(int samplePerSegment)
 	for (size_t i = 0; i < controlPoints_.size() - 1; ++i)
 	{
 		// セグメントごとの長さを計算
-		Vector3 prevPoint = controlPoints_[i];
+		Kouro::Vector3 prevPoint = controlPoints_[i];
 		float segmentLength = 0.0f;
 		for (int j = 1; j <= samplePerSegment; ++j)
 		{
 			float t = static_cast<float>(j) / static_cast<float>(samplePerSegment);
-			Vector3 currentPoint = { Lerp(controlPoints_[i], controlPoints_[i + 1], t) };
+			Kouro::Vector3 currentPoint = { Lerp(controlPoints_[i], controlPoints_[i + 1], t) };
 			segmentLength += sqrtf(
 				(currentPoint.x - prevPoint.x) * (currentPoint.x - prevPoint.x) +
 				(currentPoint.y - prevPoint.y) * (currentPoint.y - prevPoint.y) +

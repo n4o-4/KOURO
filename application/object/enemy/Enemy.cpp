@@ -4,7 +4,7 @@
 #include "algorithm"
 #include "GpuParticle.h"
 
-void Enemy::Initialize(LineModel* model)
+void Enemy::Initialize(Kouro::LineModel* model)
 {
 	///=========================================
 	/// 親クラス
@@ -87,7 +87,7 @@ void Enemy::Draw()
 	BaseCharacter::Draw();
 }
 
-void Enemy::SetPosition(const Vector3& position)
+void Enemy::SetPosition(const Kouro::Vector3& position)
 {
 	if (worldTransform_->useQuaternion_) {
 		worldTransform_->quaternionTransform.translate = position;
@@ -105,14 +105,14 @@ void Enemy::ChangeState(std::unique_ptr<EnemyState> state)
 		state_ = std::move(state);
 
 		RailCamera* railCamera = dynamic_cast<RailCamera*>(cameraManager_->GetActiveCamera());
-		state_->Enter(this);
+		state_->OnEnter(this);
 	}
 	else
 	{
-		state_->Exit(this);
+		state_->OnExit(this);
 		state_ = std::move(state);
 		RailCamera* railCamera = dynamic_cast<RailCamera*>(cameraManager_->GetActiveCamera());
-		state_->Enter(this);
+		state_->OnEnter(this);
 	}
 }
 
@@ -125,10 +125,10 @@ void Enemy::Fire()
 	bullet->Initialize(lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
 
 
-	Matrix4x4 targetWMatrix= target_->GetWorldTransform()->matWorld_;
+	Kouro::Matrix4x4 targetWMatrix= target_->GetWorldTransform()->matWorld_;
 
 	// 目標のワールド行列から位置を取得し、弾の速度を計算
-	Vector3 velocity = Normalize({
+	Kouro::Vector3 velocity = Kouro::Normalize({
 		targetWMatrix.m[3][0] - worldTransform_->matWorld_.m[3][0],
 		targetWMatrix.m[3][1] - worldTransform_->matWorld_.m[3][1],
 		targetWMatrix.m[3][2] - worldTransform_->matWorld_.m[3][2]
@@ -161,7 +161,7 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 			hp_ -= playerBullet->GetDamage();
 
 
-			ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->enableDeceleration = true;
+			Kouro::ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->enableDeceleration = true;
 			
 			//emitter_.SetPosition(worldTransform_->transform.translate);
 			//emitter_.SetParticleCount(1);

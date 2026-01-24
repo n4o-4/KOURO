@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "Kouro.h"
 #include "BaseEntity.h"
@@ -14,7 +14,7 @@ public: // 公開メンバ関数
 	 * \brief  Initialize 初期化
 	 * \param  model モデル
 	 */
-	virtual void Initialize(LineModel* model, Vector3 spawnPos);
+	virtual void Initialize(Kouro::LineModel* model, Kouro::Vector3 spawnPos);
 
 	// \brief  Update 更新
 	virtual void Update();
@@ -43,12 +43,12 @@ public: // 公開メンバ関数
 protected: // 派生用メンバ変数
 
 	// 3Dモデル
-	std::unique_ptr<ObjectLine> objectLine_;
+	std::unique_ptr<Kouro::ObjectLine> objectLine_;
 
 	// 速度
-	Vector3 velocity_ = { 0.0f,0.0f,0.0f };
+	Kouro::Vector3 velocity_ = { 0.0f,0.0f,0.0f };
 
-	CameraManager* cameraManager_ = nullptr;
+	Kouro::CameraManager* cameraManager_ = nullptr;
 
 	// 寿命定数
 	const float kLifeTime_ = 5.0f; //!< 弾の寿命

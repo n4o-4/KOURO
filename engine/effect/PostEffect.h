@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <random>
 
 #include "DirectXCommon.h"
@@ -26,111 +26,114 @@
 // 各種ポストエフェクト（ブラー・アウトライン・カラー調整など）を統合的に管理するクラス。  
 // エフェクトの生成・更新・描画を一括で制御し、シーンの後処理表現を実現する。
 
-class PostEffect
+namespace Kouro
 {
-public:
-	//==============================
-	// エフェクトの種類
-	enum class EffectType
+	class PostEffect
 	{
-		// モノクロ
-		Grayscale,
+	public:
+		//==============================
+		// エフェクトの種類
+		enum class EffectType
+		{
+			// モノクロ
+			Grayscale,
 
-		// 周辺減光効果
-		Vignette,
+			// 周辺減光効果
+			Vignette,
 
-		// ボックスフィルターによるぼかし
-		BoxFilter,
+			// ボックスフィルターによるぼかし
+			BoxFilter,
 
-		// ガウス関数によるぼかし
-		GaussianFilter,
+			// ガウス関数によるぼかし
+			GaussianFilter,
 
-		// 輝度検出でのアウトライン
-		LuminanceBasedOutline,
+			// 輝度検出でのアウトライン
+			LuminanceBasedOutline,
 
-		// 深度検出でのアウトライン
-		DepthBasedOutline,
+			// 深度検出でのアウトライン
+			DepthBasedOutline,
 
-		// RadialBlur
-		RadialBlur,
+			// RadialBlur
+			RadialBlur,
 
-		// Dissolve
-		Dissolve,
+			// Dissolve
+			Dissolve,
 
-		// Random
-		Random,
+			// Random
+			Random,
 
-		// LinearFog
-		LinearFog,
+			// LinearFog
+			LinearFog,
 
-		// MotionBlur
-		MotionBlur,
+			// MotionBlur
+			MotionBlur,
 
-		// ColorSpace
-		ColorSpace,
+			// ColorSpace
+			ColorSpace,
 
-		// Absorb
-		Absorb,
+			// Absorb
+			Absorb,
 
-		// ↑↑↑追加↑↑↑
+			// ↑↑↑追加↑↑↑
 
-		EffectCount,
+			EffectCount,
+		};
+
+	private:
+
+		struct Pipeline
+		{
+			Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature;
+			Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState;
+		};
+
+		struct ActiveEffect
+		{
+			std::unique_ptr<BaseEffect> effect;
+			EffectType type;
+		};
+
+	public:
+
+		// 初期化
+		void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
+
+		// 終了
+		void Finalize();
+
+		// 更新
+		void Update();
+
+		// 描画
+		void Draw();
+
+		// 指定のエフェクトをる
+		void ApplyEffect(std::string name, EffectType type);
+
+		// カメラマネージャを設定
+		void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
+
+		void ResetActiveEffect();
+
+		BaseEffect* GetEffectData(std::string name) {
+			auto it = activeEffects_.find(name);
+			if (it != activeEffects_.end()) {
+				return it->second->effect.get();
+			}
+			return nullptr;
+		}
+	private:
+
+		void DrawImGui();
+
+	private: // メンバ変数
+
+		DirectXCommon* dxCommon_ = nullptr;
+
+		SrvManager* srvManager_ = nullptr;
+
+		CameraManager* cameraManager_ = nullptr;
+
+		std::unordered_map<std::string, std::unique_ptr<ActiveEffect>> activeEffects_;
 	};
-
-private:
-
-	struct Pipeline
-	{
-		Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature;
-		Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState;
-	};
-
-	struct ActiveEffect
-	{
-		std::unique_ptr<BaseEffect> effect;
-		EffectType type;
-	};
-
-public:
-
-	// 初期化
-	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager);
-
-	// 終了
-	void Finalize();
-
-	// 更新
-	void Update();
-
-	// 描画
-	void Draw();
-
-	// 指定のエフェクトをる
-	void ApplyEffect(std::string name,EffectType type);
-
-	// カメラマネージャを設定
-	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
-
-	void ResetActiveEffect();
-
-    BaseEffect* GetEffectData(std::string name) { 
-       auto it = activeEffects_.find(name); 
-       if (it != activeEffects_.end()) { 
-           return it->second->effect.get(); 
-       } 
-       return nullptr; 
-    }
-private:
-
-	void DrawImGui();
-
-private: // メンバ変数
-	
-	DirectXCommon* dxCommon_ = nullptr;
-
-	SrvManager* srvManager_ = nullptr;
-
-	CameraManager* cameraManager_ = nullptr;
-
-	std::unordered_map<std::string, std::unique_ptr<ActiveEffect>> activeEffects_;
-};
+}

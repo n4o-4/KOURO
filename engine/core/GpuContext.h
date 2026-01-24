@@ -4,10 +4,13 @@
 #include "UavManager.h"
 #include "GpuResourceUtils.h"
 
-struct GpuContext
+namespace Kouro
 {
-	D3D12Context d3d12Context;
-	SrvManager* srvManager = nullptr;
-	UavManager* uavManager = nullptr;
-	GpuResourceUtils* gpuResourceUtils = nullptr;
-};
+	struct GpuContext
+	{
+		D3D12Context d3d12Context;
+		SrvManager* srvManager = nullptr;
+		UavManager* uavManager = nullptr;
+		GpuResourceUtils* gpuResourceUtils = nullptr;
+	};
+}

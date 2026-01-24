@@ -1,21 +1,24 @@
-﻿#include "BaseEffect.h"
+#include "BaseEffect.h"
 
-void BaseEffect::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+namespace Kouro
 {
-	// 
-	dxCommon_ = dxCommon;
-	
-	//
-	srvManager_ = srvManager;
+	void BaseEffect::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	{
+		// 
+		dxCommon_ = dxCommon;
 
-	// パイプラインの生成
-	pipeline_ = std::make_unique<Pipeline>();
-}
+		//
+		srvManager_ = srvManager;
 
-void BaseEffect::SetCameraManager(CameraManager* cameraManager)
-{
-}
+		// パイプラインの生成
+		pipeline_ = std::make_unique<Pipeline>();
+	}
 
-void BaseEffect::Reset()
-{
+	void BaseEffect::SetCameraManager(CameraManager* cameraManager)
+	{
+	}
+
+	void BaseEffect::Reset()
+	{
+	}
 }

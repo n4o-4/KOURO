@@ -7,7 +7,7 @@ namespace Kouro
         for (size_t i = 0; i < maxDigits; ++i)
         {
             std::unique_ptr<Sprite> sprite = std::make_unique<Sprite>();
-            sprite->Initialize(SpriteCommon::GetInstance(), "Resources/num.png");
+            sprite->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/num.png");
             sprite->SetTexSize({ 64.0f,128.0f });
             sprite->SetAnchorPoint({ 0.0f,0.0f });
             numSprites_.push_back(std::move(sprite));

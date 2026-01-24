@@ -4,8 +4,8 @@
 
 namespace YAML {
 	template<>
-	struct convert<Vector3> {
-		static Node encode(const Vector3& rhs) {
+	struct convert<Kouro::Vector3> {
+		static Node encode(const Kouro::Vector3& rhs) {
 			Node node;
 			node.push_back(rhs.x);
 			node.push_back(rhs.y);
@@ -13,7 +13,7 @@ namespace YAML {
 			return node;
 		}
 
-		static bool decode(const Node& node, Vector3& rhs) {
+		static bool decode(const Node& node, Kouro::Vector3& rhs) {
 			if (!node.IsSequence() || node.size() != 3) {
 				return false;
 			}

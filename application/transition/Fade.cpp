@@ -1,25 +1,25 @@
-﻿#include "Fade.h"
+#include "Fade.h"
 
 void Fade::Initialize()
 {
-	TextureManager::GetInstance()->LoadTexture("Resources/white.png");
+	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/white.png");
 
 	// スプライトの生成
-	curtain_ = std::make_unique<Sprite>();
+	curtain_ = std::make_unique<Kouro::Sprite>();
 
 	// スプライトの初期化
-	curtain_->Initialize(SpriteCommon::GetInstance(), "Resources/white.png");
+	curtain_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/white.png");
 
 	// スプライトのアンカーポイントを真ん中に設定
-	curtain_->SetAnchorPoint(Vector2(0.5f, 0.5f));
+	curtain_->SetAnchorPoint(Kouro::Vector2(0.5f, 0.5f));
 
 	// スプライトのサイズ、位置、色を設定
-	curtain_->SetSize(Vector2(1280.0f, 720.0f));
+	curtain_->SetSize(Kouro::Vector2(1280.0f, 720.0f));
 
 	// TODO: WindowWidth, WindowHeightを使うように変更する
-	curtain_->SetTexSize(Vector2(1280.0f, 720.0f));
-	curtain_->SetPosition(Vector2(640.0f, 360.0f));
-	curtain_->SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	curtain_->SetTexSize(Kouro::Vector2(1280.0f, 720.0f));
+	curtain_->SetPosition(Kouro::Vector2(640.0f, 360.0f));
+	curtain_->SetColor(Kouro::Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
 	// スプライトの更新
 	curtain_->Update();
@@ -152,7 +152,7 @@ void Fade::UpdateFadeIn()
 	}
 
 	// 0.0fから1.0fの間で、経過時間がフェード継続時間に近づくほどアルファ値を大きくする
-	curtain_->SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f - std::clamp(counter_ / duration_, 0.0f, 1.0f)));
+	curtain_->SetColor(Kouro::Vector4(0.0f, 0.0f, 0.0f, 1.0f - std::clamp(counter_ / duration_, 0.0f, 1.0f)));
 
 	curtain_->Update();
 }
@@ -169,7 +169,7 @@ void Fade::UpdateFadeOut()
 	}
 
 	// 0.0fから1.0fの間で、経過時間がフェード継続時間に近づくほどアルファ値を大きくする
-	curtain_->SetColor(Vector4(0.0f, 0.0f, 0.0f, std::clamp(counter_ / duration_, 0.0f, 1.0f)));
+	curtain_->SetColor(Kouro::Vector4(0.0f, 0.0f, 0.0f, std::clamp(counter_ / duration_, 0.0f, 1.0f)));
 
 	curtain_->Update();
 }
@@ -186,7 +186,7 @@ void Fade::UpdateWhiteFadeIn()
 	}
 
 	// 0.0fから1.0fの間で、経過時間がフェード継続時間に近づくほどアルファ値を大きくする
-	curtain_->SetColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f - std::clamp(counter_ / duration_, 0.0f, 1.0f)));
+	curtain_->SetColor(Kouro::Vector4(1.0f, 1.0f, 1.0f, 1.0f - std::clamp(counter_ / duration_, 0.0f, 1.0f)));
 
 	curtain_->Update();
 }
@@ -203,7 +203,7 @@ void Fade::UpdateWhiteFadeOut()
 	}
 
 	// 0.0fから1.0fの間で、経過時間がフェード継続時間に近づくほどアルファ値を大きくする
-	curtain_->SetColor(Vector4(1.0f, 1.0f, 1.0f, std::clamp(counter_ / duration_, 0.0f, 1.0f)));
+	curtain_->SetColor(Kouro::Vector4(1.0f, 1.0f, 1.0f, std::clamp(counter_ / duration_, 0.0f, 1.0f)));
 
 	curtain_->Update();
 }

@@ -29,7 +29,7 @@ public:
 	* \param  controlPoints    : コントロールポイントのリスト
 	* \param  samplePerSegment : サンプリングの数
 	*/
-	void Initialize(const std::vector<Vector3>& controlPoints, int samplePerSegment = 100);
+	void Initialize(const std::vector<Kouro::Vector3>& controlPoints, int samplePerSegment = 100);
 
 	/**
 	* \brief  弧長データを取得する
@@ -41,7 +41,7 @@ public:
 	* \brief  コントロールポイントのリストを取得する
 	* \return コントロールポイントのリスト
 	*/
-	const std::vector<Vector3>& GetControlPoints() const { return controlPoints_; }
+	const std::vector<Kouro::Vector3>& GetControlPoints() const { return controlPoints_; }
 
 private:
 
@@ -49,7 +49,7 @@ private:
 
 private:
 
-	std::vector<Vector3> controlPoints_; //!< コントロールポイントのリスト
+	std::vector<Kouro::Vector3> controlPoints_; //!< コントロールポイントのリスト
 
 	RailData::ArcLengthTable arcLengthTable_; //!< 弧長データ
 };

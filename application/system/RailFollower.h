@@ -30,7 +30,7 @@ public:
 	* \brief  ワールドトランスフォームの取得
 	* \return ワールドトランスフォーム
 	*/
-	const WorldTransform& GetWorldTransform() { return worldTransform_; }
+	const Kouro::WorldTransform& GetWorldTransform() { return worldTransform_; }
 
 	/**
 	* \brief  移動距離の設定
@@ -46,9 +46,9 @@ public:
 
 private: // メンバ変数
 
-	WorldTransform worldTransform_; //!< ワールドトランスフォーム
+	Kouro::WorldTransform worldTransform_; //!< ワールドトランスフォーム
 	RailData::ArcLengthTable arcLengthTable_; //!< 弧長データのポインタ
-	std::vector<Vector3> controlPoints_;
+	std::vector<Kouro::Vector3> controlPoints_;
 	float distanceTravelled_ = 0.0f; //!< 累計移動距離
 	float moveTime_ = 0.0f; //!< 移動時間
 

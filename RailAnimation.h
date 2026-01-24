@@ -23,58 +23,58 @@ public: // メンバ構造体
 
 	struct BezierCurve
 	{
-		Vector3 p0;
-		Vector3 p1;
-		Vector3 p2;
+		Kouro::Vector3 p0;
+		Kouro::Vector3 p1;
+		Kouro::Vector3 p2;
 	};
 
 	struct RailSegment
 	{
 		SegmentType type;
-		Vector3 start;
-		Vector3 end;
+		Kouro::Vector3 start;
+		Kouro::Vector3 end;
 		BezierCurve bezier;
 		float length;
 	};
 
 public: // メンバ関数
 
-	void Initialize(std::vector<Vector3> controlPoints, int samplePerSegment = 100);
+	void Initialize(std::vector<Kouro::Vector3> controlPoints, int samplePerSegment = 100);
 
-	WorldTransform* GetWorldTransform(const float progress);
+	Kouro::WorldTransform* GetWorldTransform(const float progress);
 
 private: // メンバ関数
 
 	void CreateArcLengthTable(int samplePerSegment);
 
 	bool IsCorner(
-		const Vector3& prev,
-		const Vector3& curr,
-		const Vector3& next)
+		const Kouro::Vector3& prev,
+		const Kouro::Vector3& curr,
+		const Kouro::Vector3& next)
 	{
-		Vector3 a = Normalize(curr - prev);
-		Vector3 b = Normalize(next - curr);
+		Kouro::Vector3 a = Normalize(curr - prev);
+		Kouro::Vector3 b = Normalize(next - curr);
 
 		float dot = Dot(a, b);
 		return dot < 0.99f;
 	}
 	
 	BezierCurve CreateCornerBezier(
-		const Vector3& prev,
-		const Vector3& curr,
-		const Vector3& next,
+		const Kouro::Vector3& prev,
+		const Kouro::Vector3& curr,
+		const Kouro::Vector3& next,
 		float radius)
 	{
-		Vector3 dirIn = Normalize(curr - prev);
-		Vector3 dirOut = Normalize(next - curr);
+		Kouro::Vector3 dirIn = Normalize(curr - prev);
+		Kouro::Vector3 dirOut = Normalize(next - curr);
 
-		Vector3 p0 = curr - dirIn * radius;
-		Vector3 p2 = curr + dirOut * radius;
+		Kouro::Vector3 p0 = curr - dirIn * radius;
+		Kouro::Vector3 p2 = curr + dirOut * radius;
 
 		return { p0, curr, p2 };
 	}
 
-	Vector3 EvaluateBezier(const BezierCurve& b, float t)
+	Kouro::Vector3 EvaluateBezier(const BezierCurve& b, float t)
 	{
 		float u = 1.0f - t;
 		return
@@ -91,13 +91,13 @@ private: // メンバ関数
 		for (auto& seg : segments_)
 		{
 			float length = 0.0f;
-			Vector3 prev;
+			Kouro::Vector3 prev;
 
 			for (int i = 0; i <= samplePerSegment; ++i)
 			{
 				float t = static_cast<float>(i) / samplePerSegment;
 
-				Vector3 pos =
+				Kouro::Vector3 pos =
 					(seg.type == SegmentType::Line)
 					? Lerp(seg.start, seg.end, t)
 					: EvaluateBezier(seg.bezier, t);
@@ -116,14 +116,14 @@ private: // メンバ関数
 		}
 	}
 
-	Vector3 GetPositionByProgress(float progress)
+	Kouro::Vector3 GetPositionByProgress(float progress)
 	{
 		return {};
 	}
 
-	Vector3 LookRotation(const Vector3& forward)
+	Kouro::Vector3 LookRotation(const Kouro::Vector3& forward)
 	{
-		Vector3 f = Normalize(forward);
+		Kouro::Vector3 f = Normalize(forward);
 
 		// Y軸回転（Yaw）
 		float yaw = std::atan2(f.x, f.z);
@@ -142,11 +142,11 @@ private: // メンバ変数
 
 	std::vector<RailSegment> segments_;
 
-	std::vector<Vector3> controlPoints_; //!< コントロールポイントのリスト
+	std::vector<Kouro::Vector3> controlPoints_; //!< コントロールポイントのリスト
 
 	ArcLengthTable arcLengthTable_; //!< 弧長データ
 
-	std::unique_ptr<WorldTransform> worldTransform_ = nullptr; //!< ワールドトランスフォーム
+	std::unique_ptr<Kouro::WorldTransform> worldTransform_ = nullptr; //!< ワールドトランスフォーム
 
 	float lookAheadDistance_ = 0.1f;
 };

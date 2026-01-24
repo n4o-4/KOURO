@@ -2,7 +2,7 @@
 
 #include "EnemyBullet.h"
 
-void Player::Initialize(LineModel* model)
+void Player::Initialize(Kouro::LineModel* model)
 {
 	///=========================================
 	/// 親クラス
@@ -21,7 +21,7 @@ void Player::Initialize(LineModel* model)
 	SetCollisionMask(0b1 << 1); // コリジョンマスクの設定
 
 	// AABBのサイズの設定
-	SetAABB(AABB({}, { -1.0f,-1.0f,-1.0f }, {1.0f,1.0f,1.0f}));
+	SetAABB(Kouro::AABB({}, { -1.0f,-1.0f,-1.0f }, {1.0f,1.0f,1.0f}));
 
 	// 線モデルの色を設定
 	objectLine_->SetColor(kDefaultColor);
@@ -62,7 +62,7 @@ void Player::Update()
 	else
 	{
 		// スペースキーを押していたら
-		if (Input::GetInstance()->/*PushKey*/Triggerkey(DIK_SPACE) || Input::GetInstance()->PushKey(DIK_SPACE))
+		if (Kouro::Input::GetInstance()->/*PushKey*/Triggerkey(DIK_SPACE) || Kouro::Input::GetInstance()->PushKey(DIK_SPACE))
 		{
 			// 発射処理
 			Fire();
@@ -105,24 +105,24 @@ void Player::Update()
 	else
 	{
 		// lShiftを押していたら
-		if (Input::GetInstance()->Triggerkey(DIK_LSHIFT))
+		if (Kouro::Input::GetInstance()->Triggerkey(DIK_LSHIFT))
 		{
 			// quickMove中に変更
 			quickMoveData_->isQuickMoving = true;
 
-			if (Input::GetInstance()->PushKey(DIK_A))
+			if (Kouro::Input::GetInstance()->PushKey(DIK_A))
 			{
 				velocity_.x -= kBoostPlayerSpeed;
 			}
-			if (Input::GetInstance()->PushKey(DIK_D))
+			if (Kouro::Input::GetInstance()->PushKey(DIK_D))
 			{
 				velocity_.x += kBoostPlayerSpeed;
 			}
-			if (Input::GetInstance()->PushKey(DIK_W))
+			if (Kouro::Input::GetInstance()->PushKey(DIK_W))
 			{
 				velocity_.y += kBoostPlayerSpeed;
 			}
-			if (Input::GetInstance()->PushKey(DIK_S))
+			if (Kouro::Input::GetInstance()->PushKey(DIK_S))
 			{
 				velocity_.y -= kBoostPlayerSpeed;
 			}
@@ -208,19 +208,19 @@ void Player::Move()
 
 		// 押しているキーによってvelocityに数値を加算または減算
 		// TODO : 移動量をplayerSpeedとdeltaTimeで計算する
-		if (Input::GetInstance()->PushKey(DIK_A))
+		if (Kouro::Input::GetInstance()->PushKey(DIK_A))
 		{
 			velocity_.x -= kDefaultPlayerSpeed;
 		}
-		if (Input::GetInstance()->PushKey(DIK_D))
+		if (Kouro::Input::GetInstance()->PushKey(DIK_D))
 		{
 			velocity_.x += kDefaultPlayerSpeed;
 		}
-		if (Input::GetInstance()->PushKey(DIK_W))
+		if (Kouro::Input::GetInstance()->PushKey(DIK_W))
 		{
 			velocity_.y += kDefaultPlayerSpeed;
 		}
-		if (Input::GetInstance()->PushKey(DIK_S))
+		if (Kouro::Input::GetInstance()->PushKey(DIK_S))
 		{
 			velocity_.y -= kDefaultPlayerSpeed;
 		}
@@ -244,13 +244,13 @@ void Player::Fire()
 	bullet->Initialize(lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
 
 	// プレイヤーが向いている方向にvelocityを変換する
-	Vector3 velocity = TransformNormal({ 0.0f,0.0f,bulletSpeed }, worldTransform_->matWorld_);
+	Kouro::Vector3 velocity = TransformNormal({ 0.0f,0.0f,bulletSpeed }, worldTransform_->matWorld_);
 
 	// 弾に計算したvelocityを設定する
 	bullet->SetVelocity(velocity);
 
 	// forward ベクトルからオイラー角を計算
-	Vector3 forward = Normalize(velocity);
+	Kouro::Vector3 forward = Normalize(velocity);
 	float yaw = std::atan2(forward.x, forward.z);
 	float pitch = std::asin(-forward.y);
 	float roll = 0.0f;

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "BaseCamera.h"
 #include "Camera.h"
 #include "DebugCamera.h"
@@ -7,81 +7,86 @@
 #include "TitleCamera.h"
 #include <random>
 
-constexpr float kShakeAmplitude = 0.2f; //!< カメラシェイク最大振幅
+
 
 // \brief CameraManager
 // 複数カメラを管理するクラス。
 // デバッグカメラや追従カメラなどを保持し、更新・切り替え・ターゲット設定を行う。
 
-class CameraManager
+namespace Kouro
 {
-public: /// メンバ関数	
+	constexpr float kShakeAmplitude = 0.2f; //!< カメラシェイク最大振幅
 
-	/// \brief  Initialize 初期化
-	void Initialize();
 
-	/// \brief  Update 更新
-	void Update();
+	class CameraManager
+	{
+	public: /// メンバ関数	
 
-	/**
-	* \brief  GetActiveCamera アクティブなカメラの取得
-	* \return activeCamera_ アクティブなカメラのポインタ
-	*/
-	BaseCamera* GetActiveCamera() { return activeCamera_; }
+		/// \brief  Initialize 初期化
+		void Initialize();
 
-	/**
-	* \brief  SetFollowCameraTarget 追従カメラのターゲット設定
-	* \param  target ターゲットのワールド変換のポインタ
-	*/
-	void SetFollowCameraTarget(WorldTransform* target) { followCamera_->SetTarget(target); }
+		/// \brief  Update 更新
+		void Update();
 
-	/**
-	* \brief  GetFollowCamera 追従カメラの取得
-	* \return followCamera_ 追従カメラのポインタ
-	*/
-	FollowCamera* GetFollowCamera() { return followCamera_.get(); }
+		/**
+		* \brief  GetActiveCamera アクティブなカメラの取得
+		* \return activeCamera_ アクティブなカメラのポインタ
+		*/
+		BaseCamera* GetActiveCamera() { return activeCamera_; }
 
-	/**
-	* \brief  SetActiveCamera アクティブなカメラの設定
-	* \param  camera アクティブにするカメラのポインタ
-	*/
-	void SetActiveCamera(BaseCamera* camera) { activeCamera_ = camera; }
+		/**
+		* \brief  SetFollowCameraTarget 追従カメラのターゲット設定
+		* \param  target ターゲットのワールド変換のポインタ
+		*/
+		void SetFollowCameraTarget(WorldTransform* target) { followCamera_->SetTarget(target); }
 
-	/// \brief  CamerasClear カメラのクリア
-	void CamerasClear();
+		/**
+		* \brief  GetFollowCamera 追従カメラの取得
+		* \return followCamera_ 追従カメラのポインタ
+		*/
+		FollowCamera* GetFollowCamera() { return followCamera_.get(); }
 
-	/**
-	* \brief  CameraShake カメラシェイクの開始
-	* \param  time シェイク時間
-	*/
-	void CameraShake(float time);
+		/**
+		* \brief  SetActiveCamera アクティブなカメラの設定
+		* \param  camera アクティブにするカメラのポインタ
+		*/
+		void SetActiveCamera(BaseCamera* camera) { activeCamera_ = camera; }
 
-public:
+		/// \brief  CamerasClear カメラのクリア
+		void CamerasClear();
 
-	/// \brief  Shake カメラシェイク処理
-	void Shake();
+		/**
+		* \brief  CameraShake カメラシェイクの開始
+		* \param  time シェイク時間
+		*/
+		void CameraShake(float time);
 
-	/// \brief  DrawDebugUI デバッグUIの描画
-	void DrawDebugUI();
+	public:
 
-private:
+		/// \brief  Shake カメラシェイク処理
+		void Shake();
 
-	std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
+		/// \brief  DrawDebugUI デバッグUIの描画
+		void DrawDebugUI();
 
-	std::unique_ptr<FollowCamera> followCamera_ = nullptr;
+	private:
 
-	std::list<BaseCamera*> cameras_;
+		std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
 
-	BaseCamera* activeCamera_ = nullptr;
+		std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 
-	bool isShaking = false;
+		std::list<BaseCamera*> cameras_;
 
-	float shakeTime = 0.0f;
+		BaseCamera* activeCamera_ = nullptr;
 
-	float timer = 0.0f;
+		bool isShaking = false;
 
-	std::mt19937 randomEngine;
+		float shakeTime = 0.0f;
 
-	Vector3 shakeOffSet = {};
-};
+		float timer = 0.0f;
 
+		std::mt19937 randomEngine;
+
+		Vector3 shakeOffSet = {};
+	};
+}

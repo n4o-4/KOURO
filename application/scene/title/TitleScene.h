@@ -19,12 +19,12 @@
 #include "ModelEdgeEmitter.h"
 // \brief TitleScene タイトルシーンクラス
 
-class TitleScene : public BaseScene
+class TitleScene : public Kouro::BaseScene
 {
 public: // メンバ関数
 
 	// \brief 初期化
-	void Initialize(EngineContext context) override;
+	void Initialize(Kouro::EngineContext context) override;
 
 	// \brief Finalize 終了
 	void Finalize() override;
@@ -37,7 +37,7 @@ public: // メンバ関数
 
 private:
 
-	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
+	std::unique_ptr<Kouro::LineDrawerBase> lineDrawer_ = nullptr;
 
 	std::unique_ptr<BaseCharacter> player_ = nullptr;
 
@@ -46,9 +46,9 @@ private:
 	// グローバルまたはクラスメンバとして開始時刻を記録
 	std::chrono::steady_clock::time_point startTime;
 
-	std::vector<Vector3> controlPoints_ = {};
+	std::vector<Kouro::Vector3> controlPoints_ = {};
 
-	std::unique_ptr<Sprite> startBotton_ = nullptr;
+	std::unique_ptr<Kouro::Sprite> startBotton_ = nullptr;
 
 	float kFadeStartTime = 4.5f;
 	float fadeTimer_ = 0.0f;
@@ -56,13 +56,13 @@ private:
 	// プレイヤーモデルの移動演出のフラグ
 	bool isMoveActive_ = false;
 
-	std::unique_ptr<LineModelManager> lineModelManager_ = nullptr;
+	std::unique_ptr<Kouro::LineModelManager> lineModelManager_ = nullptr;
 
-	std::unique_ptr<NumUi> scoreUi_ = nullptr;
+	std::unique_ptr<Kouro::NumUi> scoreUi_ = nullptr;
 
-	std::unique_ptr<ModelEdgeEmitter> mEmitter = nullptr;
+	std::unique_ptr<Kouro::ModelEdgeEmitter> mEmitter = nullptr;
 
-	std::unique_ptr<ObjectLine> tonnel_ = nullptr;
+	std::unique_ptr<Kouro::ObjectLine> tonnel_ = nullptr;
 
 	float progressFactor_ = 0.0f; //!< 
 

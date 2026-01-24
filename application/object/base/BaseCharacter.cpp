@@ -1,19 +1,19 @@
-﻿#include "BaseCharacter.h"
+#include "BaseCharacter.h"
 
-void BaseCharacter::Initialize(LineModel* model)
+void BaseCharacter::Initialize(Kouro::LineModel* model)
 {
 	///========================================
 	/// オブジェクト3D
 	
 	// 生成と初期化
-	objectLine_ = std::make_unique<ObjectLine>();
+	objectLine_ = std::make_unique<Kouro::ObjectLine>();
 	objectLine_->Initialize(model);
 
 	///========================================
 	/// ワールドトランスフォーム
 	
 	// 生成と初期化
-	worldTransform_ = std::make_unique<WorldTransform>();
+	worldTransform_ = std::make_unique<Kouro::WorldTransform>();
 	worldTransform_->Initialize();
 
 

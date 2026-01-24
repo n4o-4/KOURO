@@ -1,81 +1,89 @@
-﻿#pragma once
+#pragma once
 #include "BaseEffect.h"
 
-namespace LinearFogShader
-{
-	struct Material
-	{
-		Matrix4x4 projectionInverse;
-	};
 
-}
 
 // \brief LinearFog  
 // カメラとの距離に応じて線形に霧をかけるポストエフェクトクラス。  
 // 遠景を淡くぼかし、空間の奥行きや大気感を表現する。
 
-class LinearFog : public BaseEffect
+namespace Kouro
 {
-public:
+	namespace LinearFogShader
+	{
+		struct Material
+		{
+			Matrix4x4 projectionInverse;
+		};
 
-	/**
-	* \brief	初期化
-	* \param	dxCommon DirectXCommonのポインタ
-	* \param	srvManager SrvManagerのポインタ
-	*/
-	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) override;
+	}
 
-	/// \brief  更新
-	void Update() override;
+	// ============================ LinearFog ================================================
 
-	/**
-	* \brief  描画
-	* \param  renderTargetIndex レンダーターゲットのインデックス
-	* \param  renderResourceIndex レンダーリソースのインデックス
-	*/
-	void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
+	class LinearFog : public BaseEffect
+	{
+	public:
 
-	/**
-	* \brief  カメラマネージャーを設定する
-	* \param  cameraManager カメラマネージャーのポインタ
-	*/
-	void SetCameraManager(CameraManager* cameraManager) override { cameraManager_ = cameraManager; }
+		/**
+		* \brief	初期化
+		* \param	dxCommon DirectXCommonのポインタ
+		* \param	srvManager SrvManagerのポインタ
+		*/
+		void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) override;
 
-	/// \brief  リセット
-	void Reset() override { resource_.Reset(); }
+		/// \brief  更新
+		void Update() override;
 
-private: // 非公開メンバ関数
+		/**
+		* \brief  描画
+		* \param  renderTargetIndex レンダーターゲットのインデックス
+		* \param  renderResourceIndex レンダーリソースのインデックス
+		*/
+		void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
 
-	/// \brief  CreatePipeline パイプラインの作成
-	void CreatePipeline();
+		/**
+		* \brief  カメラマネージャーを設定する
+		* \param  cameraManager カメラマネージャーのポインタ
+		*/
+		void SetCameraManager(CameraManager* cameraManager) override { cameraManager_ = cameraManager; }
 
-	/**
-	* \brief  CreateRootSignature ルートシグネチャの作成
-	* \param  pipeline パイプライン構造体のポインタ
-	*/
-	void CreateRootSignature(Pipeline* pipeline);
+		/// \brief  リセット
+		void Reset() override { resource_.Reset(); }
 
-	/**
-	* \brief  CreatePipeLineState パイプラインステートの作成
-	* \param  pipeline パイプライン構造体のポインタ
-	*/
-	void CreatePipeLineState(Pipeline* pipeline);
+	private: // 非公開メンバ関数
 
-	/// \brief  CreateMaterial マテリアルの作成
-	void CreateMaterial();
+		/// \brief  CreatePipeline パイプラインの作成
+		void CreatePipeline();
 
-	/// \brief  DrawImGui ImGui描画
-	void DrawImGui() override;
+		/**
+		* \brief  CreateRootSignature ルートシグネチャの作成
+		* \param  pipeline パイプライン構造体のポインタ
+		*/
+		void CreateRootSignature(Pipeline* pipeline);
 
-private: // メンバ変数
+		/**
+		* \brief  CreatePipeLineState パイプラインステートの作成
+		* \param  pipeline パイプライン構造体のポインタ
+		*/
+		void CreatePipeLineState(Pipeline* pipeline);
 
-	// 
-	Microsoft::WRL::ComPtr<ID3D12Resource> resource_;
+		/// \brief  CreateMaterial マテリアルの作成
+		void CreateMaterial();
 
-	// 
-	LinearFogShader::Material* data_ = nullptr;
+		/// \brief  DrawImGui ImGui描画
+		void DrawImGui() override;
 
-	//
-	CameraManager* cameraManager_ = nullptr;
-};
+	private: // メンバ変数
+
+		// 
+		Microsoft::WRL::ComPtr<ID3D12Resource> resource_;
+
+		// 
+		LinearFogShader::Material* data_ = nullptr;
+
+		//
+		CameraManager* cameraManager_ = nullptr;
+	};
+}
+
 

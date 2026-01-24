@@ -8,7 +8,7 @@
 
 // \brief  ゲーム全体
 
-class MyGame : public Framework
+class MyGame : public Kouro::Framework
 {
 public: //　メンバ関数
 
@@ -33,5 +33,5 @@ public: //　メンバ関数
 private:
 
 	// シーンファクトリー
-	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
+	std::unique_ptr<Kouro::AbstractSceneFactory> sceneFactory_ = nullptr;
 };

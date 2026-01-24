@@ -1,10 +1,11 @@
-﻿#pragma once
+#pragma once
 
-
-class D3D12ResourceLeakCecker
+namespace Kouro
 {
-public:
+	class D3D12ResourceLeakCecker
+	{
+	public:
 
-	~D3D12ResourceLeakCecker();
-};
-
+		~D3D12ResourceLeakCecker();
+	};
+}

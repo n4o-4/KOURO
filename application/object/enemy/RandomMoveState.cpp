@@ -3,7 +3,7 @@
 #include "AttackState.h"
 #include "Enemy.h"
 
-void RandomMoveState::Enter(Enemy* enemy)
+void RandomMoveState::OnEnter(Enemy* enemy)
 {
 	randomGenerate.Initialize();
 
@@ -20,13 +20,13 @@ void RandomMoveState::Update(Enemy* enemy)
 		enemy->ChangeState(std::move(newState));
 	}
 
-	WorldTransform* enemyTransform = enemy->GetWorldTransform();
+	Kouro::WorldTransform* enemyTransform = enemy->GetWorldTransform();
 
-	Vector3 velocity = randomGenerate.RandomVector3(-0.3f, 0.3f);
+	Kouro::Vector3 velocity = randomGenerate.RandomVector3(-0.3f, 0.3f);
 
 	enemyTransform->transform.translate += velocity;
 }
 
-void RandomMoveState::Exit(Enemy* enemy)
+void RandomMoveState::OnExit(Enemy* enemy)
 {
 }

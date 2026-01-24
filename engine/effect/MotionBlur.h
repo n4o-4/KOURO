@@ -1,84 +1,90 @@
-﻿#pragma once
+#pragma once
 #include "BaseEffect.h"
 
-namespace MotionBlurShader
-{
-	struct Material
-	{
-		int numSamples;
-		Vector2 center;
-		float blurWidth;
 
-		Vector3 diff;
-		float padding[1];
-	};
-}
 
 // \brief MotionBlur  
 // カメラやオブジェクトの移動量に応じて残像を表現するモーションブラー効果クラス。  
 // フレーム間の位置差分を利用し、動きの滑らかさやスピード感を演出する。
 
-class MotionBlur : public BaseEffect
+namespace Kouro
 {
-public:
+	namespace MotionBlurShader
+	{
+		struct Material
+		{
+			int numSamples;
+			Vector2 center;
+			float blurWidth;
 
-	/**
-	* \brief	初期化
-	* \param	dxCommon DirectXCommonのポインタ
-	* \param	srvManager SrvManagerのポインタ
-	*/
-	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) override;
+			Vector3 diff;
+			float padding[1];
+		};
+	}
 
-	/// \brief  更新
-	void Update() override;
+	// ====================== MotionBlur ====================================================
 
-	/**
-	* \brief  描画
-	* \param  renderTargetIndex レンダーターゲットのインデックス
-	* \param  renderResourceIndex レンダーリソースのインデックス
-	*/
-	void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
+	class MotionBlur : public BaseEffect
+	{
+	public:
 
-	/// \brief  リセット
-	void Reset() override { resource_.Reset(); }
+		/**
+		* \brief	初期化
+		* \param	dxCommon DirectXCommonのポインタ
+		* \param	srvManager SrvManagerのポインタ
+		*/
+		void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) override;
 
-private: // 非公開メンバ関数
+		/// \brief  更新
+		void Update() override;
 
-	/// \brief  CreatePipeline パイプラインの作成
-	void CreatePipeline();
+		/**
+		* \brief  描画
+		* \param  renderTargetIndex レンダーターゲットのインデックス
+		* \param  renderResourceIndex レンダーリソースのインデックス
+		*/
+		void Draw(uint32_t renderTargetIndex, uint32_t renderResourceIndex) override;
 
-	/**
-	* \brief  CreateRootSignature ルートシグネチャの作成
-	* \param  pipeline パイプライン構造体のポインタ
-	*/
-	void CreateRootSignature(Pipeline* pipeline);
+		/// \brief  リセット
+		void Reset() override { resource_.Reset(); }
 
-	/**
-	* \brief  CreatePipeLineState パイプラインステートの作成
-	* \param  pipeline パイプライン構造体のポインタ
-	*/
-	void CreatePipeLineState(Pipeline* pipeline);
+	private: // 非公開メンバ関数
 
-	/// \brief  CreateMaterial マテリアルの作成
-	void CreateMaterial();
+		/// \brief  CreatePipeline パイプラインの作成
+		void CreatePipeline();
 
-	/// \brief  DrawImGui ImGui描画
-	void DrawImGui() override;
+		/**
+		* \brief  CreateRootSignature ルートシグネチャの作成
+		* \param  pipeline パイプライン構造体のポインタ
+		*/
+		void CreateRootSignature(Pipeline* pipeline);
 
-private: // メンバ変数
-	
-	CameraManager* cameraManager_ = nullptr;
+		/**
+		* \brief  CreatePipeLineState パイプラインステートの作成
+		* \param  pipeline パイプライン構造体のポインタ
+		*/
+		void CreatePipeLineState(Pipeline* pipeline);
 
-	// 
-	Microsoft::WRL::ComPtr<ID3D12Resource> resource_;
+		/// \brief  CreateMaterial マテリアルの作成
+		void CreateMaterial();
 
-	// 
-	MotionBlurShader::Material* data_ = nullptr;
-	
-	Vector3 currentPos_{};
+		/// \brief  DrawImGui ImGui描画
+		void DrawImGui() override;
 
-	Vector3 prePos_{};
+	private: // メンバ変数
 
-	Vector3 diffPos_{};
-};
+		CameraManager* cameraManager_ = nullptr;
 
+		// 
+		Microsoft::WRL::ComPtr<ID3D12Resource> resource_;
+
+		// 
+		MotionBlurShader::Material* data_ = nullptr;
+
+		Vector3 currentPos_{};
+
+		Vector3 prePos_{};
+
+		Vector3 diffPos_{};
+	};
+}

@@ -1,6 +1,9 @@
 #include "ModelCommon.h"
 
-void ModelCommon::Initialize(DirectXCommon* dxCommon)
+namespace Kouro
 {
-	dxCommon_ = dxCommon;
+	void ModelCommon::Initialize(DirectXCommon* dxCommon)
+	{
+		dxCommon_ = dxCommon;
+	}
 }

@@ -11,19 +11,7 @@
 #include "MyMath.h"
 #include "ModelDatas.h"
 
-namespace Line
-{
-	struct Vertex
-	{
-		Vector4 position;
-	};
 
-	struct ModelData
-	{
-		std::vector<Line::Vertex> vertices;
-		std::vector<uint32_t> indices;
-	};
-}
 
 //struct VertexData
 //{
@@ -37,8 +25,22 @@ namespace Line
 // 主にラインモデル用のデータを読み込み、LoadLineModelで頂点配列を返す。
 // デフォルトで"Resources/"ディレクトリから読み込む仕様。
 
-namespace kouro
+namespace Kouro
 {
+	namespace Line
+	{
+		struct Vertex
+		{
+			Vector4 position;
+		};
+
+		struct ModelData
+		{
+			std::vector<Line::Vertex> vertices;
+			std::vector<uint32_t> indices;
+		};
+	}
+
 	class ModelLoader
 	{
 	public:

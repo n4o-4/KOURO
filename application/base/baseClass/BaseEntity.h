@@ -18,7 +18,7 @@ public: // 公開メンバ関数
 	 * \brief  GetWorldTransform ワールド変換情報を取得する
 	 * \return worldTransform
 	 */
-	WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
+	Kouro::WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
 protected: // 派生用メンバ関数
 
@@ -28,7 +28,7 @@ protected: // 派生用メンバ関数
 public: // 派生用メンバ変数
 
 	// ワールドトランスフォーム
-	std::unique_ptr<WorldTransform> worldTransform_;
+	std::unique_ptr<Kouro::WorldTransform> worldTransform_;
 
 	// 有効フラグ
 	bool isAlive_ = true;

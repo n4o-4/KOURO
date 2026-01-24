@@ -1,8 +1,8 @@
-﻿#include "OBBCollider.h"
+#include "OBBCollider.h"
 #include "AABBCollider.h"
 #include "SphereCollider.h"
 
-void OBBCollider::Initialize(WorldTransform* worldTransform, BaseEntity* owner)
+void OBBCollider::Initialize(Kouro::WorldTransform* worldTransform, BaseEntity* owner)
 {
 	BaseCollider::Initialize(worldTransform, owner);
 
@@ -21,7 +21,7 @@ void OBBCollider::Update()
     BaseCollider::Update();
 
     // ワールド行列からスケール・回転・平行移動を抽出
-    Matrix4x4 matWorld = colliderTransform_->matWorld_;
+    Kouro::Matrix4x4 matWorld = colliderTransform_->matWorld_;
 
     // 中心（ワールド座標）＝ワールド行列の平行移動成分
     obb_.center = {
@@ -31,9 +31,9 @@ void OBBCollider::Update()
     };
 
     // ワールド行列の各列ベクトルからローカル軸方向とスケールを取得
-    Vector3 xAxis = { matWorld.m[0][0], matWorld.m[0][1], matWorld.m[0][2] };
-    Vector3 yAxis = { matWorld.m[1][0], matWorld.m[1][1], matWorld.m[1][2] };
-    Vector3 zAxis = { matWorld.m[2][0], matWorld.m[2][1], matWorld.m[2][2] };
+    Kouro::Vector3 xAxis = { matWorld.m[0][0], matWorld.m[0][1], matWorld.m[0][2] };
+    Kouro::Vector3 yAxis = { matWorld.m[1][0], matWorld.m[1][1], matWorld.m[1][2] };
+    Kouro::Vector3 zAxis = { matWorld.m[2][0], matWorld.m[2][1], matWorld.m[2][2] };
 
     // 各軸の長さ（スケール）を計算
     float scaleX = Length(xAxis);

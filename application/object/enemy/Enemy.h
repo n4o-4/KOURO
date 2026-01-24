@@ -19,7 +19,7 @@ public: // 公開メンバ関数
 	* \brief  初期化
 	* \param  LineModel 線モデル
 	*/
-	void Initialize(LineModel* model) override;
+	void Initialize(Kouro::LineModel* model) override;
 
 	// \brief Update 更新
 	void Update() override;
@@ -31,7 +31,7 @@ public: // 公開メンバ関数
 	* \brief SetPosition
 	* \param Vector3 座標
 	*/
-	void SetPosition(const Vector3& position);
+	void SetPosition(const Kouro::Vector3& position);
 
 	/**
 	* \brief SetTarget ターゲットの設定
@@ -49,29 +49,29 @@ public: // 公開メンバ関数
 	* \brief SetLineModelManager ラインモデルマネージャーを設定する
 	* \param LineModelManager ラインモデルマネージャーのポインタ
 	*/
-	void SetLineModelManager(LineModelManager* lineModelManager) { lineModelManager_ = lineModelManager; }
+	void SetLineModelManager(Kouro::LineModelManager* lineModelManager) { lineModelManager_ = lineModelManager; }
 
 	/**
 	* \brief  エミッターの設定
 	*/
-	void SetEmitter(ModelEdgeEmitter* emitter) { mEmitter_ = emitter; }
+	void SetEmitter(Kouro::ModelEdgeEmitter* emitter) { mEmitter_ = emitter; }
 
 	/**
 	* \brief 
 	*/
-	void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; };
+	void SetCameraManager(Kouro::CameraManager* cameraManager) { cameraManager_ = cameraManager; };
 
 	/**
 	* \brief  
 	* \param  
 	*/
-	void SetGoalOffset(const Vector3 offset) { kGoalOffset_ = offset; };
+	void SetGoalOffset(const Kouro::Vector3 offset) { kGoalOffset_ = offset; };
 
 	/**
 	* \brief  SetParent 親の設定
 	* \param  WorldTransform 親のワールドトランスフォームのポインタ
 	*/
-	void SetParent(const WorldTransform* parent) { worldTransform_->SetParent(parent); }
+	void SetParent(const Kouro::WorldTransform* parent) { worldTransform_->SetParent(parent); }
 
 	/**
 	* \brief GetTarget ターゲットを取得する
@@ -83,9 +83,9 @@ public: // 公開メンバ関数
 	* \brief  カメラマネージャーの取得
 	* \return カメラマネージャーのポインタ
 	*/
-	const CameraManager* GetCameraManager() const { return cameraManager_; }
+	const Kouro::CameraManager* GetCameraManager() const { return cameraManager_; }
 
-	const Vector3 GetGoalOffset() const { return kGoalOffset_; }
+	const Kouro::Vector3 GetGoalOffset() const { return kGoalOffset_; }
 
 	/**
 	* \brief ChangeState 状態を変える
@@ -97,8 +97,6 @@ public: // 公開メンバ関数
 	void Fire();
 
 private: // 非公開メンバ関数
-
-	
 
 	/**
 	* \brief  OnCollisionEnter 衝突開始時
@@ -132,14 +130,14 @@ private: // 非公開メンバ変数
 
 	std::unique_ptr<EnemyState> state_ = nullptr;
 
-	LineModelManager* lineModelManager_ = nullptr;
+	Kouro::LineModelManager* lineModelManager_ = nullptr;
 
-	ParticleEmitter emitter_;
+	Kouro::ParticleEmitter emitter_;
 
-	ModelEdgeEmitter* mEmitter_ = nullptr;
+	Kouro::ModelEdgeEmitter* mEmitter_ = nullptr;
 
-	CameraManager* cameraManager_ = nullptr;
+	Kouro::CameraManager* cameraManager_ = nullptr;
 
-	Vector3 kGoalOffset_ = {0.0f,0.0f,40.0f};
+	Kouro::Vector3 kGoalOffset_ = {0.0f,0.0f,40.0f};
 };
 

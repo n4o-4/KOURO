@@ -13,23 +13,23 @@
 
 #include "title/state/FadeInState.h"
 
-void TitleScene::Initialize(EngineContext context)
+void TitleScene::Initialize(Kouro::EngineContext context)
 {
 	/// 基底クラスの初期化
 	BaseScene::Initialize(context);
 
 	// ライン描画の初期化
-	lineDrawer_ = std::make_unique<LineDrawerBase>();
+	lineDrawer_ = std::make_unique<Kouro::LineDrawerBase>();
 	lineDrawer_->Initialize(sceneManager_->GetDxCommon(), sceneManager_->GetSrvManager());
 
 	// ラインモデルマネージャーの初期化
-	lineModelManager_ = std::make_unique<LineModelManager>();
+	lineModelManager_ = std::make_unique<Kouro::LineModelManager>();
 	lineModelManager_->Initialize(lineDrawer_.get());
 
 	/// 各種素材の読み込み
 	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture("Resources/StartButton.png");
-	TextureManager::GetInstance()->LoadTexture("Resources/num.png");
+	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/StartButton.png");
+	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/num.png");
 
 	// ラインモデルの読み込み
 	lineModelManager_->LoadLineModel("player/player.obj");
@@ -39,19 +39,19 @@ void TitleScene::Initialize(EngineContext context)
 	YAML::Node rail_config = KOURO::YamlLoader::LoadYamlFile("title/rail_config.yaml");
 
 	// コントロールポイントの読み込み
-	controlPoints_ = rail_config["control_points"].as<std::vector<Vector3>>();
+	controlPoints_ = rail_config["control_points"].as<std::vector<Kouro::Vector3>>();
 
 	YAML::Node sprite_config = KOURO::YamlLoader::LoadYamlFile("title/sprite_config.yaml");
 
 	// スタートボタンの生成
-	startBotton_ = std::make_unique<Sprite>();
-	startBotton_->Initialize(SpriteCommon::GetInstance(),"Resources/StartButton.png");
+	startBotton_ = std::make_unique<Kouro::Sprite>();
+	startBotton_->Initialize(Kouro::SpriteCommon::GetInstance(),"Resources/StartButton.png");
 
 	// スタートボタンの各種設定
-	startBotton_->SetPosition(sprite_config["start_button"]["position"].as<Vector2>());
-	startBotton_->SetSize(sprite_config["start_button"]["size"].as<Vector2>());
-	startBotton_->SetAnchorPoint(sprite_config["start_button"]["anchor_point"].as<Vector2>());
-	startBotton_->SetTexSize(sprite_config["start_button"]["texture_size"].as<Vector2>());
+	startBotton_->SetPosition(sprite_config["start_button"]["position"].as<Kouro::Vector2>());
+	startBotton_->SetSize(sprite_config["start_button"]["size"].as<Kouro::Vector2>());
+	startBotton_->SetAnchorPoint(sprite_config["start_button"]["anchor_point"].as<Kouro::Vector2>());
+	startBotton_->SetTexSize(sprite_config["start_button"]["texture_size"].as<Kouro::Vector2>());
 
 
 	// プレイヤーの生成
@@ -60,11 +60,11 @@ void TitleScene::Initialize(EngineContext context)
 	player_->SetColor({ 0.071f, 0.429f, 1.0f,1.0f });
 
 	// トンネル用のモデル
-	tonnel_ = std::make_unique<ObjectLine>();
+	tonnel_ = std::make_unique<Kouro::ObjectLine>();
 	tonnel_->Initialize(lineModelManager_->FindLineModel("tunnel.obj"));
 
 	// パーティクルエミッターの生成
-	mEmitter = std::make_unique<ModelEdgeEmitter>();
+	mEmitter = std::make_unique<Kouro::ModelEdgeEmitter>();
 	mEmitter->Initialize("normal", context);
 	mEmitter->CreateLineSegment("enemy/enemy.obj");
 
@@ -84,21 +84,21 @@ void TitleScene::Initialize(EngineContext context)
 	startTime = std::chrono::steady_clock::now();
 
 	// plane
-	ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", Kouro::ParticleManager::ParticleType::Normal);
 	// ブレンドモードの設定
-	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->blendMode = ParticleManager::BlendMode::kAdd;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
 	// billboardを有効
-	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableBillboard = true;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableBillboard = true;
 
-	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableStretch = true;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableStretch = true;
 
 	// 減速を有効
-	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableDeceleration = false;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableDeceleration = false;
 	// パルスを有効
-	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enablePulse = false;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enablePulse = false;
 
 
-	scoreUi_ = std::make_unique<NumUi>();
+	scoreUi_ = std::make_unique<Kouro::NumUi>();
 	scoreUi_->Initialize(2);
 }
 
@@ -111,15 +111,15 @@ void TitleScene::Update()
 {
 
 	float nextT;
-	Vector3 viewTarget;
-	Vector3 position;
-	Vector3 target;
-	Vector3 forward;
+	Kouro::Vector3 viewTarget;
+	Kouro::Vector3 position;
+	Kouro::Vector3 target;
+	Kouro::Vector3 forward;
 	float yaw;
 	float pitch;
 	float roll;
 	static float scale;
-	static Vector2 texSize;
+	static Kouro::Vector2 texSize;
 	std::chrono::time_point<std::chrono::steady_clock> now;
 	float elapsedTime;
 
@@ -134,7 +134,7 @@ void TitleScene::Update()
 		if (fade_->IsFinished())
 		{
 			// 入力受付を開始
-			Input::GetInstance()->SetIsReception(true);
+			Kouro::Input::GetInstance()->SetIsReception(true);
 
 			// カメラを回転させる
 			titleCamera_->SetIsRotate(true);
@@ -149,7 +149,7 @@ void TitleScene::Update()
 	case Phase::kMain:
 
 		// スペースキーまたはゲームパッドのAボタンが押されたら
-		if (Input::GetInstance()->Triggerkey(DIK_SPACE) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
+		if (Kouro::Input::GetInstance()->Triggerkey(DIK_SPACE) || Kouro::Input::GetInstance()->TriggerGamePadButton(Kouro::Input::GamePadButton::A))
 		{
 			// 移動開始フラグが無効なら
 			if(!isMoveActive_)
@@ -207,7 +207,7 @@ void TitleScene::Update()
 		if (fade_->IsFinished())
 		{
 			// シーンをゲームシーンに変更
-			SceneManager::GetInstance()->ChangeScene("GAME");
+			Kouro::SceneManager::GetInstance()->ChangeScene("GAME");
 
 			return;
 		}
@@ -278,15 +278,15 @@ void TitleScene::Update()
 
 	if (ImGui::Button("emit"))
 	{
-		mEmitter->Emit(MakeIdentity4x4());
+		mEmitter->Emit(Kouro::MakeIdentity4x4());
 	}
 
 	ImGui::End();
 #endif
 
-	if (Input::GetInstance()->Triggerkey(DIK_V))
+	if (Kouro::Input::GetInstance()->Triggerkey(DIK_V))
 	{
-		mEmitter->Emit(MakeIdentity4x4());
+		mEmitter->Emit(Kouro::MakeIdentity4x4());
 	}
 
 	scoreUi_->Update();

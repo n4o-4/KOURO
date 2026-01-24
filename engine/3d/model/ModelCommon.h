@@ -1,27 +1,29 @@
-﻿#pragma once
+#pragma once
 #include "DirectXCommon.h"
 
 // \brief ModelCommon
 // モデル共通情報を管理するクラス。
 // DirectXCommonの参照を保持し、モデル描画時に共有リソースとして利用する。
 
-class ModelCommon
+namespace Kouro
 {
-public:
-	
-	/**
-	* \brief  初期化
-	* \param  dxCommon DirectX共通クラスへのポインタ
-	*/
-	void Initialize(DirectXCommon* dxCommon);
+	class ModelCommon
+	{
+	public:
 
-	/**
-	* \brief  directXCommon取得
-	* \return directXCommon
-	*/
-	DirectXCommon* GetDxCommon() { return dxCommon_; }
+		/**
+		* \brief  初期化
+		* \param  dxCommon DirectX共通クラスへのポインタ
+		*/
+		void Initialize(DirectXCommon* dxCommon);
 
-private:
-	DirectXCommon* dxCommon_;
-};
+		/**
+		* \brief  directXCommon取得
+		* \return directXCommon
+		*/
+		DirectXCommon* GetDxCommon() { return dxCommon_; }
 
+	private:
+		DirectXCommon* dxCommon_;
+	};
+}

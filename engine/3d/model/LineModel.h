@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <cassert>
 #include <string>
@@ -13,66 +13,71 @@
 #include "MyMath.h"
 #include "LineDrawerBase.h"
 
-struct LineVertex
-{
-	Vector4 position;
-};
 
-
-struct LineModelData {
-	std::vector<LineVertex> vertices;
-	std::vector<uint32_t> indices;
-};
 
 // \brief LineModel
 // ライン描画用のモデルクラス。
 // ファイルから頂点データを読み込み、ライン描画に必要なバッファを作成・管理する。
 // 内部でDirectXの頂点リソースとバッファビューを保持し、Draw関数で描画を実行する。
 
-class LineModel
+namespace Kouro
 {
-public:
+	struct LineVertex
+	{
+		Vector4 position;
+	};
 
-	/**
-	* \brief  初期化
-	* \param  lienDrawer ラインドロワーベースクラスのポインタ
-	* \param  directoryPath ラインモデルファイルのディレクトリパス
-	* \param  filePath ラインモデルファイル名
-	*/
-	void Initialize(LineDrawerBase* lienDrawer, const std::string& directoryPath, const std::string& filePath);
+	struct LineModelData {
+		std::vector<LineVertex> vertices;
+		std::vector<uint32_t> indices;
+	};
 
-	
-	/// \brief 描画
-	void Draw();
 
-	/**
-	* \brief  directXCommonのポインタ取得
-	* \return directXCommonのポインタ
-	*/
-	DirectXCommon* GetdxCommon() { return dxCommon_; }
 
-private:
+	class LineModel
+	{
+	public:
 
-	/**
-	* \brief  ラインモデルファイルの読み込み
-	* \param  directoryPath ディレクトリパス
-	* \param  filePath ファイル名
-	*/
-	void LoadLineModelFile(const std::string& directoryPath, const std::string& filePath);
+		/**
+		* \brief  初期化
+		* \param  lienDrawer ラインドロワーベースクラスのポインタ
+		* \param  directoryPath ラインモデルファイルのディレクトリパス
+		* \param  filePath ラインモデルファイル名
+		*/
+		void Initialize(LineDrawerBase* lienDrawer, const std::string& directoryPath, const std::string& filePath);
 
-private:
 
-	LineDrawerBase* lineDrawerBase_ = nullptr;
+		/// \brief 描画
+		void Draw();
 
-	DirectXCommon* dxCommon_ = nullptr;
+		/**
+		* \brief  directXCommonのポインタ取得
+		* \return directXCommonのポインタ
+		*/
+		DirectXCommon* GetdxCommon() { return dxCommon_; }
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
-	LineVertex* vertexData_ = nullptr;
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_ = {};
+	private:
 
-	
+		/**
+		* \brief  ラインモデルファイルの読み込み
+		* \param  directoryPath ディレクトリパス
+		* \param  filePath ファイル名
+		*/
+		void LoadLineModelFile(const std::string& directoryPath, const std::string& filePath);
 
-	uint32_t vertexCount_ = 0;
+	private:
 
-};
+		LineDrawerBase* lineDrawerBase_ = nullptr;
 
+		DirectXCommon* dxCommon_ = nullptr;
+
+		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
+		LineVertex* vertexData_ = nullptr;
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView_ = {};
+
+
+
+		uint32_t vertexCount_ = 0;
+
+	};
+}

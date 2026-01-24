@@ -10,7 +10,7 @@ public:
 	* \param  enemy  : 処理をする敵のポインタ
 	* \param  player : プレイヤー
 	*/
-	void Enter(Enemy* enemy) override;
+	void OnEnter(Enemy* enemy) override;
 
 	/**
 	* \brief  更新処理
@@ -22,11 +22,11 @@ public:
 	* \brief  終了処理
 	* \param  処理をする敵のポインタ
 	*/
-	void Exit(Enemy* enemy) override;
+	void OnExit(Enemy* enemy) override;
 
 private:
 
-	RandomGenerate randomGenerate;
+	Kouro::RandomGenerate randomGenerate;
 
 	int fireCount_ = 0;
 

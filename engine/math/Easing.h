@@ -1,31 +1,34 @@
 #pragma once
 
-namespace Easing
+namespace Kouro
 {
-	float Lerp(float start, float end, float t)
+	namespace Easing
 	{
-		return start + (end - start) * t;
-	}
-
-	float EaseInQuad(float t)
-	{
-		return t * t;
-	}
-
-	float EaseInOutQuad(float t)
-	{
-		if (t < 0.5f)
+		float Lerp(float start, float end, float t)
 		{
-			return 2.0f * t * t;
+			return start + (end - start) * t;
 		}
-		else
-		{
-			return -1.0f + (4.0f - 2.0f * t) * t;
-		}
-	}
 
-	float EaseOutQuad(float t)
-	{
-		return t * (2 - t);
+		float EaseInQuad(float t)
+		{
+			return t * t;
+		}
+
+		float EaseInOutQuad(float t)
+		{
+			if (t < 0.5f)
+			{
+				return 2.0f * t * t;
+			}
+			else
+			{
+				return -1.0f + (4.0f - 2.0f * t) * t;
+			}
+		}
+
+		float EaseOutQuad(float t)
+		{
+			return t * (2 - t);
+		}
 	}
 }

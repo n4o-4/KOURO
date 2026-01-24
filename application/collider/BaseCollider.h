@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <unordered_set>
 
 // Engine
@@ -20,7 +20,7 @@ public: /// 公開メンバ関数
 	 * \brief  Initialize 初期化
 	 * \param  worldTransform ワールド変形情報
 	 */
-	virtual void Initialize(WorldTransform* worldTransform,BaseEntity* owner);
+	virtual void Initialize(Kouro::WorldTransform* worldTransform,BaseEntity* owner);
 	
 	/**
 	* \brief  Update 更新
@@ -110,7 +110,7 @@ protected: /// 非公開メンバ変数
 	BaseEntity* owner_ = nullptr; 
 
 	// コライダーに関連付けるワールド変換情報
-	WorldTransform* colliderTransform_ = nullptr;
+	Kouro::WorldTransform* colliderTransform_ = nullptr;
 
 	// コリジョン属性
 	uint32_t collisionAttribute_ = 0xffffffff;
@@ -125,7 +125,7 @@ protected: /// 非公開メンバ変数
 	std::unordered_set<BaseCollider*> currentCollisions_;
 
 	// コライダーの色
-	Vector4 color_ = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Kouro::Vector4 color_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	// 有効フラグ
 	bool isAlive_ = true;

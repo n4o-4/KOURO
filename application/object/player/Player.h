@@ -33,7 +33,7 @@ public: // 公開メンバ関数
 	* \brief  初期化
 	* \param  LineModel 線モデル
 	*/
-	void Initialize(LineModel* model) override;
+	void Initialize(Kouro::LineModel* model) override;
 
 	// \brief Update 更新
 	void Update() override;
@@ -51,13 +51,13 @@ public: // 公開メンバ関数
 	* \brief  SetParentTransform 座標の親を設定する
 	* \param  WorldTransform ワールドトランスフォームのポインタ
 	*/
-	void SetParentTransform(const WorldTransform* parent) { worldTransform_->SetParent(parent); }
+	void SetParentTransform(const Kouro::WorldTransform* parent) { worldTransform_->SetParent(parent); }
 
 	/**
 	* \brief  SetLineModelManager ラインモデルマネージャーを設定する
 	* \param  LineModelManager ラインモデルマネージャーのポインタ
 	*/
-	void SetLineModelManager(LineModelManager* lineModelManager) { lineModelManager_ = lineModelManager; }
+	void SetLineModelManager(Kouro::LineModelManager* lineModelManager) { lineModelManager_ = lineModelManager; }
 
 	/**
 	* \brief  GetIsAlive 生存フラグを取得する
@@ -115,7 +115,7 @@ private: // 非公開メンバ変数
 
 	float moveTimer_ = 0.0f; //!< カメラの移動時間
 
-	std::vector<Vector3> controlPoints_ =
+	std::vector<Kouro::Vector3> controlPoints_ =
 	{
 		{0.0f,0.0f,-20.0f},
 
@@ -142,7 +142,7 @@ private: // 非公開メンバ変数
 
 	ColliderManager* colliderManager_ = nullptr; //!< コライダーマネージャ
 
-	LineModelManager* lineModelManager_ = nullptr;
+	Kouro::LineModelManager* lineModelManager_ = nullptr;
 
 	Rail rail;
 
@@ -155,8 +155,8 @@ private: // 非公開メンバ変数
 	bool isHit_ = false;
 
 	static constexpr float kDefaultScale = 0.5f; //!< プレイヤーのデフォルトのスケール
-	static constexpr Vector4 kDefaultColor = { 0.071f, 0.429f, 1.0f, 1.0f };
-	static constexpr Vector4 kHitColor = { 1.0f, 0.0f, 0.0f, 1.0f };
+	static constexpr Kouro::Vector4 kDefaultColor = { 0.071f, 0.429f, 1.0f, 1.0f };
+	static constexpr Kouro::Vector4 kHitColor = { 1.0f, 0.0f, 0.0f, 1.0f };
 	static constexpr float kDefaultOffset = 15.0f;
 	static constexpr float kDefaultPlayerSpeed = 0.1f;
 	static constexpr float kBoostPlayerSpeed = 0.3f;

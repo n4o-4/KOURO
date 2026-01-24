@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "BaseCamera.h"
 
 #include "MyMath.h"
@@ -9,7 +9,7 @@
 
 // \brief  RailCamera レールカメラ
 
-class RailCamera : public BaseCamera
+class RailCamera : public Kouro::BaseCamera
 {
 public:
 
@@ -27,7 +27,7 @@ public:
 	* \brief  GetWorldTransform ワールド変換情報を取得する
 	* \return worldTransform 
 	*/
-	WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
+	Kouro::WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 	
 	/**
 	* \brief  SetIsMove 移動フラグを設定する
@@ -44,7 +44,7 @@ public:
 private:
 
 	// ワールド変換情報
-	std::unique_ptr<WorldTransform> worldTransform_ = nullptr;
+	std::unique_ptr<Kouro::WorldTransform> worldTransform_ = nullptr;
 	
 	bool isMove_ = false;
 

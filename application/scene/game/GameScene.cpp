@@ -11,7 +11,7 @@
 
 ///=============================================================================
 ///						マトリックス表示
-static void ShowMatrix4x4(const Matrix4x4 &matrix, const char *label) {
+static void ShowMatrix4x4(const Kouro::Matrix4x4 &matrix, const char *label) {
 	ImGui::Text("%s", label);
 	if(ImGui::BeginTable(label, 4, ImGuiTableFlags_Borders)) {
 		// 
@@ -28,7 +28,7 @@ static void ShowMatrix4x4(const Matrix4x4 &matrix, const char *label) {
 
 ///=============================================================================
 ///						初期化
-void GameScene::Initialize(EngineContext context) {
+void GameScene::Initialize(Kouro::EngineContext context) {
 	//========================================
 	// 基底シーン
 	BaseScene::Initialize(context);
@@ -36,24 +36,24 @@ void GameScene::Initialize(EngineContext context) {
 	//========================================
 	// テクスチャの読み込み
 
-	TextureManager::GetInstance()->LoadTexture("Resources/WASD.png");
+	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/WASD.png");
 
 
-	ModelManager::GetInstance()->LoadModel("player/player.obj");
-	ModelManager::GetInstance()->LoadModel("playerbullet/playerbullet.obj");
+	Kouro::ModelManager::GetInstance()->LoadModel("player/player.obj");
+	Kouro::ModelManager::GetInstance()->LoadModel("playerbullet/playerbullet.obj");
 
 	//========================================
 	// ライト
 	// 指向性
-	directionalLight = std::make_unique<DirectionalLight>();
+	directionalLight = std::make_unique<Kouro::DirectionalLight>();
 	directionalLight->Initialize();
 	directionalLight->intensity_ = 0.0f;
 	// 点光源
-	pointLight = std::make_unique<PointLight>();
+	pointLight = std::make_unique<Kouro::PointLight>();
 	pointLight->Initilize();
 	pointLight->intensity_ = 0.0f;
 	// スポットライト
-	spotLight = std::make_unique<SpotLight>();
+	spotLight = std::make_unique<Kouro::SpotLight>();
 	spotLight->Initialize();
 	spotLight->direction_ = { 0.0f,-1.0f,0.0f };
 	spotLight->position_ = { 0.0f,10.0f,0.0f };
@@ -63,14 +63,14 @@ void GameScene::Initialize(EngineContext context) {
 	spotLight->cosAngle_ = 0.5f;
 
 	// postエフェクトの適用
-	sceneManager_->GetPostEffect()->ApplyEffect("dissolve",PostEffect::EffectType::Dissolve);
+	sceneManager_->GetPostEffect()->ApplyEffect("dissolve",Kouro::PostEffect::EffectType::Dissolve);
 
 
 	// YAMLファイルの読み込み
 	YAML::Node config = KOURO::YamlLoader::LoadYamlFile("game/rail_config.yaml");
 
 	// コントロールポイントの読み込み
-	const std::vector<Vector3>& controlPoints_ = config["control_points"].as<std::vector<Vector3>>();
+	const std::vector<Kouro::Vector3>& controlPoints_ = config["control_points"].as<std::vector<Kouro::Vector3>>();
 
 	Rail rail;
 
@@ -92,17 +92,17 @@ void GameScene::Initialize(EngineContext context) {
 
 	///========================================
 	///		ライン描画
-	lineDrawer_ = std::make_unique<LineDrawerBase>();
+	lineDrawer_ = std::make_unique<Kouro::LineDrawerBase>();
 	lineDrawer_->Initialize(sceneManager_->GetDxCommon(),sceneManager_->GetSrvManager());
-	
-	lineModelManager_ = std::make_unique<LineModelManager>();
+
+	lineModelManager_ = std::make_unique<Kouro::LineModelManager>();
 	lineModelManager_->Initialize(lineDrawer_.get());
 	lineModelManager_->LoadLineModel("player/player.obj");
 	lineModelManager_->LoadLineModel("enemy/enemy.obj");
 	lineModelManager_->LoadLineModel("playerbullet/playerbullet.obj");
 	lineModelManager_->LoadLineModel("stage.obj");
 
-	transform_ = std::make_unique<WorldTransform>();
+	transform_ = std::make_unique<Kouro::WorldTransform>();
 	transform_->Initialize();
 	transform_->transform.translate = { 0.0f,0.0f,0.0f };
 
@@ -111,25 +111,25 @@ void GameScene::Initialize(EngineContext context) {
 	///		パーティクル
 	
 	// plane
-	ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", Kouro::ParticleManager::ParticleType::Normal);
 	// ブレンドモードの設定
-	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->blendMode = ParticleManager::BlendMode::kAdd;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
 	// billboardを有効
-	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableBillboard = true;
-	
-	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableStretch = true;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableBillboard = true;
+
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableStretch = true;
 	
 	// 減速を有効
 
 
 
-	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableDeceleration = false;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableDeceleration = false;
 	// パルスを有効
-	ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enablePulse = false;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enablePulse = false;
 
 
 
-	emitter1_ = std::make_unique<ParticleEmitter>();
+	emitter1_ = std::make_unique<Kouro::ParticleEmitter>();
 	emitter1_->Initialize("plane_Particle");
 	emitter1_->SetPosition({ 1.0f,2.0f,0.0f });
 	emitter1_->SetParticleCount(1);
@@ -144,22 +144,22 @@ void GameScene::Initialize(EngineContext context) {
 	emitter1_->SetFinishColorRange({ {0.667f, 0.169f, 1.0f, 1.0f},{0.667f, 0.169f, 1.0f, 1.0f} }); /*{ 1.0f, 0.72f, 0.19f, 1.0f }*/
 	emitter1_->SetLifeTimeRange({ 10.0f,10.0f });
 	emitter1_->SetFrequency(0.07f);
-	
-	mEmitter = std::make_unique<ModelEdgeEmitter>();
+
+	mEmitter = std::make_unique<Kouro::ModelEdgeEmitter>();
 	mEmitter->Initialize("normal", context);
 	mEmitter->CreateLineSegment("enemy/enemy.obj");
 
-	ParticleManager::GetInstance()->CreateParticleGroup("HitEffect", "Resources/gradationLine.png", ParticleManager::ParticleType::Ring);
+	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("HitEffect", "Resources/gradationLine.png", Kouro::ParticleManager::ParticleType::Ring);
 
 	// ブレンドモードの設定
-	ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->blendMode = ParticleManager::BlendMode::kAdd;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
 	// billboardを有効
-	ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->flagsData->enableBillboard = false;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->flagsData->enableBillboard = false;
 	// 減速を有効
-	ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->enableDeceleration = true;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->enableDeceleration = true;
 	// パルスを有効
-	//ParticleManager::GetInstance()->GetParticleGroup("smoke")->enablePulse = true;
-	emitter2_ = std::make_unique<ParticleEmitter>();
+	//Kouro::ParticleManager::GetInstance()->GetParticleGroup("smoke")->enablePulse = true;
+	emitter2_ = std::make_unique<Kouro::ParticleEmitter>();
 	emitter2_->Initialize("HitEffect");
 	emitter2_->SetPosition({ 1.0f,2.0f,20.0f });
 	emitter2_->SetParticleCount(1);
@@ -178,13 +178,13 @@ void GameScene::Initialize(EngineContext context) {
 
 	///hitEffect1
 
-	ParticleManager::GetInstance()->CreateParticleGroup("spark", "Resources/circle.png", ParticleManager::ParticleType::Normal);
+	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("spark", "Resources/circle.png", Kouro::ParticleManager::ParticleType::Normal);
 
-	ParticleManager::GetInstance()->GetParticleGroup("spark")->blendMode = ParticleManager::BlendMode::kAdd;
-	ParticleManager::GetInstance()->GetParticleGroup("spark")->flagsData->enableBillboard = true;
-	ParticleManager::GetInstance()->GetParticleGroup("spark")->flagsData->enableStretch = false;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("spark")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("spark")->flagsData->enableBillboard = true;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("spark")->flagsData->enableStretch = false;
 
-	emitter3_ = std::make_unique<ParticleEmitter>();
+	emitter3_ = std::make_unique<Kouro::ParticleEmitter>();
 	emitter3_->Initialize("spark");
 	emitter3_->SetPosition({ 1.0f,2.0f,20.0f });
 	emitter3_->SetParticleCount(10);
@@ -200,14 +200,14 @@ void GameScene::Initialize(EngineContext context) {
 	emitter3_->SetFinishColorRange({ {0.667f, 0.169f, 1.0f, 1.0f}, {0.667f, 0.169f, 1.0f, 1.0f} }); /*{ 1.0f, 0.72f, 0.19f, 1.0f }*/
 	emitter3_->SetLifeTimeRange({ 0.5f,0.5f });
 	emitter3_->SetFrequency(0.01f);
-	
-	ParticleManager::GetInstance()->CreateParticleGroup("ray", "Resources/circle.png", ParticleManager::ParticleType::Normal);
 
-	ParticleManager::GetInstance()->GetParticleGroup("ray")->blendMode = ParticleManager::BlendMode::kAdd;
-	ParticleManager::GetInstance()->GetParticleGroup("ray")->flagsData->enableBillboard = true;
-	ParticleManager::GetInstance()->GetParticleGroup("ray")->flagsData->enableStretch = true;
+	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("ray", "Resources/circle.png", Kouro::ParticleManager::ParticleType::Normal);
 
-	emitter4_ = std::make_unique<ParticleEmitter>();
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("ray")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("ray")->flagsData->enableBillboard = true;
+	Kouro::ParticleManager::GetInstance()->GetParticleGroup("ray")->flagsData->enableStretch = true;
+
+	emitter4_ = std::make_unique<Kouro::ParticleEmitter>();
 	emitter4_->Initialize("ray");
 	emitter4_->SetPosition({ 1.0f,2.0f,20.0f });
 	emitter4_->SetParticleCount(10);
@@ -237,7 +237,7 @@ void GameScene::Initialize(EngineContext context) {
 	/// 入力
 
 	// マウスの入力受付を有効
-	Input::GetInstance()->SetIsReception(true);
+	Kouro::Input::GetInstance()->SetIsReception(true);
 
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
@@ -252,28 +252,28 @@ void GameScene::Initialize(EngineContext context) {
 	player_->SetParentTransform(&playerRail_.GetWorldTransform());
 
 
-	LevelLoader loader;
+	Kouro::LevelLoader loader;
 
 	levelData_ = loader.LoadLevelFromJson("Resources/TL1.json");
 
 	for (auto& object : levelData_->objects)
 	{
-		object.object3d->SetLocalMatrix(MakeIdentity4x4());
+		object.object3d->SetLocalMatrix(Kouro::MakeIdentity4x4());
 	}
 
-	ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
+	Kouro::ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
 
 	colliderManager_ = std::make_unique<ColliderManager>();
 
 	for(uint32_t i = 0; i < 3; ++i)
 	{
-		countSprite_[i] = std::make_unique<Sprite>();
+		countSprite_[i] = std::make_unique<Kouro::Sprite>();
 
 		std::string filePath = "Resources/" + std::to_string(i + 1) + ".png";
 
-		TextureManager::GetInstance()->LoadTexture(filePath);
+		Kouro::TextureManager::GetInstance()->LoadTexture(filePath);
 
-		countSprite_[i]->Initialize(SpriteCommon::GetInstance(), filePath);
+		countSprite_[i]->Initialize(Kouro::SpriteCommon::GetInstance(), filePath);
 		countSprite_[i]->SetSize({ 360.0f,360.0f });
 		countSprite_[i]->SetPosition({ 640.0f ,360.0f });
 		countSprite_[i]->SetTexSize({ 1536.0f,1024.0f });
@@ -281,25 +281,23 @@ void GameScene::Initialize(EngineContext context) {
 		countSprite_[i]->SetAnchorPoint({ 0.5f,0.5f });
 		countSprite_[i]->Update();
 	}
-	
-	WASD_ = std::make_unique<Sprite>();
-	WASD_->Initialize(SpriteCommon::GetInstance(), "Resources/WASD.png");
-	WASD_->SetAnchorPoint(Vector2(0.5f, 0.5f));
-	WASD_->SetTexSize(Vector2(1024.0f, 1024.0f));
-	WASD_->SetSize(Vector2(200.0f, 200.0f));
-	WASD_->SetPosition(Vector2(120.0f, 600.0f));
-	WASD_->SetColor(Vector4(kDefaultUIColor_));
+
+	WASD_ = std::make_unique<Kouro::Sprite>();
+	WASD_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/WASD.png");
+	WASD_->SetAnchorPoint(Kouro::Vector2(0.5f, 0.5f));
+	WASD_->SetTexSize(Kouro::Vector2(1024.0f, 1024.0f));
+	WASD_->SetSize(Kouro::Vector2(200.0f, 200.0f));
+	WASD_->SetPosition(Kouro::Vector2(120.0f, 600.0f));
+	WASD_->SetColor(Kouro::Vector4(kDefaultUIColor_));
 	WASD_->Update();
 
-	
-
-	fireUI_ = std::make_unique<Sprite>();
-	fireUI_->Initialize(SpriteCommon::GetInstance(), "Resources/FireUI.png");
-	fireUI_->SetAnchorPoint(Vector2(0.5f, 0.5f));
-	fireUI_->SetTexSize(Vector2(1536.0f, 1024.0f));
-	fireUI_->SetSize(Vector2(300.0f, 200.0f));
-	fireUI_->SetPosition(Vector2(640.0f, 600.0f));
-	fireUI_->SetColor(kDefaultUIColor_);
+	fireUI_ = std::make_unique<Kouro::Sprite>();
+	fireUI_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/FireUI.png");
+	fireUI_->SetAnchorPoint(Kouro::Vector2(0.5f, 0.5f));
+	fireUI_->SetTexSize(Kouro::Vector2(1536.0f, 1024.0f));
+	fireUI_->SetSize(Kouro::Vector2(300.0f, 200.0f));
+	fireUI_->SetPosition(Kouro::Vector2(640.0f, 600.0f));
+	fireUI_->SetColor(Kouro::Vector4(kDefaultUIColor_));
 	fireUI_->Update();
 
 	colliderManager_->AddCollider(player_);
@@ -308,14 +306,14 @@ void GameScene::Initialize(EngineContext context) {
 
 	fade_->Start(Fade::Status::WhiteFadeIn, 1.0f);
 
-	sceneManager_->GetPostEffect()->ApplyEffect("blur", PostEffect::EffectType::RadialBlur);
+	sceneManager_->GetPostEffect()->ApplyEffect("blur", Kouro::PostEffect::EffectType::RadialBlur);
 
-	stage_ = std::make_unique<ObjectLine>();
+	stage_ = std::make_unique<Kouro::ObjectLine>();
 	stage_->Initialize(lineModelManager_->FindLineModel("stage.obj"));
 
 	SpawnManager spawnManager;
 
-	std::vector<Vector3> enemies = spawnManager.LoadFile("spawnPattern1.json");
+	std::vector<Kouro::Vector3> enemies = spawnManager.LoadFile("spawnPattern1.json");
 
 	for (size_t i = 0; i < enemies.size(); i++)
 	{
@@ -362,13 +360,13 @@ void GameScene::Update()
 	BaseScene::Update();
 
 	// パーティクルマネージャーの更新
-	ParticleManager::GetInstance()->Update();
+	Kouro::ParticleManager::GetInstance()->Update();
 
 	//GpuParticle::GetInstance()->Update(cameraManager_->GetActiveCamera()->GetViewProjection());
 
 	// postEffectの処理
-	RadialBlur* blur = static_cast<RadialBlur*>(sceneManager_->GetPostEffect()->GetEffectData("blur"));
-	Radial::Material material = blur->GetMaterial();
+	Kouro::RadialBlur* blur = static_cast<Kouro::RadialBlur*>(sceneManager_->GetPostEffect()->GetEffectData("blur"));
+	Kouro::Radial::Material material = blur->GetMaterial();
 
 	const QuickMoveData* data = player_->GetQuickMoveData();
 	
@@ -423,14 +421,14 @@ void GameScene::Update()
 	if (!player_->GetIsAlive())
 	{
 		// Dissolveエフェクトの取得
-		auto* dissolve = static_cast<Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
+		auto* dissolve = static_cast<Kouro::Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
 		dissolve->edgeColor = { 1.0f,0.0f,0.0f };
 		dissolve->thresholdWidth = 0.25f;
 
 		k += 0.01f;
 
 		// Dissolveエフェクトの閾値をイージングで増加させる
-		dissolve->threshold = Easing::EaseInQuad(k);
+		dissolve->threshold = Kouro::Easing::EaseInQuad(k);
 
 		// 閾値が1.0f以上になったらシーンをゲームオーバーに変更
 		if (dissolve->threshold >= 1.0f)
@@ -446,11 +444,11 @@ void GameScene::Update()
 
 #ifdef _DEBUG
 
-	if (Input::GetInstance()->Triggerkey(DIK_E))
+	if (Kouro::Input::GetInstance()->Triggerkey(DIK_E))
 	{
 		SpawnManager spawnManager;
 
-		std::vector<Vector3> enemies = spawnManager.LoadFile("spawnPattern1.json");
+		std::vector<Kouro::Vector3> enemies = spawnManager.LoadFile("spawnPattern1.json");
 
 		for (size_t i = 0; i < enemies.size(); i++)
 		{
@@ -519,7 +517,7 @@ void GameScene::Update()
 
 			else if (countTimer_ >= 3.0f)
 			{
-				Input::GetInstance()->SetIsReception(true);
+				Kouro::Input::GetInstance()->SetIsReception(true);
 
 				phase_ = Phase::kMain;
 
@@ -572,14 +570,14 @@ void GameScene::Update()
 			// 敵の数が0ならクリアシーンへ
 			if(enemyCount == 0)
 			{
-				grobalVariables_.SaveFile("ELIMINATED_ENEMY_COUNT", eliminatedEnemyCount_);
+				globalVariables_.SaveFile("ELIMINATED_ENEMY_COUNT", eliminatedEnemyCount_);
 
 				sceneManager_->ChangeScene("CLEAR");
 
 				return;
 			}
 
-			SceneManager::GetInstance()->ChangeScene("OVER");
+			Kouro::SceneManager::GetInstance()->ChangeScene("OVER");
 
 			return;
 		}
@@ -636,11 +634,11 @@ void GameScene::Update()
 	if (ImGui::Button("Emit"))
 	{
 
-		Vector3 scale = { 1.0f,1.0f,1.0 };
-		Vector3 rotate = { 0.0f,0.0f,0.0f };
-		Vector3 translate = { 0.0f,0.0f,0.0f };
+		Kouro::Vector3 scale = { 1.0f,1.0f,1.0 };
+		Kouro::Vector3 rotate = { 0.0f,0.0f,0.0f };
+		Kouro::Vector3 translate = { 0.0f,0.0f,0.0f };
 
-		Matrix4x4 world = MakeAffineMatrix(scale, rotate, translate);
+		Kouro::Matrix4x4 world = Kouro::MakeAffineMatrix(scale, rotate, translate);
 
 		//GpuParticle::GetInstance()->LineEmit(world);
 	}
@@ -654,7 +652,7 @@ void GameScene::Update()
 
 	factor = std::clamp(factor, 0.0f, 1.0f);
 
-	Vector3 uiColor = Lerp(Vector3(kDefaultUIColor_.x, kDefaultUIColor_.y, kDefaultUIColor_.z), Vector3(1.0f, 1.0f, 1.0f), factor);
+	Kouro::Vector3 uiColor = Kouro::Lerp(Kouro::Vector3(kDefaultUIColor_.x, kDefaultUIColor_.y, kDefaultUIColor_.z), Kouro::Vector3(1.0f, 1.0f, 1.0f), factor);
 
 	fireUI_->SetColor({ uiColor.x,uiColor.y,uiColor.z,1.0f });
 	fireUI_->Update();
@@ -725,5 +723,5 @@ void GameScene::Draw()
 
 	//========================================
 	//パーティクルの描画
-	ParticleManager::GetInstance()->Draw("Resources/circle.png");	
+	Kouro::ParticleManager::GetInstance()->Draw("Resources/circle.png");
 }

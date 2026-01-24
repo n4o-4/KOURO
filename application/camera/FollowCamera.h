@@ -7,7 +7,7 @@
 
 // \brief  FollowCamera 追従カメラ
 
-class FollowCamera : public BaseCamera
+class FollowCamera : public Kouro::BaseCamera
 {
 public:
 
@@ -21,7 +21,7 @@ public:
 	* \brief  SetTarget ターゲットの設定
 	* \param  target ターゲットのワールド変換のポインタ
 	*/
-	void SetTarget(WorldTransform* target) { target_ = target; }
+	void SetTarget(Kouro::WorldTransform* target) { target_ = target; }
 
 private:
 
@@ -29,7 +29,7 @@ private:
 	* \brief  CalculationOffset オフセットの計算
 	* \return offset
 	*/
-	Vector3 CalculationOffset();
+	Kouro::Vector3 CalculationOffset();
 
 	// \brief  CalculationRotate 回転の計算
 	void CalculationRotate();
@@ -40,22 +40,22 @@ private:
 private:
 
 	// ターゲット
-	WorldTransform* target_ = nullptr;
+	Kouro::WorldTransform* target_ = nullptr;
 
 	// 追従対象の残像座標
-	Vector3 interTarget_ = {};
+	Kouro::Vector3 interTarget_ = {};
 
 	// オフセット
-	Vector3 offset_ = {};
+	Kouro::Vector3 offset_ = {};
 
 	// デフォルトのオフセット（元の値を保持）
-	Vector3 defaultOffset_ = { 0.0f, 3.0f, -30.0f };
+	Kouro::Vector3 defaultOffset_ = { 0.0f, 3.0f, -30.0f };
 
 	// 現在のカメラ位置
-	Vector3 currentPosition_ = {};
+	Kouro::Vector3 currentPosition_ = {};
 
 	// 目標のカメラ位置
-	Vector3 destinationRotate = { 0.0f,0.0f,0.0f };
+	Kouro::Vector3 destinationRotate = { 0.0f,0.0f,0.0f };
 
 	// イージング係数
 	float easingFactor_ = 0.85f;

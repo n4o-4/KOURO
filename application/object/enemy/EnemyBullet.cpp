@@ -1,8 +1,8 @@
-﻿#include "EnemyBullet.h"
+#include "EnemyBullet.h"
 
 #include "PlayerBullet.h"
 
-void EnemyBullet::Initialize(LineModel* model, Vector3 spawnPos)
+void EnemyBullet::Initialize(Kouro::LineModel* model, Kouro::Vector3 spawnPos)
 {
 	// 親クラスの初期化
 
@@ -13,13 +13,13 @@ void EnemyBullet::Initialize(LineModel* model, Vector3 spawnPos)
 	SphereCollider::Initialize(worldTransform_.get(),this);
 	SetCollisionAttribute(0b1 << 1); // コリジョン属性を設定
 	SetCollisionMask(0b1); // コリジョンマスクを設定
-	SetSphere(Sphere({}, 1.0f));
+	SetSphere(Kouro::Sphere({}, 1.0f));
 
 	// パーティクルエミッターの初期化
 
-	emitter_ = std::make_unique<ParticleEmitter>();
+	emitter_ = std::make_unique<Kouro::ParticleEmitter>();
 
-	emitter_ = std::make_unique<ParticleEmitter>();
+	emitter_ = std::make_unique<Kouro::ParticleEmitter>();
 	emitter_->Initialize("plane_Particle");
 	emitter_->SetPosition({ 0.0f,2.0f,0.0f });
 	emitter_->SetParticleCount(100);

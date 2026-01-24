@@ -6,7 +6,7 @@
 
 // \brief TitleCamera タイトルで使うカメラ
 
-class TitleCamera : public BaseCamera
+class TitleCamera : public Kouro::BaseCamera
 {
 public:
 
@@ -46,7 +46,7 @@ private:
 	* \brief  CalculationOffset オフセットの計算
 	* \return 計算したオフセット
 	*/
-	Vector3 CalculationOffset();
+	Kouro::Vector3 CalculationOffset();
 
 	// \brief  CalculationRotate 回転の計算
 	void CalculationRotate();
@@ -63,16 +63,16 @@ private:
 	//WorldTransform* target_ = nullptr;
 
 	// 追従対象の残像座標
-	Vector3 interTarget_ = {};
+	Kouro::Vector3 interTarget_ = {};
 
 	// デフォルトのオフセット（元の値を保持）
-	Vector3 defaultOffset_ = { 0.0f, 3.0f, -30.0f };
+	Kouro::Vector3 defaultOffset_ = { 0.0f, 3.0f, -30.0f };
 
 	// 現在のカメラ位置
-	Vector3 currentPosition_ = {};
+	Kouro::Vector3 currentPosition_ = {};
 
 	// 目標のカメラ位置
-	Vector3 destinationRotate = { 0.0f,0.0f,0.0f };
+	Kouro::Vector3 destinationRotate = { 0.0f,0.0f,0.0f };
 
 	// イージング係数
 	float easingFactor_ = 0.85f;

@@ -17,17 +17,17 @@
 
 // \brief GameOver ゲームオーバーシーンクラス
 
-class GameOver : public BaseScene {
+class GameOver : public Kouro::BaseScene {
 
 
 public: 
 
 	// \brief 初期化
-	void Initialize(EngineContext context) override;
+	void Initialize(Kouro::EngineContext context) override;
 
 	// \brief Finalize 終了
 	void Finalize() override;
-
+	 
 	// \brief Update 更新
 	void Update() override;
 
@@ -36,7 +36,7 @@ public:
 
 private:
 
-	std::unique_ptr<Sprite> gameOverSprite_ = nullptr;
+	std::unique_ptr<Kouro::Sprite> gameOverSprite_ = nullptr;
 
 	float timer_ = 0.0f;
 

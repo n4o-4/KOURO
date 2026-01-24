@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "BaseCollider.h"
 
 // \brief AABBCollider AABB型のコライダークラス
@@ -11,7 +11,7 @@ public: /// 公開メンバ関数
 	 * \brief  Initialize 初期化
 	 * \param  worldTransform ワールド変形情報
 	 */
-	void Initialize(WorldTransform* worldTransform, BaseEntity* owner) override;
+	void Initialize(Kouro::WorldTransform* worldTransform, BaseEntity* owner) override;
 
 	// \brief  Update 更新
 	void Update() override;
@@ -31,7 +31,7 @@ public: /// 公開メンバ関数
 	 * \brief AABBの情報を設定する
 	 * \param AABB AABBの最小座標と最大座標
 	*/
-	void SetAABB(const AABB& aabb) { aabb_ = aabb; }
+	void SetAABB(const Kouro::AABB& aabb) { aabb_ = aabb; }
 
 	///================================================================================
 	///                                        getter
@@ -40,17 +40,17 @@ public: /// 公開メンバ関数
 	 * \brief  GetAABB AABBを取得する
 	 * \return AABB
 	 */
-	AABB GetAABB() const { return aabb_; }
+	Kouro::AABB GetAABB() const { return aabb_; }
 
 	/**
 	 * \brief  colorを取得する
 	 * \return color
 	 */
-	Vector4 GetColor() const { return color_; }
+	Kouro::Vector4 GetColor() const { return color_; }
 
 private: /// 非公開メンバ変数
 	
 	// AABB
-	AABB aabb_ = {};
+	Kouro::AABB aabb_ = {};
 };
 

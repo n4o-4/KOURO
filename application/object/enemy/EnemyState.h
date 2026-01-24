@@ -9,7 +9,7 @@ class EnemyState
 	public:
 	virtual ~EnemyState() = default;
 
-	virtual void Enter(Enemy* enemy) = 0;  // 状態に入るとき
+	virtual void OnEnter(Enemy* enemy) = 0;  // 状態に入るとき
 	virtual void Update(Enemy* enemy) = 0; // 状態の更新
-	virtual void Exit(Enemy* enemy) = 0;   // 状態から出るとき
+	virtual void OnExit(Enemy* enemy) = 0;   // 状態から出るとき
 };

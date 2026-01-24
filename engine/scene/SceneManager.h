@@ -12,101 +12,104 @@
 // 現在のシーンや次のシーンを保持し、更新・描画処理やシーン切り替えを管理する。
 // SceneFactoryを利用してシーンを生成し、PostEffectやカメラなどの共通リソースも保持。
 
-class SceneManager
+namespace Kouro
 {
-public:
+	class SceneManager
+	{
+	public:
 
-	static SceneManager* GetInstance();
+		static SceneManager* GetInstance();
 
-	/**
-	* \brief  Initialize 初期化
-	* \param  DirectXCommon DirectXCommonのポインタ
-	* \param  SrvManager Srvマネージャーのポインタ
-	* \param  Camera カメラのポインタ
-	*/
-	void Initialize(DirectXCommon* dxCommon,SrvManager* srvManager,Camera* camera,EngineContext context);
+		/**
+		* \brief  Initialize 初期化
+		* \param  DirectXCommon DirectXCommonのポインタ
+		* \param  SrvManager Srvマネージャーのポインタ
+		* \param  Camera カメラのポインタ
+		*/
+		void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, Camera* camera, EngineContext context);
 
-	// \brief Finalize 終了
-	void Finalize();
+		// \brief Finalize 終了
+		void Finalize();
 
-	// \brief Update 更新
-	void Update();
+		// \brief Update 更新
+		void Update();
 
-	// \brief Draw 描画	
-	void Draw();
+		// \brief Draw 描画	
+		void Draw();
 
-	/**
-	* \brief  ChangeState シーンを変える
-	* \param  sceneName シーンの名前
-	*/
-	void ChangeScene(const std::string& sceneName);
-	
-	/**
-	* \brief  SetSceneFactory sceneFactoryの設定
-	* \param  sceneFactory 
-	*/
-	void SetSceneFactory(AbstractSceneFactory& sceneFactory) { sceneFactory_ = &sceneFactory; }
+		/**
+		* \brief  ChangeState シーンを変える
+		* \param  sceneName シーンの名前
+		*/
+		void ChangeScene(const std::string& sceneName);
 
-	/**
-	* \brief  SetPostEffect ポストエフェクトクラスの設定
-	* \param  PostEffect posEffectのポインタ
-	*/
-	void SetPostEffect(PostEffect* postEffect) { postEffect_ = postEffect; }
+		/**
+		* \brief  SetSceneFactory sceneFactoryの設定
+		* \param  sceneFactory
+		*/
+		void SetSceneFactory(AbstractSceneFactory& sceneFactory) { sceneFactory_ = &sceneFactory; }
 
-	/**
-	* \brief  GetDxCommon DirectXCommonのポインタを取得する
-	* \return dxCommon_ DirectXCommonのポインタ
-	*/
-	DirectXCommon* GetDxCommon() { return dxCommon_; }	
+		/**
+		* \brief  SetPostEffect ポストエフェクトクラスの設定
+		* \param  PostEffect posEffectのポインタ
+		*/
+		void SetPostEffect(PostEffect* postEffect) { postEffect_ = postEffect; }
 
-	/**
-	* \brief  GetSrvManager SrvManagerのポインタを取得す
-	* \return srvManager_ SrvManagerのポインタ
-	*/
-	SrvManager* GetSrvManager() { return srvManager_; }
+		/**
+		* \brief  GetDxCommon DirectXCommonのポインタを取得する
+		* \return dxCommon_ DirectXCommonのポインタ
+		*/
+		DirectXCommon* GetDxCommon() { return dxCommon_; }
 
-	/**
-	* \brief  GetCamera Cameraのポインタを取得する
-	* \return camera_ Cameraのポインタ
-	*/
-	Camera* GetCamera() { return camera_; }
+		/**
+		* \brief  GetSrvManager SrvManagerのポインタを取得す
+		* \return srvManager_ SrvManagerのポインタ
+		*/
+		SrvManager* GetSrvManager() { return srvManager_; }
 
-	/**
-	* \brief  GetPostEffect PostEffectのポインタを取得する
-	* \return postEffect_ PostEffectのポインタ
-	*/
-	PostEffect* GetPostEffect() { return postEffect_; }
+		/**
+		* \brief  GetCamera Cameraのポインタを取得する
+		* \return camera_ Cameraのポインタ
+		*/
+		Camera* GetCamera() { return camera_; }
 
-	const ViewProjection GetViewProjection() const { return scene_->GetViewProjection(); }
+		/**
+		* \brief  GetPostEffect PostEffectのポインタを取得する
+		* \return postEffect_ PostEffectのポインタ
+		*/
+		PostEffect* GetPostEffect() { return postEffect_; }
 
-private:
+		const ViewProjection GetViewProjection() const { return scene_->GetViewProjection(); }
 
-	static std::unique_ptr<SceneManager> instance;
+	private:
 
-	friend std::unique_ptr<SceneManager> std::make_unique<SceneManager>();
-	friend std::default_delete<SceneManager>;
+		static std::unique_ptr<SceneManager> instance;
 
-	~SceneManager() = default;
-	SceneManager() = default;
-	SceneManager(SceneManager&) = delete;
-	SceneManager& operator=(SceneManager&) = delete;
+		friend std::unique_ptr<SceneManager> std::make_unique<SceneManager>();
+		friend std::default_delete<SceneManager>;
 
-	
-	// 今のシーン
-	std::unique_ptr<BaseScene> scene_ = nullptr;
+		~SceneManager() = default;
+		SceneManager() = default;
+		SceneManager(SceneManager&) = delete;
+		SceneManager& operator=(SceneManager&) = delete;
 
-	// 次のシーン
-	std::unique_ptr<BaseScene> nextScene_ = nullptr;
 
-	AbstractSceneFactory* sceneFactory_ = nullptr;
+		// 今のシーン
+		std::unique_ptr<BaseScene> scene_ = nullptr;
 
-	SrvManager* srvManager_ = nullptr;
+		// 次のシーン
+		std::unique_ptr<BaseScene> nextScene_ = nullptr;
 
-	DirectXCommon* dxCommon_ = nullptr;
+		AbstractSceneFactory* sceneFactory_ = nullptr;
 
-	Camera* camera_ = nullptr;
+		SrvManager* srvManager_ = nullptr;
 
-	PostEffect* postEffect_ = nullptr;
+		DirectXCommon* dxCommon_ = nullptr;
 
-	EngineContext engineContext_;
-};
+		Camera* camera_ = nullptr;
+
+		PostEffect* postEffect_ = nullptr;
+
+		EngineContext engineContext_;
+	};
+}

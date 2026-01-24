@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "BaseCollider.h"
 
 // \brief OBBCollider OBB型ぼコライダークラス
@@ -11,7 +11,7 @@ public: /// 公開メンバ関数
 	 * \brief  Initialize 初期化
 	 * \param  worldTransform ワールド変形情報
 	 */
-	void Initialize(WorldTransform* worldTransform, BaseEntity* owner) override;
+	void Initialize(Kouro::WorldTransform* worldTransform, BaseEntity* owner) override;
 
 	// \brief  Update 更新
 	void Update() override;
@@ -31,7 +31,7 @@ public: /// 公開メンバ関数
 	 * \brief OBBの情報を設定する
 	 * \param OBB OBBの最小座標と最大座標
 	*/
-	void SetOBB(const OBB& obb) { obb_ = obb; }
+	void SetOBB(const Kouro::OBB& obb) { obb_ = obb; }
 
 	///================================================================================
 	///                                        getter
@@ -40,13 +40,13 @@ public: /// 公開メンバ関数
 	 * \brief  GetOBBを取得する
 	 * \return OBB
 	 */
-	OBB GetOBB() const { return obb_; }
+	Kouro::OBB GetOBB() const { return obb_; }
 
 	/**================================================================================
 	 * \brief  colorを取得する
 	 * \return color
 	 */
-	Vector4 GetColor() const { return color_; }
+	Kouro::Vector4 GetColor() const { return color_; }
 
 private: /// 非公開メンバ関数
 
@@ -56,6 +56,6 @@ private: /// 非公開メンバ変数
 
 	// AABBの最小座標と最大座標
 
-	OBB obb_ = {};
+	Kouro::OBB obb_ = {};
 };
 

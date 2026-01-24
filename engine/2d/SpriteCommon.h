@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "DirectXCommon.h"
 
 // \brief SpriteCommon
@@ -7,91 +7,94 @@
 // スプライト描画時に適切なパイプライン設定を提供。
 // シングルトンとして管理され、DirectXCommonを介してDirectX12描画にアクセスする。
 
-class SpriteCommon
+namespace Kouro
 {
-public: // メンバ関数
+	class SpriteCommon
+	{
+	public: // メンバ関数
 
-	/**
-	* \brief  インスタンス取得
-	* \return インスタンス
-	*/
-	static SpriteCommon* GetInstance();
+		/**
+		* \brief  インスタンス取得
+		* \return インスタンス
+		*/
+		static SpriteCommon* GetInstance();
 
-	/**
-	* \brief  初期化
-	* \param  dxCommon DirectX共通クラスへのポインタ
-	*/
-	void Initialize(DirectXCommon* dxCommon);
+		/**
+		* \brief  初期化
+		* \param  dxCommon DirectX共通クラスへのポインタ
+		*/
+		void Initialize(DirectXCommon* dxCommon);
 
-	/// \brief 終了処理
-	void Finalize();
+		/// \brief 終了処理
+		void Finalize();
 
-	/// \brief 前景ビュー設定
-	void SetForegroundView();
+		/// \brief 前景ビュー設定
+		void SetForegroundView();
 
-	/// \brief 背景ビュー設定
-	void SetBackgroundView();
+		/// \brief 背景ビュー設定
+		void SetBackgroundView();
 
-	/// \brief 前景描画
-	void DrawForeground();
+		/// \brief 前景描画
+		void DrawForeground();
 
-	/// \brief 背景描画
-	void DrawBackground();
+		/// \brief 背景描画
+		void DrawBackground();
 
-	/**
-	* \brief  directXCommon取得
-	* \return directXCommon
-	*/
-	DirectXCommon* GetDxCommon() const { return dxCommon_; }
+		/**
+		* \brief  directXCommon取得
+		* \return directXCommon
+		*/
+		DirectXCommon* GetDxCommon() const { return dxCommon_; }
 
-	/**
-	* \brief  背景描画フラグ取得
-	* \return 背景描画フラグ
-	*/
-	bool GetIsDrawBackground() const { return isDrawBackground; }
+		/**
+		* \brief  背景描画フラグ取得
+		* \return 背景描画フラグ
+		*/
+		bool GetIsDrawBackground() const { return isDrawBackground; }
 
-	/**
-	* \brief  前景描画フラグ取得
-	* \return 前景描画フラグ
-	*/
-	bool GetIsDrawForeground() const { return isDrawForeground; }	
+		/**
+		* \brief  前景描画フラグ取得
+		* \return 前景描画フラグ
+		*/
+		bool GetIsDrawForeground() const { return isDrawForeground; }
 
-private:
+	private:
 
-	static std::unique_ptr<SpriteCommon> instance;
+		static std::unique_ptr<SpriteCommon> instance;
 
-	friend std::unique_ptr<SpriteCommon> std::make_unique<SpriteCommon>();
-	friend std::default_delete<SpriteCommon>;
+		friend std::unique_ptr<SpriteCommon> std::make_unique<SpriteCommon>();
+		friend std::default_delete<SpriteCommon>;
 
-	SpriteCommon() = default;
-	~SpriteCommon() = default;
-	SpriteCommon(SpriteCommon&) = delete;
-	SpriteCommon& operator=(SpriteCommon&) = delete;
+		SpriteCommon() = default;
+		~SpriteCommon() = default;
+		SpriteCommon(SpriteCommon&) = delete;
+		SpriteCommon& operator=(SpriteCommon&) = delete;
 
-	/// \brief ルートシグネチャ作成
-	void CreateRootSignature();
+		/// \brief ルートシグネチャ作成
+		void CreateRootSignature();
 
-	/// \brief グラフィックスパイプライン作成（前景）
-	void CreateGraphicsPipelineForeground();
+		/// \brief グラフィックスパイプライン作成（前景）
+		void CreateGraphicsPipelineForeground();
 
-	/// \brief グラフィックスパイプライン作成（背景）
-	void CreateGraphicsPipelineBackground();
+		/// \brief グラフィックスパイプライン作成（背景）
+		void CreateGraphicsPipelineBackground();
 
-private:
-	DirectXCommon* dxCommon_;
+	private:
+		DirectXCommon* dxCommon_;
 
-	Microsoft::WRL::ComPtr< ID3D12RootSignature> rootSignature;
+		Microsoft::WRL::ComPtr< ID3D12RootSignature> rootSignature;
 
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineStateBackground;
+		Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineStateBackground;
 
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineStateForeground;
+		Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineStateForeground;
 
-	//ID3DBlob* signatureBlob = nullptr;
-	Microsoft::WRL::ComPtr< ID3DBlob> signatureBlob = nullptr;
-	//ID3DBlob* errorBlob = nullptr;
-	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+		//ID3DBlob* signatureBlob = nullptr;
+		Microsoft::WRL::ComPtr< ID3DBlob> signatureBlob = nullptr;
+		//ID3DBlob* errorBlob = nullptr;
+		Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 
-	bool isDrawBackground = false;	
+		bool isDrawBackground = false;
 
-	bool isDrawForeground = false;	
-};
+		bool isDrawForeground = false;
+	};
+}

@@ -1,8 +1,8 @@
-﻿#include "BaseCollider.h"
+#include "BaseCollider.h"
 
 #include "BaseEntity.h"
 
-void BaseCollider::Initialize(WorldTransform* worldTransform, BaseEntity* owner)
+void BaseCollider::Initialize(Kouro::WorldTransform* worldTransform, BaseEntity* owner)
 {
 	// コライダーに関連付けるワールド変換情報を設定する
 

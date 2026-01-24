@@ -18,12 +18,12 @@
 
 // \brief GameClear ゲームクリアシーンクラス
 
-class GameClear : public BaseScene {
+class GameClear : public Kouro::BaseScene {
 
 public:
 
 	// \brief 初期化
-	void Initialize(EngineContext context) override;
+	void Initialize(Kouro::EngineContext context) override;
 
 	// \brief Finalize 終了
 	void Finalize() override;
@@ -36,18 +36,18 @@ public:
 
 private:
 
-	std::unique_ptr<Sprite> gameClearSprite_ = nullptr;
+	std::unique_ptr<Kouro::Sprite> gameClearSprite_ = nullptr;
 
 	const float kMainTime = 3.0f;
 
 	float timer_ = 0.0f;
-	
-	std::unique_ptr<NumUi> scoreUi_ = nullptr;
 
-	GlobalVariables grobalVariables_;
+	std::unique_ptr<Kouro::NumUi> scoreUi_ = nullptr;
+
+	Kouro::GlobalVariables grobalVariables_;
 
 	uint32_t eliminatedEnemyCount_ = 0;
 
-	std::unique_ptr<Sprite> scoreLabelSprite_ = nullptr;
+	std::unique_ptr<Kouro::Sprite> scoreLabelSprite_ = nullptr;
 };
 

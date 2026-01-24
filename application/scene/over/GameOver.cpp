@@ -1,23 +1,21 @@
-﻿#include "GameOver.h"
+#include "GameOver.h"
 
-void GameOver::Initialize(EngineContext context)
+void GameOver::Initialize(Kouro::EngineContext context)
 {
 	// 基底クラスの初期化
 	BaseScene::Initialize(context);
 
 	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture("Resources/GameOver.png");
+	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/GameOver.png");
 
 	// ゲームオーバー用のスプライトの生成と初期化
-	gameOverSprite_ = std::make_unique<Sprite>();
-	gameOverSprite_->Initialize(SpriteCommon::GetInstance(), "Resources/GameOver.png");
+	gameOverSprite_ = std::make_unique<Kouro::Sprite>();
+	gameOverSprite_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/GameOver.png");
 	gameOverSprite_->SetSize({ 1280.0f,720.0f });
 	gameOverSprite_->SetPosition({ 640.0f,360.0f });
 	gameOverSprite_->SetAnchorPoint({ 0.5f,0.5f });
 	gameOverSprite_->SetTexSize({ 1536.0f,1024.0f });
 	gameOverSprite_->Update();
-
-
 }
 
 void GameOver::Finalize() {
@@ -35,7 +33,7 @@ void GameOver::Update()
 		if (fade_->IsFinished())
 		{
 			// 入力の受付を有効に
-			Input::GetInstance()->SetIsReception(true);
+			Kouro::Input::GetInstance()->SetIsReception(true);
 
 			// フェーズをメインに変更
 			phase_ = Phase::kMain;
@@ -47,7 +45,7 @@ void GameOver::Update()
 	case Phase::kMain:
 
 		// エンターキーかAボタンを押してたら
-		if (Input::GetInstance()->Triggerkey(DIK_RETURN) || Input::GetInstance()->TriggerGamePadButton(Input::GamePadButton::A))
+		if (Kouro::Input::GetInstance()->Triggerkey(DIK_RETURN) || Kouro::Input::GetInstance()->TriggerGamePadButton(Kouro::Input::GamePadButton::A))
 		{
 			// フェードのステータスを設定して始める
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
@@ -78,7 +76,7 @@ void GameOver::Update()
 		if (fade_->IsFinished())
 		{
 			// シーンをタイトルにする
-			SceneManager::GetInstance()->ChangeScene("TITLE");
+			Kouro::SceneManager::GetInstance()->ChangeScene("TITLE");
 
 			return;
 		}

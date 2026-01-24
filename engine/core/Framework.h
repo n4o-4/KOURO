@@ -38,95 +38,98 @@
 
 // \brief FrameWork ゲーム全体の基本的な流れ（初期化・更新・描画・終了）を管理するフレームワーククラス。DirectX環境や各種マネージャを統合し、アプリのメインループを制御する。 
 
-class Framework
+namespace Kouro
 {
-public:
+	class Framework
+	{
+	public:
 
-protected:
+	protected:
 
-	std::unique_ptr<WinApp> winApp = nullptr;
+		std::unique_ptr<WinApp> winApp = nullptr;
 
-	DirectXCommon* dxCommon_ = nullptr;
+		DirectXCommon* dxCommon_ = nullptr;
 
-	std::unique_ptr<SrvManager> srvManager_ = nullptr;
+		std::unique_ptr<SrvManager> srvManager_ = nullptr;
 
-	std::unique_ptr<ModelCommon> modelCommon = nullptr;
+		std::unique_ptr<ModelCommon> modelCommon = nullptr;
 
-	std::unique_ptr<UavManager> uavManager_ = nullptr;
+		std::unique_ptr<UavManager> uavManager_ = nullptr;
 
-	std::unique_ptr<GpuResourceUtils> gpuResourceUtils_ = nullptr;
+		std::unique_ptr<GpuResourceUtils> gpuResourceUtils_ = nullptr;
 
 #ifdef _DEBUG
 
-	std::unique_ptr<ImGuiManager> imGuiManager = nullptr;
+		std::unique_ptr<ImGuiManager> imGuiManager = nullptr;
 
 #endif
-	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
+		std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
 
-	
-	bool endRequest_ = false;
 
-	std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
+		bool endRequest_ = false;
 
-	std::unique_ptr<PostEffect> postEffect_ = nullptr;
+		std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
 
-	std::unique_ptr<GpuParticleManager> gpuParticleManager_ = nullptr;
+		std::unique_ptr<PostEffect> postEffect_ = nullptr;
 
-	GpuParticle* gpuParticle_ = nullptr;
+		std::unique_ptr<GpuParticleManager> gpuParticleManager_ = nullptr;
 
-	// フレームごとの時間計測用
-	uint64_t frameCount = 0;
-	double totalTime = 0.0; // 総時間
-	float deltaTime;
-	std::chrono::steady_clock::time_point startTime;
-	std::chrono::steady_clock::time_point lastTime;
-	double elapsedTime = 0.0; 
-	double fps = 0.0;
-	std::chrono::steady_clock::time_point now;
+		GpuParticle* gpuParticle_ = nullptr;
 
-	const float kDeltaTime_ = 1.0f / 60.0f;
+		// フレームごとの時間計測用
+		uint64_t frameCount = 0;
+		double totalTime = 0.0; // 総時間
+		float deltaTime;
+		std::chrono::steady_clock::time_point startTime;
+		std::chrono::steady_clock::time_point lastTime;
+		double elapsedTime = 0.0;
+		double fps = 0.0;
+		std::chrono::steady_clock::time_point now;
 
-public:
+		const float kDeltaTime_ = 1.0f / 60.0f;
 
-	virtual~Framework() = default;
+	public:
 
-	/// \brief 初期化
-	virtual void Initialize();
+		virtual~Framework() = default;
 
-	/// \brief 終了
-	virtual void Finalize();
+		/// \brief 初期化
+		virtual void Initialize();
 
-	/// \brief 更新
-	virtual void Update();
+		/// \brief 終了
+		virtual void Finalize();
 
-	/// \brief 描画
-	virtual void Draw();
+		/// \brief 更新
+		virtual void Update();
 
-	/// \brief エフェクト描画
-	virtual void DrawEffect();
+		/// \brief 描画
+		virtual void Draw();
 
-	/**
-	* \brief  終了要求が来ているかどうか取得
-	* \return endRequest_ 終了要求が来ているかどうか
-	*/
-	virtual bool IsEndRequest() { return endRequest_; }
+		/// \brief エフェクト描画
+		virtual void DrawEffect();
 
-	/// \brief Run メインループ
-	void Run();
+		/**
+		* \brief  終了要求が来ているかどうか取得
+		* \return endRequest_ 終了要求が来ているかどうか
+		*/
+		virtual bool IsEndRequest() { return endRequest_; }
 
-	/**
-	* \brief  デルタタイムの取得する
-	* \return kDeltaTime_ デルタタイム
-	*/
-	const float GetDeltaTime() const { return kDeltaTime_; }
+		/// \brief Run メインループ
+		void Run();
 
-	/// \brief GpuContextの作成
-	GpuContext CreateGpuContext();
+		/**
+		* \brief  デルタタイムの取得する
+		* \return kDeltaTime_ デルタタイム
+		*/
+		const float GetDeltaTime() const { return kDeltaTime_; }
 
-	/// \brief EngineContextの作成
-	EngineContext CreateEngineContext();
+		/// \brief GpuContextの作成
+		GpuContext CreateGpuContext();
 
-private:
+		/// \brief EngineContextの作成
+		EngineContext CreateEngineContext();
 
-	void UpdateFPS();
-};
+	private:
+
+		void UpdateFPS();
+	};
+}

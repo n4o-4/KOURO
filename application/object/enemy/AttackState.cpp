@@ -3,7 +3,7 @@
 #include "RandomMoveState.h"
 #include "Enemy.h"
 
-void AttackState::Enter(Enemy* enemy)
+void AttackState::OnEnter(Enemy* enemy)
 {
 	randomGenerate.Initialize();
 
@@ -43,7 +43,7 @@ void AttackState::Update(Enemy* enemy)
 	}
 }
 
-void AttackState::Exit(Enemy* enemy)
+void AttackState::OnExit(Enemy* enemy)
 {
 	enemy->GetWorldTransform()->transform.scale = { 1.0f,1.0f,1.0f };
 }

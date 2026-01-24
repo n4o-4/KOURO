@@ -1,8 +1,8 @@
-﻿#include "SceneFactory.h"
+#include "SceneFactory.h"
 
-std::unique_ptr<BaseScene> SceneFactory::CreateScene(const std::string& sceneName)
+std::unique_ptr<Kouro::BaseScene> SceneFactory::CreateScene(const std::string& sceneName)
 {
-    std::unique_ptr<BaseScene> newScene = nullptr;
+    std::unique_ptr<Kouro::BaseScene> newScene = nullptr;
 
     if (sceneName == "TITLE")
     {

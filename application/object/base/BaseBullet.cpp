@@ -1,19 +1,19 @@
-﻿#include "BaseBullet.h"
+#include "BaseBullet.h"
 
-void BaseBullet::Initialize(LineModel* model, Vector3 spawnPos)
+void BaseBullet::Initialize(Kouro::LineModel* model, Kouro::Vector3 spawnPos)
 {
 	///========================================
 	/// オブジェクト3D
 
 	// 生成と初期化
-	objectLine_ = std::make_unique<ObjectLine>();
+	objectLine_ = std::make_unique<Kouro::ObjectLine>();
 	objectLine_->Initialize(model);
 
 	///========================================
 	/// ワールドトランスフォーム
 
 	// 生成と初期化
-	worldTransform_ = std::make_unique<WorldTransform>();
+	worldTransform_ = std::make_unique<Kouro::WorldTransform>();
 	worldTransform_->Initialize();
 
 

@@ -5,36 +5,37 @@
 
 // \brief ImGuiManager UI管理クラス
 
-class ImGuiManager {
-public:
+namespace Kouro
+{
+    class ImGuiManager {
+    public:
 
-    ~ImGuiManager();
+        ~ImGuiManager();
 
-	/// <summary>
-    /// 初期化
-    /// </summary>
-    void Initialize(WinApp* winApp,DirectXCommon* dxCommon);
+        /// <summary>
+        /// 初期化
+        /// </summary>
+        void Initialize(WinApp* winApp, DirectXCommon* dxCommon);
 
-    /// <summary>
-    /// ImGui受付開始
-    /// </summary>
-    void Begin();
+        /// <summary>
+        /// ImGui受付開始
+        /// </summary>
+        void Begin();
 
-    /// <summary>
-    /// ImGui受付終了
-    /// </summary>
-    void End();
+        /// <summary>
+        /// ImGui受付終了
+        /// </summary>
+        void End();
 
-    /// <summary>
-    /// 画面への描画
-    /// </summary>
-    void Draw(DirectXCommon* dxCommon);
+        /// <summary>
+        /// 画面への描画
+        /// </summary>
+        void Draw(DirectXCommon* dxCommon);
 
-private:
+    private:
 
-    // SRV用デスクリプタヒープ
-    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvHeap_;
+        // SRV用デスクリプタヒープ
+        Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvHeap_;
 
-};
-
-
+    };
+}

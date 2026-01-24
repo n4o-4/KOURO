@@ -45,7 +45,7 @@ void RailFollower::Update(float deltaTime)
 	}
 
 	// 現在位置
-	Vector3 position = CatmullRomPosition(controlPoints_, t);
+	Kouro::Vector3 position = CatmullRomPosition(controlPoints_, t);
 
 	// 次フレームのターゲット位置（進行方向）
 	float distanceAhead = distanceTravelled_ + lookAheadDistance_;
@@ -63,11 +63,11 @@ void RailFollower::Update(float deltaTime)
 	}
 
 	// 現在の向き(進行方向)
-	Vector3 target = CatmullRomPosition(controlPoints_, tNext);
+	Kouro::Vector3 target = CatmullRomPosition(controlPoints_, tNext);
 
 	
 	// forward ベクトルからオイラー角を計算
-	Vector3 forward = Normalize(target - position);
+	Kouro::Vector3 forward = Normalize(target - position);
 	float yaw = std::atan2(forward.x, forward.z);
 	float pitch = std::asin(-forward.y);
 	float roll = 0.0f;

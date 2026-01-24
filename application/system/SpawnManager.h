@@ -7,7 +7,7 @@ class SpawnManager
 {
 public:
 
-	std::vector<Vector3> LoadFile(const std::string fileName);
+	std::vector<Kouro::Vector3> LoadFile(const std::string fileName);
 
 private:
 
