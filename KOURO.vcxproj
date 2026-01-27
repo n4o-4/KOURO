@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="application\scene\game\state\PauseState.cpp" />
     <ClCompile Include="RailAnimation.cpp" />
     <ClCompile Include="application\object\enemy\AttackState.cpp" />
     <ClCompile Include="application\camera\FollowCameraState.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="engine\scene\ISceneState.h" />
     <ClInclude Include="engine\math\Vector2.h" />
     <ClInclude Include="engine\math\Vector2Yaml.h" />
+    <ClInclude Include="application\scene\game\state\PauseState.h" />
     <ClInclude Include="RailAnimation.h" />
     <ClInclude Include="application\object\enemy\AttackState.h" />
     <ClInclude Include="engine\math\Vector3.h" />

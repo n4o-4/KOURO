@@ -520,6 +520,7 @@
     <ClCompile Include="externals\yaml-cpp\src\tag.cpp">
       <Filter>extarnals\yaml-cpp</Filter>
     </ClCompile>
+    <ClCompile Include="application\scene\game\state\PauseState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -944,6 +945,7 @@
       <Filter>application\scene\SceneState</Filter>
     </ClInclude>
     <ClInclude Include="engine\math\Vector4.h" />
+    <ClInclude Include="application\scene\game\state\PauseState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

@@ -1,4 +1,5 @@
 #pragma once
+#include "BaseScene.h"
 
 namespace Kouro
 {
@@ -8,8 +9,11 @@ namespace Kouro
 		/// \brief 仮想デストラクタ
 		virtual ~ISceneState() = default;
 
-		/// \brief シーン状態に入るときの処理
-		virtual void OnEnter() = 0;
+		/**
+		* \brief  状態に入るときの処理
+		* \param  scene : 処理対象のシーン
+		*/
+		virtual void OnEnter(BaseScene* scene) = 0;
 
 		/// \brief 状態の更新処理
 		virtual void Update() = 0;

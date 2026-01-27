@@ -20,8 +20,39 @@
 
 class GameScene : public Kouro::BaseScene
 {
+public:
+
+	/**
+	* \brief  ゲームシーンの更新処理管理フラフ
+	* \param  enablePlayerUpdate : プレイヤー用
+	* \param  enableEnemyUpdate  : 敵用
+	*/
+	struct GameSceneUpdateFlags
+	{
+		bool enablePlayerUpdate;
+		bool enableEnemyUpdate;
+	};
+
+public: // メンバ関数
+
+	// \brief 初期化
+	void Initialize(Kouro::EngineContext context) override;
+
+	// \brief Finalize 終了
+	void Finalize() override;
+
+	// \brief Update 更新
+	void Update() override;
+
+	// \brief Draw 描画
+	void Draw() override;
+
+	void SetUpdateFlags(const GameSceneUpdateFlags& flags) { updateFlags = flags; }
+
+private: //静的メンバ関数
+
 private:
-	
+
 	//========================================
 	// ライトクラス
 	std::unique_ptr<Kouro::DirectionalLight> directionalLight = nullptr;
@@ -39,11 +70,11 @@ private:
 	bool isGameOver_ = false;
 	// コンティニュー
 	bool isContinue_ = true;
-	
+
 	// 待機フラグ
-    bool isWaiting_ = false;
+	bool isWaiting_ = false;
 	// 待機時間
-    int32_t waitTimer_ = 0;
+	int32_t waitTimer_ = 0;
 
 	std::unique_ptr<Kouro::LineDrawerBase> lineDrawer_ = nullptr;
 
@@ -126,24 +157,6 @@ private:
 	RailFollower playerRail_;
 	RailFollower cameraRail_;
 
-private:
-
-public: // メンバ関数
-
-	// \brief 初期化
-	void Initialize(Kouro::EngineContext context) override;
-
-	// \brief Finalize 終了
-	void Finalize() override;
-
-	// \brief Update 更新
-	void Update() override;
-
-	// \brief Draw 描画
-	void Draw() override;
-
-private: //静的メンバ関数
-
-private:
+	GameSceneUpdateFlags updateFlags = {};
 
 };
