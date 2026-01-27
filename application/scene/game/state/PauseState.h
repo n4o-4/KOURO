@@ -1,8 +1,7 @@
 #pragma once
 #include "ISceneState.h"
-#include "BaseScene.h"
 
-class PauseState : public Kouro::ISceneState
+class PauseState : public ISceneState
 {
 public:
 
@@ -14,12 +13,5 @@ public:
 
 	/// \brief ポーズ状態から出るときの処理
 	void OnExit() override;
-
-private:
-
-	static constexpr GameScene::GameSceneUpdateFlags enterFlags_ = { false ,false };
-
-	Kouro::BaseScene* scene_ = nullptr;
-
 };
 

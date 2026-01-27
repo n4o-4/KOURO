@@ -9,6 +9,9 @@
 #include "GpuParticle.h"
 #include "SpawnManager.h"
 
+#include "ISceneState.h"
+#include "game/state/PauseState.h"
+
 ///=============================================================================
 ///						マトリックス表示
 static void ShowMatrix4x4(const Kouro::Matrix4x4 &matrix, const char *label) {
@@ -300,6 +303,34 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	fireUI_->SetColor(Kouro::Vector4(kDefaultUIColor_));
 	fireUI_->Update();
 
+	pauseUI_ = std::make_unique<Kouro::Sprite>();
+	pauseUI_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/pause_ui.png");
+	pauseUI_->SetAnchorPoint(Kouro::Vector2(0.5f, 0.5f));
+	pauseUI_->SetTexSize(Kouro::Vector2(512.0f, 256.0f));
+	pauseUI_->SetSize(Kouro::Vector2(240.0f, 120.0f));
+	pauseUI_->SetPosition(Kouro::Vector2(120.0f, 50.0f));
+	pauseUI_->SetColor(Kouro::Vector4(kDefaultUIColor_));
+	pauseUI_->Update();
+
+	titleUI_ = std::make_unique<Kouro::Sprite>();
+	titleUI_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/title_ui.png");
+	titleUI_->SetAnchorPoint(Kouro::Vector2(0.5f, 0.5f));
+	titleUI_->SetTexSize(Kouro::Vector2(512.0f, 256.0f));
+	titleUI_->SetSize(Kouro::Vector2(512.0f, 256.0f));
+	titleUI_->SetPosition(Kouro::Vector2(640.0f, 100.0f));
+	titleUI_->SetColor(Kouro::Vector4(kDefaultUIColor_));
+	titleUI_->Update();
+
+	backUI_ = std::make_unique<Kouro::Sprite>();
+	backUI_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/back_ui.png");
+	backUI_->SetAnchorPoint(Kouro::Vector2(0.5f, 0.5f));
+	backUI_->SetTexSize(Kouro::Vector2(512.0f, 256.0f));
+	backUI_->SetSize(Kouro::Vector2(512.0f, 256.0f));
+	backUI_->SetPosition(Kouro::Vector2(640.0f, 200.0f));
+	backUI_->SetColor(Kouro::Vector4(kDefaultUIColor_));
+	backUI_->Update();
+
+
 	colliderManager_->AddCollider(player_);
 
 	player_->SetColliderManager(colliderManager_.get());
@@ -352,6 +383,7 @@ void GameScene::Finalize()
 	BaseScene::Finalize();
 
 }
+
 ///=============================================================================
 ///						更新
 void GameScene::Update()
@@ -362,7 +394,7 @@ void GameScene::Update()
 	// パーティクルマネージャーの更新
 	Kouro::ParticleManager::GetInstance()->Update();
 
-	//GpuParticle::GetInstance()->Update(cameraManager_->GetActiveCamera()->GetViewProjection());
+	//Kouro::GpuParticle::GetInstance()->Update(cameraManager_->GetActiveCamera()->GetViewProjection());
 
 	// postEffectの処理
 	Kouro::RadialBlur* blur = static_cast<Kouro::RadialBlur*>(sceneManager_->GetPostEffect()->GetEffectData("blur"));
@@ -401,20 +433,6 @@ void GameScene::Update()
 	
 	blur->SetMaterialData(material);
 
-	//========================================
-	// ライト
-	// 
-	//========================================
-	// ディレクショナルライト
-	directionalLight->Update();
-	//========================================
-	// ポイントライト
-	pointLight->Update();
-	//========================================
-	// スポットライト
-	spotLight->Update();
-
-
 	transform_->UpdateMatrix();
 
 	// プレイヤーが死亡していたら
@@ -441,45 +459,6 @@ void GameScene::Update()
 	{
 		object.worldTransform->UpdateMatrix();
 	}
-
-#ifdef _DEBUG
-
-	if (Kouro::Input::GetInstance()->Triggerkey(DIK_E))
-	{
-		SpawnManager spawnManager;
-
-		std::vector<Kouro::Vector3> enemies = spawnManager.LoadFile("spawnPattern1.json");
-
-		for (size_t i = 0; i < enemies.size(); i++)
-		{
-			std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
-			enemy->Initialize(lineModelManager_->FindLineModel("enemy/enemy.obj"));
-
-			enemy->SetGoalOffset(enemies[i]);
-
-			enemy->SetTarget(player_.get());
-
-			enemy->SetColliderManager(colliderManager_.get());
-
-			enemy->SetLineModelManager(lineModelManager_.get());
-
-			enemy->SetEmitter(mEmitter.get());
-
-			std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
-
-			enemy->SetCameraManager(cameraManager_.get());
-
-			enemy->ChangeState(std::move(state));
-
-			enemy->SetParent(&enemyRail_.GetWorldTransform());
-
-			colliderManager_->AddCollider(enemy);
-
-			enemies_.push_back(std::move(enemy));
-		}
-	}
-
-#endif
 
 	// 敵の数を取得
 	size_t enemyCount = enemies_.size();
@@ -528,10 +507,14 @@ void GameScene::Update()
 		break;
 	case Phase::kMain:
 
+		if (Kouro::Input::GetInstance()->Triggerkey(DIK_ESCAPE))
+		{
+			phase_ = Phase::kPose;
+		}
+
 		enemyRail_.Update(1.0f / 60.0f);
 		playerRail_.Update(1.0f / 60.0f);
 		cameraRail_.Update(1.0f / 60.0f);
-
 
 		player_->Update();
 
@@ -539,7 +522,7 @@ void GameScene::Update()
 		{
 			enemy->Update();
 		}
-		
+
 		colliderManager_->Update();
 
 		// 生存していない敵をリストから削除
@@ -551,7 +534,7 @@ void GameScene::Update()
 		{
 			if (!enemy->GetIsAlive())
 			{
- 				++eliminatedEnemyCount_;
+				++eliminatedEnemyCount_;
 			}
 		}
 
@@ -567,6 +550,12 @@ void GameScene::Update()
 
 		if (fade_->IsFinished())
 		{
+			if(isBackToTitle_)
+			{
+				sceneManager_->ChangeScene("TITLE");
+				return;
+			}
+
 			// 敵の数が0ならクリアシーンへ
 			if(enemyCount == 0)
 			{
@@ -587,6 +576,20 @@ void GameScene::Update()
 	case Phase::kPlay:
 		break;
 	case Phase::kPose:
+
+		if (Kouro::Input::GetInstance()->Triggerkey(DIK_ESCAPE))
+		{
+			phase_ = Phase::kMain;
+		}
+
+		if(Kouro::Input::GetInstance()->Triggerkey(DIK_T))
+		{
+			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+			phase_ = Phase::kFadeOut;
+
+			isBackToTitle_ = true;
+		}
+
 		break;
 	}
 
@@ -656,16 +659,6 @@ void GameScene::Update()
 
 	fireUI_->SetColor({ uiColor.x,uiColor.y,uiColor.z,1.0f });
 	fireUI_->Update();
-
-	//emitter1_->Update();
-
-	//emitter2_->Update();
-
-	//emitter3_->Update();
-
-	//emitter4_->Update();
-
-	//railCamera_->Update();
 }
 
 ///=============================================================================
@@ -717,6 +710,16 @@ void GameScene::Draw()
 
 	WASD_->Draw();
 	fireUI_->Draw();
+
+	if(phase_ == Phase::kMain)
+	{
+		pauseUI_->Draw();
+	}
+	else if(phase_ == Phase::kPose)
+	{
+		titleUI_->Draw();
+		backUI_->Draw();
+	}
 
 	// フェード描画
 	DrawFade();

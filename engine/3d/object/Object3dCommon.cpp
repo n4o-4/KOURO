@@ -36,7 +36,7 @@ namespace Kouro
 		// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけばいい
 		dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(7, TextureManager::GetInstance()->GetSrvHandleGPU(environmentMapPath_));
+		//dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(7, TextureManager::GetInstance()->GetSrvHandleGPU(environmentMapPath_));
 	}
 
 	void Object3dCommon::CreateRootSignature()

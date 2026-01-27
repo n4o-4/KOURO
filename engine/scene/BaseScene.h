@@ -14,10 +14,6 @@
 
 #include "PostEffect.h"
 
-#include "Skybox.h"
-
-
-
 // \brief BaseScene
 // ゲームシーンの基本クラス。
 // フェーズ管理（フェードイン、メイン、プレイ、ポーズ、フェードアウト）や、
@@ -28,6 +24,8 @@
 namespace Kouro
 {
 	class SceneManager;
+
+	
 
 	class BaseScene
 	{
@@ -115,10 +113,7 @@ namespace Kouro
 
 		bool isContinue = true;
 
-		std::unique_ptr<Skybox> skybox_ = nullptr;
-
 		EngineContext engineContext_;
 
-	private:
 	};
 }

@@ -941,7 +941,7 @@
     <ClInclude Include="externals\yaml-cpp\src\tag.h">
       <Filter>extarnals\yaml-cpp</Filter>
     </ClInclude>
-    <ClInclude Include="engine\scene\ISceneState.h">
+    <ClInclude Include="application\scene\ISceneState.h">
       <Filter>application\scene\SceneState</Filter>
     </ClInclude>
     <ClInclude Include="engine\math\Vector4.h" />

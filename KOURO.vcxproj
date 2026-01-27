@@ -157,7 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\Vector4.h" />
-    <ClInclude Include="engine\scene\ISceneState.h" />
+    <ClInclude Include="application\scene\ISceneState.h" />
     <ClInclude Include="engine\math\Vector2.h" />
     <ClInclude Include="engine\math\Vector2Yaml.h" />
     <ClInclude Include="application\scene\game\state\PauseState.h" />

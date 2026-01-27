@@ -26,11 +26,13 @@ public:
 	* \brief  ゲームシーンの更新処理管理フラフ
 	* \param  enablePlayerUpdate : プレイヤー用
 	* \param  enableEnemyUpdate  : 敵用
+	* \param  enableRailUpdate   : レール用
 	*/
 	struct GameSceneUpdateFlags
 	{
 		bool enablePlayerUpdate;
 		bool enableEnemyUpdate;
+		bool enableRailUpdate;
 	};
 
 public: // メンバ関数
@@ -70,6 +72,8 @@ private:
 	bool isGameOver_ = false;
 	// コンティニュー
 	bool isContinue_ = true;
+
+	bool isBackToTitle_ = false;
 
 	// 待機フラグ
 	bool isWaiting_ = false;
@@ -122,6 +126,10 @@ private:
 
 	std::unique_ptr<Kouro::Sprite> fireUI_ = nullptr;
 
+	std::unique_ptr<Kouro::Sprite> pauseUI_ = nullptr;
+	std::unique_ptr<Kouro::Sprite> titleUI_ = nullptr;
+	std::unique_ptr<Kouro::Sprite> backUI_ = nullptr;
+
 	float countScale_[3] = { 0.0f, 0.0f, 0.0f };
 	float countRotation_[3] = { 0.0f, 0.0f, 0.0f };
 	float countAlpha_[3] = { 0.0f, 0.0f, 0.0f }; // フェードイン用
@@ -144,10 +152,6 @@ private:
 	Kouro::GlobalVariables globalVariables_;
 
 	uint32_t eliminatedEnemyCount_ = 0;
-
-	/*std::unique_ptr<RailAnimation> enemyRailAnimation_ = nullptr;
-	std::unique_ptr<RailAnimation> playerRailAnimation_ = nullptr;
-	std::unique_ptr<RailAnimation> cameraRailAnimation_ = nullptr;*/
 
 	float playerProgress_ = 0.05f;
 	float enemyProgressOffset_ = 0.01f;

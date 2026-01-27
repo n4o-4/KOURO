@@ -3,6 +3,8 @@
 #include "SceneManager.h"
 #include "ParticleManager.h"
 
+#include "ISceneState.h"
+
 namespace Kouro
 {
 	void BaseScene::Initialize(EngineContext context)
@@ -39,10 +41,6 @@ namespace Kouro
 
 		// パーティクルマネージャクラスにカメラマネージャークラスのポインタを渡す
 		ParticleManager::GetInstance()->SetCameraManager(cameraManager_.get());
-
-		// スカイボックスの生成と初期化
-		skybox_ = std::make_unique<Skybox>();
-		skybox_->Initialize(sceneManager_->GetDxCommon(), "Resources/envMap.dds");
 
 		// オブジェクト3dコモンに環境マップテクスチャを設定
 		Object3dCommon::GetInstance()->SetEnvironmentMapPath("Resources/envMap.dds");
