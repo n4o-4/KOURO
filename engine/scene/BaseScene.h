@@ -14,6 +14,7 @@
 
 #include "PostEffect.h"
 
+
 // \brief BaseScene
 // ゲームシーンの基本クラス。
 // フェーズ管理（フェードイン、メイン、プレイ、ポーズ、フェードアウト）や、
@@ -24,8 +25,8 @@
 namespace Kouro
 {
 	class SceneManager;
+	class ISceneState;
 
-	
 
 	class BaseScene
 	{
@@ -47,7 +48,7 @@ namespace Kouro
 	public:
 
 		// \brief 
-		virtual ~BaseScene() = default;
+		virtual ~BaseScene();
 
 		// \brief Initialize 初期化
 		virtual void Initialize(EngineContext context);
@@ -80,6 +81,8 @@ namespace Kouro
 		virtual SrvManager* GetSrvManager() { return srvManager_; }
 
 		const ViewProjection GetViewProjection() const { return cameraManager_->GetActiveCamera()->GetViewProjection(); }
+
+		void ResetState();
 
 	protected:
 
@@ -115,5 +118,6 @@ namespace Kouro
 
 		EngineContext engineContext_;
 
+		std::unique_ptr<ISceneState> state_ = nullptr;
 	};
 }

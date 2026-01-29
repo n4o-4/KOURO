@@ -62,7 +62,7 @@ void Player::Update()
 	else
 	{
 		// スペースキーを押していたら
-		if (Kouro::Input::GetInstance()->/*PushKey*/Triggerkey(DIK_SPACE) || Kouro::Input::GetInstance()->PushKey(DIK_SPACE))
+		if (Kouro::Input::GetInstance()->/*PushKey*/TriggerKey(DIK_SPACE) || Kouro::Input::GetInstance()->PushKey(DIK_SPACE))
 		{
 			// 発射処理
 			Fire();
@@ -105,7 +105,7 @@ void Player::Update()
 	else
 	{
 		// lShiftを押していたら
-		if (Kouro::Input::GetInstance()->Triggerkey(DIK_LSHIFT))
+		if (Kouro::Input::GetInstance()->TriggerKey(DIK_LSHIFT))
 		{
 			// quickMove中に変更
 			quickMoveData_->isQuickMoving = true;

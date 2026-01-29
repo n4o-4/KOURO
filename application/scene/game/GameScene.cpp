@@ -402,6 +402,10 @@ void GameScene::Update()
 
 	const QuickMoveData* data = player_->GetQuickMoveData();
 	
+	if (state_)
+	{
+		state_->Update();
+	}
 
 	if (data->isQuickMoving)
 	{
@@ -507,20 +511,31 @@ void GameScene::Update()
 		break;
 	case Phase::kMain:
 
-		if (Kouro::Input::GetInstance()->Triggerkey(DIK_ESCAPE))
+		if (Kouro::Input::GetInstance()->TriggerKey(DIK_ESCAPE))
 		{
-			phase_ = Phase::kPose;
+			std::unique_ptr<PauseState> newState = std::make_unique<PauseState>();
+
+			ChangeState(std::move(newState));
 		}
 
-		enemyRail_.Update(1.0f / 60.0f);
-		playerRail_.Update(1.0f / 60.0f);
-		cameraRail_.Update(1.0f / 60.0f);
-
-		player_->Update();
-
-		for (auto& enemy : enemies_)
+		if (updateFlags.enablePlayerUpdate)
 		{
-			enemy->Update();
+			player_->Update();
+		}
+
+		if (updateFlags.enableEnemyUpdate)
+		{
+			for (auto& enemy : enemies_)
+			{
+				enemy->Update();
+			}
+		}
+
+		if (updateFlags.enableRailUpdate)
+		{
+			playerRail_.Update(1.0f / 60.0f);
+			enemyRail_.Update(1.0f / 60.0f);
+			cameraRail_.Update(1.0f / 60.0f);
 		}
 
 		colliderManager_->Update();
@@ -577,12 +592,12 @@ void GameScene::Update()
 		break;
 	case Phase::kPose:
 
-		if (Kouro::Input::GetInstance()->Triggerkey(DIK_ESCAPE))
+		if (Kouro::Input::GetInstance()->TriggerKey(DIK_ESCAPE))
 		{
 			phase_ = Phase::kMain;
 		}
 
-		if(Kouro::Input::GetInstance()->Triggerkey(DIK_T))
+		if(Kouro::Input::GetInstance()->TriggerKey(DIK_T))
 		{
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
 			phase_ = Phase::kFadeOut;
@@ -727,4 +742,19 @@ void GameScene::Draw()
 	//========================================
 	//パーティクルの描画
 	Kouro::ParticleManager::GetInstance()->Draw("Resources/circle.png");
+}
+
+void GameScene::ChangeState(std::unique_ptr<Kouro::ISceneState> newState)
+{
+	if (state_)
+	{
+		state_->OnExit();
+	}
+
+	state_ = std::move(newState);
+
+	if (state_)
+	{
+		state_->OnEnter(this);
+	}
 }

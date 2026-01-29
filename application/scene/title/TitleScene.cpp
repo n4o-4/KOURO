@@ -149,7 +149,7 @@ void TitleScene::Update()
 	case Phase::kMain:
 
 		// スペースキーまたはゲームパッドのAボタンが押されたら
-		if (Kouro::Input::GetInstance()->Triggerkey(DIK_SPACE) || Kouro::Input::GetInstance()->TriggerGamePadButton(Kouro::Input::GamePadButton::A))
+		if (Kouro::Input::GetInstance()->TriggerKey(DIK_SPACE) || Kouro::Input::GetInstance()->TriggerGamePadButton(Kouro::Input::GamePadButton::A))
 		{
 			// 移動開始フラグが無効なら
 			if(!isMoveActive_)
@@ -284,7 +284,7 @@ void TitleScene::Update()
 	ImGui::End();
 #endif
 
-	if (Kouro::Input::GetInstance()->Triggerkey(DIK_V))
+	if (Kouro::Input::GetInstance()->TriggerKey(DIK_V))
 	{
 		mEmitter->Emit(Kouro::MakeIdentity4x4());
 	}

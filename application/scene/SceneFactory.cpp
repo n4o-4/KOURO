@@ -1,4 +1,5 @@
 #include "SceneFactory.h"
+#include "ISceneState.h"
 
 std::unique_ptr<Kouro::BaseScene> SceneFactory::CreateScene(const std::string& sceneName)
 {

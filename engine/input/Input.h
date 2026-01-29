@@ -94,7 +94,7 @@ namespace Kouro
 		* \brief 引数のキーが押された瞬間を判定
 		* \param keyNumber 判定するキーの番号
 		*/
-		bool Triggerkey(BYTE keyNumber);
+		bool TriggerKey(BYTE keyNumber);
 
 
 		///===============================

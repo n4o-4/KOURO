@@ -7,6 +7,9 @@
 
 namespace Kouro
 {
+
+	BaseScene::~BaseScene() = default;
+
 	void BaseScene::Initialize(EngineContext context)
 	{
 		// ライン描画クラスの生成と初期化
@@ -62,6 +65,18 @@ namespace Kouro
 
 		// フェードの更新
 		fade_->Update();
+	}
+
+	void BaseScene::ResetState()
+	{
+		if (!state_)
+		{
+			return;
+		}
+
+		state_->OnExit();
+
+		state_ = nullptr;
 	}
 
 	void BaseScene::LineDraw()

@@ -86,7 +86,7 @@ namespace Kouro
 		return false;
 	}
 
-	bool Input::Triggerkey(BYTE keyNumber)
+	bool Input::TriggerKey(BYTE keyNumber)
 	{
 		// キーが押された瞬間かどうかを判定
 		if (!keyPre[keyNumber] && key[keyNumber]) {

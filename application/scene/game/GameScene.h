@@ -53,6 +53,8 @@ public: // メンバ関数
 
 private: //静的メンバ関数
 
+	void ChangeState(std::unique_ptr<Kouro::ISceneState> newState);
+
 private:
 
 	//========================================
@@ -161,6 +163,6 @@ private:
 	RailFollower playerRail_;
 	RailFollower cameraRail_;
 
-	GameSceneUpdateFlags updateFlags = {};
+	GameSceneUpdateFlags updateFlags = {true,true,true};
 
 };
