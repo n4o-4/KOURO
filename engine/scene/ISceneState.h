@@ -20,6 +20,9 @@ namespace Kouro
 		/// \brief 状態の更新処理
 		virtual void Update() = 0;
 
+		/// \brief 状態の描画処理
+		virtual void Draw() = 0;
+
 		/// \brief 状態から出るときの処理
 		virtual void OnExit() = 0;
 

@@ -51,9 +51,13 @@ public: // メンバ関数
 
 	void SetUpdateFlags(const GameSceneUpdateFlags& flags) { updateFlags = flags; }
 
+	Player& GetPlayer() { return *player_; }
+
 private: //静的メンバ関数
 
 	void ChangeState(std::unique_ptr<Kouro::ISceneState> newState);
+
+	void OnPauseExit(const std::string& result);
 
 private:
 

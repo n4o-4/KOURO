@@ -1,4 +1,6 @@
 #include "PauseState.h"
+
+#include "SceneCommand.h"
 #include "BaseScene.h"
 #include "GameScene.h"
 
@@ -37,8 +39,17 @@ void PauseState::Update()
 
 	if (input->TriggerKey(DIK_ESCAPE))
 	{
-		gameScene->ResetState();
+		onExitCallback_(SceneCommand::Resume);
 	}
+	else if (input->TriggerKey(DIK_T))
+	{
+		onExitCallback_(SceneCommand::Title);
+	}
+}
+
+void PauseState::Draw()
+{
+
 }
 
 void PauseState::OnExit()

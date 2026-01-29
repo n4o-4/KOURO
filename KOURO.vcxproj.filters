@@ -169,19 +169,7 @@
     <ClCompile Include="application\collider\SphereCollider.cpp">
       <Filter>application\collider</Filter>
     </ClCompile>
-    <ClCompile Include="engine\scene\BaseScene.cpp">
-      <Filter>application\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="application\scene\game\GameScene.cpp">
-      <Filter>application\scene</Filter>
-    </ClCompile>
     <ClCompile Include="application\scene\SceneFactory.cpp">
-      <Filter>application\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\scene\SceneManager.cpp">
-      <Filter>application\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="application\scene\title\TitleScene.cpp">
       <Filter>application\scene</Filter>
     </ClCompile>
     <ClCompile Include="engine\2d\Sprite.cpp">
@@ -312,12 +300,6 @@
     </ClCompile>
     <ClCompile Include="engine\camera\ViewProjection.cpp">
       <Filter>engine\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="application\scene\clear\GameClear.cpp">
-      <Filter>application\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="application\scene\over\GameOver.cpp">
-      <Filter>application\scene</Filter>
     </ClCompile>
     <ClCompile Include="engine\effect\Dissolve.cpp">
       <Filter>engine\effect</Filter>
@@ -520,7 +502,30 @@
     <ClCompile Include="externals\yaml-cpp\src\tag.cpp">
       <Filter>extarnals\yaml-cpp</Filter>
     </ClCompile>
-    <ClCompile Include="application\scene\game\state\PauseState.cpp" />
+    <ClCompile Include="application\scene\clear\GameClear.cpp">
+      <Filter>application\scene\clear</Filter>
+    </ClCompile>
+    <ClCompile Include="application\scene\title\TitleScene.cpp">
+      <Filter>application\scene\title</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\scene\SceneManager.cpp">
+      <Filter>engine\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="application\scene\over\GameOver.cpp">
+      <Filter>application\scene\over</Filter>
+    </ClCompile>
+    <ClCompile Include="application\scene\game\GameScene.cpp">
+      <Filter>application\scene\game</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\scene\BaseScene.cpp">
+      <Filter>engine\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="application\scene\game\state\PauseState.cpp">
+      <Filter>application\scene\game\state</Filter>
+    </ClCompile>
+    <ClCompile Include="application\scene\game\state\PlayState.cpp">
+      <Filter>application\scene\game\state</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -580,22 +585,7 @@
     <ClInclude Include="application\collider\SphereCollider.h">
       <Filter>application\collider</Filter>
     </ClInclude>
-    <ClInclude Include="engine\scene\AbstractSceneFactory.h">
-      <Filter>application\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\scene\BaseScene.h">
-      <Filter>application\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="application\scene\game\GameScene.h">
-      <Filter>application\scene</Filter>
-    </ClInclude>
     <ClInclude Include="application\scene\SceneFactory.h">
-      <Filter>application\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\scene\SceneManager.h">
-      <Filter>application\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="application\scene\title\TitleScene.h">
       <Filter>application\scene</Filter>
     </ClInclude>
     <ClInclude Include="engine\2d\Sprite.h">
@@ -741,12 +731,6 @@
     </ClInclude>
     <ClInclude Include="engine\camera\ViewProjection.h">
       <Filter>engine\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="application\scene\clear\GameClear.h">
-      <Filter>application\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="application\scene\over\GameOver.h">
-      <Filter>application\scene</Filter>
     </ClInclude>
     <ClInclude Include="engine\effect\Dissolve.h">
       <Filter>engine\effect</Filter>
@@ -941,11 +925,38 @@
     <ClInclude Include="externals\yaml-cpp\src\tag.h">
       <Filter>extarnals\yaml-cpp</Filter>
     </ClInclude>
-    <ClInclude Include="application\scene\ISceneState.h">
-      <Filter>application\scene\SceneState</Filter>
-    </ClInclude>
     <ClInclude Include="engine\math\Vector4.h" />
-    <ClInclude Include="application\scene\game\state\PauseState.h" />
+    <ClInclude Include="engine\scene\ISceneState.h">
+      <Filter>engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="application\scene\clear\GameClear.h">
+      <Filter>application\scene\clear</Filter>
+    </ClInclude>
+    <ClInclude Include="application\scene\title\TitleScene.h">
+      <Filter>application\scene\title</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\scene\SceneManager.h">
+      <Filter>engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="application\scene\over\GameOver.h">
+      <Filter>application\scene\over</Filter>
+    </ClInclude>
+    <ClInclude Include="application\scene\game\GameScene.h">
+      <Filter>application\scene\game</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\scene\AbstractSceneFactory.h">
+      <Filter>engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\scene\BaseScene.h">
+      <Filter>engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="application\scene\game\state\PlayState.h">
+      <Filter>application\scene\game\state</Filter>
+    </ClInclude>
+    <ClInclude Include="application\scene\game\state\PauseState.h">
+      <Filter>application\scene\game\state</Filter>
+    </ClInclude>
+    <ClInclude Include="application\scene\SceneCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -1086,8 +1097,32 @@
     <Filter Include="extarnals\yaml-cpp">
       <UniqueIdentifier>{a6445bc2-155d-4693-b64d-c8348f772795}</UniqueIdentifier>
     </Filter>
-    <Filter Include="application\scene\SceneState">
-      <UniqueIdentifier>{992ceb41-3793-4d87-88ee-c6fee83ba166}</UniqueIdentifier>
+    <Filter Include="engine\scene">
+      <UniqueIdentifier>{e0c87674-f0c5-415c-86bb-68bac49329f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="application\scene\clear">
+      <UniqueIdentifier>{b9e7373a-d6d0-482b-9843-9b40c4cd8e3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="application\scene\title">
+      <UniqueIdentifier>{82a27c03-f22a-42d3-a68e-80ed1b2e5aae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="application\scene\over">
+      <UniqueIdentifier>{fd9953a8-1950-4ac9-a11c-600d917f7bbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="application\scene\game">
+      <UniqueIdentifier>{67a8a62a-730b-429b-9292-3b33dec07891}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="application\scene\clear\state">
+      <UniqueIdentifier>{c5b68cae-f7e6-47b5-914a-4f07c890619e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="application\scene\game\state">
+      <UniqueIdentifier>{8b883e01-e17d-4e2a-ab64-bdae5db8676c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="application\scene\over\state">
+      <UniqueIdentifier>{0907442b-227d-4666-b1bb-0166a54975a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="application\scene\title\state">
+      <UniqueIdentifier>{58748812-30b4-43a5-8ab9-19645922b9bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

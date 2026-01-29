@@ -2,6 +2,8 @@
 #include "imgui.h"
 #include <imgui_internal.h>
 
+
+#include "SceneCommand.h"
 #include "YamlLoader.h"
 // 仮
 #include "ApproachState.h"
@@ -459,11 +461,6 @@ void GameScene::Update()
 		}
 	}
 
-	for (auto& object : levelData_->objects)
-	{
-		object.worldTransform->UpdateMatrix();
-	}
-
 	// 敵の数を取得
 	size_t enemyCount = enemies_.size();
 
@@ -514,6 +511,8 @@ void GameScene::Update()
 		if (Kouro::Input::GetInstance()->TriggerKey(DIK_ESCAPE))
 		{
 			std::unique_ptr<PauseState> newState = std::make_unique<PauseState>();
+
+			newState->SetOnExitCallback([this](const std::string& result) {OnPauseExit(result); });
 
 			ChangeState(std::move(newState));
 		}
@@ -756,5 +755,18 @@ void GameScene::ChangeState(std::unique_ptr<Kouro::ISceneState> newState)
 	if (state_)
 	{
 		state_->OnEnter(this);
+	}
+}
+
+void GameScene::OnPauseExit(const std::string& result)
+{
+	if (result == SceneCommand::Resume) {
+		// ポーズ解除 → ゲーム再開
+		/*ChangeState(std::make_unique<>());*/
+		ResetState();
+	}
+	else if (result == SceneCommand::Title) {
+		// タイトルシーンへ
+		sceneManager_->ChangeScene(SceneCommand::Title);
 	}
 }
