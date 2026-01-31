@@ -51,7 +51,8 @@ public: // メンバ関数
 
 	void SetUpdateFlags(const GameSceneUpdateFlags& flags) { updateFlags = flags; }
 
-	Player& GetPlayer() { return *player_; }
+	/// \brief 全オブジェクトの更新
+	void UpdateAllObjects(const float deltaTime);
 
 private: //静的メンバ関数
 

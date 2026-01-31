@@ -154,6 +154,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="application\system\SpawnManager.cpp" />
+    <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="YamlLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -308,10 +309,12 @@
     <ClInclude Include="externals\yaml-cpp\src\tag.h" />
     <ClInclude Include="externals\yaml-cpp\src\token.h" />
     <ClInclude Include="JsonLoader.h" />
+    <ClInclude Include="UIManager.h" />
     <ClInclude Include="YamlLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+    <None Include="Resources\config\game\ui\countdown_ui.yaml" />
     <None Include="Resources\shaders\Fullscreen.hlsli" />
     <None Include="Resources\shaders\Object3d.hlsli" />
     <None Include="Resources\shaders\Particle.CS.hlsli" />

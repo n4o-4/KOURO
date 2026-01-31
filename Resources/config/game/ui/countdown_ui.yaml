@@ -1,0 +1,16 @@
+﻿elements:
+  - filepath: Resources/3.png
+    position: [640, 360]
+    size: [360, 360]
+    anchor_point: [0.5, 0.5]
+    texture_size: [1536,1024]
+  - filepath: Resources/2.png
+    position: [640, 360]
+    size: [360, 360]
+    anchor_point: [0.5, 0.5]
+    texture_size: [1536,1024]
+  - filepath: Resources/1.png
+    position: [640, 360]
+    size: [360, 360]
+    anchor_point: [0.5, 0.5]
+    texture_size: [1536,1024]

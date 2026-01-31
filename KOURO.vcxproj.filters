@@ -526,6 +526,7 @@
     <ClCompile Include="application\scene\game\state\PlayState.cpp">
       <Filter>application\scene\game\state</Filter>
     </ClCompile>
+    <ClCompile Include="UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -957,6 +958,7 @@
       <Filter>application\scene\game\state</Filter>
     </ClInclude>
     <ClInclude Include="application\scene\SceneCommand.h" />
+    <ClInclude Include="UIManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -987,6 +989,7 @@
     <None Include="Resources\shaders\Random.hlsli">
       <Filter>resources\shaders</Filter>
     </None>
+    <None Include="Resources\config\game\ui\countdown_ui.yaml" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="application">

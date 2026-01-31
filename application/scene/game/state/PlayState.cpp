@@ -22,8 +22,6 @@ void PlayState::OnEnter(Kouro::BaseScene* scene)
 	{
 		return;
 	}
-
-	gameScene->SetUpdateFlags({ true,true,true });
 }
 
 void PlayState::Update()
@@ -33,10 +31,9 @@ void PlayState::Update()
 	
 	// 型変換に失敗したら抜ける
 	if (!gameScene) return;
-	
-	gameScene->GetPlayer().Update();
 
-
+	// 全オブジェクトの更新
+	gameScene->UpdateAllObjects(1.0f / 60.0f);
 }
 
 void PlayState::Draw()

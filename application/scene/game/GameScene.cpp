@@ -517,32 +517,7 @@ void GameScene::Update()
 			ChangeState(std::move(newState));
 		}
 
-		if (updateFlags.enablePlayerUpdate)
-		{
-			player_->Update();
-		}
-
-		if (updateFlags.enableEnemyUpdate)
-		{
-			for (auto& enemy : enemies_)
-			{
-				enemy->Update();
-			}
-		}
-
-		if (updateFlags.enableRailUpdate)
-		{
-			playerRail_.Update(1.0f / 60.0f);
-			enemyRail_.Update(1.0f / 60.0f);
-			cameraRail_.Update(1.0f / 60.0f);
-		}
-
-		colliderManager_->Update();
-
-		// 生存していない敵をリストから削除
-		std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {
-			return !enemy->GetIsAlive();
-			});
+		UpdateAllObjects(1.0f / 60.0f);
 
 		for (auto& enemy : enemies_)
 		{
@@ -590,20 +565,6 @@ void GameScene::Update()
 	case Phase::kPlay:
 		break;
 	case Phase::kPose:
-
-		if (Kouro::Input::GetInstance()->TriggerKey(DIK_ESCAPE))
-		{
-			phase_ = Phase::kMain;
-		}
-
-		if(Kouro::Input::GetInstance()->TriggerKey(DIK_T))
-		{
-			fade_->Start(Fade::Status::FadeOut, fadeTime_);
-			phase_ = Phase::kFadeOut;
-
-			isBackToTitle_ = true;
-		}
-
 		break;
 	}
 
@@ -741,6 +702,27 @@ void GameScene::Draw()
 	//========================================
 	//パーティクルの描画
 	Kouro::ParticleManager::GetInstance()->Draw("Resources/circle.png");
+}
+
+void GameScene::UpdateAllObjects(const float deltaTime)
+{
+	playerRail_.Update(deltaTime);
+	enemyRail_.Update(deltaTime);
+	cameraRail_.Update(deltaTime);
+
+	player_->Update();
+
+	for (auto& enemy : enemies_)
+	{
+		enemy->Update();
+	}
+
+	colliderManager_->Update();
+
+	// 生存していない敵をリストから削除
+	std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {
+		return !enemy->GetIsAlive();
+		});
 }
 
 void GameScene::ChangeState(std::unique_ptr<Kouro::ISceneState> newState)

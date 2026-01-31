@@ -26,8 +26,6 @@ void PauseState::OnEnter(Kouro::BaseScene* scene)
 	{
 		return;
 	}
-
-	gameScene->SetUpdateFlags({ false,false,false });
 }
 
 void PauseState::Update()
@@ -59,6 +57,5 @@ void PauseState::OnExit()
 
 	if (gameScene)
 	{
-		gameScene->SetUpdateFlags({ true,true,true });
 	}
 }
