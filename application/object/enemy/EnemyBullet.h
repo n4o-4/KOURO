@@ -7,42 +7,54 @@ class EnemyBullet : public BaseBullet, public SphereCollider
 {
 public: // 公開メンバ関数
 	/**
-	 * \brief  Initialize 初期化
+	 * \brief  初期化
 	 * \param  model モデル
 	 */
 	void Initialize(Kouro::LineModel* model, Kouro::Vector3 spawnPos) override;
 
-	// \brief  Update 更新
+	// \brief  更新
 	void Update() override;
 
-	// \brief Draw 描画
+	// \brief 描画
 	void Draw() override;
 
 	///================================================================================
 	///                                        setter
 
 	/**
-	 * \brief  SetVelocity 速度を設定
+	 * \brief  速度を設定
 	 * \param  velocity 速度
 	*/
 	void SetVelocity(const Kouro::Vector3& velocity) { velocity_ = velocity; }
 
+	/**
+	* \brief  位置を設定
+	* \param  position 位置
+	*/
+	void SetPosition(const Kouro::Vector3& position) { worldTransform_->SetTranslate(position); }
+
+	/**
+	* \brief  回転を設定
+	* \param  rotate 回転
+	*/
+	void SetRotate(const Kouro::Vector3& rotate) { worldTransform_->SetRotate(rotate); }
+
 private: // 非公開メンバ関数
 
 	/**
-	* \brief  OnCollisionEnter 衝突開始時
+	* \brief  衝突開始時
 	* \param  BaseCollider 他のコライダー
 	*/
 	void OnCollisionEnter(BaseCollider* other) override;
 
 	/**
-	* \brief  OnCollisionStay 衝突中
+	* \brief  衝突中
 	* \param  BaseCollider 他のコライダー
 	*/
 	void OnCollisionStay(BaseCollider* other) override;
 
 	/**
-	* \brief  OnCollisionExit 衝突終了時
+	* \brief  衝突終了時
 	* \param  BaseCollider 他のコライダー
 	*/
 	void OnCollisionExit(BaseCollider* other) override;

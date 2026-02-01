@@ -527,6 +527,10 @@
       <Filter>application\scene\game\state</Filter>
     </ClCompile>
     <ClCompile Include="UIManager.cpp" />
+    <ClCompile Include="application\object\enemy\LissajousMoveState.cpp" />
+    <ClCompile Include="application\object\enemy\TackleState.cpp" />
+    <ClCompile Include="application\object\enemy\TackleChargeState.cpp" />
+    <ClCompile Include="TackleRecoverState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -959,6 +963,10 @@
     </ClInclude>
     <ClInclude Include="application\scene\SceneCommand.h" />
     <ClInclude Include="UIManager.h" />
+    <ClInclude Include="application\object\enemy\LissajousMoveState.h" />
+    <ClInclude Include="application\object\enemy\TackleState.h" />
+    <ClInclude Include="application\object\enemy\TackleChargeState.h" />
+    <ClInclude Include="TackleRecoverState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

@@ -34,6 +34,14 @@ void EnemyBullet::Initialize(Kouro::LineModel* model, Kouro::Vector3 spawnPos)
 
 void EnemyBullet::Update()
 {
+	// forward ベクトルからオイラー角を計算
+	Kouro::Vector3 forward = Kouro::Normalize(velocity_);
+	float yaw = std::atan2(forward.x, forward.z);
+	float pitch = std::asin(-forward.y);
+	float roll = 0.0f;
+
+	worldTransform_->transform.rotate = { pitch, yaw, roll };
+
 	// 親クラスの更新
 
 	BaseBullet::Update();

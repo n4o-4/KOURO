@@ -13,7 +13,6 @@ void Enemy::Initialize(Kouro::LineModel* model)
 	BaseCharacter::Initialize(model);
 
 	worldTransform_->useQuaternion_ = false;
-
 	worldTransform_->quaternionTransform.scale = { 5.0f,5.0f,5.0f };
 	worldTransform_->transform.scale = { 1.0f,1.0f,1.0f };
 
@@ -22,6 +21,9 @@ void Enemy::Initialize(Kouro::LineModel* model)
 	SetCollisionAttribute(0b1 << 1); // コリジョン属性を設定
 	SetCollisionMask(0b1); // コリジョンマスクを設定
 
+	dummy_ = std::make_shared<EnemyBullet>();
+	dummy_->Initialize(model, {});
+
 	fireTimer_ = 0.0f; // 弾の発射タイマー初期化
 
 	hp_ = 5;
@@ -29,22 +31,6 @@ void Enemy::Initialize(Kouro::LineModel* model)
 
 void Enemy::Update()
 {
-	// 発射インターバル計測用の
-	if (fireTimer_ >= kFireInterval)
-	{
-		//Fire();
-		fireTimer_ = 0.0f; // タイマーをリセット
-	}
-	else
-	{
-		fireTimer_ += kDeltaTime; // タイマーを更新
-	}
-
-	for (auto& bullet : bullets_)
-	{
-		bullet->Update();
-	}
-
 	std::vector<ColliderVariant> colliders = colliderManager_->GetColliders();
 
 	std::erase_if(bullets_, [](const ColliderVariant& collider) {
@@ -62,13 +48,23 @@ void Enemy::Update()
 		objectLine_->SetColor({ 0.196f, 0.929f, 0.369f,1.0f });
 	}
 
+	for (auto& bullet : bullets_)
+	{
+		bullet->Update();
+	}
+
+	if(drawDummy_)
+	{
+		dummy_->Update();
+	}
+
 	///=========================================
 	/// 親クラスA
 
+	state_->Update(this);
+
 	// 更新
 	BaseCharacter::Update();
-
-	state_->Update(this);
 
 	AABBCollider::Update();
 }
@@ -80,11 +76,18 @@ void Enemy::Draw()
 		bullet->Draw();
 	}
 
-	///=========================================
-	/// 親クラス
+	if (drawDummy_)
+	{
+		dummy_->Draw();
+	}
+	else
+	{
+		///=========================================
+	    /// 親クラス
 
-	// 描画
-	BaseCharacter::Draw();
+	    // 描画
+		BaseCharacter::Draw();
+	}
 }
 
 void Enemy::SetPosition(const Kouro::Vector3& position)
@@ -118,27 +121,82 @@ void Enemy::ChangeState(std::unique_ptr<EnemyState> state)
 
 void Enemy::Fire()
 {
-	// 弾の生成
-	std::shared_ptr<EnemyBullet> bullet = std::make_shared<EnemyBullet>();
+	//// 弾の生成
+	//std::shared_ptr<EnemyBullet> bullet = std::make_shared<EnemyBullet>();
 
-	// 初期化
-	bullet->Initialize(lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
+	//// 初期化
+	//bullet->Initialize(lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
 
 
-	Kouro::Matrix4x4 targetWMatrix= target_->GetWorldTransform()->matWorld_;
+	//Kouro::Matrix4x4 targetWMatrix= target_->GetWorldTransform()->matWorld_;
 
-	// 目標のワールド行列から位置を取得し、弾の速度を計算
-	Kouro::Vector3 velocity = Kouro::Normalize({
-		targetWMatrix.m[3][0] - worldTransform_->matWorld_.m[3][0],
-		targetWMatrix.m[3][1] - worldTransform_->matWorld_.m[3][1],
-		targetWMatrix.m[3][2] - worldTransform_->matWorld_.m[3][2]
-	});
+	//// 目標のワールド行列から位置を取得し、弾の速度を計算
+	//Kouro::Vector3 velocity = Kouro::Normalize({
+	//	targetWMatrix.m[3][0] - worldTransform_->matWorld_.m[3][0],
+	//	targetWMatrix.m[3][1] - worldTransform_->matWorld_.m[3][1],
+	//	targetWMatrix.m[3][2] - worldTransform_->matWorld_.m[3][2]
+	//});
 
-	bullet->SetVelocity(velocity);
+	//bullet->SetVelocity(velocity);
 
-	colliderManager_->AddCollider(bullet);
+	//colliderManager_->AddCollider(bullet);
 
-	bullets_.push_back(std::move(bullet));
+	//bullets_.push_back(std::move(bullet));
+
+	const int bulletCount = 7;
+	const float spreadAngle = DirectX::XMConvertToRadians(60.0f);
+
+	// 敵の位置
+	Kouro::Vector3 enemyPos = {
+		worldTransform_->matWorld_.m[3][0],
+		worldTransform_->matWorld_.m[3][1],
+		worldTransform_->matWorld_.m[3][2]
+	};
+
+	// 自機方向（XZだけ使う）
+	Kouro::Matrix4x4 targetWMatrix = target_->GetWorldTransform()->matWorld_;
+	Kouro::Vector3 targetPos = {
+		targetWMatrix.m[3][0],
+		targetWMatrix.m[3][1],
+		targetWMatrix.m[3][2]
+	};
+
+	// 中心方向（XZ平面）
+	Kouro::Vector3 centerDir = {
+		targetPos.x - enemyPos.x,
+		0.0f,
+		targetPos.z - enemyPos.z
+	};
+	centerDir = Kouro::Normalize(centerDir);
+
+	// 扇形の角度設定
+	float startAngle = -spreadAngle * 0.5f;
+	float angleStep =
+		(bulletCount > 1) ? spreadAngle / (bulletCount - 1) : 0.0f;
+
+	for (int i = 0; i < bulletCount; ++i)
+	{
+		float angle = startAngle + angleStep * i;
+
+		// Y軸回転（X方向に広げる）
+		Kouro::Matrix4x4 rot = Kouro::MakeRotateYMatrix(angle);
+
+		Kouro::Vector3 dir =
+			Kouro::Normalize(TransformNormal(centerDir, rot));
+
+		std::shared_ptr<EnemyBullet> bullet =
+			std::make_shared<EnemyBullet>();
+
+		bullet->Initialize(
+			lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"),
+			enemyPos
+		);
+
+		bullet->SetVelocity(dir);
+
+		colliderManager_->AddCollider(bullet);
+		bullets_.push_back(bullet);
+	}
 }
 
 void Enemy::OnCollisionEnter(BaseCollider* other)

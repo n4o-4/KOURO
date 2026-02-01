@@ -43,7 +43,8 @@ public: // 公開メンバ関数
 	* \brief SetColliderManager コライダーマネージャーを設定する
 	* \param ColliderManager コライダーマネージャーのポインタ
 	*/
-	void SetColliderManager(ColliderManager* colliderManager) { colliderManager_ = colliderManager; }
+	void SetColliderManager(ColliderManager* colliderManager) { colliderManager_ = colliderManager; colliderManager_->AddCollider(dummy_);
+	}
 
 	/**
 	* \brief SetLineModelManager ラインモデルマネージャーを設定する
@@ -53,19 +54,21 @@ public: // 公開メンバ関数
 
 	/**
 	* \brief  エミッターの設定
+	* \param  emitter エミッターのポインタ
 	*/
 	void SetEmitter(Kouro::ModelEdgeEmitter* emitter) { mEmitter_ = emitter; }
 
 	/**
-	* \brief 
+	* \brief  カメラマネージャーの設定
+	* \param  cameraManager カメラマネージャーのポインタ
 	*/
 	void SetCameraManager(Kouro::CameraManager* cameraManager) { cameraManager_ = cameraManager; };
 
 	/**
-	* \brief  
-	* \param  
+	* \brief  ゴールオフセットの設定
+	* \param  offset ゴールオフセット
 	*/
-	void SetGoalOffset(const Kouro::Vector3 offset) { kGoalOffset_ = offset; };
+	void SetGoalOffset(const Kouro::Vector3 offset) { kGoalOffset_ = offset; basePosition_ = kGoalOffset_; };
 
 	/**
 	* \brief  SetParent 親の設定
@@ -74,7 +77,31 @@ public: // 公開メンバ関数
 	void SetParent(const Kouro::WorldTransform* parent) { worldTransform_->SetParent(parent); }
 
 	/**
-	* \brief GetTarget ターゲットを取得する
+	* \brief ダミーキャラクターの描画フラグを設定する
+	* \param drawDummy ダミーキャラクターを描画するかどうか
+	*/
+	void SetDrawDummy(bool drawDummy) { drawDummy_ = drawDummy; }
+
+	/**
+	* \brief ダミーキャラクターの速度を設定する
+	* \param velocity 設定する速度
+	*/
+	void SetDummyVelocity(const Kouro::Vector3& velocity) { dummy_->SetVelocity(velocity); }
+
+	/**
+	* \brief ダミーキャラクターの位置を設定する
+	* \param position 設定する位置
+	*/
+	void SetDummyPosition(const Kouro::Vector3& position) { dummy_->SetPosition(position); }
+
+	/**
+	* \brief ダミーキャラクターの回転を設定する
+	* \param rotate 設定する回転
+	*/
+	void SetDummyRotate(const Kouro::Vector3& rotate) { dummy_->SetRotate(rotate); }
+
+	/**
+	* \brief  ターゲットを取得する
 	* \return BaseCharacter キャラクターのポインタ
 	*/
 	BaseCharacter* GetTarget() const { return target_; }
@@ -85,7 +112,21 @@ public: // 公開メンバ関数
 	*/
 	const Kouro::CameraManager* GetCameraManager() const { return cameraManager_; }
 
-	const Kouro::Vector3 GetGoalOffset() const { return kGoalOffset_; }
+	/**
+	* \brief  ゴールオフセットの取得
+	* \return ゴールオフセット
+	*/
+	const Kouro::Vector3& GetGoalOffset() const { return kGoalOffset_; }
+
+	/**
+	* \brief  基本位置の取得
+	* \return 基本位置
+	*/
+	const Kouro::Vector3& GetBasePosition() const { return basePosition_; }
+
+	const Kouro::Vector3& GetDummyRotate() const { return dummy_->GetWorldTransform()->GetRotate(); }
+
+	const Kouro::Vector3& GetDummyPosition() const { return dummy_->GetWorldTransform()->GetTranslate(); }
 
 	/**
 	* \brief ChangeState 状態を変える
@@ -139,5 +180,11 @@ private: // 非公開メンバ変数
 	Kouro::CameraManager* cameraManager_ = nullptr;
 
 	Kouro::Vector3 kGoalOffset_ = {0.0f,0.0f,40.0f};
+
+	Kouro::Vector3 basePosition_ = { 0.0f,0.0f,0.0f };
+
+	std::shared_ptr<EnemyBullet> dummy_ = nullptr; //!< ダミー
+
+	bool drawDummy_ = false;
 };
 

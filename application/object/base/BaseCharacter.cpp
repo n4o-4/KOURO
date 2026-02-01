@@ -59,6 +59,17 @@ void BaseCharacter::Draw()
 	objectLine_->Draw(worldTransform_.get());
 }
 
+const Kouro::Vector3& BaseCharacter::GetWorldPosition()
+{
+	worldTransform_->UpdateMatrix();
+	Kouro::Vector3 worldPos = {
+		worldTransform_->matWorld_.m[3][0],
+		worldTransform_->matWorld_.m[3][1],
+		worldTransform_->matWorld_.m[3][2]
+	};
+	return worldPos;
+}
+
 void BaseCharacter::DrawImGui()
 {
 #ifdef _DEBUG

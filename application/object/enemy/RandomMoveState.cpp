@@ -7,7 +7,7 @@ void RandomMoveState::OnEnter(Enemy* enemy)
 {
 	randomGenerate.Initialize();
 
-	stateTimer_ = randomGenerate.Random(2.0f, 3.0f);
+	stateTimer_ = randomGenerate.Random(5.0f, 5.0f);
 }
 
 void RandomMoveState::Update(Enemy* enemy)
@@ -18,15 +18,20 @@ void RandomMoveState::Update(Enemy* enemy)
 	{
 		std::unique_ptr<AttackState> newState = std::make_unique<AttackState>();
 		enemy->ChangeState(std::move(newState));
+		return;
 	}
 
 	Kouro::WorldTransform* enemyTransform = enemy->GetWorldTransform();
 
-	Kouro::Vector3 velocity = randomGenerate.RandomVector3(-0.3f, 0.3f);
+	Kouro::Vector3 acceleration = randomGenerate.RandomVector3(-0.2f, 0.2f);
 
-	enemyTransform->transform.translate += velocity;
+	velocity_ += acceleration;
+
+	enemyTransform->SetTranslate(enemy->GetBasePosition() + velocity_);
 }
 
 void RandomMoveState::OnExit(Enemy* enemy)
 {
+	Kouro::WorldTransform* enemyTransform = enemy->GetWorldTransform();
+	enemyTransform->SetTranslate(enemy->GetBasePosition());
 }

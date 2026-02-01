@@ -1,15 +1,12 @@
 #pragma once
 #include "EnemyState.h"
-#include "RandomGenerate.h"
-
-class RandomMoveState : public EnemyState
+class LissajousMoveState : public EnemyState
 {
-public:
-
 public:
 	/**
 	* \brief  開始処理
 	* \param  enemy  : 処理をする敵のポインタ
+	* \param  player : プレイヤー
 	*/
 	void OnEnter(Enemy* enemy) override;
 
@@ -27,10 +24,14 @@ public:
 
 private:
 
-	Kouro::RandomGenerate randomGenerate;
+	float time_ = 0.0f;
 
-	float stateTimer_ = 0.0f;
+	Kouro::WorldTransform* transform_ = nullptr;
 
-	Kouro::Vector3 velocity_ = {};
+	Kouro::Vector3 offset_ = {};
+
+	static constexpr float kWidthAmp_ = 4.0f;
+
+	static constexpr float kHeightAmp_ = 8.0f;
 };
 

@@ -85,7 +85,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	playerRail_.Initialize(rail, 60.0f);
 	cameraRail_.Initialize(rail, 60.0f);
 	
-	enemyRail_.SetDistanceTravelled(20.0f);
+	enemyRail_.SetDistanceTravelled(40.0f);
 	playerRail_.SetDistanceTravelled(20.0f);
 	cameraRail_.SetDistanceTravelled(0.0f);
 

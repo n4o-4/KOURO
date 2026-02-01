@@ -1,15 +1,11 @@
 #pragma once
 #include "EnemyState.h"
-#include "RandomGenerate.h"
-
-class RandomMoveState : public EnemyState
+class TackleRecoverState : public EnemyState
 {
-public:
-
-public:
 	/**
 	* \brief  開始処理
 	* \param  enemy  : 処理をする敵のポインタ
+	* \param  player : プレイヤー
 	*/
 	void OnEnter(Enemy* enemy) override;
 
@@ -27,10 +23,10 @@ public:
 
 private:
 
-	Kouro::RandomGenerate randomGenerate;
+	float timer_ = 0.0f;
 
-	float stateTimer_ = 0.0f;
+	float duration_ = 2.0f; // 回復時間
 
-	Kouro::Vector3 velocity_ = {};
+	Kouro::Vector3 startPos_ = {};
 };
 

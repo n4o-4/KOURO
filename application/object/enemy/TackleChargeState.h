@@ -2,14 +2,13 @@
 #include "EnemyState.h"
 #include "RandomGenerate.h"
 
-class RandomMoveState : public EnemyState
+class TackleChargeState : public EnemyState
 {
-public:
-
 public:
 	/**
 	* \brief  開始処理
 	* \param  enemy  : 処理をする敵のポインタ
+	* \param  player : プレイヤー
 	*/
 	void OnEnter(Enemy* enemy) override;
 
@@ -29,8 +28,12 @@ private:
 
 	Kouro::RandomGenerate randomGenerate;
 
-	float stateTimer_ = 0.0f;
+	Kouro::WorldTransform* transform_ = nullptr; //!< 敵のワールドトランスフォーム
 
-	Kouro::Vector3 velocity_ = {};
+	Kouro::Vector3 forward_ = {}; //!< 突進方向
+
+	Kouro::Vector3 offset_ = {}; //!< オフセット
+
+	float timer_ = 0.0f; //!< タイマー
 };
 

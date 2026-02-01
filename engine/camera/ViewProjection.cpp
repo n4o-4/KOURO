@@ -33,6 +33,8 @@ namespace Kouro
 		// シェイク補正を追加
 		Vector3 finalPos = worldPos + shakeOffset_;
 
+		matWorld_ = MakeAffineMatrix({ 1,1,1 }, worldRot, finalPos);
+
 		// View行列を生成（カメラは逆変換）
 		matView_ = Inverse(MakeAffineMatrix({ 1,1,1 }, worldRot, finalPos));
 

@@ -1,6 +1,7 @@
 #include "AttackState.h"
 
 #include "RandomMoveState.h"
+#include "LissajousMoveState.h"
 #include "Enemy.h"
 
 void AttackState::OnEnter(Enemy* enemy)
@@ -38,7 +39,7 @@ void AttackState::Update(Enemy* enemy)
 
 	if (fireCount_ == 0)
 	{
-		std::unique_ptr<RandomMoveState> newState = std::make_unique<RandomMoveState>();
+		std::unique_ptr<LissajousMoveState> newState = std::make_unique<LissajousMoveState>();
 		enemy->ChangeState(std::move(newState));
 	}
 }

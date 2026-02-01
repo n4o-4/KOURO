@@ -1,6 +1,7 @@
 #include "ApproachState.h"
 
 #include "RandomMoveState.h"
+#include "LissajousMoveState.h"
 
 #include "Enemy.h"
 #include "Player.h"
@@ -65,9 +66,7 @@ void ApproachState::Update(Enemy* enemy)
 
     if (angle_ >= kEndAngle)
     {
-        std::unique_ptr<RandomMoveState> newState;
-
-        newState = std::make_unique<RandomMoveState>();
+        std::unique_ptr<RandomMoveState> newState = std::make_unique<RandomMoveState>();
 
         enemy->ChangeState(std::move(newState));
     }

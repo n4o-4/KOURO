@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="application\scene\game\state\PauseState.cpp" />
     <ClCompile Include="application\scene\game\state\PlayState.cpp" />
+    <ClCompile Include="application\object\enemy\LissajousMoveState.cpp" />
     <ClCompile Include="RailAnimation.cpp" />
     <ClCompile Include="application\object\enemy\AttackState.cpp" />
     <ClCompile Include="application\camera\FollowCameraState.cpp" />
@@ -154,6 +155,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="application\system\SpawnManager.cpp" />
+    <ClCompile Include="application\object\enemy\TackleChargeState.cpp" />
+    <ClCompile Include="application\object\enemy\TackleState.cpp" />
+    <ClCompile Include="TackleRecoverState.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="YamlLoader.cpp" />
   </ItemGroup>
@@ -165,6 +169,7 @@
     <ClInclude Include="engine\math\Vector2Yaml.h" />
     <ClInclude Include="application\scene\game\state\PauseState.h" />
     <ClInclude Include="application\scene\game\state\PlayState.h" />
+    <ClInclude Include="application\object\enemy\LissajousMoveState.h" />
     <ClInclude Include="RailAnimation.h" />
     <ClInclude Include="application\object\enemy\AttackState.h" />
     <ClInclude Include="engine\math\Vector3.h" />
@@ -309,6 +314,9 @@
     <ClInclude Include="externals\yaml-cpp\src\tag.h" />
     <ClInclude Include="externals\yaml-cpp\src\token.h" />
     <ClInclude Include="JsonLoader.h" />
+    <ClInclude Include="application\object\enemy\TackleChargeState.h" />
+    <ClInclude Include="application\object\enemy\TackleState.h" />
+    <ClInclude Include="TackleRecoverState.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="YamlLoader.h" />
   </ItemGroup>
