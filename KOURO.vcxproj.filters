@@ -411,7 +411,6 @@
     </ClCompile>
     <ClCompile Include="JsonLoader.cpp" />
     <ClCompile Include="YamlLoader.cpp" />
-    <ClCompile Include="RailAnimation.cpp" />
     <ClCompile Include="externals\yaml-cpp\src\emit.cpp">
       <Filter>extarnals\yaml-cpp</Filter>
     </ClCompile>
@@ -527,12 +526,22 @@
       <Filter>application\scene\game\state</Filter>
     </ClCompile>
     <ClCompile Include="UIManager.cpp" />
-    <ClCompile Include="application\object\enemy\LissajousMoveState.cpp" />
-    <ClCompile Include="application\object\enemy\TackleState.cpp" />
-    <ClCompile Include="application\object\enemy\TackleChargeState.cpp" />
-    <ClCompile Include="TackleRecoverState.cpp" />
-    <ClCompile Include="engine\2d\SpriteManager.cpp" />
     <ClCompile Include="UIController.cpp" />
+    <ClCompile Include="application\object\enemy\TackleRecoverState.cpp">
+      <Filter>application\object\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="application\object\enemy\TackleChargeState.cpp">
+      <Filter>application\object\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="application\object\enemy\TackleState.cpp">
+      <Filter>application\object\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="application\object\enemy\LissajousMoveState.cpp">
+      <Filter>application\object\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\2d\SpriteManager.cpp">
+      <Filter>engine\2d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -864,11 +873,6 @@
     </ClInclude>
     <ClInclude Include="JsonLoader.h" />
     <ClInclude Include="YamlLoader.h" />
-    <ClInclude Include="engine\math\Vector3.h" />
-    <ClInclude Include="engine\math\Vector3Yaml.h" />
-    <ClInclude Include="RailAnimation.h" />
-    <ClInclude Include="engine\math\Vector2Yaml.h" />
-    <ClInclude Include="engine\math\Vector2.h" />
     <ClInclude Include="externals\yaml-cpp\src\collectionstack.h">
       <Filter>extarnals\yaml-cpp</Filter>
     </ClInclude>
@@ -932,7 +936,6 @@
     <ClInclude Include="externals\yaml-cpp\src\tag.h">
       <Filter>extarnals\yaml-cpp</Filter>
     </ClInclude>
-    <ClInclude Include="engine\math\Vector4.h" />
     <ClInclude Include="engine\scene\ISceneState.h">
       <Filter>engine\scene</Filter>
     </ClInclude>
@@ -963,16 +966,45 @@
     <ClInclude Include="application\scene\game\state\PauseState.h">
       <Filter>application\scene\game\state</Filter>
     </ClInclude>
-    <ClInclude Include="application\scene\SceneCommand.h" />
     <ClInclude Include="UIManager.h" />
-    <ClInclude Include="application\object\enemy\LissajousMoveState.h" />
-    <ClInclude Include="application\object\enemy\TackleState.h" />
-    <ClInclude Include="application\object\enemy\TackleChargeState.h" />
-    <ClInclude Include="TackleRecoverState.h" />
-    <ClInclude Include="engine\2d\SpriteManager.h" />
-    <ClInclude Include="engine\math\Vector4Yaml.h" />
     <ClInclude Include="UIController.h" />
     <ClInclude Include="SpriteMotionLibrary.h" />
+    <ClInclude Include="engine\math\Vector4.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector3Yaml.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector2.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector3.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector2Yaml.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector4Yaml.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="application\object\enemy\TackleState.h">
+      <Filter>application\object\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="application\object\enemy\TackleRecoverState.h">
+      <Filter>application\object\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="application\object\enemy\TackleChargeState.h">
+      <Filter>application\object\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="application\object\enemy\LissajousMoveState.h">
+      <Filter>application\object\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\2d\SpriteManager.h">
+      <Filter>engine\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="application\scene\SceneCommand.h">
+      <Filter>application\scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

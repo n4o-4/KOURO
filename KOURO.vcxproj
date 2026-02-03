@@ -14,7 +14,6 @@
     <ClCompile Include="application\scene\game\state\PauseState.cpp" />
     <ClCompile Include="application\scene\game\state\PlayState.cpp" />
     <ClCompile Include="application\object\enemy\LissajousMoveState.cpp" />
-    <ClCompile Include="RailAnimation.cpp" />
     <ClCompile Include="application\object\enemy\AttackState.cpp" />
     <ClCompile Include="application\camera\FollowCameraState.cpp" />
     <ClCompile Include="engine\core\GpuResourceInternal.cpp" />
@@ -158,7 +157,7 @@
     <ClCompile Include="application\object\enemy\TackleChargeState.cpp" />
     <ClCompile Include="application\object\enemy\TackleState.cpp" />
     <ClCompile Include="engine\2d\SpriteManager.cpp" />
-    <ClCompile Include="TackleRecoverState.cpp" />
+    <ClCompile Include="application\object\enemy\TackleRecoverState.cpp" />
     <ClCompile Include="UIController.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="YamlLoader.cpp" />
@@ -174,7 +173,6 @@
     <ClInclude Include="application\scene\game\state\PauseState.h" />
     <ClInclude Include="application\scene\game\state\PlayState.h" />
     <ClInclude Include="application\object\enemy\LissajousMoveState.h" />
-    <ClInclude Include="RailAnimation.h" />
     <ClInclude Include="application\object\enemy\AttackState.h" />
     <ClInclude Include="engine\math\Vector3.h" />
     <ClInclude Include="engine\math\Vector3Yaml.h" />
@@ -321,7 +319,7 @@
     <ClInclude Include="application\object\enemy\TackleChargeState.h" />
     <ClInclude Include="application\object\enemy\TackleState.h" />
     <ClInclude Include="engine\2d\SpriteManager.h" />
-    <ClInclude Include="TackleRecoverState.h" />
+    <ClInclude Include="application\object\enemy\TackleRecoverState.h" />
     <ClInclude Include="UIController.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="YamlLoader.h" />
