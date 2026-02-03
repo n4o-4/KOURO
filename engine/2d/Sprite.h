@@ -154,7 +154,7 @@ namespace Kouro
 		void CreateTransformationMatrixData();
 
 		/// \brief AdjustTextureSize テクスチャサイズ調整
-		void AdjustTextureSize();
+		void AdjustTextureSize(std::string textureFilePath);
 
 	private:
 
@@ -204,8 +204,6 @@ namespace Kouro
 
 		TransformationMatrix* transformationMatrixData = nullptr;
 
-		Transform cameraTransform{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,-15.0f} };
-
 		Transform transform{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 
 		Transform uvTransform{
@@ -214,30 +212,25 @@ namespace Kouro
 			{0.0f,0.0f,0.0f},
 		};
 
-		std::string textureFilePath;
+		std::string textureFilePath_; //!< テクスチャファイルパス
 
-		Vector2 position = { 0.0f,0.0f };
+		Vector2 position = { 0.0f,0.0f }; //!< 位置
 
-		float rotation = 0.0f;
+		float rotation = 0.0f; //!< 回転角度(ラジアン)
 
-		Vector2 size = { 640.0f,360.0f };
+		Vector2 size = {}; //!< 描画サイズ
 
-		// テクスチャ番号
-		uint32_t textureIndex = 0;
+		uint32_t textureIndex = 0; //!< テクスチャ番号
 
-		Vector2 anchorPoint = { 0.0f,0.0f };
+		Vector2 anchorPoint = { 0.0f,0.0f }; //!< アンカーポイント(0.0~1.0)
 
-		// 左右フリップ
-		bool isFlipX_ = false;
+		bool isFlipX_ = false; //!< 左右フリップ
 
-		// 上下フリップ
-		bool isFlipY_ = false;
+		bool isFlipY_ = false; //!< 上下フリップ
 
-		// テクスチャ左上座標
-		Vector2 textureLeftTop = { 0.0f,0.0f };
+		Vector2 textureLeftTop = {}; //!< スプライト上の左上切り出し位置
 
-		// テクスチャ切り出しサイズ
-		Vector2 textureSize = { 100.0f,100.0f };
+		Vector2 textureSize = {}; // !< テクスチャの切り出しサイズ
 
 	};
 }

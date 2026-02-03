@@ -107,6 +107,20 @@ namespace Kouro
 			t * v1.z + (1.0f - t) * v2.z };
 	}
 
+	/**
+	* \brief 4次元ベクトルの線形補間
+	* \param v1 開始ベクトル
+	* \param v2 終了ベクトル
+	* \param t 補間係数 (0.0f から 1.0f)
+	*/
+	inline Vector4 Lerp(const Vector4& v1, const Vector4& v2, float t) {
+		return {
+			t * v1.x + (1.0f - t) * v2.x,
+			t * v1.y + (1.0f - t) * v2.y,
+			t * v1.z + (1.0f - t) * v2.z,
+			t * v1.w + (1.0f - t) * v2.w };
+	}
+
 	inline float fLerp(float startPos, float endPos, float t) {
 		return { startPos * (1.0f - t) + t * endPos };
 	}

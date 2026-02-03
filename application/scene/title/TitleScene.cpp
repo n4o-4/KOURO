@@ -8,8 +8,9 @@
 #include "FollowCameraState.h"
 
 #include "YamlLoader.h"
-#include "Vector3Yaml.h"
 #include "Vector2Yaml.h"
+#include "Vector3Yaml.h"
+#include "Vector4Yaml.h"
 
 #include "title/state/FadeInState.h"
 
@@ -70,13 +71,9 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 
 	// titleCameraの生成
 	titleCamera_ = std::make_unique<TitleCamera>();
-	//titleCamera_->SetTarget(player_->GetWorldTransform());
 	titleCamera_->Initialize();
 	std::unique_ptr<RotateCameraState> newState = std::make_unique<RotateCameraState>(titleCamera_.get(), player_->GetWorldTransform());
 	titleCamera_->ChangeState(std::move(newState));
-
-	/*debugCamera_ = std::make_unique<DebugCamera>();
-	debugCamera_->Initialize();*/
 
 	// カメラマネージャーにカメラを登録
 	cameraManager_->SetActiveCamera(titleCamera_.get()/*debugCamera_.get()*/);

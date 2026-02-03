@@ -12,6 +12,8 @@ namespace Kouro
 
 	void BaseScene::Initialize(EngineContext context)
 	{
+		spriteManager_ = std::make_unique<SpriteManager>();
+
 		// ライン描画クラスの生成と初期化
 		lineDrawer_ = std::make_unique<LineDrawerBase>();
 		lineDrawer_->Initialize(sceneManager_->GetDxCommon(), srvManager_);

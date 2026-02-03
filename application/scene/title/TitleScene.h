@@ -17,6 +17,7 @@
 #include "Player.h"
 #include "NumUi.h"
 #include "ModelEdgeEmitter.h"
+
 // \brief TitleScene タイトルシーンクラス
 
 class TitleScene : public Kouro::BaseScene

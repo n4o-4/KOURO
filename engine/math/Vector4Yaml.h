@@ -1,0 +1,28 @@
+#pragma once
+#include <yaml-cpp/yaml.h>
+#include "Vector4.h"
+
+namespace YAML {
+	template<>
+	struct convert<Kouro::Vector4> {
+		static Node encode(const Kouro::Vector4& rhs) {
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			node.push_back(rhs.z);
+			node.push_back(rhs.w);
+			return node;
+		}
+
+		static bool decode(const Node& node, Kouro::Vector4& rhs) {
+			if (!node.IsSequence() || node.size() != 4) {
+				return false;
+			}
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
+			rhs.z = node[2].as<float>();
+			rhs.w = node[3].as<float>();
+			return true;
+		}
+	};
+}

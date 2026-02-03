@@ -129,10 +129,6 @@ private:
 
 	Kouro::Vector4 kDefaultUIColor_ = { 0.612f, 0.000f, 0.357f, 1.0f };
 
-	std::unique_ptr<Kouro::Sprite> WASD_ = nullptr;
-
-	std::unique_ptr<Kouro::Sprite> fireUI_ = nullptr;
-
 	std::unique_ptr<Kouro::Sprite> pauseUI_ = nullptr;
 	std::unique_ptr<Kouro::Sprite> titleUI_ = nullptr;
 	std::unique_ptr<Kouro::Sprite> backUI_ = nullptr;

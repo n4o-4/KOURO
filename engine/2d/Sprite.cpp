@@ -21,9 +21,9 @@ namespace Kouro
 
 		CreateTransformationMatrixData();
 
-		AdjustTextureSize();
+		AdjustTextureSize(textureFilePath);
 
-		this->textureFilePath = textureFilePath;
+		textureFilePath_ = textureFilePath;
 	}
 
 	void Sprite::Update()
@@ -46,7 +46,7 @@ namespace Kouro
 			bottom = -bottom;
 		}
 
-		const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath);
+		const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath_);
 
 		float tex_left = textureLeftTop.x / metadata.width;
 		float tex_right = (textureLeftTop.x + textureSize.x) / metadata.width;
@@ -132,7 +132,7 @@ namespace Kouro
 
 		spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationResource.Get()->GetGPUVirtualAddress());
 
-		spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureFilePath));
+		spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureFilePath_));
 
 		spriteCommon->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 	}
@@ -199,11 +199,12 @@ namespace Kouro
 		transformationMatrixData->World = MakeIdentity4x4();
 	}
 
-	void Sprite::AdjustTextureSize()
+	void Sprite::AdjustTextureSize(std::string textureFilePath)
 	{
-		// 
+		// テクスチャのメタデータを取得
 		const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath);
 
+		// テクスチャサイズをメタデータから設定
 		textureSize.x = static_cast<float>(metadata.width);
 		textureSize.y = static_cast<float>(metadata.height);
 	}

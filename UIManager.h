@@ -1,20 +1,18 @@
 #pragma once
-#include <string>
-#include <vector>
-#include <map>
-#include<memory>
 
-#include "Sprite.h"
+#include "SpriteManager.h"
 
-class UIManager
+namespace Kouro
 {
-public:
+	class UIManager
+	{
+	public:
 
-	void LoadUIFromFile(const std::string& filename);
 
-private:
 
-	std::unordered_map < std::string, std::vector<std::shared_ptr<Kouro::Sprite>>> uiSpriteSets_;
+	private:
 
-};
+		SpriteManager* spriteManager_ = nullptr;
 
+	};
+}

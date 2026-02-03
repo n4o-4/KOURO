@@ -5,6 +5,9 @@
 
 #include "SceneCommand.h"
 #include "YamlLoader.h"
+#include "Vector2Yaml.h"
+#include "Vector3Yaml.h"
+#include "Vector4Yaml.h"
 // 仮
 #include "ApproachState.h"
 #include "Easing.h"
@@ -13,6 +16,8 @@
 
 #include "ISceneState.h"
 #include "game/state/PauseState.h"
+
+#include "SpriteMotionLibrary.h"
 
 ///=============================================================================
 ///						マトリックス表示
@@ -41,35 +46,14 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	//========================================
 	// テクスチャの読み込み
 
-	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/WASD.png");
+	//Kouro::TextureManager::GetInstance()->LoadTexture("Resources/WASD.png");
 
 
 	Kouro::ModelManager::GetInstance()->LoadModel("player/player.obj");
 	Kouro::ModelManager::GetInstance()->LoadModel("playerbullet/playerbullet.obj");
 
-	//========================================
-	// ライト
-	// 指向性
-	directionalLight = std::make_unique<Kouro::DirectionalLight>();
-	directionalLight->Initialize();
-	directionalLight->intensity_ = 0.0f;
-	// 点光源
-	pointLight = std::make_unique<Kouro::PointLight>();
-	pointLight->Initilize();
-	pointLight->intensity_ = 0.0f;
-	// スポットライト
-	spotLight = std::make_unique<Kouro::SpotLight>();
-	spotLight->Initialize();
-	spotLight->direction_ = { 0.0f,-1.0f,0.0f };
-	spotLight->position_ = { 0.0f,10.0f,0.0f };
-	spotLight->intensity_ = 1.0f;
-	spotLight->decay_ = 0.87f;
-	spotLight->distance_ = 40.0f;
-	spotLight->cosAngle_ = 0.5f;
-
 	// postエフェクトの適用
 	sceneManager_->GetPostEffect()->ApplyEffect("dissolve",Kouro::PostEffect::EffectType::Dissolve);
-
 
 	// YAMLファイルの読み込み
 	YAML::Node config = KOURO::YamlLoader::LoadYamlFile("game/rail_config.yaml");
@@ -109,9 +93,8 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 	transform_ = std::make_unique<Kouro::WorldTransform>();
 	transform_->Initialize();
-	transform_->transform.translate = { 0.0f,0.0f,0.0f };
-
 	transform_->transform.scale = { 300.0f,300.0f,100.0f };
+
 	///========================================
 	///		パーティクル
 	
@@ -287,32 +270,13 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 		countSprite_[i]->Update();
 	}
 
-	WASD_ = std::make_unique<Kouro::Sprite>();
-	WASD_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/WASD.png");
-	WASD_->SetAnchorPoint(Kouro::Vector2(0.5f, 0.5f));
-	WASD_->SetTexSize(Kouro::Vector2(1024.0f, 1024.0f));
-	WASD_->SetSize(Kouro::Vector2(200.0f, 200.0f));
-	WASD_->SetPosition(Kouro::Vector2(120.0f, 600.0f));
-	WASD_->SetColor(Kouro::Vector4(kDefaultUIColor_));
-	WASD_->Update();
+	spriteManager_->LoadSpriteGroupsFromYaml("game/ui/scene_ui.yaml");
 
-	fireUI_ = std::make_unique<Kouro::Sprite>();
-	fireUI_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/FireUI.png");
-	fireUI_->SetAnchorPoint(Kouro::Vector2(0.5f, 0.5f));
-	fireUI_->SetTexSize(Kouro::Vector2(1536.0f, 1024.0f));
-	fireUI_->SetSize(Kouro::Vector2(300.0f, 200.0f));
-	fireUI_->SetPosition(Kouro::Vector2(640.0f, 600.0f));
-	fireUI_->SetColor(Kouro::Vector4(kDefaultUIColor_));
-	fireUI_->Update();
+	// プレイUIの設定
+	spriteManager_->SetGroupVisibility("play_ui", true);
 
-	pauseUI_ = std::make_unique<Kouro::Sprite>();
-	pauseUI_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/pause_ui.png");
-	pauseUI_->SetAnchorPoint(Kouro::Vector2(0.5f, 0.5f));
-	pauseUI_->SetTexSize(Kouro::Vector2(512.0f, 256.0f));
-	pauseUI_->SetSize(Kouro::Vector2(240.0f, 120.0f));
-	pauseUI_->SetPosition(Kouro::Vector2(120.0f, 50.0f));
-	pauseUI_->SetColor(Kouro::Vector4(kDefaultUIColor_));
-	pauseUI_->Update();
+	// 発砲UIの更新関数を設定
+	spriteManager_->SetSpriteUpdateFunction("play_ui","label_fire_hint",PlayerUI::FireUI(kDefaultUIColor_,{ 1.0,1.0f,1.0f,1.0f },player_.get()));
 
 	titleUI_ = std::make_unique<Kouro::Sprite>();
 	titleUI_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/title_ui.png");
@@ -568,7 +532,7 @@ void GameScene::Update()
 		break;
 	}
 
-	
+	spriteManager_->UpdateVisibleGroups();
 
 	if (player_->GetIsHit())
 	{
@@ -632,8 +596,8 @@ void GameScene::Update()
 
 	Kouro::Vector3 uiColor = Kouro::Lerp(Kouro::Vector3(kDefaultUIColor_.x, kDefaultUIColor_.y, kDefaultUIColor_.z), Kouro::Vector3(1.0f, 1.0f, 1.0f), factor);
 
-	fireUI_->SetColor({ uiColor.x,uiColor.y,uiColor.z,1.0f });
-	fireUI_->Update();
+	/*fireUI_->SetColor({ uiColor.x,uiColor.y,uiColor.z,1.0f });
+	fireUI_->Update();*/
 }
 
 ///=============================================================================
@@ -683,12 +647,13 @@ void GameScene::Draw()
 		countSprite_[0]->Draw();
 	}
 
-	WASD_->Draw();
-	fireUI_->Draw();
+	///*WASD_->Draw();
+	//fireUI_->Draw();*/
+	spriteManager_->DrawGroup("play_ui");
 
 	if(phase_ == Phase::kMain)
 	{
-		pauseUI_->Draw();
+		//pauseUI_->Draw();
 	}
 	else if(phase_ == Phase::kPose)
 	{

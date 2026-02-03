@@ -9,6 +9,7 @@
 #include "SpriteCommon.h"
 #include "Object3dCommon.h"	
 #include "LineDrawerBase.h"
+#include "SpriteManager.h"
 
 #include "Fade.h"
 
@@ -101,6 +102,8 @@ namespace Kouro
 		SceneManager* sceneManager_ = nullptr;
 
 		SrvManager* srvManager_ = nullptr;
+
+		std::unique_ptr<SpriteManager> spriteManager_ = nullptr;
 
 		std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
 

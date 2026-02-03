@@ -531,6 +531,8 @@
     <ClCompile Include="application\object\enemy\TackleState.cpp" />
     <ClCompile Include="application\object\enemy\TackleChargeState.cpp" />
     <ClCompile Include="TackleRecoverState.cpp" />
+    <ClCompile Include="engine\2d\SpriteManager.cpp" />
+    <ClCompile Include="UIController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -967,6 +969,10 @@
     <ClInclude Include="application\object\enemy\TackleState.h" />
     <ClInclude Include="application\object\enemy\TackleChargeState.h" />
     <ClInclude Include="TackleRecoverState.h" />
+    <ClInclude Include="engine\2d\SpriteManager.h" />
+    <ClInclude Include="engine\math\Vector4Yaml.h" />
+    <ClInclude Include="UIController.h" />
+    <ClInclude Include="SpriteMotionLibrary.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -998,6 +1004,7 @@
       <Filter>resources\shaders</Filter>
     </None>
     <None Include="Resources\config\game\ui\countdown_ui.yaml" />
+    <None Include="Resources\config\game\ui\scene_ui.yaml" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="application">

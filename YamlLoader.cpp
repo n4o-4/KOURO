@@ -1,6 +1,9 @@
 #include "YamlLoader.h"
 #include <filesystem>
 #include <iostream>
+#include "Vector2Yaml.h"
+#include "Vector3Yaml.h"
+#include "Vector4Yaml.h"
 
 YAML::Node KOURO::YamlLoader::LoadYamlFile(const std::string& fileName)
 {

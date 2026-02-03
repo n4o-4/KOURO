@@ -5,8 +5,6 @@
 #include <yaml-cpp/yaml.h>
 
 // Engine
-#include "Vector3Yaml.h"
-
 namespace KOURO
 {
 
