@@ -278,24 +278,8 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	// 発砲UIの更新関数を設定
 	spriteManager_->SetSpriteUpdateFunction("play_ui","label_fire_hint",PlayerUI::FireUI(kDefaultUIColor_,{ 1.0,1.0f,1.0f,1.0f },player_.get()));
 
-	titleUI_ = std::make_unique<Kouro::Sprite>();
-	titleUI_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/title_ui.png");
-	titleUI_->SetAnchorPoint(Kouro::Vector2(0.5f, 0.5f));
-	titleUI_->SetTexSize(Kouro::Vector2(512.0f, 256.0f));
-	titleUI_->SetSize(Kouro::Vector2(512.0f, 256.0f));
-	titleUI_->SetPosition(Kouro::Vector2(640.0f, 100.0f));
-	titleUI_->SetColor(Kouro::Vector4(kDefaultUIColor_));
-	titleUI_->Update();
-
-	backUI_ = std::make_unique<Kouro::Sprite>();
-	backUI_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/back_ui.png");
-	backUI_->SetAnchorPoint(Kouro::Vector2(0.5f, 0.5f));
-	backUI_->SetTexSize(Kouro::Vector2(512.0f, 256.0f));
-	backUI_->SetSize(Kouro::Vector2(512.0f, 256.0f));
-	backUI_->SetPosition(Kouro::Vector2(640.0f, 200.0f));
-	backUI_->SetColor(Kouro::Vector4(kDefaultUIColor_));
-	backUI_->Update();
-
+	// ポーズUIの設定
+	spriteManager_->SetGroupVisibility("pause_ui", false);
 
 	colliderManager_->AddCollider(player_);
 
@@ -345,9 +329,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 ///						終了処理
 void GameScene::Finalize()
 {
-
 	BaseScene::Finalize();
-
 }
 
 ///=============================================================================
@@ -359,8 +341,6 @@ void GameScene::Update()
 
 	// パーティクルマネージャーの更新
 	Kouro::ParticleManager::GetInstance()->Update();
-
-	//Kouro::GpuParticle::GetInstance()->Update(cameraManager_->GetActiveCamera()->GetViewProjection());
 
 	// postEffectの処理
 	Kouro::RadialBlur* blur = static_cast<Kouro::RadialBlur*>(sceneManager_->GetPostEffect()->GetEffectData("blur"));
@@ -479,6 +459,11 @@ void GameScene::Update()
 			newState->SetOnExitCallback([this](const std::string& result) {OnPauseExit(result); });
 
 			ChangeState(std::move(newState));
+
+			// ポーズシーンへ
+			phase_ = Phase::kPose;
+			spriteManager_->SetGroupVisibility("pause_ui", true);
+			return;
 		}
 
 		UpdateAllObjects(1.0f / 60.0f);
@@ -495,6 +480,7 @@ void GameScene::Update()
 		if (enemyCount == 0)
 		{
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
+			spriteManager_->SetGroupVisibility("pause_ui", false);
 			phase_ = Phase::kFadeOut;
 		}
 
@@ -529,6 +515,15 @@ void GameScene::Update()
 	case Phase::kPlay:
 		break;
 	case Phase::kPose:
+
+		if (Kouro::Input::GetInstance()->TriggerKey(DIK_ESCAPE))
+		{
+			// ポーズシーンへ
+			phase_ = Phase::kMain;
+			spriteManager_->SetGroupVisibility("pause_ui", false);
+			return;
+		}
+		
 		break;
 	}
 
@@ -538,66 +533,6 @@ void GameScene::Update()
 	{
 		cameraManager_->CameraShake(0.5f);
 	}
-
-#ifdef _DEBUG
-
-	if(ImGui::TreeNode("directionalLight")) {
-		ImGui::ColorEdit4("directionalLight.color", &directionalLight->color_.x, ImGuiColorEditFlags_None);
-		if(ImGui::DragFloat3("directionalLight.direction", &directionalLight->direction_.x, 0.01f)) {
-			directionalLight->direction_ = Normalize(directionalLight->direction_);
-		}
-		ImGui::DragFloat("directionalLight.intensity", &directionalLight->intensity_, 0.01f);
-		ImGui::TreePop();
-	}
-
-	if(ImGui::TreeNode("pointLight")) {
-		ImGui::ColorEdit4("pointLight.color", &pointLight->color_.x, ImGuiColorEditFlags_None);
-		ImGui::DragFloat3("pointLight.position", &pointLight->position_.x, 0.01f);
-		ImGui::DragFloat("pointLight.decay", &pointLight->decay_, 0.01f);
-		ImGui::DragFloat("pointLight.radius", &pointLight->radius_, 0.01f);
-		ImGui::DragFloat("pointLight.intensity", &pointLight->intensity_, 0.01f);
-		ImGui::TreePop();
-	}
-
-	if(ImGui::TreeNode("spotLight")) {
-		ImGui::ColorEdit4("spotlLight.color", &spotLight->color_.x, ImGuiColorEditFlags_None);
-		if(ImGui::DragFloat3("spotLight.direction", &spotLight->direction_.x, 0.01f)) {
-			spotLight->direction_ = Normalize(spotLight->direction_);
-		}
-		ImGui::DragFloat3("spotLight.position", &spotLight->position_.x, 0.01f);
-		ImGui::DragFloat("spotLight.decay", &spotLight->decay_, 0.01f);
-		ImGui::DragFloat("spotLight.intensity", &spotLight->intensity_, 0.01f);
-		ImGui::DragFloat("spotLight.distance", &spotLight->distance_, 0.01f);
-		ImGui::DragFloat("spotLight.cosAngle", &spotLight->cosAngle_, 0.01f);
-		ImGui::DragFloat("spotLight.cosFalloffStart", &spotLight->cosFalloffStart_, 0.01f);
-		ImGui::TreePop();
-	}
-
-	if (ImGui::Button("Emit"))
-	{
-
-		Kouro::Vector3 scale = { 1.0f,1.0f,1.0 };
-		Kouro::Vector3 rotate = { 0.0f,0.0f,0.0f };
-		Kouro::Vector3 translate = { 0.0f,0.0f,0.0f };
-
-		Kouro::Matrix4x4 world = Kouro::MakeAffineMatrix(scale, rotate, translate);
-
-		//GpuParticle::GetInstance()->LineEmit(world);
-	}
-
-#endif
-
-	float interval = player_->GetFireInterval();
-	float fireTimer = player_->GetFireIntervalTimer();
-
-	float factor = fireTimer / interval;
-
-	factor = std::clamp(factor, 0.0f, 1.0f);
-
-	Kouro::Vector3 uiColor = Kouro::Lerp(Kouro::Vector3(kDefaultUIColor_.x, kDefaultUIColor_.y, kDefaultUIColor_.z), Kouro::Vector3(1.0f, 1.0f, 1.0f), factor);
-
-	/*fireUI_->SetColor({ uiColor.x,uiColor.y,uiColor.z,1.0f });
-	fireUI_->Update();*/
 }
 
 ///=============================================================================
@@ -647,19 +582,8 @@ void GameScene::Draw()
 		countSprite_[0]->Draw();
 	}
 
-	///*WASD_->Draw();
-	//fireUI_->Draw();*/
 	spriteManager_->DrawGroup("play_ui");
-
-	if(phase_ == Phase::kMain)
-	{
-		//pauseUI_->Draw();
-	}
-	else if(phase_ == Phase::kPose)
-	{
-		titleUI_->Draw();
-		backUI_->Draw();
-	}
+	spriteManager_->DrawGroup("pause_ui");
 
 	// フェード描画
 	DrawFade();
@@ -685,9 +609,7 @@ void GameScene::UpdateAllObjects(const float deltaTime)
 	colliderManager_->Update();
 
 	// 生存していない敵をリストから削除
-	std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {
-		return !enemy->GetIsAlive();
-		});
+	std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {return !enemy->GetIsAlive(); });
 }
 
 void GameScene::ChangeState(std::unique_ptr<Kouro::ISceneState> newState)
@@ -707,7 +629,8 @@ void GameScene::ChangeState(std::unique_ptr<Kouro::ISceneState> newState)
 
 void GameScene::OnPauseExit(const std::string& result)
 {
-	if (result == SceneCommand::Resume) {
+	if (result == SceneCommand::Resume)
+	{
 		// ポーズ解除 → ゲーム再開
 		/*ChangeState(std::make_unique<>());*/
 		ResetState();

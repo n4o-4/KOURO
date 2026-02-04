@@ -1,4 +1,4 @@
-- group_name: play_ui
+﻿- group_name: play_ui
   sprites:
     - name: icon_move_hint
       texture_path: Resources/Icon_MoveHint.png
@@ -24,4 +24,18 @@
       texture_size: [512, 256]
       color: [0.612, 0.0, 0.357, 1.0]
   
+- group_name: pause_ui
+  sprites:
+    - name: label_title_hint
+      texture_path: Resources/Label_TitleHint.png
+      position: [640, 100]
+      size: [512, 256]
+      anchor_point: [0.5, 0.5]
+      texture_size: [512, 256]
 
+    - name: label_resume_hint
+      texture_path: Resources/Label_ResumeHint.png
+      position: [640, 200]
+      size: [512, 256]
+      anchor_point: [0.5, 0.5]
+      texture_size: [512, 256]

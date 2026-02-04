@@ -14,8 +14,6 @@
 #include "LevelLoader.h"
 #include "GlobalVariables.h"
 
-#include "RailAnimation.h"
-
 // \brief GameScene ゲームシーンクラス
 
 class GameScene : public Kouro::BaseScene
