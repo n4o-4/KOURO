@@ -109,6 +109,7 @@
     <FxCompile Include="Resources\shaders\InitializeParticle.CS.hlsl">
       <Filter>resources\shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\FlagPass.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
