@@ -61,8 +61,6 @@ namespace Kouro
 		static Node ReadNode(aiNode* node);
 
 	private:
-
-	private:
 		ModelCommon* modelCommon_;
 
 		ModelData modelData;

@@ -20,7 +20,7 @@ void ApproachState::OnEnter(Enemy* enemy)
 
     // 敵のTransform更新
     Kouro::WorldTransform* enemyTransform = enemy->GetWorldTransform();
-    enemyTransform->transform.translate = worldPos;
+    enemyTransform->SetTranslate(worldPos);
     enemyTransform->UpdateMatrix();
 }
 
@@ -60,8 +60,8 @@ void ApproachState::Update(Enemy* enemy)
     // Y方向のうねり
     pos.y += kApproachHeight * sinf(t * 3.14159f); // 半波
 
-    enemyTransform->transform.translate = pos;
-    enemyTransform->transform.rotate.y += 0.01f;
+    enemyTransform->SetTranslate(pos);
+    enemyTransform->SetRotate({ enemyTransform->GetRotate().x, enemyTransform->GetRotate().y + 0.01f, enemyTransform->GetRotate().z });
     enemyTransform->UpdateMatrix();
 
     if (angle_ >= kEndAngle)

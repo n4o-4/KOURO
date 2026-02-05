@@ -11,7 +11,6 @@ void RailFollower::Initialize(const Rail& rail,float moveTime)
 	moveTime_ = moveTime;
 
 	worldTransform_.Initialize();
-	worldTransform_.useQuaternion_ = false;
 }
 
 void RailFollower::Update(float deltaTime)
@@ -75,8 +74,8 @@ void RailFollower::Update(float deltaTime)
 	// ------------------------------
 	// カメラ変換を適用
 	// ------------------------------
-	worldTransform_.transform.translate = position;
-	worldTransform_.transform.rotate = { pitch, yaw, roll };
+	worldTransform_.SetTranslate(position);
+	worldTransform_.SetRotate({ pitch, yaw, roll });
 
 	worldTransform_.UpdateMatrix();
 }

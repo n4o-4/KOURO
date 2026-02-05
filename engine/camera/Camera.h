@@ -40,13 +40,13 @@ namespace Kouro
 		* \brief 回転設定
 		* \param rotate 回転値
 		*/
-		void SetRotate(const Vector3& rotate) { worldTransform_->transform.rotate = rotate; }
+		void SetRotate(const Vector3& rotate) { worldTransform_->SetRotate(rotate); }
 
 		/**
 		* \brief 位置設定
 		* \param translate 位置値
 		*/
-		void SetTranslate(const Vector3& translate) { worldTransform_->transform.translate = translate; }
+		void SetTranslate(const Vector3& translate) { worldTransform_->SetTranslate(translate); }
 
 		/**
 		* \brief FOV設定

@@ -10,10 +10,6 @@ void Player::Initialize(Kouro::LineModel* model)
 	// 初期化
 	BaseCharacter::Initialize(model);
 
-	worldTransform_->useQuaternion_ = false;
-
-	worldTransform_->transform.scale = { kDefaultScale,kDefaultScale,kDefaultScale };
-
 	AABBCollider::Initialize(worldTransform_.get(),this);
 
 	SetCollisionAttribute(0b1); // コリジョン属性を設定
@@ -30,7 +26,7 @@ void Player::Initialize(Kouro::LineModel* model)
 	rail.Initialize(controlPoints_);
 
 	// 座標の位置を設定
-	colliderTransform_->transform.translate = { 0.0f,0.0f, 0.0f };
+	colliderTransform_->SetTranslate({ 0.0f,0.0f, 0.0f });
 
 	// 座標を一度更新
 	colliderTransform_->UpdateMatrix();
@@ -132,8 +128,6 @@ void Player::Update()
 
 	// 移動
 	Move();
-
-	colliderTransform_->transform;
 
 	// 弾の更新
 	for (auto& bullet : bullets_)
@@ -240,11 +234,13 @@ void Player::Fire()
 	// 弾の生成
 	std::shared_ptr<PlayerBullet> bullet = std::make_shared<PlayerBullet>();
 
+	Kouro::Matrix4x4 matWorld = worldTransform_->GetWorldMatrix();
+
 	// 初期化
-	bullet->Initialize(lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
+	bullet->Initialize(lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"), { matWorld.m[3][0],matWorld.m[3][1],matWorld.m[3][2] });
 
 	// プレイヤーが向いている方向にvelocityを変換する
-	Kouro::Vector3 velocity = TransformNormal({ 0.0f,0.0f,bulletSpeed }, worldTransform_->matWorld_);
+	Kouro::Vector3 velocity = TransformNormal({ 0.0f,0.0f,bulletSpeed }, matWorld);
 
 	// 弾に計算したvelocityを設定する
 	bullet->SetVelocity(velocity);
@@ -255,7 +251,7 @@ void Player::Fire()
 	float pitch = std::asin(-forward.y);
 	float roll = 0.0f;
 
-	bullet->GetWorldTransform()->transform.rotate = { pitch, yaw, roll };
+	bullet->GetWorldTransform()->SetRotate({ pitch, yaw, roll });
 
 	// コライダーマネージャーに弾を追加する
 	colliderManager_->AddCollider(bullet);

@@ -16,7 +16,7 @@ void FollowCamera::Initialize()
 
     // 初期位置を設定
     if (target_) {
-        currentPosition_ = target_->transform.translate + offset_;
+        currentPosition_ = target_->GetTranslate() + offset_;
         worldTransform_->SetTranslate(currentPosition_);
     }
     //軽く傾ける
@@ -81,7 +81,7 @@ void FollowCamera::CalculationRotate()
 void FollowCamera::CalculationTranslate()
 {
 	// ターゲットの位置をイージングで補間
-    interTarget_ = Lerp(interTarget_, target_->transform.translate, easingFactor_);
+    interTarget_ = Lerp(interTarget_, target_->GetTranslate(), easingFactor_);
 
 	// オフセットの計算
     Kouro::Vector3 offset = CalculationOffset();

@@ -88,7 +88,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 	transform_ = std::make_unique<Kouro::WorldTransform>();
 	transform_->Initialize();
-	transform_->transform.scale = { 300.0f,300.0f,100.0f };
+	transform_->SetScale({ 300.0f,300.0f,100.0f });
 
 	///========================================
 	///		パーティクル

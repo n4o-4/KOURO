@@ -12,10 +12,6 @@ void Enemy::Initialize(Kouro::LineModel* model)
 	// 初期化
 	BaseCharacter::Initialize(model);
 
-	worldTransform_->useQuaternion_ = false;
-	worldTransform_->quaternionTransform.scale = { 5.0f,5.0f,5.0f };
-	worldTransform_->transform.scale = { 1.0f,1.0f,1.0f };
-
 	AABBCollider::Initialize(worldTransform_.get(),this);
 
 	SetCollisionAttribute(0b1 << 1); // コリジョン属性を設定
@@ -92,12 +88,8 @@ void Enemy::Draw()
 
 void Enemy::SetPosition(const Kouro::Vector3& position)
 {
-	if (worldTransform_->useQuaternion_) {
-		worldTransform_->quaternionTransform.translate = position;
-	}
-	else {
-		worldTransform_->transform.translate = position;
-	}
+	worldTransform_->SetTranslate(position);
+
 	worldTransform_->UpdateMatrix();
 }
 
@@ -146,15 +138,17 @@ void Enemy::Fire()
 	const int bulletCount = 7;
 	const float spreadAngle = DirectX::XMConvertToRadians(60.0f);
 
+	Kouro::Matrix4x4 matWorld = worldTransform_->GetWorldMatrix();
+
 	// 敵の位置
 	Kouro::Vector3 enemyPos = {
-		worldTransform_->matWorld_.m[3][0],
-		worldTransform_->matWorld_.m[3][1],
-		worldTransform_->matWorld_.m[3][2]
+		matWorld.m[3][0],
+		matWorld.m[3][1],
+		matWorld.m[3][2]
 	};
 
 	// 自機方向（XZだけ使う）
-	Kouro::Matrix4x4 targetWMatrix = target_->GetWorldTransform()->matWorld_;
+	Kouro::Matrix4x4 targetWMatrix = target_->GetWorldTransform()->GetWorldMatrix();
 	Kouro::Vector3 targetPos = {
 		targetWMatrix.m[3][0],
 		targetWMatrix.m[3][1],
@@ -248,7 +242,7 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 
 		else if(hp_ <= playerBullet->GetDamage() && actionData_.hitIntervalTimer_ >= actionData_.kHitInterval_)
 		{
-			mEmitter_->Emit(colliderTransform_->matWorld_);
+			mEmitter_->Emit(worldTransform_->GetWorldMatrix());
 
 			hp_ = 0;
 		}

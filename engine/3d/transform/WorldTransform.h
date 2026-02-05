@@ -73,7 +73,7 @@ namespace Kouro
 		*/
 		void SetParent(const WorldTransform* parent) { parent_ = parent, this->UpdateMatrix(); }
 
-	public:
+	private:
 
 		Transform transform;
 

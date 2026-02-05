@@ -17,10 +17,10 @@ void BaseBullet::Initialize(Kouro::LineModel* model, Kouro::Vector3 spawnPos)
 	worldTransform_->Initialize();
 
 
-	worldTransform_->useQuaternion_ = false;
+	//worldTransform_->useQuaternion_ = false;
 	// 初期値の設定
 
-	worldTransform_->transform.translate = spawnPos;
+	worldTransform_->SetTranslate(spawnPos);
 
 	///========================================
 	/// その他変数
@@ -36,16 +36,9 @@ void BaseBullet::Update()
 {
 	///========================================
 	/// ワールドトランスフォーム
-
-	// クォータニオン／行列どちらの変換を使うかで移動先を更新
-	if (worldTransform_->useQuaternion_)
-	{
-		worldTransform_->quaternionTransform.translate += velocity_;
-	}
-	else
-	{
-		worldTransform_->transform.translate += velocity_;
-	}
+	
+	Kouro::Vector3 translate = worldTransform_->GetTranslate();
+	worldTransform_->SetTranslate(translate + velocity_);
 
 	// 更新
 	worldTransform_->UpdateMatrix();

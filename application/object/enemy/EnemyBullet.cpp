@@ -40,7 +40,7 @@ void EnemyBullet::Update()
 	float pitch = std::asin(-forward.y);
 	float roll = 0.0f;
 
-	worldTransform_->transform.rotate = { pitch, yaw, roll };
+	worldTransform_->SetRotate({ pitch, yaw, roll });
 
 	// 親クラスの更新
 

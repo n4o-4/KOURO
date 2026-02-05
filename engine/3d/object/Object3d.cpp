@@ -60,11 +60,10 @@ namespace Kouro
 	void Object3d::Draw(WorldTransform worldTransform, ViewProjection viewProjection, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
 	{
 		// ワールド行列を計算
-		worldTransform.matWorld_ = localMatrix * worldTransform.matWorld_;
+		//worldTransform.matWorld = localMatrix * worldTransform.matWorld;
 
 		// 行列の転送
 		worldTransform.TransferMatrix();
-
 
 		object3dCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_.Get()->GetGPUVirtualAddress());
 

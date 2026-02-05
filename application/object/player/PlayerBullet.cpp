@@ -63,7 +63,7 @@ void PlayerBullet::OnCollisionEnter(BaseCollider* other)
 		BaseEntity::isAlive_ = false; // 弾を消す
 	}
 
-	emitter_->SetPosition(worldTransform_->transform.translate);
+	emitter_->SetPosition(worldTransform_->GetTranslate());
 	//emitter_->Emit();
 }
 

@@ -18,11 +18,13 @@ void SphereCollider::Update()
 {
 	BaseCollider::Update();
 
+	Kouro::Matrix4x4 matWorld = colliderTransform_->GetWorldMatrix();
+
 	// ワールド座標系での球の中心座標を更新
 	sphere_.center = Kouro::Vector3(
-		colliderTransform_->matWorld_.m[3][0],
-		colliderTransform_->matWorld_.m[3][1],
-		colliderTransform_->matWorld_.m[3][2]
+		matWorld.m[3][0],
+		matWorld.m[3][1],
+		matWorld.m[3][2]
 	);
 }
 

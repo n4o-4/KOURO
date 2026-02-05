@@ -7,7 +7,6 @@ namespace Kouro
 		// worldTransformの生成と初期化
 		worldTransform_ = std::make_unique<WorldTransform>();
 		worldTransform_->Initialize();
-		worldTransform_->useQuaternion_ = false;
 
 		// viewProjectionの生成と初期化
 		viewProjection_ = std::make_unique<ViewProjection>();

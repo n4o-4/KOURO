@@ -8,7 +8,7 @@ void RailCamera::Initialize()
 	// ワールド変形情報の生成と初期化
 	worldTransform_ = std::make_unique<Kouro::WorldTransform>();
 	worldTransform_->Initialize();
-	worldTransform_->useQuaternion_ = false;
+	//worldTransform_->useQuaternion_ = false;
 }
 
 void RailCamera::Update()

@@ -21,7 +21,7 @@ void OBBCollider::Update()
     BaseCollider::Update();
 
     // ワールド行列からスケール・回転・平行移動を抽出
-    Kouro::Matrix4x4 matWorld = colliderTransform_->matWorld_;
+    Kouro::Matrix4x4 matWorld = colliderTransform_->GetWorldMatrix();
 
     // 中心（ワールド座標）＝ワールド行列の平行移動成分
     obb_.center = {

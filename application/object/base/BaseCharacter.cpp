@@ -16,8 +16,6 @@ void BaseCharacter::Initialize(Kouro::LineModel* model)
 	worldTransform_ = std::make_unique<Kouro::WorldTransform>();
 	worldTransform_->Initialize();
 
-
-	worldTransform_->useQuaternion_ = false;
 	// 初期値の設定
 
 
@@ -37,14 +35,10 @@ void BaseCharacter::Update()
 	/// ワールドトランスフォーム
 
 	// クォータニオン／行列どちらの変換を使うかで移動先を更新
-	if (worldTransform_->useQuaternion_)
-	{
-		worldTransform_->quaternionTransform.translate += velocity_;
-	}
-	else
-	{
-		worldTransform_->transform.translate += velocity_;
-	}
+
+	Kouro::Vector3 translate = worldTransform_->GetTranslate();
+
+	worldTransform_->SetTranslate(translate + velocity_);
 
 	// 更新
 	worldTransform_->UpdateMatrix();
@@ -62,10 +56,14 @@ void BaseCharacter::Draw()
 const Kouro::Vector3& BaseCharacter::GetWorldPosition()
 {
 	worldTransform_->UpdateMatrix();
-	Kouro::Vector3 worldPos = {
-		worldTransform_->matWorld_.m[3][0],
-		worldTransform_->matWorld_.m[3][1],
-		worldTransform_->matWorld_.m[3][2]
+
+	Kouro::Matrix4x4 matWorld = worldTransform_->GetWorldMatrix();
+
+	Kouro::Vector3 worldPos = 
+	{
+		matWorld.m[3][0],
+		matWorld.m[3][1],
+		matWorld.m[3][2]
 	};
 	return worldPos;
 }
@@ -73,13 +71,6 @@ const Kouro::Vector3& BaseCharacter::GetWorldPosition()
 void BaseCharacter::DrawImGui()
 {
 #ifdef _DEBUG
-
-	ImGui::Begin("Character Status");
-
-	ImGui::DragFloat3("scale", &worldTransform_->transform.scale.x, 0.01f);
-	ImGui::DragFloat3("rotate", &worldTransform_->transform.rotate.x, 0.01f);
-	ImGui::DragFloat3("translate", &worldTransform_->transform.translate.x, 0.01f);
-
 #endif 
 
 }

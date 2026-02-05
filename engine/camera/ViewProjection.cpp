@@ -19,7 +19,7 @@ namespace Kouro
 	void ViewProjection::Update(const WorldTransform& worldTransform)
 	{
 		// 最終的なワールド行列を使用
-		const Matrix4x4& matWorld = worldTransform.matWorld_;
+		const Matrix4x4& matWorld = worldTransform.GetWorldMatrix();
 
 		// 平行移動（カメラの位置）
 		Vector3 worldPos = { matWorld.m[3][0], matWorld.m[3][1], matWorld.m[3][2] };

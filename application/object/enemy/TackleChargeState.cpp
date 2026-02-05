@@ -34,7 +34,7 @@ void TackleChargeState::Update(Enemy* enemy)
 	timer_ += 1.0f / 60.0f;
 
 	// 徐々に角度を変化させる
-	transform_->SetRotate(Kouro::Lerp(transform_->transform.rotate, forward_, timer_ / 1.0f));
+	transform_->SetRotate(Kouro::Lerp(transform_->GetRotate(), forward_, timer_ / 1.0f));
 
 	offset_ = randomGenerate.RandomVector3(-0.2f, 0.2f);
 

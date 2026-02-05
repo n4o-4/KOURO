@@ -74,7 +74,7 @@ namespace Kouro
 
 		worldTransform_->Initialize();
 
-		worldTransform_->transform.scale = { 1000.0f, 1000.0f, 1000.0f };
+		worldTransform_->SetScale({ 1000.0f, 1000.0f, 1000.0f });
 
 		worldTransform_->UpdateMatrix();
 

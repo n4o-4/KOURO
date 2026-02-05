@@ -26,14 +26,14 @@ void AttackState::Update(Enemy* enemy)
 	{
 		fireIntervalTimer_ += 1.0f / 60.0f;
 
-		enemy->GetWorldTransform()->transform.scale = { 1.0f,1.0f,1.0f };
+		enemy->GetWorldTransform()->SetScale({ 1.0f,1.0f,1.0f });
 
 		return;
 	}
 
 	
 	enemy->Fire();
-	enemy->GetWorldTransform()->transform.scale *= 1.5f;
+	enemy->GetWorldTransform()->SetScale(enemy->GetWorldTransform()->GetScale() * 1.5f);
 	fireIntervalTimer_ = 0.0f;
 	--fireCount_;
 
@@ -46,5 +46,5 @@ void AttackState::Update(Enemy* enemy)
 
 void AttackState::OnExit(Enemy* enemy)
 {
-	enemy->GetWorldTransform()->transform.scale = { 1.0f,1.0f,1.0f };
+	enemy->GetWorldTransform()->SetScale({ 1.0f,1.0f,1.0f });
 }

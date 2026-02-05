@@ -34,7 +34,7 @@ namespace Kouro
 		}
 
 		// ワールド行列を転送
-		lineData_->matWorld = worldTransform->matWorld_;
+		lineData_->matWorld = worldTransform->GetWorldMatrix();
 
 		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, lineResource_.Get()->GetGPUVirtualAddress());
 		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(2, scanEffectResource_.Get()->GetGPUVirtualAddress());

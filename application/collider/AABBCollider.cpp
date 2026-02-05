@@ -22,9 +22,9 @@ void AABBCollider::Update()
 
     // ワールド座標系でのAABB中心座標を取得（例：今後の拡張用）
     aabb_.center = Kouro::Vector3(
-        colliderTransform_->matWorld_.m[3][0],
-        colliderTransform_->matWorld_.m[3][1],
-        colliderTransform_->matWorld_.m[3][2]
+        colliderTransform_->GetWorldMatrix().m[3][0],
+        colliderTransform_->GetWorldMatrix().m[3][1],
+        colliderTransform_->GetWorldMatrix().m[3][2]
     );
 }
 

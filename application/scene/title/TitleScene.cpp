@@ -235,7 +235,7 @@ void TitleScene::Update()
 		auto transform_ = player_->GetWorldTransform();
 
 		// 現在位置をCatmull-Rom補間で取得
-		transform_->transform.translate = CatmullRomPosition(controlPoints_, progressFactor_);
+		transform_->SetTranslate(CatmullRomPosition(controlPoints_, progressFactor_));
 
 		// 次のフレームの位置をCatmull-Rom補間で取得
 		nextT = progressFactor_ + speedFactor_;
@@ -244,7 +244,7 @@ void TitleScene::Update()
 		viewTarget = CatmullRomPosition(controlPoints_, nextT);
 
 		// 現在位置
-		position = transform_->transform.translate;
+		position = transform_->GetTranslate();
 
 		target = viewTarget;
 
@@ -256,7 +256,7 @@ void TitleScene::Update()
 		pitch = std::asin(-forward.y);
 		roll = 0.0f; // 必要に応じて
 
-		transform_->transform.rotate = { pitch, yaw, roll };
+		transform_->SetRotate({ pitch, yaw, roll });
 
 		transform_->UpdateMatrix();
 	}
