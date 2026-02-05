@@ -19,12 +19,12 @@ void main( uint3 DTid : SV_DispatchThreadID )
         if (gParticles[particleIndex].color.a != 0)
         {
             gParticles[particleIndex].translate += gParticles[particleIndex].velocity * gPerFrame.deltaTime;
-            gParticles[particleIndex].currentTime += gPerFrame.deltaTime;
-            float alpha = 1.0f - (gParticles[particleIndex].currentTime / gParticles[particleIndex].lifeTime);
+            gParticles[particleIndex].currentTime -= gPerFrame.deltaTime;
+            float alpha = (gParticles[particleIndex].currentTime / gParticles[particleIndex].lifeTime);
             gParticles[particleIndex].color.a = saturate(alpha);
         }
         
-        if (gParticles[particleIndex].currentTime >= gParticles[particleIndex].lifeTime)
+        if (gParticles[particleIndex].currentTime <= 0)
         {
             gParticles[particleIndex].scale = float3(0, 0, 0);
             

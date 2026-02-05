@@ -43,12 +43,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	// 基底シーン
 	BaseScene::Initialize(context);
 
-	//========================================
-	// テクスチャの読み込み
-
-	//Kouro::TextureManager::GetInstance()->LoadTexture("Resources/WASD.png");
-
-
+	// モデルの読み込み
 	Kouro::ModelManager::GetInstance()->LoadModel("player/player.obj");
 	Kouro::ModelManager::GetInstance()->LoadModel("playerbullet/playerbullet.obj");
 

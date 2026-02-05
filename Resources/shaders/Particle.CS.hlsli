@@ -1,4 +1,4 @@
-﻿#include "Random.hlsli"
+#include "Random.hlsli"
 static uint kMaxParticles = 524288 * 2;
 
 struct Particle

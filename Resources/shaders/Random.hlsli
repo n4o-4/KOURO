@@ -1,4 +1,4 @@
-﻿// 参考 https://www.ronja-tutorials.com/post/024-white-noise/
+// 参考 https://www.ronja-tutorials.com/post/024-white-noise/
 
 
 

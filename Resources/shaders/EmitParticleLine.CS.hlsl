@@ -73,5 +73,5 @@ void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID)
     gParticles[particleIndex].scale = float3(0.1f, 0.1f, 0.1f);
     gParticles[particleIndex].color = float4(1.0, 0.3265, 0.2908,1.0f);
     gParticles[particleIndex].lifeTime = generator.Generate1d() * 2.0f;
-    gParticles[particleIndex].currentTime = 0.0f;
+    gParticles[particleIndex].currentTime = gParticles[particleIndex].lifeTime;
 }

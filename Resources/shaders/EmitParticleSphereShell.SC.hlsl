@@ -92,5 +92,5 @@ void main(uint3 DTid : SV_DispatchThreadID)
     gParticles[particleIndex].color.xyz = generator.Generate3d();
     gParticles[particleIndex].color.a = 1.0f;
     gParticles[particleIndex].lifeTime = 1;
-    gParticles[particleIndex].currentTime = 0.0f;
+    gParticles[particleIndex].currentTime = gParticles[particleIndex].lifeTime;
 }
