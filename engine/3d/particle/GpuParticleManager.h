@@ -100,7 +100,8 @@ namespace Kouro
 			Microsoft::WRL::ComPtr<ID3D12Resource> counterResource = nullptr;
 			Microsoft::WRL::ComPtr<ID3D12Resource> freeListResource = nullptr;
 
-			Microsoft::WRL::ComPtr<ID3D12Resource> baseUpdateListResource = nullptr; // lifeTimeやtransformにvelocityを加算
+			Microsoft::WRL::ComPtr<ID3D12Resource> baseUpdateFlagBuffer = nullptr; // lifeTimeやtransformにvelocityを加算
+			Microsoft::WRL::ComPtr<ID3D12Resource> baseUpdateIndexBuffer = nullptr; // 
 			Microsoft::WRL::ComPtr<ID3D12Resource> noiseUpdateListResource = nullptr;
 
 			Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;

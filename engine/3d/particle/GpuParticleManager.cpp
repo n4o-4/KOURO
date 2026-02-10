@@ -58,7 +58,7 @@ namespace Kouro
 		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
 
 		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(5, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(6, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(6, group.baseUpdateFlagBuffer.Get()->GetGPUVirtualAddress());
 
 		dxCommon_->GetCommandList()->Dispatch(10, 1, 1);
 	};
@@ -90,7 +90,7 @@ namespace Kouro
 			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
 			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
 			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
+			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.baseUpdateFlagBuffer.Get()->GetGPUVirtualAddress());
 			dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
 			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(5, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
 			dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount / kCSMaxParticleCount, 1, 1);
@@ -141,7 +141,7 @@ namespace Kouro
 		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
 		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
 		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.baseUpdateFlagBuffer.Get()->GetGPUVirtualAddress());
 		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(4, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
 
 		// ComputeShaderの実行
@@ -162,7 +162,7 @@ namespace Kouro
 
 			newGroup.freeListResource = dxCommon_->CreateComputeBufferResource(sizeof(uint32_t) * kMaxParticleCount);
 
-			newGroup.baseUpdateListResource = dxCommon_->CreateComputeBufferResource(sizeof(uint32_t) * kMaxParticleCount);
+			newGroup.baseUpdateFlagBuffer = dxCommon_->CreateComputeBufferResource(sizeof(uint32_t) * kMaxParticleCount);
 
 			newGroup.noiseUpdateListResource = dxCommon_->CreateComputeBufferResource(sizeof(uint32_t) * kMaxParticleCount);
 
@@ -229,7 +229,7 @@ namespace Kouro
 		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(5, emitterResource.Get()->GetGPUVirtualAddress());
 		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(6, perFrameResource_.Get()->GetGPUVirtualAddress());
 		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(7, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(8, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
+		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(8, group.baseUpdateFlagBuffer.Get()->GetGPUVirtualAddress());
 
 		dxCommon_->GetCommandList()->Dispatch(static_cast<UINT>(lineCount), 1, 1);
 
