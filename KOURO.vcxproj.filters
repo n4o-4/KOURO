@@ -335,7 +335,7 @@
     <ClCompile Include="application\camera\ICameraState.cpp">
       <Filter>application\camera</Filter>
     </ClCompile>
-    <ClCompile Include="application\camera\FollowCameraState.cpp">
+    <ClCompile Include="application\camera\TransitionCameraState.cpp">
       <Filter>application\camera</Filter>
     </ClCompile>
     <ClCompile Include="application\camera\RotateCameraState.cpp">
@@ -543,6 +543,8 @@
     <ClCompile Include="engine\2d\SpriteManager.cpp">
       <Filter>engine\2d</Filter>
     </ClCompile>
+    <ClCompile Include="EventController.cpp" />
+    <ClCompile Include="Event.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -785,7 +787,7 @@
     <ClInclude Include="application\camera\ICameraState.h">
       <Filter>application\camera</Filter>
     </ClInclude>
-    <ClInclude Include="application\camera\FollowCameraState.h">
+    <ClInclude Include="application\camera\TransitionCameraState.h">
       <Filter>application\camera</Filter>
     </ClInclude>
     <ClInclude Include="application\camera\RotateCameraState.h">
@@ -1006,6 +1008,8 @@
     <ClInclude Include="application\scene\SceneCommand.h">
       <Filter>application\scene</Filter>
     </ClInclude>
+    <ClInclude Include="EventController.h" />
+    <ClInclude Include="Event.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

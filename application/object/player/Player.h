@@ -154,13 +154,22 @@ private: // 非公開メンバ変数
 
 	bool isHit_ = false;
 
-	static constexpr float kDefaultScale = 0.5f; //!< プレイヤーのデフォルトのスケール
-	static constexpr Kouro::Vector4 kDefaultColor = { 0.071f, 0.429f, 1.0f, 1.0f };
-	static constexpr Kouro::Vector4 kHitColor = { 1.0f, 0.0f, 0.0f, 1.0f };
-	static constexpr float kDefaultOffset = 15.0f;
-	static constexpr float kDefaultPlayerSpeed = 0.1f;
-	static constexpr float kBoostPlayerSpeed = 0.3f;
+	static constexpr float kDefaultScale_ = 0.5f; //!< プレイヤーのデフォルトのスケール
+	static constexpr Kouro::Vector4 kDefaultColor_ = { 0.071f, 0.429f, 1.0f, 1.0f };
+	static constexpr Kouro::Vector4 kHitColor_ = { 1.0f, 0.0f, 0.0f, 1.0f };
+	static constexpr float kDefaultOffset_ = 15.0f;
 
-	static constexpr float bulletSpeed = 5.0f;
+
+	static constexpr float kDefaultPlayerSpeed_ = 1.4f;
+	static constexpr float kBoostPlayerSpeed_ = 1.5f;
+
+	static constexpr float kDefaultFriction_ = 0.85f;
+	static constexpr float kBoostFriction_ = 0.99f;
+
+	static constexpr float bulletSpeed_ = 5.0f;
+
+	static constexpr float kTargetTiltAngle_ = 0.3f; // プレイヤーの傾きの目標角度
+
+	Kouro::Vector3 targetTilt_ = { 0.0f,0.0f,0.0f }; // プレイヤーの傾きの目標角度
 };
 

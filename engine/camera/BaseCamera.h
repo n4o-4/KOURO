@@ -61,6 +61,9 @@ namespace Kouro
 		*/
 		void SetParent(const WorldTransform* parent) { worldTransform_->SetParent(parent); }
 
+		// \brief  回転を考慮したオフセットの計算
+		Vector3 CalculationOffset();
+
 	protected:
 
 		std::unique_ptr<WorldTransform> worldTransform_ = nullptr;

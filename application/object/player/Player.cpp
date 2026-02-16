@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "EnemyBullet.h"
+#include "Easing.h"
 
 void Player::Initialize(Kouro::LineModel* model)
 {
@@ -20,7 +21,7 @@ void Player::Initialize(Kouro::LineModel* model)
 	SetAABB(Kouro::AABB({}, { -1.0f,-1.0f,-1.0f }, {1.0f,1.0f,1.0f}));
 
 	// 線モデルの色を設定
-	objectLine_->SetColor(kDefaultColor);
+	objectLine_->SetColor(kDefaultColor_);
 
 	// レールのコントロールポイントを設定
 	rail.Initialize(controlPoints_);
@@ -30,8 +31,6 @@ void Player::Initialize(Kouro::LineModel* model)
 
 	// 座標を一度更新
 	colliderTransform_->UpdateMatrix();
-
-	//colliderTransform_->SetParent(rail.GetWorldTransform());
 
 	hp_ = 1000;
 
@@ -58,7 +57,7 @@ void Player::Update()
 	else
 	{
 		// スペースキーを押していたら
-		if (Kouro::Input::GetInstance()->/*PushKey*/TriggerKey(DIK_SPACE) || Kouro::Input::GetInstance()->PushKey(DIK_SPACE))
+		if (Kouro::Input::GetInstance()->TriggerKey(DIK_SPACE) || Kouro::Input::GetInstance()->PushKey(DIK_SPACE))
 		{
 			// 発射処理
 			Fire();
@@ -76,7 +75,7 @@ void Player::Update()
 	else
 	{
 		// 線モデルの色を設定
-		objectLine_->SetColor(kDefaultColor);
+		objectLine_->SetColor(kDefaultColor_);
 	}
 
 	// quickMove中の場合
@@ -84,7 +83,6 @@ void Player::Update()
 	{
 		// 時間計測用の変数にdeltaTimeを加算
 		quickMoveData_->actionTimer += kDeltaTime;
-
 
 		float duration = quickMoveData_->duration;
 		float coolTime = quickMoveData_->coolTime;
@@ -100,28 +98,13 @@ void Player::Update()
 	// quickMove中じゃない場合
 	else
 	{
+		float length = Kouro::Length(velocity_);
+
 		// lShiftを押していたら
-		if (Kouro::Input::GetInstance()->TriggerKey(DIK_LSHIFT))
+		if (Kouro::Input::GetInstance()->TriggerKey(DIK_LSHIFT) && length != 0.0f)
 		{
 			// quickMove中に変更
 			quickMoveData_->isQuickMoving = true;
-
-			if (Kouro::Input::GetInstance()->PushKey(DIK_A))
-			{
-				velocity_.x -= kBoostPlayerSpeed;
-			}
-			if (Kouro::Input::GetInstance()->PushKey(DIK_D))
-			{
-				velocity_.x += kBoostPlayerSpeed;
-			}
-			if (Kouro::Input::GetInstance()->PushKey(DIK_W))
-			{
-				velocity_.y += kBoostPlayerSpeed;
-			}
-			if (Kouro::Input::GetInstance()->PushKey(DIK_S))
-			{
-				velocity_.y -= kBoostPlayerSpeed;
-			}
 		}
 
 	}
@@ -150,18 +133,6 @@ void Player::Update()
 	BaseCharacter::Update();
 
 	AABBCollider::Update();
-
-#ifdef _DEBUG
-
-	ImGui::Begin("Player Transform");
-	
-	ImGui::Text("scale : %.2f %.2f, %.2f", worldTransform_->GetScale().x, worldTransform_->GetScale().y, worldTransform_->GetScale().z);
-	ImGui::Text("rotate : %.2f %.2f, %.2f", worldTransform_->GetRotate().x, worldTransform_->GetRotate().y, worldTransform_->GetRotate().z);
-	ImGui::Text("translate : %.2f %.2f, %.2f", worldTransform_->GetTranslate().x, worldTransform_->GetTranslate().y, worldTransform_->GetTranslate().z);
-
-	ImGui::End();
-
-#endif
 }
 
 void Player::Draw()
@@ -193,37 +164,69 @@ bool Player::GetIsAlive()
 
 void Player::Move()
 {
+	// 入力の取得
+	Kouro::Input* input = Kouro::Input::GetInstance();
+
+	// 入力に応じた速度の計算
+	Kouro::Vector3 inputVelocity = { 0.0f,0.0f,0.0f };
+
+	// 横方向
+	if (input->PushKey(DIK_A)) { inputVelocity.x -= 1.0f; }
+	if (input->PushKey(DIK_D)) { inputVelocity.x += 1.0f; }
+
+	// 縦方向
+	if (input->PushKey(DIK_W)) { inputVelocity.y += 1.0f; }
+	if (input->PushKey(DIK_S)) { inputVelocity.y -= 1.0f; }
+
+	// 速度の正規化とスピードの適用
+	float length = Kouro::Length(inputVelocity);
 
 	// ブースト時間を過ぎていたら || ブースト中のフラグでなければ
 	if (quickMoveData_->actionTimer > quickMoveData_->duration || !quickMoveData_->isQuickMoving)
 	{
-		// velocityを初期化
-		velocity_ = { 0.0f,0.0f,0.0f };
+		// 入力ベクトルを正規化してから通常のスピードを掛ける
+		inputVelocity = Normalize(inputVelocity) * kDefaultPlayerSpeed_ * kDeltaTime;
 
-		// 押しているキーによってvelocityに数値を加算または減算
-		// TODO : 移動量をplayerSpeedとdeltaTimeで計算する
-		if (Kouro::Input::GetInstance()->PushKey(DIK_A))
+		velocity_ += inputVelocity;
+
+		velocity_ *= kDefaultFriction_;
+
+		length = Kouro::Length(velocity_);
+
+		if (length > kDefaultPlayerSpeed_)
 		{
-			velocity_.x -= kDefaultPlayerSpeed;
+			velocity_ = Normalize(velocity_) * kDefaultPlayerSpeed_;
 		}
-		if (Kouro::Input::GetInstance()->PushKey(DIK_D))
+
+		float targetAngleZ = 0;
+		if (inputVelocity.x > 0.0f)
 		{
-			velocity_.x += kDefaultPlayerSpeed;
+			targetAngleZ = -kTargetTiltAngle_;
 		}
-		if (Kouro::Input::GetInstance()->PushKey(DIK_W))
+		else if (inputVelocity.x < 0.0f)
 		{
-			velocity_.y += kDefaultPlayerSpeed;
+			targetAngleZ = kTargetTiltAngle_;
 		}
-		if (Kouro::Input::GetInstance()->PushKey(DIK_S))
-		{
-			velocity_.y -= kDefaultPlayerSpeed;
-		}
+
+		Kouro::Vector3 rotate = worldTransform_->GetRotate();
+
+		rotate.z = Kouro::Lerp(rotate.z, targetAngleZ , 0.1f);
+		
+		worldTransform_->SetRotate(rotate);
 	}
 	else
 	{
+		velocity_ = Normalize(velocity_) * kBoostPlayerSpeed_;
 
+		velocity_ *= kBoostFriction_;
+
+		length = Kouro::Length(velocity_);
+
+		if (length > kBoostPlayerSpeed_)
+		{
+			velocity_ = Normalize(velocity_) * kBoostPlayerSpeed_;
+		}
 	}
-	
 }
 
 void Player::Fire()
@@ -240,7 +243,7 @@ void Player::Fire()
 	bullet->Initialize(lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"), { matWorld.m[3][0],matWorld.m[3][1],matWorld.m[3][2] });
 
 	// プレイヤーが向いている方向にvelocityを変換する
-	Kouro::Vector3 velocity = TransformNormal({ 0.0f,0.0f,bulletSpeed }, matWorld);
+	Kouro::Vector3 velocity = TransformNormal({ 0.0f,0.0f,bulletSpeed_ }, matWorld);
 
 	// 弾に計算したvelocityを設定する
 	bullet->SetVelocity(velocity);
@@ -276,7 +279,7 @@ void Player::OnCollisionEnter(BaseCollider* other)
 			actionData_.hitIntervalTimer_ = 0.0f;
 
 			// 線モデルの色をヒットアクションの色に変更
-			objectLine_->SetColor(kHitColor);
+			objectLine_->SetColor(kHitColor_);
 
 			// hpを減算
 			--hp_;

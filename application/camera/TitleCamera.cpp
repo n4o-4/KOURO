@@ -1,7 +1,7 @@
 #include "TitleCamera.h"
 
 #include "RotateCameraState.h"
-#include "FollowCameraState.h"
+#include "TransitionCameraState.h"
 
 void TitleCamera::Initialize()
 {
@@ -23,11 +23,6 @@ void TitleCamera::Update()
 
     // 基底クラスの更新
     BaseCamera::Update();
-}
-
-Kouro::Vector3 TitleCamera::CalculationOffset()
-{
-    return Kouro::Vector3();
 }
 
 void TitleCamera::CalculationRotate()

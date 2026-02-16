@@ -5,7 +5,7 @@
 
 #include "GpuParticle.h"
 #include "RotateCameraState.h"
-#include "FollowCameraState.h"
+#include "TransitionCameraState.h"
 
 #include "YamlLoader.h"
 #include "Vector2Yaml.h"
@@ -151,7 +151,7 @@ void TitleScene::Update()
 			// 移動開始フラグが無効なら
 			if(!isMoveActive_)
 			{
-				cameraManager_->GetActiveCamera()->ChangeState(std::make_unique<FollowCameraState>(cameraManager_->GetActiveCamera(), player_->GetWorldTransform()));
+				cameraManager_->GetActiveCamera()->ChangeState(std::make_unique<TransitionCameraState>(cameraManager_->GetActiveCamera(), player_->GetWorldTransform()));
 
 				// カメラの回転を停止
 				titleCamera_->SetIsRotate(false);

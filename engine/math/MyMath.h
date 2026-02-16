@@ -113,7 +113,8 @@ namespace Kouro
 	* \param v2 終了ベクトル
 	* \param t 補間係数 (0.0f から 1.0f)
 	*/
-	inline Vector4 Lerp(const Vector4& v1, const Vector4& v2, float t) {
+	inline Vector4 Lerp(const Vector4& v1, const Vector4& v2, float t)
+	{
 		return {
 			t * v1.x + (1.0f - t) * v2.x,
 			t * v1.y + (1.0f - t) * v2.y,
@@ -121,11 +122,13 @@ namespace Kouro
 			t * v1.w + (1.0f - t) * v2.w };
 	}
 
-	inline float fLerp(float startPos, float endPos, float t) {
+	inline float Lerp(float startPos, float endPos, float t)
+	{
 		return { startPos * (1.0f - t) + t * endPos };
 	}
 
-	inline float LerpShortAngle(float a, float b, float t) {
+	inline float LerpShortAngle(float a, float b, float t)
+	{
 		float diff = b - a;
 
 		diff = std::fmod(diff, static_cast<float>(std::numbers::pi) * 2.0f);
@@ -138,7 +141,7 @@ namespace Kouro
 			diff += (static_cast<float>(std::numbers::pi) * 2.0f);
 		}
 
-		return fLerp(a, a + diff, t);
+		return Lerp(a, a + diff, t);
 	}
 
 	static Vector3 TransformNormal(const Vector3& normal, const Matrix4x4& mat) {

@@ -15,15 +15,7 @@ void RotateCameraState::Update(float deltaTime)
 
 	camera_->GetWorldTransform().SetRotate(rotate);
 
-	Kouro::Vector3 offset = camera_->GetOffset();
-
-	Kouro::Matrix4x4 rotateMatrix = MakeRotateMatrix(rotate);
-
-	offset = TransformNormal(offset, rotateMatrix);
-
-	Kouro::Vector3 translate = offset;
-
-	worldTransform->SetTranslate(offset);
+	worldTransform->SetTranslate(camera_->CalculationOffset());
 }
 
 void RotateCameraState::Exit()

@@ -1,7 +1,7 @@
 #pragma once
 #include "ICameraState.h"
 
-class FollowCameraState : public ICameraState
+class TransitionCameraState : public ICameraState
 {
 public: // メンバ関数
 
@@ -10,7 +10,7 @@ public: // メンバ関数
 	* \param  camera
 	* \param  target
 	*/
-	FollowCameraState(Kouro::BaseCamera* camera, const Kouro::WorldTransform* target) : ICameraState(camera, target) {};
+	TransitionCameraState(Kouro::BaseCamera* camera, const Kouro::WorldTransform* target) : ICameraState(camera, target) {};
 
 
 	void Enter() override;

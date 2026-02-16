@@ -2,7 +2,7 @@
 #include "imgui.h"
 #include <imgui_internal.h>
 
-
+#include "Easing.h"
 #include "SceneCommand.h"
 #include "YamlLoader.h"
 #include "Vector2Yaml.h"
@@ -10,7 +10,6 @@
 #include "Vector4Yaml.h"
 // 仮
 #include "ApproachState.h"
-#include "Easing.h"
 #include "GpuParticle.h"
 #include "SpawnManager.h"
 
@@ -141,7 +140,6 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	// 減速を有効
 	Kouro::ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->enableDeceleration = true;
 	// パルスを有効
-	//Kouro::ParticleManager::GetInstance()->GetParticleGroup("smoke")->enablePulse = true;
 	emitter2_ = std::make_unique<Kouro::ParticleEmitter>();
 	emitter2_->Initialize("HitEffect");
 	emitter2_->SetPosition({ 1.0f,2.0f,20.0f });

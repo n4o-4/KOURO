@@ -25,12 +25,6 @@ public:
 
 private:
 
-	/**
-	* \brief  CalculationOffset オフセットの計算
-	* \return offset
-	*/
-	Kouro::Vector3 CalculationOffset();
-
 	// \brief  CalculationRotate 回転の計算
 	void CalculationRotate();
 
