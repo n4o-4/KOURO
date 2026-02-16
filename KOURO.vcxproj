@@ -15,7 +15,7 @@
     <ClCompile Include="application\scene\game\state\PlayState.cpp" />
     <ClCompile Include="application\object\enemy\LissajousMoveState.cpp" />
     <ClCompile Include="application\object\enemy\AttackState.cpp" />
-    <ClCompile Include="application\camera\TransitionCameraState.cpp" />
+    <ClCompile Include="application\camera\title\AlignCameraState.cpp" />
     <ClCompile Include="engine\core\GpuResourceInternal.cpp" />
     <ClCompile Include="engine\3d\particle\BaseParticleEmitter.cpp" />
     <ClCompile Include="engine\effect\Absorb.cpp" />
@@ -112,7 +112,9 @@
     <ClCompile Include="externals\yaml-cpp\src\singledocparser.cpp" />
     <ClCompile Include="externals\yaml-cpp\src\stream.cpp" />
     <ClCompile Include="externals\yaml-cpp\src\tag.cpp" />
+    <ClCompile Include="application\camera\title\FollowCameraState.cpp" />
     <ClCompile Include="JsonLoader.cpp" />
+    <ClCompile Include="application\camera\title\LookAtPlayerState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\model\Model.cpp" />
     <ClCompile Include="engine\3d\model\ModelCommon.cpp" />
@@ -140,7 +142,7 @@
     <ClCompile Include="engine\3d\skybox\Skybox.cpp" />
     <ClCompile Include="application\collider\OBBCollider.cpp" />
     <ClCompile Include="engine\line\OBBLineObject.cpp" />
-    <ClCompile Include="application\camera\TitleCamera.cpp" />
+    <ClCompile Include="application\camera\title\TitleCamera.cpp" />
     <ClCompile Include="engine\system\ModelLoader.cpp" />
     <ClCompile Include="engine\system\NumUi.cpp" />
     <ClCompile Include="engine\3d\object\ObjectLine.cpp" />
@@ -150,7 +152,7 @@
     <ClCompile Include="application\system\RailFollower.cpp" />
     <ClCompile Include="application\object\enemy\RandomMoveState.cpp" />
     <ClCompile Include="engine\system\RandomGenerate.cpp" />
-    <ClCompile Include="application\camera\RotateCameraState.cpp" />
+    <ClCompile Include="application\camera\title\RotateCameraState.cpp" />
     <ClCompile Include="engine\system\ShaderCompiler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -167,6 +169,8 @@
   <ItemGroup>
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventController.h" />
+    <ClInclude Include="application\camera\title\FollowCameraState.h" />
+    <ClInclude Include="application\camera\title\LookAtPlayerState.h" />
     <ClInclude Include="SpriteMotionLibrary.h" />
     <ClInclude Include="application\scene\SceneCommand.h" />
     <ClInclude Include="engine\math\Vector4.h" />
@@ -181,7 +185,7 @@
     <ClInclude Include="engine\math\Vector3.h" />
     <ClInclude Include="engine\math\Vector3Yaml.h" />
     <ClInclude Include="engine\object\InitialLightSetting.h" />
-    <ClInclude Include="application\camera\TransitionCameraState.h" />
+    <ClInclude Include="application\camera\title\AlignCameraState.h" />
     <ClInclude Include="engine\core\GpuResourceInternal.h" />
     <ClInclude Include="engine\core\EngineContext.h" />
     <ClInclude Include="engine\core\D3D12Context.h" />
@@ -273,7 +277,7 @@
     <ClInclude Include="engine\3d\skybox\Skybox.h" />
     <ClInclude Include="application\collider\OBBCollider.h" />
     <ClInclude Include="engine\line\OBBLineObject.h" />
-    <ClInclude Include="application\camera\TitleCamera.h" />
+    <ClInclude Include="application\camera\title\TitleCamera.h" />
     <ClInclude Include="engine\system\GpuParticle.h" />
     <ClInclude Include="engine\system\GlobalVariables.h" />
     <ClInclude Include="engine\3d\model\LineModel.h" />
@@ -292,7 +296,7 @@
     <ClInclude Include="application\system\RailFollower.h" />
     <ClInclude Include="application\object\enemy\RandomMoveState.h" />
     <ClInclude Include="engine\system\RandomGenerate.h" />
-    <ClInclude Include="application\camera\RotateCameraState.h" />
+    <ClInclude Include="application\camera\title\RotateCameraState.h" />
     <ClInclude Include="engine\system\ShaderCompiler.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

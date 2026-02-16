@@ -1,4 +1,4 @@
-#include "Particle.CS.hlsli"
+Ôªø#include "Particle.CS.hlsli"
 
 RWStructuredBuffer<Particle> gParticles : register(u0);
 RWStructuredBuffer<int> gFreeListIndex : register(u1);
@@ -21,7 +21,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
 
             if (freeListIndex > 0)
             {
-                uint particleIndex = gFreeList[freeListIndex - 1]; // Å© Ç±Ç±Ç™èdóv
+                uint particleIndex = gFreeList[freeListIndex - 1];
                 gParticles[particleIndex].scale = float3(1, 1, 1);
                 gParticles[particleIndex].translate = generator.Generate3d() * 11 - 6;
                 gParticles[particleIndex].velocity = generator.Generate3d() * 0.05 - 0.03;

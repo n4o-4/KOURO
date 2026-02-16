@@ -25,10 +25,15 @@ public:
 	/// \brief 終了処理
 	virtual void Exit() = 0;
 
+	/// \brief 処理が終了したかどうか
+	const bool IsFinished() const { return isFinished_; }
+
 protected:
 
 	Kouro::BaseCamera* camera_ = nullptr; //!< 処理するカメラのポインタ
 
 	const Kouro::WorldTransform* target_ = nullptr; //!< 視点のワールドトランスフォームのポインタ
+
+	bool isFinished_ = false;
 };
 

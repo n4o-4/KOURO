@@ -24,7 +24,7 @@ namespace Kouro
 		virtual void Update();
 
 		/**
-		* \brief ViewProjection取得
+		* \brief  ViewProjection取得
 		* \return ViewProjection
 		*/
 		virtual ViewProjection& GetViewProjection() { return *viewProjection_; }
@@ -37,23 +37,22 @@ namespace Kouro
 		*/
 		const Vector3 GetOffset() const { return offset_; }
 
-
+		/**
+		* \brief  シェイクオフセットの取得
+		* \return シェイクオフセット
+		*/
 		const Vector3 GetShakeOffset() const { return shakeOffset_; }
 
-
+		/**
+		* \brief  シェイクオフセットの設定
+		*/
 		void SetShakeOffset(Vector3 offset) { shakeOffset_ = offset; }
 
 		/**
-		* \brief オフセット設定
+		* \brief  オフセット設定
 		* \param offset オフセット値
 		*/
 		void SetOffset(Vector3 offset) { offset_ = offset; }
-
-		/**
-		* \brief  状態の変更
-		* \param  newState : 新しい状態
-		*/
-		void ChangeState(std::unique_ptr<ICameraState> newState);
 
 		/**
 		* \brief  親ワールド変換の設定
@@ -61,8 +60,16 @@ namespace Kouro
 		*/
 		void SetParent(const WorldTransform* parent) { worldTransform_->SetParent(parent); }
 
-		// \brief  回転を考慮したオフセットの計算
+		/// \brief 回転を考慮したオフセットの計算
 		Vector3 CalculationOffset();
+
+	protected:
+
+		/**
+		* \brief  状態の変更
+		* \param  newState : 新しい状態
+		*/
+		void ChangeState(std::unique_ptr<ICameraState> newState);
 
 	protected:
 

@@ -224,8 +224,6 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	railCamera_->Initialize();
 	railCamera_->SetParent(&cameraRail_.GetWorldTransform());
 
-	
-
 	cameraManager_->CamerasClear();
 	cameraManager_->SetActiveCamera(railCamera_.get());
 	cameraManager_->Update();

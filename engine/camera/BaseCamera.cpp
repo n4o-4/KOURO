@@ -28,6 +28,21 @@ namespace Kouro
 		viewProjection_->Update(*worldTransform_.get());
 	}
 
+	Vector3 BaseCamera::CalculationOffset()
+	{
+		// オフセットの初期化
+		Kouro::Vector3 offset = offset_;
+
+		// 回転行列の作成
+		Kouro::Matrix4x4 rotateMatrix = MakeRotateMatrix(worldTransform_->GetRotate());
+
+		// オフセットに回転を適用
+		offset = TransformNormal(offset, rotateMatrix);
+
+		// 計算したオフセットを返す
+		return offset;
+	}
+
 	void BaseCamera::ChangeState(std::unique_ptr<ICameraState> newState)
 	{
 		if (!newState) return;
@@ -42,20 +57,5 @@ namespace Kouro
 
 
 		state_->Enter();
-	}
-
-	Vector3 BaseCamera::CalculationOffset()
-	{
-		// オフセットの初期化
-		Kouro::Vector3 offset = offset_;
-
-		// 回転行列の作成
-		Kouro::Matrix4x4 rotateMatrix = MakeRotateMatrix(worldTransform_->GetRotate());
-
-		// オフセットに回転を適用
-		offset = TransformNormal(offset, rotateMatrix);
-
-		// 計算したオフセットを返す
-		return offset;
 	}
 }

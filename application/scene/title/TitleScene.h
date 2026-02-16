@@ -2,21 +2,11 @@
 
 #include "BaseScene.h"
 
-#include "audio.h"
-#include "Input.h"
-#include "Sprite.h"
-#include "SpriteCommon.h"
-#include "TextureManager.h"
-#include "ModelManager.h"
-#include "Object3d.h"
-#include "Camera.h"
-#include "ParticleManager.h"
-#include "ParticleEmitter.h"
-#include "SceneManager.h"
-#include "LineModelManager.h"
 #include "Player.h"
 #include "NumUi.h"
 #include "ModelEdgeEmitter.h"
+
+#include "title/TitleCamera.h"
 
 // \brief TitleScene タイトルシーンクラス
 
@@ -36,6 +26,10 @@ public: // メンバ関数
 	// \brief Draw 描画
 	void Draw() override;
 
+private: // メンバ関数
+
+	void CreateEvents();
+
 private:
 
 	std::unique_ptr<Kouro::LineDrawerBase> lineDrawer_ = nullptr;
@@ -52,10 +46,13 @@ private:
 	std::unique_ptr<Kouro::Sprite> startBotton_ = nullptr;
 
 	float kFadeStartTime = 4.5f;
+
 	float fadeTimer_ = 0.0f;
 
 	// プレイヤーモデルの移動演出のフラグ
 	bool isMoveActive_ = false;
+
+	bool isAlignCamera_ = false;
 
 	std::unique_ptr<Kouro::LineModelManager> lineModelManager_ = nullptr;
 
@@ -69,5 +66,5 @@ private:
 
 	float speedFactor_ = 0.0f;
 
-	static constexpr float kMultiplyFactor_ = 1.005f;
+	static constexpr float kMultiplyFactor_ = 1.01f;
 };

@@ -50,6 +50,8 @@ namespace Kouro
 		// オブジェクト3dコモンに環境マップテクスチャを設定
 		Object3dCommon::GetInstance()->SetEnvironmentMapPath("Resources/envMap.dds");
 
+		eventController_ = std::make_unique<EventController>();
+
 		engineContext_ = context;
 	}
 

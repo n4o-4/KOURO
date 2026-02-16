@@ -140,7 +140,7 @@
     <ClCompile Include="application\transition\Fade.cpp">
       <Filter>application\transition</Filter>
     </ClCompile>
-    <ClCompile Include="application\camera\TitleCamera.cpp">
+    <ClCompile Include="application\camera\title\TitleCamera.cpp">
       <Filter>application\camera</Filter>
     </ClCompile>
     <ClCompile Include="application\camera\RailCamera.cpp">
@@ -335,10 +335,10 @@
     <ClCompile Include="application\camera\ICameraState.cpp">
       <Filter>application\camera</Filter>
     </ClCompile>
-    <ClCompile Include="application\camera\TransitionCameraState.cpp">
+    <ClCompile Include="application\camera\title\AlignCameraState.cpp">
       <Filter>application\camera</Filter>
     </ClCompile>
-    <ClCompile Include="application\camera\RotateCameraState.cpp">
+    <ClCompile Include="application\camera\title\RotateCameraState.cpp">
       <Filter>application\camera</Filter>
     </ClCompile>
     <ClCompile Include="application\system\RailFollower.cpp">
@@ -545,6 +545,8 @@
     </ClCompile>
     <ClCompile Include="EventController.cpp" />
     <ClCompile Include="Event.cpp" />
+    <ClCompile Include="application\camera\title\FollowCameraState.cpp" />
+    <ClCompile Include="application\camera\title\LookAtPlayerState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -574,7 +576,7 @@
     <ClInclude Include="application\transition\Fade.h">
       <Filter>application\transition</Filter>
     </ClInclude>
-    <ClInclude Include="application\camera\TitleCamera.h">
+    <ClInclude Include="application\camera\title\TitleCamera.h">
       <Filter>application\camera</Filter>
     </ClInclude>
     <ClInclude Include="application\camera\RailCamera.h">
@@ -787,10 +789,10 @@
     <ClInclude Include="application\camera\ICameraState.h">
       <Filter>application\camera</Filter>
     </ClInclude>
-    <ClInclude Include="application\camera\TransitionCameraState.h">
+    <ClInclude Include="application\camera\title\AlignCameraState.h">
       <Filter>application\camera</Filter>
     </ClInclude>
-    <ClInclude Include="application\camera\RotateCameraState.h">
+    <ClInclude Include="application\camera\title\RotateCameraState.h">
       <Filter>application\camera</Filter>
     </ClInclude>
     <ClInclude Include="application\system\RailFollower.h">
@@ -1010,6 +1012,8 @@
     </ClInclude>
     <ClInclude Include="EventController.h" />
     <ClInclude Include="Event.h" />
+    <ClInclude Include="application\camera\title\FollowCameraState.h" />
+    <ClInclude Include="application\camera\title\LookAtPlayerState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

@@ -4,8 +4,8 @@
 #include <cmath>
 
 #include "GpuParticle.h"
-#include "RotateCameraState.h"
-#include "TransitionCameraState.h"
+#include "title/RotateCameraState.h"
+#include "title/AlignCameraState.h"
 
 #include "YamlLoader.h"
 #include "Vector2Yaml.h"
@@ -16,6 +16,8 @@
 
 void TitleScene::Initialize(Kouro::EngineContext context)
 {
+	startTime = std::chrono::steady_clock::now();
+
 	/// 基底クラスの初期化
 	BaseScene::Initialize(context);
 
@@ -71,14 +73,12 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 
 	// titleCameraの生成
 	titleCamera_ = std::make_unique<TitleCamera>();
+	titleCamera_->SetTarget(player_->GetWorldTransform());
 	titleCamera_->Initialize();
-	std::unique_ptr<RotateCameraState> newState = std::make_unique<RotateCameraState>(titleCamera_.get(), player_->GetWorldTransform());
-	titleCamera_->ChangeState(std::move(newState));
+	
 
 	// カメラマネージャーにカメラを登録
 	cameraManager_->SetActiveCamera(titleCamera_.get()/*debugCamera_.get()*/);
-
-	startTime = std::chrono::steady_clock::now();
 
 	// plane
 	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", Kouro::ParticleManager::ParticleType::Normal);
@@ -94,9 +94,10 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 	// パルスを有効
 	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enablePulse = false;
 
-
 	scoreUi_ = std::make_unique<Kouro::NumUi>();
 	scoreUi_->Initialize(2);
+
+	CreateEvents();
 }
 
 void TitleScene::Finalize()
@@ -133,9 +134,6 @@ void TitleScene::Update()
 			// 入力受付を開始
 			Kouro::Input::GetInstance()->SetIsReception(true);
 
-			// カメラを回転させる
-			titleCamera_->SetIsRotate(true);
-
 			// フェーズをメイン部に変更
 			phase_ = Phase::kMain;
 		}
@@ -148,40 +146,34 @@ void TitleScene::Update()
 		// スペースキーまたはゲームパッドのAボタンが押されたら
 		if (Kouro::Input::GetInstance()->TriggerKey(DIK_SPACE) || Kouro::Input::GetInstance()->TriggerGamePadButton(Kouro::Input::GamePadButton::A))
 		{
-			// 移動開始フラグが無効なら
-			if(!isMoveActive_)
+			if (!isAlignCamera_)
 			{
-				cameraManager_->GetActiveCamera()->ChangeState(std::make_unique<TransitionCameraState>(cameraManager_->GetActiveCamera(), player_->GetWorldTransform()));
+				isAlignCamera_ = true;
 
-				// カメラの回転を停止
-				titleCamera_->SetIsRotate(false);
-
-				// 離脱フラグを有効にする
-				titleCamera_->SetIsDeparture(true);
-
-				// フェードタイマーをリセット
-				fadeTimer_ = 0.0f;
-
-				// 移動開始フラグを有効にする
-				isMoveActive_ = true;
-
-				speedFactor_ = kDeltaTime * 0.1f;
+				eventController_->ExecuteEvent("CameraTransitionToAlign");
 			}
 		}
 
-		// 離脱フラグが有効なら
-		if (titleCamera_->GetIsDeparture())
+		// カメラがAlign状態に遷移したら
+		if (isAlignCamera_)
 		{
-			// フェードタイマーを加算
-			fadeTimer_ += kDeltaTime;
-
-			// フェード開始時間を超えたら
-			if (fadeTimer_ >= kFadeStartTime)
+			if (titleCamera_->GetStateIsFinished())
 			{
-				// 白フェードアウトを開始
-				fade_->Start(Fade::Status::WhiteFadeOut, 0.5f);
-				phase_ = Phase::kFadeOut;
+				isMoveActive_ = true;
+
+				speedFactor_ = kDeltaTime * 0.1f;
+
+				eventController_->ExecuteEvent("CameraTransitionToFollow");
 			}
+		}
+
+		if (player_->GetWorldPosition().z >= 1200.0f)
+		{
+			eventController_->ExecuteEvent("CameraTransitionToLookAtPlayer");
+
+			fade_->Start(Fade::Status::WhiteFadeOut, kFadeStartTime);
+
+			phase_ = Phase::kFadeOut;
 		}
 
 		// 現在の経過時間（秒）
@@ -220,7 +212,7 @@ void TitleScene::Update()
 		break;
 	}
 
-	startBotton_->Update();
+	startBotton_->Update();	
 
 	if (isMoveActive_) /// 移動開始フラグが有効なら
 	{
@@ -314,4 +306,25 @@ void TitleScene::Draw()
 
 	fade_->Draw();
 
+}
+
+void TitleScene::CreateEvents()
+{
+	// イベントコントローラーの生成
+	eventController_ = std::make_unique<EventController>();
+
+	// カメラの状態遷移イベントの作成
+
+	// カメラをAlign状態に遷移させるイベント
+	std::unique_ptr<Event> event = std::make_unique<Event>();
+	event->SetCallback([this]() { titleCamera_->RequestChangeState(TitleCamera::State::Align); });
+	eventController_->AddEvent("CameraTransitionToAlign", std::move(event));
+
+	event = std::make_unique<Event>();
+	event->SetCallback([this]() { titleCamera_->RequestChangeState(TitleCamera::State::Follow); });
+	eventController_->AddEvent("CameraTransitionToFollow", std::move(event));
+
+	event = std::make_unique<Event>();
+	event->SetCallback([this]() { titleCamera_->RequestChangeState(TitleCamera::State::LookAtPlayer); });
+	eventController_->AddEvent("CameraTransitionToLookAtPlayer", std::move(event));
 }

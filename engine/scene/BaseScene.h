@@ -14,7 +14,7 @@
 #include "Fade.h"
 
 #include "PostEffect.h"
-
+#include "EventController.h"
 
 // \brief BaseScene
 // ゲームシーンの基本クラス。
@@ -112,6 +112,8 @@ namespace Kouro
 		std::unique_ptr<Fade> fade_ = nullptr;
 
 		std::unique_ptr<WorldTransform> defaultTransform_ = nullptr;
+
+		std::unique_ptr<EventController> eventController_ = nullptr;
 
 		float fadeTime_ = 1.5f;
 
