@@ -161,6 +161,14 @@ namespace Kouro
 		void LineEmit(std::string groupName, uint32_t lineSrvIndex, uint32_t lineCount, Microsoft::WRL::ComPtr<ID3D12Resource> emitterResource, Matrix4x4 world);
 
 		/**
+		* \brief  点からパーティクルを放出する
+		* \param  groupName     : パーティクルグループの名前
+		* \param  emitterResource : エミッター情報のリソース
+		* \param  world         : ワールド行列
+		*/
+		void PointEmit(std::string groupName, ID3D12Resource* emitterResource, ID3D12Resource* transformResource);
+
+		/**
 		* \brief  perFrameの値を設定する
 		* \param  time      : 合計時間
 		* \param  deltaTime : 前フレームからの経過時間
@@ -201,6 +209,9 @@ namespace Kouro
 
 		/// \brief 球体シェルエミッター用のCSPipelineSet作成関数
 		void CreateSphereShellEmitterPipelineSet();
+
+		/// \brief 点エミッター用のCSPipelineSet作成関数
+		void CreatePointEmitterPipelineSet();
 
 		/**
 		* \brief  ComputeShader　用の pipelineState 汎用作成関数

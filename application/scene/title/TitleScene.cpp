@@ -71,6 +71,10 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 	mEmitter->Initialize("normal", context);
 	mEmitter->CreateLineSegment("enemy/enemy.obj");
 
+	pointEmitter_ = std::make_unique<Kouro::PointEmitter>();
+	pointEmitter_->Initialize("normal", context);
+	pointEmitter_->SetEmitterProperties({ 0.0f,0.0f,0.0f }, 10, { -1.0f,-1.0f,-1.0f }, { 1.0f,1.0f,1.0f }, 0.5f, 1.5f, 0.5f);
+
 	// titleCameraの生成
 	titleCamera_ = std::make_unique<TitleCamera>();
 	titleCamera_->SetTarget(player_->GetWorldTransform());
@@ -171,7 +175,7 @@ void TitleScene::Update()
 		{
 			eventController_->ExecuteEvent("CameraTransitionToLookAtPlayer");
 
-			fade_->Start(Fade::Status::WhiteFadeOut, kFadeStartTime);
+			fade_->Start(Fade::Status::WhiteFadeOut, 3.0f);
 
 			phase_ = Phase::kFadeOut;
 		}
@@ -216,6 +220,10 @@ void TitleScene::Update()
 
 	if (isMoveActive_) /// 移動開始フラグが有効なら
 	{
+		pointEmitter_->SetTranslate(player_->GetWorldPosition());
+
+		//pointEmitter_->Emit(player_->GetWorldTransform()->GetWorldMatrix());
+
 		if (progressFactor_ < 1.0f)
 		{
 			progressFactor_ += speedFactor_;
@@ -267,16 +275,18 @@ void TitleScene::Update()
 
 	if (ImGui::Button("emit"))
 	{
+		pointEmitter_->Emit(Kouro::MakeIdentity4x4());
+	}
+
+	if (Kouro::Input::GetInstance()->TriggerKey(DIK_V))
+	{
 		mEmitter->Emit(Kouro::MakeIdentity4x4());
 	}
 
 	ImGui::End();
 #endif
 
-	if (Kouro::Input::GetInstance()->TriggerKey(DIK_V))
-	{
-		mEmitter->Emit(Kouro::MakeIdentity4x4());
-	}
+	
 
 	scoreUi_->Update();
 

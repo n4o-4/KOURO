@@ -1,4 +1,5 @@
 #include "ModelEdgeEmitter.h"
+#include "PointEmitter.h"
 
 namespace Kouro
 {

@@ -26,6 +26,17 @@ struct EmitterSphere
     uint emit;           // 射出許可
 };
 
+struct EmitterPoint
+{
+    float3 translate; // 位置
+    uint count; // 射出数
+    float3 velocityRange[2]; // 射出速度
+    float lifeTimeRange[2]; // 射出寿命
+    float frequency; // 射出間隔
+    float frequencyTime; // 射出間隔調整用時間
+    uint emit; // 射出許可
+};
+
 struct Emitter
 {
     float3 translate; // 位置
@@ -37,7 +48,7 @@ struct Emitter
 
 struct PerView
 {
-    float4x4 viewProjection;
+    float4x4 viewProjection; // ビュー射影行列
     float4x4 billboardMatrix;
 };
 

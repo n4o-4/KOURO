@@ -1,4 +1,4 @@
-#include "Fullscreen.hlsli"
+ï»¿#include "Fullscreen.hlsli"
 #include "Random.hlsli"
 
 struct PixelShaderOutput
@@ -17,7 +17,7 @@ PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
     
-    // —”¶¬
+    // ä¹±æ•°ç”Ÿæˆ
     float random = rand2dTo1d(input.texcoord * gMaterial.time);
     
     output.color = float4(random, random, random, 1.0f);

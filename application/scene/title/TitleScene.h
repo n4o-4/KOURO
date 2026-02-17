@@ -7,6 +7,7 @@
 #include "ModelEdgeEmitter.h"
 
 #include "title/TitleCamera.h"
+#include "PointEmitter.h"
 
 // \brief TitleScene タイトルシーンクラス
 
@@ -67,4 +68,6 @@ private:
 	float speedFactor_ = 0.0f;
 
 	static constexpr float kMultiplyFactor_ = 1.01f;
+
+	std::unique_ptr<Kouro::PointEmitter> pointEmitter_ = nullptr;
 };

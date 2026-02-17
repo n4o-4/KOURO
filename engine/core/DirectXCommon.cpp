@@ -672,21 +672,11 @@ namespace Kouro
 		// GPUにコマンドリストの実行を行わせる
 		Microsoft::WRL::ComPtr<ID3D12CommandList> commandLists[] = { commandList.Get() };
 		commandQueue->ExecuteCommandLists(1, commandLists->GetAddressOf());
+		/*ID3D12CommandList* commandLists[] = { commandList.Get() };
+		commandQueue->ExecuteCommandLists(_countof(commandLists), commandLists);*/
 
 		// GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入するようにSignalを送る
 		commandQueue->Signal(fence.Get(), ++fenceValue);
-
-		//// GPUの作業が完了するのを待つ
-		//if (fence->GetCompletedValue() < fenceValue)
-		//{
-		//	HANDLE event = CreateEvent(nullptr, false, false, nullptr);
-		//	// 指定したSignalにたどり着いてないので、たどり着くまで待つようにイベントを設定する
-		//	fence->SetEventOnCompletion(fenceValue, event);
-
-		//	// イベントを待つ
-		//	WaitForSingleObject(event, INFINITE);
-		//	CloseHandle(event);
-		//}
 
 		// GPUの作業が完了するのを待つ
 		if (fence->GetCompletedValue() < fenceValue)
@@ -908,12 +898,12 @@ namespace Kouro
 
 		D3D12_RESOURCE_DESC resourceDesc = {};
 		resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		resourceDesc.Alignment = 0;                              // ← これ重要！
+		resourceDesc.Alignment = 0;
 		resourceDesc.Width = sizeInBytes;
 		resourceDesc.Height = 1;
 		resourceDesc.DepthOrArraySize = 1;
 		resourceDesc.MipLevels = 1;
-		resourceDesc.Format = DXGI_FORMAT_UNKNOWN;               // ← これも重要！
+		resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
 		resourceDesc.SampleDesc.Count = 1;
 		resourceDesc.SampleDesc.Quality = 0;
 		resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
@@ -924,6 +914,7 @@ namespace Kouro
 			D3D12_HEAP_FLAG_NONE,
 			&resourceDesc,
 			D3D12_RESOURCE_STATE_COMMON,
+			//D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 			nullptr,
 			IID_PPV_ARGS(&resource)
 		);

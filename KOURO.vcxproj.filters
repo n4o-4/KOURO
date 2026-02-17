@@ -110,6 +110,7 @@
       <Filter>resources\shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\FlagPass.hlsl" />
+    <FxCompile Include="Resources\shaders\EmitParticlePoint.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -547,6 +548,7 @@
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="application\camera\title\FollowCameraState.cpp" />
     <ClCompile Include="application\camera\title\LookAtPlayerState.cpp" />
+    <ClCompile Include="engine\3d\particle\PointEmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -1014,6 +1016,7 @@
     <ClInclude Include="Event.h" />
     <ClInclude Include="application\camera\title\FollowCameraState.h" />
     <ClInclude Include="application\camera\title\LookAtPlayerState.h" />
+    <ClInclude Include="engine\3d\particle\PointEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
