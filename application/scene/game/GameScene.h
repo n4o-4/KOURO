@@ -13,7 +13,7 @@
 
 #include "LevelLoader.h"
 #include "GlobalVariables.h"
-
+#include "PointEmitter.h"
 // \brief GameScene ゲームシーンクラス
 
 class GameScene : public Kouro::BaseScene
@@ -109,6 +109,8 @@ private:
 	std::unique_ptr<Kouro::ParticleEmitter> hitEffect1_CenterCircle_ = nullptr;
 
 	std::unique_ptr<Kouro::ModelEdgeEmitter> mEmitter = nullptr;
+	std::unique_ptr<Kouro::PointEmitter> pointEmitter_ = nullptr;
+
 
 	std::unique_ptr<Kouro::ParticleEmitter> hitEffect2_Circle1_ = nullptr;
 	std::unique_ptr<Kouro::ParticleEmitter> hitEffect2_Circle2_ = nullptr;

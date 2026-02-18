@@ -30,11 +30,20 @@ struct EmitterPoint
 {
     float3 translate; // 位置
     uint count; // 射出数
-    float3 velocityRange[2]; // 射出速度
-    float lifeTimeRange[2]; // 射出寿命
+
+    float3 velocityMin;
+    float pad1;
+
+    float3 velocityMax;
+    float pad2;
+
+    float lifeTimeMin;
+    float lifeTimeMax;
     float frequency; // 射出間隔
     float frequencyTime; // 射出間隔調整用時間
+
     uint emit; // 射出許可
+    float pad3[3];
 };
 
 struct Emitter

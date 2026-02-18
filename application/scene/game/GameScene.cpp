@@ -314,6 +314,12 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 		enemies_.push_back(std::move(enemy));
 	}
+
+	pointEmitter_ = std::make_unique<Kouro::PointEmitter>();
+	pointEmitter_->Initialize("normal", context);
+	pointEmitter_->SetEmitterProperties({ 0.0f,0.0f,0.0f }, 100 ,{ -4.0f,-4.0f,-10.0f }, { 4.0f,4.0f,-1.0f }, 0.5f, 1.5f, 0.0f);
+	//pointEmitter_->SetEmitterProperties({ 0.0f,0.0f,0.0f }, 1, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }, 100.0f, 150.0f, 0.0f);
+	pointEmitter_->GetWorldTransform()->SetParent(player_->GetWorldTransform());
 }
 
 ///=============================================================================
@@ -474,6 +480,9 @@ void GameScene::Update()
 			spriteManager_->SetGroupVisibility("pause_ui", false);
 			phase_ = Phase::kFadeOut;
 		}
+
+		pointEmitter_->Update();
+		pointEmitter_->Emit(player_->GetWorldTransform()->GetWorldMatrix());
 
 		break;
 	case Phase::kFadeOut:

@@ -73,7 +73,8 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 
 	pointEmitter_ = std::make_unique<Kouro::PointEmitter>();
 	pointEmitter_->Initialize("normal", context);
-	pointEmitter_->SetEmitterProperties({ 0.0f,0.0f,0.0f }, 10, { -1.0f,-1.0f,-1.0f }, { 1.0f,1.0f,1.0f }, 0.5f, 1.5f, 0.5f);
+	pointEmitter_->SetEmitterProperties({ 0.0f,0.0f,0.0f }, 1, { -4.0f,-4.0f,-10.0f }, { 4.0f,4.0f,-5.0f }, 0.5f, 1.5f, 0.0f);
+	pointEmitter_->GetWorldTransform()->SetParent(player_->GetWorldTransform());
 
 	// titleCameraの生成
 	titleCamera_ = std::make_unique<TitleCamera>();
@@ -216,13 +217,14 @@ void TitleScene::Update()
 		break;
 	}
 
+	pointEmitter_->Update();
+
 	startBotton_->Update();	
 
 	if (isMoveActive_) /// 移動開始フラグが有効なら
 	{
-		pointEmitter_->SetTranslate(player_->GetWorldPosition());
+		pointEmitter_->Emit(player_->GetWorldTransform()->GetWorldMatrix());
 
-		//pointEmitter_->Emit(player_->GetWorldTransform()->GetWorldMatrix());
 
 		if (progressFactor_ < 1.0f)
 		{
@@ -264,7 +266,6 @@ void TitleScene::Update()
 	player_->Update();
 
 	static int count = 0;
-
 #ifdef _DEBUG
 	ImGui::Begin("Count");
 

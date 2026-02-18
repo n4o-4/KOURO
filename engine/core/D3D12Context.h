@@ -13,6 +13,6 @@ namespace Kouro
 	struct D3D12Context
 	{
 		ID3D12Device* device = nullptr;
-		ID3D12CommandList* commandList = nullptr;
+		ID3D12GraphicsCommandList* commandList = nullptr;
 	};
 }

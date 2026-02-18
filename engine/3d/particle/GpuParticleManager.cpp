@@ -47,20 +47,20 @@ namespace Kouro
 		srvManager_->PreDraw();
 		uavManager_->PreDraw();
 
-		dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("sphereShellEmitter")->second->rootSignature.Get());
-		dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("sphereShellEmitter")->second->pipelineState.Get());
+		commandList_->SetComputeRootSignature(pipelineSets_.find("sphereShellEmitter")->second->rootSignature.Get());
+		commandList_->SetPipelineState(pipelineSets_.find("sphereShellEmitter")->second->pipelineState.Get());
 
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
 
-		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(3, emitterSphereShellResource_.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootConstantBufferView(3, emitterSphereShellResource_.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
 
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(5, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(6, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(5, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(6, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
 
-		dxCommon_->GetCommandList()->Dispatch(10, 1, 1);
+		commandList_->Dispatch(10, 1, 1);
 	};
 
 	void GpuParticleManager::Update()
@@ -75,25 +75,25 @@ namespace Kouro
 			perFrame_;
 
 			// noiseUpdate
-			dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("noiseUpdate")->second->rootSignature.Get());
-			dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("noiseUpdate")->second->pipelineState.Get());
-			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount / kCSMaxParticleCount, 1, 1);
+			commandList_->SetComputeRootSignature(pipelineSets_.find("noiseUpdate")->second->rootSignature.Get());
+			commandList_->SetPipelineState(pipelineSets_.find("noiseUpdate")->second->pipelineState.Get());
+			commandList_->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
+			commandList_->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
+			commandList_->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
+			commandList_->SetComputeRootUnorderedAccessView(3, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
+			commandList_->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
+			commandList_->Dispatch(kMaxParticleCount / kCSMaxParticleCount, 1, 1);
 
 			// baseUpdate
-			dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("baseUpdate")->second->rootSignature.Get());
-			dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("baseUpdate")->second->pipelineState.Get());
-			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(5, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount / kCSMaxParticleCount, 1, 1);
+			commandList_->SetComputeRootSignature(pipelineSets_.find("baseUpdate")->second->rootSignature.Get());
+			commandList_->SetPipelineState(pipelineSets_.find("baseUpdate")->second->pipelineState.Get());
+			commandList_->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
+			commandList_->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
+			commandList_->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
+			commandList_->SetComputeRootUnorderedAccessView(3, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
+			commandList_->SetComputeRootConstantBufferView(4, perFrameResource_.Get()->GetGPUVirtualAddress());
+			commandList_->SetComputeRootUnorderedAccessView(5, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
+			commandList_->Dispatch(kMaxParticleCount / kCSMaxParticleCount, 1, 1);
 		}
 	}
 
@@ -115,15 +115,15 @@ namespace Kouro
 		{
 			auto& group = it->second;
 
-			dxCommon_->GetCommandList()->SetGraphicsRootSignature(pipelineSets_.find("draw")->second->rootSignature.Get());
-			dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("draw")->second->pipelineState.Get());
-			dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &group.vertexBufferView);
-			dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, group.materialResource.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(group.particleSrvIndex));
-			dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, srvManager_->GetGPUDescriptorHandle(group.textureIndex));
-			dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, perViewResource_.Get()->GetGPUVirtualAddress());
-			dxCommon_->GetCommandList()->DrawInstanced(6, kMaxParticleCount, 0, 0);
+			commandList_->SetGraphicsRootSignature(pipelineSets_.find("draw")->second->rootSignature.Get());
+			commandList_->SetPipelineState(pipelineSets_.find("draw")->second->pipelineState.Get());
+			commandList_->IASetVertexBuffers(0, 1, &group.vertexBufferView);
+			commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			commandList_->SetGraphicsRootConstantBufferView(0, group.materialResource.Get()->GetGPUVirtualAddress());
+			commandList_->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(group.particleSrvIndex));
+			commandList_->SetGraphicsRootDescriptorTable(2, srvManager_->GetGPUDescriptorHandle(group.textureIndex));
+			commandList_->SetGraphicsRootConstantBufferView(3, perViewResource_.Get()->GetGPUVirtualAddress());
+			commandList_->DrawInstanced(6, kMaxParticleCount, 0, 0);
 		}
 	}
 
@@ -132,20 +132,20 @@ namespace Kouro
 		srvManager_->PreDraw();
 
 		// RootSignatureの設定（initialize用）
-		dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("initialize")->second.get()->rootSignature.Get());
+		commandList_->SetComputeRootSignature(pipelineSets_.find("initialize")->second.get()->rootSignature.Get());
 
 		// PipelineStateの設定（initialize用）
-		dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_["initialize"]->pipelineState.Get());
+		commandList_->SetPipelineState(pipelineSets_["initialize"]->pipelineState.Get());
 
 		// UAVの設定（u0: パーティクル, u1: カウンタ, u2: フリーリスト
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(4, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(0, group.particleResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(1, group.counterResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(2, group.freeListResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(3, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(4, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
 
 		// ComputeShaderの実行
-		dxCommon_->GetCommandList()->Dispatch(kMaxParticleCount / kCSMaxParticleCount, 1, 1);
+		commandList_->Dispatch(kMaxParticleCount / kCSMaxParticleCount, 1, 1);
 	}
 
 	void GpuParticleManager::CreateParticleGroup(const std::string name, const std::string textureFilePath, std::vector<VertexData> vertices)
@@ -209,10 +209,10 @@ namespace Kouro
 		transform_->matWorld = world;
 
 		// 1. Compute RootSignature
-		dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("modelEdgeEmitter")->second.get()->rootSignature.Get());
+		commandList_->SetComputeRootSignature(pipelineSets_.find("modelEdgeEmitter")->second.get()->rootSignature.Get());
 
 		// 2. Pipeline State
-		dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("modelEdgeEmitter")->second.get()->pipelineState.Get());
+		commandList_->SetPipelineState(pipelineSets_.find("modelEdgeEmitter")->second.get()->pipelineState.Get());
 
 		if (particleGroups_.find(groupName) == particleGroups_.end()) return;
 
@@ -223,32 +223,32 @@ namespace Kouro
 		// 3. Compute Root Descriptor / CBV / UAV 
 		//dxCommon_->GetCommandList()->SetComputeRootShaderResourceView(0, srvManager_->GetGPUDescriptorHandle(lineSrvIndex).ptr);
 		// SRV heap をセット済み(srvManager_->PreDraw())が前提
-		dxCommon_->GetCommandList()->SetComputeRootDescriptorTable(0, srvManager_->GetGPUDescriptorHandle(lineSrvIndex));
-		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(1, transformResource_.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.particleResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.counterResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(4, group.freeListResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(5, emitterResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(6, perFrameResource_.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(7, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(8, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootDescriptorTable(0, srvManager_->GetGPUDescriptorHandle(lineSrvIndex));
+		commandList_->SetComputeRootConstantBufferView(1, transformResource_.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(2, group.particleResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(3, group.counterResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(4, group.freeListResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootConstantBufferView(5, emitterResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootConstantBufferView(6, perFrameResource_.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(7, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(8, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
 
-		dxCommon_->GetCommandList()->Dispatch(static_cast<UINT>(lineCount), 1, 1);
+		commandList_->Dispatch(static_cast<UINT>(lineCount), 1, 1);
 
 		D3D12_RESOURCE_BARRIER barrier1{};
 		barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
 		barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 		barrier1.UAV.pResource = group.particleResource.Get();
-		dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier1);
+		commandList_->ResourceBarrier(1, &barrier1);
 	}
 
 	void GpuParticleManager::PointEmit(std::string groupName, ID3D12Resource* emitterResource, ID3D12Resource* transformResource)
 	{
 		// 1. Compute RootSignature
-		dxCommon_->GetCommandList()->SetComputeRootSignature(pipelineSets_.find("pointEmitter")->second.get()->rootSignature.Get());
+		commandList_->SetComputeRootSignature(pipelineSets_.find("pointEmitter")->second.get()->rootSignature.Get());
 
 		// 2. Pipeline State
-		dxCommon_->GetCommandList()->SetPipelineState(pipelineSets_.find("pointEmitter")->second.get()->pipelineState.Get());
+		commandList_->SetPipelineState(pipelineSets_.find("pointEmitter")->second.get()->pipelineState.Get());
 
 		if (particleGroups_.find(groupName) == particleGroups_.end()) return;
 
@@ -257,22 +257,23 @@ namespace Kouro
 		srvManager_->PreDraw();
 
 		// 3. Compute Root Descriptor / CBV / UAV 
-		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(0, transformResource->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(1, group.particleResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(2, group.counterResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(3, group.freeListResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(4, emitterResource->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootConstantBufferView(5, perFrameResource_.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(6, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
-		dxCommon_->GetCommandList()->SetComputeRootUnorderedAccessView(7, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
+		//commandList_->SetComputeRootConstantBufferView(0, transformResource->GetGPUVirtualAddress());
+		commandList_->SetComputeRootConstantBufferView(0, transformResource->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(1, group.particleResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(2, group.counterResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(3, group.freeListResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootConstantBufferView(4, emitterResource->GetGPUVirtualAddress());
+		commandList_->SetComputeRootConstantBufferView(5, perFrameResource_.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(6, group.noiseUpdateListResource.Get()->GetGPUVirtualAddress());
+		commandList_->SetComputeRootUnorderedAccessView(7, group.baseUpdateListResource.Get()->GetGPUVirtualAddress());
 
-		dxCommon_->GetCommandList()->Dispatch(1, 1, 1);
+		commandList_->Dispatch(1, 1, 1);
 
 		D3D12_RESOURCE_BARRIER barrier1{};
 		barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
 		barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 		barrier1.UAV.pResource = group.particleResource.Get();
-		dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier1);
+		commandList_->ResourceBarrier(1, &barrier1);
 	}
 
 	void GpuParticleManager::CreateResources()
@@ -368,7 +369,7 @@ namespace Kouro
 		}
 
 		// シリアライズ結果から実際のRootSignatureを作成
-		hr = dxCommon_->GetDevice()->CreateRootSignature(
+		hr = device_->CreateRootSignature(
 			0,
 			signatureBlob->GetBufferPointer(),
 			signatureBlob->GetBufferSize(),
@@ -445,7 +446,7 @@ namespace Kouro
 		}
 
 		// シリアライズされたデータから RootSignature を生成
-		hr = dxCommon_->GetDevice()->CreateRootSignature(
+		hr = device_->CreateRootSignature(
 			0,
 			signatureBlob->GetBufferPointer(),
 			signatureBlob->GetBufferSize(),
@@ -517,7 +518,7 @@ namespace Kouro
 		}
 
 		// シリアライズされたデータから RootSignature を生成
-		hr = dxCommon_->GetDevice()->CreateRootSignature(
+		hr = device_->CreateRootSignature(
 			0,
 			signatureBlob->GetBufferPointer(),
 			signatureBlob->GetBufferSize(),
@@ -879,7 +880,7 @@ namespace Kouro
 			Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 		}
 
-		hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&pSet->rootSignature));
+		hr = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&pSet->rootSignature));
 		assert(SUCCEEDED(hr));
 
 		// InputLayout

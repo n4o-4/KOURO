@@ -235,7 +235,7 @@ namespace Kouro
 
 		ID3D12Device* device_ = nullptr;
 
-		ID3D12CommandList* commandList_ = nullptr;
+		ID3D12GraphicsCommandList* commandList_ = nullptr;
 
 		GpuResourceUtils* gpuResourceUtils_ = nullptr;
 

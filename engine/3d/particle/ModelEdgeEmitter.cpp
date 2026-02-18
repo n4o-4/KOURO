@@ -36,9 +36,6 @@ namespace Kouro
 		// グループが存在しなければ処理を抜ける
 		if (manager->GetParticleGroups().find(groupName_) == manager->GetParticleGroups().end()) return;
 
-		// グループ取得
-		GpuParticleManager::ParticleGroup& group = manager->GetParticleGroups().find(groupName_)->second;
-
 		// emit呼び出し
 		manager->LineEmit(groupName_, srvIndex_, lineCount_, emitterResource_, mat);
 	}
