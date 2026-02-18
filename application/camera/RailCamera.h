@@ -41,14 +41,24 @@ public:
 	*/
 	void SetRail(const Rail& rail,float moveTime = kDefaultMoveTime);
 
+	/**
+	* \brief  SetTarget ターゲットの設定
+	* \param  target ターゲットのワールド変換のポインタ
+	*/
+	void SetTarget(Kouro::WorldTransform* target) { target_ = target; }
+
 private:
 
 	// ワールド変換情報
-	std::unique_ptr<Kouro::WorldTransform> worldTransform_ = nullptr;
+	//std::unique_ptr<Kouro::WorldTransform> worldTransform_ = nullptr;
 	
 	bool isMove_ = false;
 
 	std::unique_ptr<RailFollower> railFollower_ = nullptr;
+
+	Kouro::WorldTransform* target_ = nullptr;
+
+	float followRate_ = 0.6f; // 追従率
 
 private:
 

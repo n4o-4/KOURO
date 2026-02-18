@@ -44,10 +44,14 @@ void Kouro::PointEmitter::Update()
 
 void Kouro::PointEmitter::Emit(const Matrix4x4& mat)
 {
-	*transform_ = mat;
+	static Vector3 prevPosition;
 
 	// ワールド変換の更新と転送
 	wTransform_->UpdateMatrix();
+
+	*transform_ = wTransform_->GetWorldMatrix();
+
+	
 
 	// ワールド変換の位置をエミッターデータに設定
 	emitter_->translate = wTransform_->GetWorldPosition();
@@ -61,23 +65,25 @@ void Kouro::PointEmitter::Emit(const Matrix4x4& mat)
 	// emit呼び出し
 	manager->PointEmit(groupName_, emitterResource_.Get(), transformResource_.Get());
 
-	if (emitter_->emit)
+	static int emitCount = 0;
+
+	// デバッグ出力（Emit時のみ）
+	if (1)
 	{
-		// 現在時刻を取得
 		auto now = std::chrono::system_clock::now();
 		auto timeT = std::chrono::system_clock::to_time_t(now);
 		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
 
-		// フォーマット文字列作成
+		Kouro::Vector3 currentPosition = wTransform_->GetWorldPosition();
+
 		std::tm localTime;
 		localtime_s(&localTime, &timeT);
 		std::ostringstream oss;
 		oss << std::put_time(&localTime, "%H:%M:%S") << "." << std::setfill('0') << std::setw(3) << ms.count();
-
-		// 出力
-		std::string message = "[" + oss.str() + "] Emit Particle\n";
-		OutputDebugStringA(message.c_str());
+		OutputDebugStringA(("[" + oss.str() + "] Emit Particle " + std::to_string(emitCount++) + " " + std::to_string(currentPosition.x) + " " + std::to_string(currentPosition.y) + " " + std::to_string(currentPosition.z) + "\n").c_str());
 	}
+
+	prevPosition = wTransform_->GetWorldPosition();
 }
 void Kouro::PointEmitter::SetEmitterProperties(Vector3 translate, uint32_t count, Vector3 velocityMin, Vector3 velocityMax, float lifeTimeMin, float lifeTimeMax, float frequency)
 {

@@ -1,7 +1,10 @@
 #include "Player.h"
 
+#include <algorithm>
+
 #include "EnemyBullet.h"
 #include "Easing.h"
+
 
 void Player::Initialize(Kouro::LineModel* model)
 {
@@ -111,6 +114,14 @@ void Player::Update()
 
 	// 移動
 	Move();
+
+	// 移動制限を適用
+	Kouro::Vector3 pos = worldTransform_->GetTranslate();
+
+	pos.x = std::clamp(pos.x, moveLimitMin_.x, moveLimitMax_.x);
+	pos.y = std::clamp(pos.y, moveLimitMin_.y, moveLimitMax_.y);
+
+	worldTransform_->SetTranslate(pos);
 
 	// 弾の更新
 	for (auto& bullet : bullets_)

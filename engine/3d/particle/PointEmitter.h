@@ -71,5 +71,7 @@ namespace Kouro
 		Kouro::Matrix4x4* transform_ = nullptr; //!< ワールド変換用のマップポインタ
 
 		std::unique_ptr<WorldTransform> wTransform_; //!< ワールド変換クラス
+
+		float kInterpolationStep_ = 1.0f; //!< 補間距離
 	};
 }

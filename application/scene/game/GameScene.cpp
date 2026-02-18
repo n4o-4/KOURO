@@ -63,8 +63,8 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	playerRail_.Initialize(rail, 60.0f);
 	cameraRail_.Initialize(rail, 60.0f);
 	
-	enemyRail_.SetDistanceTravelled(40.0f);
-	playerRail_.SetDistanceTravelled(20.0f);
+	enemyRail_.SetDistanceTravelled(60.0f);
+	playerRail_.SetDistanceTravelled(30.0f);
 	cameraRail_.SetDistanceTravelled(0.0f);
 
 	cameraRail_.SetLookAheadDistance(20.0f);
@@ -314,6 +314,8 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 		enemies_.push_back(std::move(enemy));
 	}
+
+	railCamera_->SetTarget(player_->GetWorldTransform());
 
 	pointEmitter_ = std::make_unique<Kouro::PointEmitter>();
 	pointEmitter_->Initialize("normal", context);

@@ -42,32 +42,54 @@ void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID)
     gNoiseUpdateList[particleIndex] = 0;
     gBaseUpdateList[particleIndex] = 1;
 
-    // スケール値をランダム補間
-    float3 velocity = float3(
-    lerp(gEmitter.velocityMin.x, gEmitter.velocityMax.x, generator.Generate1d()), // 横方向
-    lerp(gEmitter.velocityMin.y, gEmitter.velocityMax.y, generator.Generate1d()), // 縦方向
-    lerp(gEmitter.velocityMin.z, gEmitter.velocityMax.z, generator.Generate1d()) // 奥行き
-    );
+    float3 forward = (gTransform.world[2]).xyz; // ワールド行列のZ軸を前方とする
+    float3 baseDir = -normalize(forward); // 後ろ向き
 
+    // 角度パラメータ（中心からどれくらい開くか）
+    float spreadAngle = radians(20.0f);
+
+    // velocityRange の使い方を拡張
+    float3 coneScaleMin = gEmitter.velocityMin;
+    float3 coneScaleMax = gEmitter.velocityMax;
+
+    // スケール値をランダム補間
+    float3 coneScale = float3(
+    lerp(coneScaleMin.x, coneScaleMax.x, generator.Generate1d()), // 横方向
+    lerp(coneScaleMin.y, coneScaleMax.y, generator.Generate1d()), // 縦方向
+    lerp(coneScaleMin.z, coneScaleMax.z, generator.Generate1d()) // 奥行き
+    );
     // ---------------------------------------------
+    // 1. ランダム方向を生成（円錐形状）
+    // ---------------------------------------------
+    float u = generator.Generate1d();
+    float v = generator.Generate1d();
+    float theta = acos(lerp(cos(spreadAngle), 1.0f, u));
+    float phi = v * 2.0f * 3.141592f;
+
+    // 円錐内の単位ベクトル（ローカル座標）
+    float3 localDir = float3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+
     // 2. ワールド行列から回転成分を取り出す
     // ---------------------------------------------
-    // （上位3x3部分が回転＋スケールを含む）
-    float3x3 worldRot =
-    {
-        gTransform.world[0].xyz, // X軸
-    gTransform.world[1].xyz, // Y軸
-    gTransform.world[2].xyz  // Z軸
-    };
+    // 2. 形状スケールを反映（直径調整）
+    // ---------------------------------------------
+    localDir *= coneScale; // 各軸ごとに伸縮
 
     // ---------------------------------------------
-    // 3. ローカル速度をワールド空間に変換
+    // 3. baseDir に合わせてワールド方向へ変換
     // ---------------------------------------------
-    float3 worldVelocity = mul(velocity, worldRot); // float3 × float3x3
+    float3 up = abs(baseDir.y) < 0.95f ? float3(0, 1, 0) : float3(1, 0, 0);
+    float3 right = normalize(cross(up, baseDir));
+    float3 newUp = cross(baseDir, right);
+
+    // ローカル空間 → ワールド空間
+    float3 worldDir = normalize(localDir.x * right + localDir.y * newUp + localDir.z * baseDir);
+    
+    float speed = lerp(coneScaleMin.z, coneScaleMax.z, generator.Generate1d());
+    gParticles[particleIndex].velocity = worldDir * speed;
     
     // パーティクル初期化
     gParticles[particleIndex].translate = gEmitter.translate;
-    gParticles[particleIndex].velocity = worldVelocity;
     gParticles[particleIndex].scale = float3(0.1f, 0.1f, 0.1f);
     gParticles[particleIndex].color = float4(1.0, 0.3265, 0.2908, 1.0f);
     gParticles[particleIndex].lifeTime = lerp(gEmitter.lifeTimeMin, gEmitter.lifeTimeMax, generator.Generate1d());

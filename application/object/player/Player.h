@@ -171,5 +171,8 @@ private: // 非公開メンバ変数
 	static constexpr float kTargetTiltAngle_ = 0.3f; // プレイヤーの傾きの目標角度
 
 	Kouro::Vector3 targetTilt_ = { 0.0f,0.0f,0.0f }; // プレイヤーの傾きの目標角度
+
+	Kouro::Vector2 moveLimitMin_ = { -40.0f, -25.0f }; // プレイヤーの移動制限の最小値
+	Kouro::Vector2 moveLimitMax_ = { 40.0f, 25.0f }; // プレイヤーの移動制限の最大値
 };
 

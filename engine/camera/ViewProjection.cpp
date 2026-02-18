@@ -30,6 +30,8 @@ namespace Kouro
 		// 回転を取り出す場合（行列からオイラー角へ変換）
 		Vector3 worldRot = GetEulerFromMatrix(matWorld);
 
+		shakeOffset_ = TransformNormal(shakeOffset_, MakeRotateMatrix(worldRot));
+
 		// シェイク補正を追加
 		Vector3 finalPos = worldPos + shakeOffset_;
 
