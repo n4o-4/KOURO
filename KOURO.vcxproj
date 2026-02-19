@@ -80,8 +80,8 @@
     <ClCompile Include="engine\3d\particle\GpuParticleManager.cpp" />
     <ClCompile Include="engine\core\GpuResourceUtils.cpp" />
     <ClCompile Include="application\camera\ICameraState.cpp" />
-    <ClCompile Include="Event.cpp" />
-    <ClCompile Include="EventController.cpp" />
+    <ClCompile Include="application\system\Event.cpp" />
+    <ClCompile Include="application\system\EventController.cpp" />
     <ClCompile Include="externals\yaml-cpp\src\binary.cpp" />
     <ClCompile Include="externals\yaml-cpp\src\convert.cpp" />
     <ClCompile Include="externals\yaml-cpp\src\depthguard.cpp" />
@@ -113,7 +113,7 @@
     <ClCompile Include="externals\yaml-cpp\src\stream.cpp" />
     <ClCompile Include="externals\yaml-cpp\src\tag.cpp" />
     <ClCompile Include="application\camera\title\FollowCameraState.cpp" />
-    <ClCompile Include="JsonLoader.cpp" />
+    <ClCompile Include="engine\system\JsonLoader.cpp" />
     <ClCompile Include="application\camera\title\LookAtPlayerState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\model\Model.cpp" />
@@ -163,17 +163,17 @@
     <ClCompile Include="engine\2d\SpriteManager.cpp" />
     <ClCompile Include="application\object\enemy\TackleRecoverState.cpp" />
     <ClCompile Include="engine\3d\particle\PointEmitter.cpp" />
-    <ClCompile Include="UIController.cpp" />
-    <ClCompile Include="UIManager.cpp" />
-    <ClCompile Include="YamlLoader.cpp" />
+    <ClCompile Include="application\system\UIController.cpp" />
+    <ClCompile Include="application\system\UIManager.cpp" />
+    <ClCompile Include="engine\system\YamlLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Event.h" />
-    <ClInclude Include="EventController.h" />
+    <ClInclude Include="application\system\Event.h" />
+    <ClInclude Include="application\system\EventController.h" />
     <ClInclude Include="application\camera\title\FollowCameraState.h" />
     <ClInclude Include="application\camera\title\LookAtPlayerState.h" />
     <ClInclude Include="engine\3d\particle\PointEmitter.h" />
-    <ClInclude Include="SpriteMotionLibrary.h" />
+    <ClInclude Include="application\system\SpriteMotionLibrary.h" />
     <ClInclude Include="application\scene\SceneCommand.h" />
     <ClInclude Include="engine\math\Vector4.h" />
     <ClInclude Include="engine\math\Vector4Yaml.h" />
@@ -325,14 +325,14 @@
     <ClInclude Include="externals\yaml-cpp\src\stringsource.h" />
     <ClInclude Include="externals\yaml-cpp\src\tag.h" />
     <ClInclude Include="externals\yaml-cpp\src\token.h" />
-    <ClInclude Include="JsonLoader.h" />
+    <ClInclude Include="engine\system\JsonLoader.h" />
     <ClInclude Include="application\object\enemy\TackleChargeState.h" />
     <ClInclude Include="application\object\enemy\TackleState.h" />
     <ClInclude Include="engine\2d\SpriteManager.h" />
     <ClInclude Include="application\object\enemy\TackleRecoverState.h" />
-    <ClInclude Include="UIController.h" />
-    <ClInclude Include="UIManager.h" />
-    <ClInclude Include="YamlLoader.h" />
+    <ClInclude Include="application\system\UIController.h" />
+    <ClInclude Include="application\system\UIManager.h" />
+    <ClInclude Include="engine\system\YamlLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
