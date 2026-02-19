@@ -109,8 +109,12 @@
     <FxCompile Include="Resources\shaders\InitializeParticle.CS.hlsl">
       <Filter>resources\shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\FlagPass.hlsl" />
-    <FxCompile Include="Resources\shaders\EmitParticlePoint.CS.hlsl" />
+    <FxCompile Include="Resources\shaders\EmitParticlePoint.CS.hlsl">
+      <Filter>resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\FlagPass.hlsl">
+      <Filter>resources\shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -140,9 +144,6 @@
     </ClCompile>
     <ClCompile Include="application\transition\Fade.cpp">
       <Filter>application\transition</Filter>
-    </ClCompile>
-    <ClCompile Include="application\camera\title\TitleCamera.cpp">
-      <Filter>application\camera</Filter>
     </ClCompile>
     <ClCompile Include="application\camera\RailCamera.cpp">
       <Filter>application\camera</Filter>
@@ -336,12 +337,6 @@
     <ClCompile Include="application\camera\ICameraState.cpp">
       <Filter>application\camera</Filter>
     </ClCompile>
-    <ClCompile Include="application\camera\title\AlignCameraState.cpp">
-      <Filter>application\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="application\camera\title\RotateCameraState.cpp">
-      <Filter>application\camera</Filter>
-    </ClCompile>
     <ClCompile Include="application\system\RailFollower.cpp">
       <Filter>application\system</Filter>
     </ClCompile>
@@ -411,8 +406,6 @@
     <ClCompile Include="engine\3d\model\LineModel.cpp">
       <Filter>engine\3d\model</Filter>
     </ClCompile>
-    <ClCompile Include="engine\system\JsonLoader.cpp" />
-    <ClCompile Include="engine\system\YamlLoader.cpp" />
     <ClCompile Include="externals\yaml-cpp\src\emit.cpp">
       <Filter>extarnals\yaml-cpp</Filter>
     </ClCompile>
@@ -527,8 +520,6 @@
     <ClCompile Include="application\scene\game\state\PlayState.cpp">
       <Filter>application\scene\game\state</Filter>
     </ClCompile>
-    <ClCompile Include="application\system\UIManager.cpp" />
-    <ClCompile Include="application\system\UIController.cpp" />
     <ClCompile Include="application\object\enemy\TackleRecoverState.cpp">
       <Filter>application\object\enemy</Filter>
     </ClCompile>
@@ -544,11 +535,42 @@
     <ClCompile Include="engine\2d\SpriteManager.cpp">
       <Filter>engine\2d</Filter>
     </ClCompile>
-    <ClCompile Include="application\system\EventController.cpp" />
-    <ClCompile Include="application\system\Event.cpp" />
-    <ClCompile Include="application\camera\title\FollowCameraState.cpp" />
-    <ClCompile Include="application\camera\title\LookAtPlayerState.cpp" />
-    <ClCompile Include="engine\3d\particle\PointEmitter.cpp" />
+    <ClCompile Include="application\system\Event.cpp">
+      <Filter>application\system</Filter>
+    </ClCompile>
+    <ClCompile Include="application\system\EventController.cpp">
+      <Filter>application\system</Filter>
+    </ClCompile>
+    <ClCompile Include="application\system\UIController.cpp">
+      <Filter>application\system</Filter>
+    </ClCompile>
+    <ClCompile Include="application\system\UIManager.cpp">
+      <Filter>application\system</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\particle\PointEmitter.cpp">
+      <Filter>engine\3d\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\system\YamlLoader.cpp">
+      <Filter>engine\system</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\system\JsonLoader.cpp">
+      <Filter>engine\system</Filter>
+    </ClCompile>
+    <ClCompile Include="application\camera\title\AlignCameraState.cpp">
+      <Filter>application\camera\title</Filter>
+    </ClCompile>
+    <ClCompile Include="application\camera\title\FollowCameraState.cpp">
+      <Filter>application\camera\title</Filter>
+    </ClCompile>
+    <ClCompile Include="application\camera\title\RotateCameraState.cpp">
+      <Filter>application\camera\title</Filter>
+    </ClCompile>
+    <ClCompile Include="application\camera\title\TitleCamera.cpp">
+      <Filter>application\camera\title</Filter>
+    </ClCompile>
+    <ClCompile Include="application\camera\title\LookAtPlayerState.cpp">
+      <Filter>application\camera\title</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -577,9 +599,6 @@
     </ClInclude>
     <ClInclude Include="application\transition\Fade.h">
       <Filter>application\transition</Filter>
-    </ClInclude>
-    <ClInclude Include="application\camera\title\TitleCamera.h">
-      <Filter>application\camera</Filter>
     </ClInclude>
     <ClInclude Include="application\camera\RailCamera.h">
       <Filter>application\camera</Filter>
@@ -791,12 +810,6 @@
     <ClInclude Include="application\camera\ICameraState.h">
       <Filter>application\camera</Filter>
     </ClInclude>
-    <ClInclude Include="application\camera\title\AlignCameraState.h">
-      <Filter>application\camera</Filter>
-    </ClInclude>
-    <ClInclude Include="application\camera\title\RotateCameraState.h">
-      <Filter>application\camera</Filter>
-    </ClInclude>
     <ClInclude Include="application\system\RailFollower.h">
       <Filter>application\system</Filter>
     </ClInclude>
@@ -878,8 +891,6 @@
     <ClInclude Include="engine\object\InitialLightSetting.h">
       <Filter>engine\object</Filter>
     </ClInclude>
-    <ClInclude Include="engine\system\JsonLoader.h" />
-    <ClInclude Include="engine\system\YamlLoader.h" />
     <ClInclude Include="externals\yaml-cpp\src\collectionstack.h">
       <Filter>extarnals\yaml-cpp</Filter>
     </ClInclude>
@@ -973,9 +984,6 @@
     <ClInclude Include="application\scene\game\state\PauseState.h">
       <Filter>application\scene\game\state</Filter>
     </ClInclude>
-    <ClInclude Include="application\system\UIManager.h" />
-    <ClInclude Include="application\system\UIController.h" />
-    <ClInclude Include="application\system\SpriteMotionLibrary.h" />
     <ClInclude Include="engine\math\Vector4.h">
       <Filter>engine\math</Filter>
     </ClInclude>
@@ -1012,11 +1020,45 @@
     <ClInclude Include="application\scene\SceneCommand.h">
       <Filter>application\scene</Filter>
     </ClInclude>
-    <ClInclude Include="application\system\EventController.h" />
-    <ClInclude Include="application\system\Event.h" />
-    <ClInclude Include="application\camera\title\FollowCameraState.h" />
-    <ClInclude Include="application\camera\title\LookAtPlayerState.h" />
-    <ClInclude Include="engine\3d\particle\PointEmitter.h" />
+    <ClInclude Include="application\system\EventController.h">
+      <Filter>application\system</Filter>
+    </ClInclude>
+    <ClInclude Include="application\system\Event.h">
+      <Filter>application\system</Filter>
+    </ClInclude>
+    <ClInclude Include="application\system\UIController.h">
+      <Filter>application\system</Filter>
+    </ClInclude>
+    <ClInclude Include="application\system\UIManager.h">
+      <Filter>application\system</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\particle\PointEmitter.h">
+      <Filter>engine\3d\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\system\YamlLoader.h">
+      <Filter>engine\system</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\system\JsonLoader.h">
+      <Filter>engine\system</Filter>
+    </ClInclude>
+    <ClInclude Include="application\system\SpriteMotionLibrary.h">
+      <Filter>application\system</Filter>
+    </ClInclude>
+    <ClInclude Include="application\camera\title\AlignCameraState.h">
+      <Filter>application\camera\title</Filter>
+    </ClInclude>
+    <ClInclude Include="application\camera\title\FollowCameraState.h">
+      <Filter>application\camera\title</Filter>
+    </ClInclude>
+    <ClInclude Include="application\camera\title\RotateCameraState.h">
+      <Filter>application\camera\title</Filter>
+    </ClInclude>
+    <ClInclude Include="application\camera\title\TitleCamera.h">
+      <Filter>application\camera\title</Filter>
+    </ClInclude>
+    <ClInclude Include="application\camera\title\LookAtPlayerState.h">
+      <Filter>application\camera\title</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -1047,8 +1089,12 @@
     <None Include="Resources\shaders\Random.hlsli">
       <Filter>resources\shaders</Filter>
     </None>
-    <None Include="Resources\config\game\ui\countdown_ui.yaml" />
-    <None Include="Resources\config\game\ui\scene_ui.yaml" />
+    <None Include="Resources\config\game\ui\scene_ui.yaml">
+      <Filter>resources\config</Filter>
+    </None>
+    <None Include="Resources\config\game\ui\countdown_ui.yaml">
+      <Filter>resources\config</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="application">
@@ -1185,6 +1231,12 @@
     </Filter>
     <Filter Include="application\scene\title\state">
       <UniqueIdentifier>{58748812-30b4-43a5-8ab9-19645922b9bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="application\camera\title">
+      <UniqueIdentifier>{54b1b3b1-89d1-4b0a-b418-1cacdd6a598a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\config">
+      <UniqueIdentifier>{afc446b0-eae4-4df8-af95-123522f07702}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
