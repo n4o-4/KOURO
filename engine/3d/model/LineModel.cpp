@@ -6,13 +6,13 @@
 
 namespace Kouro
 {
-	void LineModel::Initialize(LineDrawerBase* lienDrawer, const std::string& directoryPath, const std::string& filePath)
+	void LineModel::Initialize(LineDrawerBase* lienDrawer, const std::string& filePath)
 	{
 		lineDrawerBase_ = lienDrawer;
 
 		dxCommon_ = lineDrawerBase_->GetdxCommon();
 
-		LoadLineModelFile(directoryPath, filePath);
+		LoadLineModelFile(filePath);
 
 	}
 
@@ -24,7 +24,7 @@ namespace Kouro
 		dxCommon_->GetCommandList()->DrawInstanced(vertexCount_, 1, 0, 0);
 	}
 
-	void LineModel::LoadLineModelFile(const std::string& directoryPath, const std::string& filePath)
+	void LineModel::LoadLineModelFile(const std::string& filePath)
 	{
 		// 外形エッジだけを収集
 		std::vector<LineVertex> lineVertices;
@@ -39,7 +39,7 @@ namespace Kouro
 		std::cout << "Supported extensions: " << extensions.C_Str() << std::endl;
 
 		LineModelData modelData;
-		std::string fullFilePath = directoryPath + "/" + filePath;
+		std::string fullFilePath = rootDirectoryPath_ + filePath;
 
 		const aiScene* scene = importer.ReadFile(fullFilePath.c_str(),
 			aiProcess_FlipWindingOrder |

@@ -31,8 +31,8 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 
 	/// 各種素材の読み込み
 	// テクスチャの読み込み
-	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/StartButton.png");
-	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/num.png");
+	Kouro::TextureManager::GetInstance()->LoadTexture("texture/StartButton.png");
+	Kouro::TextureManager::GetInstance()->LoadTexture("texture/num.png");
 
 	// ラインモデルの読み込み
 	lineModelManager_->LoadLineModel("player/player.obj");
@@ -48,7 +48,7 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 
 	// スタートボタンの生成
 	startBotton_ = std::make_unique<Kouro::Sprite>();
-	startBotton_->Initialize(Kouro::SpriteCommon::GetInstance(),"Resources/StartButton.png");
+	startBotton_->Initialize(Kouro::SpriteCommon::GetInstance(),"texture/StartButton.png");
 
 	// スタートボタンの各種設定
 	startBotton_->SetPosition(sprite_config["start_button"]["position"].as<Kouro::Vector2>());
@@ -86,7 +86,7 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 	cameraManager_->SetActiveCamera(titleCamera_.get()/*debugCamera_.get()*/);
 
 	// plane
-	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", Kouro::ParticleManager::ParticleType::Normal);
+	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "texture/circle.png", Kouro::ParticleManager::ParticleType::Normal);
 	// ブレンドモードの設定
 	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
 	// billboardを有効

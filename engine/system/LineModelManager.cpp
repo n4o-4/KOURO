@@ -16,7 +16,7 @@ namespace Kouro
 
 		// モデルの生成とファイル読み込み、初期化
 		std::unique_ptr<LineModel> model = std::make_unique<LineModel>();
-		model->Initialize(lineDrawerBase_, "Resources", filePath);
+		model->Initialize(lineDrawerBase_, filePath);
 
 		// モデルをmapコンテナに格納する
 		models_.insert(std::make_pair(filePath, std::move(model)));

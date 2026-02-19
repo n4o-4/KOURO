@@ -6,12 +6,12 @@ void GameClear::Initialize(Kouro::EngineContext context)
 	BaseScene::Initialize(context);
 
 	// テクスチャの読み込み
-	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/GameClear.png");
-	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/score.png");
+	Kouro::TextureManager::GetInstance()->LoadTexture("texture/GameClear.png");
+	Kouro::TextureManager::GetInstance()->LoadTexture("texture/score.png");
 
 	// ゲームクリア用のスプライトの生成と初期化
 	gameClearSprite_ = std::make_unique<Kouro::Sprite>();
-	gameClearSprite_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/GameClear.png");
+	gameClearSprite_->Initialize(Kouro::SpriteCommon::GetInstance(), "texture/GameClear.png");
 	gameClearSprite_->SetSize({ 1280.0f,720.0f });
 	gameClearSprite_->SetPosition({ 640.0f,360.0f });
 	gameClearSprite_->SetAnchorPoint({ 0.5f,0.5f });
@@ -26,7 +26,7 @@ void GameClear::Initialize(Kouro::EngineContext context)
 
 	// スコア(文字)用のスプライトクラスの生成と初期化
 	scoreLabelSprite_ = std::make_unique<Kouro::Sprite>();
-	scoreLabelSprite_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/score.png");
+	scoreLabelSprite_->Initialize(Kouro::SpriteCommon::GetInstance(), "texture/score.png");
 	scoreLabelSprite_->SetTexSize({ 640.0f,128.0f });
 	scoreLabelSprite_->SetPosition({ 320.0f,550.0f });
 	scoreLabelSprite_->SetSize({ 480.0f,128.0f });

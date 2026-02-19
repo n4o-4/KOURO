@@ -30,7 +30,7 @@ namespace Kouro
 		Kouro::ModelLoader loader;
 
 		// パーティクルグループの作成
-		CreateParticleGroup("normal", "Resources/circle.png", loader.LoadModel("plane.obj"));
+		CreateParticleGroup("normal", "texture/circle.png", loader.LoadModel("plane.obj"));
 
 		// エミッター用リソースの作成と初期化
 		emitterSphereShellResource_ = gpuResourceUtils_->CreateBufferResource(sizeof(EmitterSphereShell));

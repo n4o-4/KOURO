@@ -8,7 +8,7 @@ namespace Kouro
 		BaseEffect::Initialize(dxCommon, srvManager);
 
 		// テクスチャの読み込み
-		TextureManager::GetInstance()->LoadTexture("Resources/noise_texture.png");
+		TextureManager::GetInstance()->LoadTexture("texture/noise_texture.png");
 
 		//パイプラインの初期化
 		CreatePipeline();
@@ -67,7 +67,7 @@ namespace Kouro
 		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
 
 		// maskTextureのSrvHandleを取得
-		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, TextureManager::GetInstance()->GetSrvHandleGPU("Resources/noise_texture.png"));
+		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, TextureManager::GetInstance()->GetSrvHandleGPU("texture/noise_texture.png"));
 
 		// Cbufferの設定
 		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(2, resource_.Get()->GetGPUVirtualAddress());

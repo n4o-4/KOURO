@@ -1,7 +1,7 @@
-﻿- group_name: play_ui
+- group_name: play_ui
   sprites:
     - name: icon_move_hint
-      texture_path: Resources/Icon_MoveHint.png
+      texture_path: texture/Icon_MoveHint.png
       position: [120, 600]
       size: [200, 200]
       anchor_point: [0.5, 0.5]
@@ -9,7 +9,7 @@
       color: [0.612, 0.0, 0.357, 1.0]
 
     - name: label_fire_hint
-      texture_path: Resources/Label_SpaceToFire.png
+      texture_path: texture/Label_SpaceToFire.png
       position: [640, 600]
       size: [300, 200]
       anchor_point: [0.5, 0.5]
@@ -17,7 +17,7 @@
       color: [0.612, 0.0, 0.357, 1.0]
 
     - name: label_pause_hint
-      texture_path: Resources/Label_PauseHint.png
+      texture_path: texture/Label_PauseHint.png
       position: [120, 50]
       size: [240, 120]
       anchor_point: [0.5, 0.5]
@@ -27,14 +27,14 @@
 - group_name: pause_ui
   sprites:
     - name: label_title_hint
-      texture_path: Resources/Label_TitleHint.png
+      texture_path: texture/Label_TitleHint.png
       position: [640, 100]
       size: [512, 256]
       anchor_point: [0.5, 0.5]
       texture_size: [512, 256]
 
     - name: label_resume_hint
-      texture_path: Resources/Label_ResumeHint.png
+      texture_path: texture/Label_ResumeHint.png
       position: [640, 200]
       size: [512, 256]
       anchor_point: [0.5, 0.5]

@@ -6,7 +6,7 @@ namespace Kouro
 	{
 		Line::ModelData modelData;
 		Assimp::Importer importer;
-		std::string fullFilePath = directoryPath_ + "/" + filePath;
+		std::string fullFilePath = rootDirectoryPath_ + filePath;
 
 		/*const aiScene* scene = importer.ReadFile(filePath.c_str(),
 			aiProcess_FlipWindingOrder | aiProcess_FlipUVs);*/
@@ -129,7 +129,7 @@ namespace Kouro
 
 		Assimp::Importer importer;
 
-		std::string filePath = directoryPath_ + "/" + fileName;
+		std::string filePath = rootDirectoryPath_ + fileName;
 
 		const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 

@@ -37,7 +37,7 @@ namespace Kouro
 
 		// モデルの生成とファイル読み込み、初期化
 		std::unique_ptr<Model> model = std::make_unique<Model>();
-		model->Initialize(modelCommon.get(), "Resources", filePath);
+		model->Initialize(modelCommon.get(), "Resources/model", filePath);
 
 		// モデルをmapコンテナに格納する
 		models.insert(std::make_pair(filePath, std::move(model)));

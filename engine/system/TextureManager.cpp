@@ -58,7 +58,7 @@ namespace Kouro
 
 		// テクスチャファイルを読んでプログラムで扱えるようにする
 		DirectX::ScratchImage image{};
-		std::wstring filePathW = StringUtility::ConvertString(filePath);
+		std::wstring filePathW = StringUtility::ConvertString("Resources/" + filePath);
 
 		HRESULT hr;
 

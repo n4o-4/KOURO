@@ -6,11 +6,11 @@ void GameOver::Initialize(Kouro::EngineContext context)
 	BaseScene::Initialize(context);
 
 	// テクスチャの読み込み
-	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/GameOver.png");
+	Kouro::TextureManager::GetInstance()->LoadTexture("texture/GameOver.png");
 
 	// ゲームオーバー用のスプライトの生成と初期化
 	gameOverSprite_ = std::make_unique<Kouro::Sprite>();
-	gameOverSprite_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/GameOver.png");
+	gameOverSprite_->Initialize(Kouro::SpriteCommon::GetInstance(), "texture/GameOver.png");
 	gameOverSprite_->SetSize({ 1280.0f,720.0f });
 	gameOverSprite_->SetPosition({ 640.0f,360.0f });
 	gameOverSprite_->SetAnchorPoint({ 0.5f,0.5f });

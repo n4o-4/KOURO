@@ -42,10 +42,6 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	// 基底シーン
 	BaseScene::Initialize(context);
 
-	// モデルの読み込み
-	Kouro::ModelManager::GetInstance()->LoadModel("player/player.obj");
-	Kouro::ModelManager::GetInstance()->LoadModel("playerbullet/playerbullet.obj");
-
 	// postエフェクトの適用
 	sceneManager_->GetPostEffect()->ApplyEffect("dissolve",Kouro::PostEffect::EffectType::Dissolve);
 
@@ -93,7 +89,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	///		パーティクル
 	
 	// plane
-	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "Resources/circle.png", Kouro::ParticleManager::ParticleType::Normal);
+	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "texture/circle.png", Kouro::ParticleManager::ParticleType::Normal);
 	// ブレンドモードの設定
 	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
 	// billboardを有効
@@ -131,7 +127,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	mEmitter->Initialize("normal", context);
 	mEmitter->CreateLineSegment("enemy/enemy.obj");
 
-	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("HitEffect", "Resources/gradationLine.png", Kouro::ParticleManager::ParticleType::Ring);
+	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("HitEffect", "texture/gradationLine.png", Kouro::ParticleManager::ParticleType::Ring);
 
 	// ブレンドモードの設定
 	Kouro::ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
@@ -159,7 +155,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 	///hitEffect1
 
-	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("spark", "Resources/circle.png", Kouro::ParticleManager::ParticleType::Normal);
+	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("spark", "texture/circle.png", Kouro::ParticleManager::ParticleType::Normal);
 
 	Kouro::ParticleManager::GetInstance()->GetParticleGroup("spark")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
 	Kouro::ParticleManager::GetInstance()->GetParticleGroup("spark")->flagsData->enableBillboard = true;
@@ -182,7 +178,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	emitter3_->SetLifeTimeRange({ 0.5f,0.5f });
 	emitter3_->SetFrequency(0.01f);
 
-	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("ray", "Resources/circle.png", Kouro::ParticleManager::ParticleType::Normal);
+	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("ray", "texture/circle.png", Kouro::ParticleManager::ParticleType::Normal);
 
 	Kouro::ParticleManager::GetInstance()->GetParticleGroup("ray")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
 	Kouro::ParticleManager::GetInstance()->GetParticleGroup("ray")->flagsData->enableBillboard = true;
@@ -240,7 +236,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 		object.object3d->SetLocalMatrix(Kouro::MakeIdentity4x4());
 	}
 
-	Kouro::ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
+	//Kouro::ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
 
 	colliderManager_ = std::make_unique<ColliderManager>();
 
@@ -248,7 +244,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	{
 		countSprite_[i] = std::make_unique<Kouro::Sprite>();
 
-		std::string filePath = "Resources/" + std::to_string(i + 1) + ".png";
+		std::string filePath = "texture/" + std::to_string(i + 1) + ".png";
 
 		Kouro::TextureManager::GetInstance()->LoadTexture(filePath);
 
@@ -592,7 +588,7 @@ void GameScene::Draw()
 
 	//========================================
 	//パーティクルの描画
-	Kouro::ParticleManager::GetInstance()->Draw("Resources/circle.png");
+	Kouro::ParticleManager::GetInstance()->Draw("texture/circle.png");
 }
 
 void GameScene::UpdateAllObjects(const float deltaTime)

@@ -44,7 +44,7 @@ namespace Kouro
 		* \param  directoryPath ラインモデルファイルのディレクトリパス
 		* \param  filePath ラインモデルファイル名
 		*/
-		void Initialize(LineDrawerBase* lienDrawer, const std::string& directoryPath, const std::string& filePath);
+		void Initialize(LineDrawerBase* lienDrawer, const std::string& filePath);
 
 
 		/// \brief 描画
@@ -63,7 +63,7 @@ namespace Kouro
 		* \param  directoryPath ディレクトリパス
 		* \param  filePath ファイル名
 		*/
-		void LoadLineModelFile(const std::string& directoryPath, const std::string& filePath);
+		void LoadLineModelFile(const std::string& filePath);
 
 	private:
 
@@ -75,7 +75,7 @@ namespace Kouro
 		LineVertex* vertexData_ = nullptr;
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView_ = {};
 
-
+		const std::string rootDirectoryPath_ = "Resources/model/";
 
 		uint32_t vertexCount_ = 0;
 

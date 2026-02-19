@@ -2,13 +2,13 @@
 
 void Fade::Initialize()
 {
-	Kouro::TextureManager::GetInstance()->LoadTexture("Resources/white.png");
+	Kouro::TextureManager::GetInstance()->LoadTexture("texture/white.png");
 
 	// スプライトの生成
 	curtain_ = std::make_unique<Kouro::Sprite>();
 
 	// スプライトの初期化
-	curtain_->Initialize(Kouro::SpriteCommon::GetInstance(), "Resources/white.png");
+	curtain_->Initialize(Kouro::SpriteCommon::GetInstance(), "texture/white.png");
 
 	// スプライトのアンカーポイントを真ん中に設定
 	curtain_->SetAnchorPoint(Kouro::Vector2(0.5f, 0.5f));

@@ -53,7 +53,7 @@ namespace Kouro
 
 	private:
 
-		std::string directoryPath_ = "Resources/";
+		std::string rootDirectoryPath_ = "Resources/model/";
 
 	};
 }

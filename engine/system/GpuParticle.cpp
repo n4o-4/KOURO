@@ -58,7 +58,7 @@ namespace Kouro
 		// パイプラインセットの作成
 		CreatePipelineSet();
 
-		materialData_.textureFilePath = "Resources/circle.png";
+		materialData_.textureFilePath = "texture/circle.png";
 		TextureManager::GetInstance()->LoadTexture(materialData_.textureFilePath);
 		materialData_.textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(materialData_.textureFilePath);
 
