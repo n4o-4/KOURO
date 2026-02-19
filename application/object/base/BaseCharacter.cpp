@@ -59,13 +59,14 @@ const Kouro::Vector3& BaseCharacter::GetWorldPosition()
 
 	Kouro::Matrix4x4 matWorld = worldTransform_->GetWorldMatrix();
 
-	Kouro::Vector3 worldPos = 
+	worldPosition_ = 
 	{
 		matWorld.m[3][0],
 		matWorld.m[3][1],
 		matWorld.m[3][2]
 	};
-	return worldPos;
+
+	return worldPosition_;
 }
 
 void BaseCharacter::DrawImGui()

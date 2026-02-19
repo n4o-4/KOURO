@@ -31,5 +31,6 @@ namespace Kouro
 		}
 
 		assert(0);
+		return nullptr;
 	}
 }

@@ -55,6 +55,8 @@ protected: // 派生用メンバ変数
 	// 速度
 	Kouro::Vector3 velocity_ = { 0.0f,0.0f,0.0f };
 
+	Kouro::Vector3 worldPosition_ = { 0.0f,0.0f,0.0f };
+
 	uint32_t hp_ = 0;
 
 	HitActionData actionData_ = {};
