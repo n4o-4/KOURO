@@ -537,8 +537,6 @@ void GameScene::Update()
 ///						描画
 void GameScene::Draw() 
 {
-	//skybox_->Draw(cameraManager_->GetActiveCamera()->GetViewProjection(), *directionalLight.get(), *pointLight.get(), *spotLight.get());
-
 	DrawBackgroundSprite();
 	/// 背景スプライト描画
 
@@ -555,10 +553,13 @@ void GameScene::Draw()
 		[](const std::shared_ptr<Enemy>& enemy) { return !enemy->GetIsAlive(); }),
 		enemies_.end());
 
-	// 敵の描画
-	for (auto& enemy : enemies_)
+	if (phase_ != Phase::kFadeIn)
 	{
-		enemy->Draw();
+		// 敵の描画
+		for (auto& enemy : enemies_)
+		{
+			enemy->Draw();
+		}
 	}
 
 	// ステージの描画

@@ -34,7 +34,7 @@ namespace Kouro
 
 		wc.lpfnWndProc = WindowProc;
 
-		wc.lpszClassName = L"CG2WindowClass";
+		wc.lpszClassName = L"Kouro";
 
 		wc.hInstance = GetModuleHandle(nullptr);
 
@@ -48,7 +48,7 @@ namespace Kouro
 		//クライアント領域を元にwrcを変更してもらう
 		AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
 
-		hwnd = CreateWindow(wc.lpszClassName, L"GE3", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, wrc.right - wrc.left, wrc.bottom - wrc.top, nullptr, nullptr, wc.hInstance, nullptr);
+		hwnd = CreateWindow(wc.lpszClassName, L"宮本直弥_LineStriker", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, wrc.right - wrc.left, wrc.bottom - wrc.top, nullptr, nullptr, wc.hInstance, nullptr);
 
 		ShowWindow(hwnd, SW_SHOW);
 	}
