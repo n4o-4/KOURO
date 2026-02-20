@@ -6,6 +6,9 @@ namespace Kouro
 {
 	void Framework::Initialize()
 	{
+		// ゲーム開始時間を記録
+		startTime_ = std::chrono::steady_clock::now();
+
 		// WinAppの生成と初期化
 		winApp = std::make_unique<WinApp>();
 		winApp->Initialize();
@@ -64,43 +67,37 @@ namespace Kouro
 
 		gpuParticle_ = GpuParticle::GetInstance();
 		//gpuParticle_->Initialize(dxCommon_, srvManager.get(), uavManager_.get());
-
-		now = std::chrono::steady_clock::now();
-
-		startTime = now;
 	}
 
 	void Framework::Finalize()
 	{
 		GpuParticle::GetInstance()->Finalize();
 
-		SceneManager::GetInstance()->Finalize(); ///
+		SceneManager::GetInstance()->Finalize();
 
 		postEffect_->Finalize();
 
-		ParticleManager::GetInstance()->Finalize(); ///
+		ParticleManager::GetInstance()->Finalize();
 
 		Camera::GetInstance()->Finalize();
 
-		ModelManager::GetInstance()->Finalize(); ///
+		ModelManager::GetInstance()->Finalize();
 
-		Object3dCommon::GetInstance()->Finalize(); ///
+		Object3dCommon::GetInstance()->Finalize();
 
-		SpriteCommon::GetInstance()->Finalize(); ///
+		SpriteCommon::GetInstance()->Finalize();
 
-		TextureManager::GetInstance()->Finalize(); ///
+		TextureManager::GetInstance()->Finalize();
 
-		Input::GetInstance()->Finalize(); //
+		Input::GetInstance()->Finalize();
 
 		DirectXCommon::GetInstance()->Finalize();
 
 		winApp->Finalize();
-
 	}
 
 	void Framework::Update()
 	{
-
 		Camera::GetInstance()->Update();
 
 		// メッセージ処理
@@ -116,8 +113,7 @@ namespace Kouro
 
 		UpdateFPS();
 
-		gpuParticleManager_->SetPerFrame(static_cast<float>(totalTime), deltaTime);
-
+		gpuParticleManager_->SetPerFrame(elapsedTime_.count(), deltaTime_.count());
 	}
 
 	void Framework::Draw()
@@ -132,17 +128,13 @@ namespace Kouro
 		postEffect_->Draw();
 	}
 
-
-
 	void Framework::Run()
 	{
-
 		// ゲームの初期化
 		Initialize();
 
 		while (true)
 		{
-
 			// 毎フレーム更新
 			Update();
 
@@ -184,29 +176,62 @@ namespace Kouro
 
 	void Framework::UpdateFPS()
 	{
-		frameCount++;
+		// 現在の時間を取得
+		now_ = std::chrono::steady_clock::now();
 
-		// 現在時刻を取得
-		now = std::chrono::steady_clock::now();
+		// 前回のフレームからの経過時間を計算
+		deltaTime_ = std::chrono::duration<float>(now_ - prevTime_);
 
-		// 経過時間を秒で計算
-		//elapsedTime = std::chrono::duration<float>(now - lastTime).count();
-		totalTime = std::chrono::duration<float>(now - startTime).count();
+		// 経過時間をキューに追加
+		deltaTimes_.push_back(deltaTime_);
 
-		if (elapsedTime >= 1.0f) {
-			fps = frameCount / elapsedTime;
-			frameCount = 0;
+		// 過去1秒より古いフレームを削除
+		float accumulated = 0.0f;
+		for (auto it = deltaTimes_.rbegin(); it != deltaTimes_.rend(); ++it)
+		{
+			// 経過時間を累積
+			accumulated += it->count();
+
+			// 累積時間が1秒を超えたら、それ以降の古いフレームを削除
+			if (accumulated > frameHistoryDuration_)
+			{
+				// これ以降の古いフレームを削除
+				deltaTimes_.erase(deltaTimes_.begin(), it.base());
+
+				break;
+			}
 		}
 
-		deltaTime = std::chrono::duration<float>(now - lastTime).count();
+		// フレームカウントを更新
+		currentFrameCount_++;
 
-		lastTime = now; // lastTime をここで更新
+		// 前回のフレームの時間を更新
+		prevTime_ = now_;
 
 #ifdef _DEBUG
 
-		// ImGui に表示
-		ImGui::Text("FPS: %.2f TotalTime: %.2f deltaTime: %.f", fps, totalTime, deltaTime);
+		// フレーム
+		ImGui::Begin("FrameData");
+		
+		// 経過時間用の枠
+		ImGui::BeginChild("ElapsedTimeBox", ImVec2(192, 32), true);
+		elapsedTime_ = now_ - startTime_;
+		ImGui::Text("Elapsed Time: %.2f s", elapsedTime_.count());
+		ImGui::EndChild();
 
+		// 累計フレーム用の枠
+		ImGui::BeginChild("FrameCountBox", ImVec2(192, 32), true);
+		ImGui::Text("Frame Count : %u", currentFrameCount_);
+		ImGui::EndChild();
+
+		// FPS用の枠
+		ImGui::BeginChild("FPSBox", ImVec2(192, 32), true);
+		float fps = (accumulated > 0.0f) ? deltaTimes_.size() / accumulated : 0.0f;
+		ImGui::Text("FPS         : %.1f", fps);
+		ImGui::EndChild();
+
+
+		ImGui::End();
 #endif
 	}
 }

@@ -51,8 +51,6 @@ namespace Kouro
 		*/
 		void SetActiveCamera(BaseCamera* camera) { activeCamera_ = camera; }
 
-		
-
 		/// \brief  CamerasClear カメラのクリア
 		void CamerasClear();
 
@@ -75,6 +73,8 @@ namespace Kouro
 		std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
 
 		std::unique_ptr<FollowCamera> followCamera_ = nullptr;
+
+		std::list<BaseCamera*> cameras_;
 
 		BaseCamera* activeCamera_ = nullptr;
 

@@ -532,7 +532,7 @@ namespace Kouro
 		// NONEにしておく
 		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 
-		// バリアを張る対象のリソース。現在のバックバッファに対して行う
+		// バリアを張る対象のリソース。描画先に使っていた物を描画元として
 		barrier.Transition.pResource = renderTextureResources[renderResourceIndex_].Get();
 
 		// 還移前(現在)のResourceState
@@ -543,6 +543,18 @@ namespace Kouro
 
 		// TransitionBarrierを張る
 		DirectXCommon::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
+	}
+
+	D3D12_GPU_DESCRIPTOR_HANDLE DirectXCommon::GetSceneViewSRVHandle()
+	{
+		if (renderResourceIndex_ == 0)
+		{
+			return TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0");
+		}
+		else
+		{
+			return TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
+		}
 	}
 
 	void DirectXCommon::PreDraw()
@@ -642,38 +654,12 @@ namespace Kouro
 		// TransitionBarrierを張る
 		commandList->ResourceBarrier(1, &barrier);
 
-
-		//// 現在書き込んだ方を読み込み用に変換
-		//D3D12_RESOURCE_BARRIER barrier1{};
-		//barrier1.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		//barrier1.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		//barrier1.Transition.pResource = renderTextureResources[renderTargetIndex_].Get();
-		//barrier1.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		//barrier1.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-
-		//commandList->ResourceBarrier(1, &barrier1);
-
-		//// 今読み込んだ方を描画用に変換
-		//D3D12_RESOURCE_BARRIER barrier2{};
-		//barrier2.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		//barrier2.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		//barrier2.Transition.pResource = renderTextureResources[renderResourceIndex_].Get();
-		//barrier2.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-		//barrier2.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-
-		//commandList->ResourceBarrier(1, &barrier2);
-
-		//std::swap(renderTargetIndex_, renderResourceIndex_);
-
-		// コマンドリストの内容を確定させる。すべてのコマンドを積んでからCloseすること
 		hr = commandList->Close();
 		assert(SUCCEEDED(hr));
 
 		// GPUにコマンドリストの実行を行わせる
 		Microsoft::WRL::ComPtr<ID3D12CommandList> commandLists[] = { commandList.Get() };
 		commandQueue->ExecuteCommandLists(1, commandLists->GetAddressOf());
-		/*ID3D12CommandList* commandLists[] = { commandList.Get() };
-		commandQueue->ExecuteCommandLists(_countof(commandLists), commandLists);*/
 
 		// GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入するようにSignalを送る
 		commandQueue->Signal(fence.Get(), ++fenceValue);
@@ -866,23 +852,6 @@ namespace Kouro
 		commandList->ResourceBarrier(1, &barrier);
 
 		return intermediateResource;
-	}
-
-	DirectX::ScratchImage DirectXCommon::LoadTexture(const std::string& filePath)
-	{
-		// テクスチャファイルを読んでプログラムで扱えるようにする
-		DirectX::ScratchImage image{};
-		std::wstring filePathW = StringUtility::ConvertString(filePath);
-		HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
-		assert(SUCCEEDED(hr));
-
-		// ミニマップの生成
-		DirectX::ScratchImage mipImages{};
-		hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
-		assert(SUCCEEDED(hr));
-
-		// ミニマップ付きデータを返す
-		return mipImages;
 	}
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateComputeBufferResource(size_t sizeInBytes)

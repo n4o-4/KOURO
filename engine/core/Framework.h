@@ -35,6 +35,7 @@
 #include <chrono>
 #include <string>
 #include <wrl.h>
+#include <deque>
 
 // \brief FrameWork ゲーム全体の基本的な流れ（初期化・更新・描画・終了）を管理するフレームワーククラス。DirectX環境や各種マネージャを統合し、アプリのメインループを制御する。 
 
@@ -76,17 +77,7 @@ namespace Kouro
 
 		GpuParticle* gpuParticle_ = nullptr;
 
-		// フレームごとの時間計測用
-		uint64_t frameCount = 0;
-		double totalTime = 0.0; // 総時間
-		float deltaTime;
-		std::chrono::steady_clock::time_point startTime;
-		std::chrono::steady_clock::time_point lastTime;
-		double elapsedTime = 0.0;
-		double fps = 0.0;
-		std::chrono::steady_clock::time_point now;
-
-		const float kDeltaTime_ = 1.0f / 60.0f;
+		
 
 	public:
 
@@ -131,5 +122,25 @@ namespace Kouro
 	private:
 
 		void UpdateFPS();
+
+	private:
+
+		std::chrono::steady_clock::time_point startTime_;     // 実行開始時間
+
+		std::chrono::duration<float> elapsedTime_;            // 実行開始からの経過時間
+
+		std::chrono::steady_clock::time_point prevTime_;      // 前回のフレームの時間
+
+		std::chrono::steady_clock::time_point now_;           // 現在の時間
+
+		std::chrono::duration<float> deltaTime_;              // 前フレームからの経過時間
+
+		std::deque<std::chrono::duration<float>> deltaTimes_; // 過去数フレームのデルタタイムを保存するキュー
+
+		UINT currentFrameCount_ = 0;                          // 実行開始からの累計フレーム数
+
+		float frameHistoryDuration_ = 1.0f;                    // 過去何秒分のフレームを保持するか
+
+		const float kDeltaTime_ = 1.0f / 60.0f;
 	};
 }

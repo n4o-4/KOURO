@@ -45,6 +45,12 @@ namespace Kouro
 		/// \brief レンダーテクスチャ描画後処理
 		void RenderTexturePostDraw();
 
+		/**
+		* \brief  シーンビューSRVハンドルの取得
+		* \return シーンビューSRVハンドル
+		*/
+	    D3D12_GPU_DESCRIPTOR_HANDLE GetSceneViewSRVHandle();
+
 		/// \brief 描画前処理
 		void PreDraw();
 
@@ -134,13 +140,6 @@ namespace Kouro
 		* \return アップロード後のテクスチャリソース
 		*/
 		Microsoft::WRL::ComPtr<ID3D12Resource> UploadTextureData(Microsoft::WRL::ComPtr<ID3D12Resource> texture, const DirectX::ScratchImage& mipImages);
-
-		/**
-		* \brief  テクスチャ読み込み
-		* \param  filePath ファイルパス
-		* \return テクスチャデータ
-		*/
-		DirectX::ScratchImage LoadTexture(const std::string& filePath);
 
 		/**
 		* \brief  コンピュートバッファリソース作成

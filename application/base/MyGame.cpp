@@ -71,6 +71,24 @@ void MyGame::Draw()
 	// エフェクトの描画
 	Framework::DrawEffect();
 
+#ifdef _DEBUG
+
+	/*ImGui::Begin("SceneView");
+	ImGui::Image(
+		(ImTextureID)(UINT64)Kouro::DirectXCommon::GetInstance()->GetSceneViewSRVHandle().ptr,
+		ImVec2(1280, 720)
+	);
+	ImGui::End();*/
+
+#endif 
+
+
+
+
+
+
+
+
 	// 画面への描画前処理
 	Kouro::DirectXCommon::GetInstance()->PreDraw();
 
