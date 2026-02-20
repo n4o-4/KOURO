@@ -33,25 +33,28 @@ namespace Kouro
 		*/
 		BaseCamera* GetActiveCamera() { return activeCamera_; }
 
-		/**
-		* \brief  SetFollowCameraTarget 追従カメラのターゲット設定
-		* \param  target ターゲットのワールド変換のポインタ
-		*/
-		void SetFollowCameraTarget(WorldTransform* target) { followCamera_->SetTarget(target); }
+		///**
+		//* \brief  SetFollowCameraTarget 追従カメラのターゲット設定
+		//* \param  target ターゲットのワールド変換のポインタ
+		//*/
+		//void SetFollowCameraTarget(WorldTransform* target) { followCamera_->SetTarget(target); }
+
+		///**
+		//* \brief  GetFollowCamera 追従カメラの取得
+		//* \return followCamera_ 追従カメラのポインタ
+		//*/
+		//FollowCamera* GetFollowCamera() { return followCamera_.get(); }
 
 		/**
-		* \brief  GetFollowCamera 追従カメラの取得
-		* \return followCamera_ 追従カメラのポインタ
 		*/
-		FollowCamera* GetFollowCamera() { return followCamera_.get(); }
+		void SetActiveCamera(std::string name);
 
 		/**
-		* \brief  SetActiveCamera アクティブなカメラの設定
-		* \param  camera アクティブにするカメラのポインタ
+		* \brief  AddCamera カメラの追加
+		* \param  name カメラの名前
+		* \param  camera カメラのユニークポインタ
 		*/
-		void SetActiveCamera(BaseCamera* camera) { activeCamera_ = camera; }
-
-		
+		void AddCamera(const std::string& name, std::unique_ptr<BaseCamera> camera) { cameraRegistry_[name] = std::move(camera); }
 
 		/// \brief  CamerasClear カメラのクリア
 		void CamerasClear();
@@ -71,10 +74,6 @@ namespace Kouro
 		void DrawDebugUI();
 
 	private:
-
-		std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
-
-		std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 
 		BaseCamera* activeCamera_ = nullptr;
 

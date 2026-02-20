@@ -49,7 +49,7 @@ namespace Kouro
 	public:
 
 		// \brief 
-		virtual ~BaseScene();
+		virtual ~BaseScene() = default;
 
 		// \brief Initialize 初期化
 		virtual void Initialize(EngineContext context);

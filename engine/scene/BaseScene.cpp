@@ -7,9 +7,6 @@
 
 namespace Kouro
 {
-
-	BaseScene::~BaseScene() = default;
-
 	void BaseScene::Initialize(EngineContext context)
 	{
 		spriteManager_ = std::make_unique<SpriteManager>();

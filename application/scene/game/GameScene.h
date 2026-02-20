@@ -117,7 +117,7 @@ private:
 
 	std::shared_ptr<Player> player_ = nullptr;
 
-	std::unique_ptr<RailCamera> railCamera_ = nullptr;
+	RailCamera* railCamera_ = nullptr;
 
 	std::unique_ptr<Kouro::LevelLoader::LevelData> levelData_ = nullptr;
 

@@ -37,7 +37,7 @@ private:
 
 	std::unique_ptr<BaseCharacter> player_ = nullptr;
 
-	std::unique_ptr<TitleCamera> titleCamera_ = nullptr;
+	TitleCamera* titleCamera_ = nullptr;
 
 	// グローバルまたはクラスメンバとして開始時刻を記録
 	std::chrono::steady_clock::time_point startTime;

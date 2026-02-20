@@ -17,6 +17,8 @@ namespace Kouro
 	{
 	public:
 
+		virtual ~BaseCamera() = default;
+
 		/// \brief 初期化
 		virtual void Initialize();
 

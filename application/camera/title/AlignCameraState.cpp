@@ -9,19 +9,30 @@ void AlignCameraState::Enter()
 void AlignCameraState::Update(float deltaTime)
 {
 	Kouro::Vector3 targetRotate = target_->GetRotate();
-
 	Kouro::Vector3 cameraRotate = camera_->GetWorldTransform().GetRotate();
 
-	// ターゲットの回転にイージングをかけてカメラの回転を更新
-	cameraRotate.y = Kouro::Lerp(cameraRotate.y, targetRotate.y, 0.04f);
+	// 角度差を求める
+	float diff = targetRotate.y - cameraRotate.y;
+
+	// -π ～ π に正規化（最短差分にする）
+	while (diff > std::numbers::pi)  diff -= 2.0f * std::numbers::pi;
+	while (diff < -std::numbers::pi) diff += 2.0f * std::numbers::pi;
+
+	// 最短方向にイージング
+	cameraRotate.y += diff * 0.04f;
 
 	camera_->GetWorldTransform().SetRotate(cameraRotate);
-
 	camera_->GetWorldTransform().SetTranslate(camera_->CalculationOffset());
 
-	// カメラの回転がターゲットの回転に十分近づいたら状態を終了
-	if (std::abs(cameraRotate.y - targetRotate.y) < 0.01f)
+	// 収束判定
+	if (std::abs(diff) < 0.01f)
 	{
+		Kouro::Vector3 cameraRotate = camera_->GetWorldTransform().GetRotate();
+
+		cameraRotate.y = 0.0f;
+
+		camera_->GetWorldTransform().SetRotate(cameraRotate);
+
 		isFinished_ = true;
 	}
 }

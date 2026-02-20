@@ -76,14 +76,13 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 	pointEmitter_->SetEmitterProperties({ 0.0f,0.0f,0.0f }, 100, { -8.0f,-8.0f,-32.0f }, { 8.0f,8.0f,0.0f }, 0.5f, 1.0f, 0.0f);
 	pointEmitter_->GetWorldTransform()->SetParent(player_->GetWorldTransform());
 
-	// titleCameraの生成
-	titleCamera_ = std::make_unique<TitleCamera>();
-	titleCamera_->SetTarget(player_->GetWorldTransform());
-	titleCamera_->Initialize();
-	
-
-	// カメラマネージャーにカメラを登録
-	cameraManager_->SetActiveCamera(titleCamera_.get()/*debugCamera_.get()*/);
+	// titleCameraの生成、初期化、カメラマネージャーにカメラを登録
+	std::unique_ptr<TitleCamera> camera = std::make_unique<TitleCamera>();
+	camera->SetTarget(player_->GetWorldTransform());
+	camera->Initialize();
+	titleCamera_ = camera.get();
+	cameraManager_->AddCamera("titleCamera", std::move(camera));
+	cameraManager_->SetActiveCamera("titleCamera");
 
 	// plane
 	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "texture/circle.png", Kouro::ParticleManager::ParticleType::Normal);
@@ -162,7 +161,11 @@ void TitleScene::Update()
 		// カメラがAlign状態に遷移したら
 		if (isAlignCamera_)
 		{
-			if (titleCamera_->GetStateIsFinished())
+			auto activeCamera = cameraManager_->GetActiveCamera();
+
+			TitleCamera* titleCamera = dynamic_cast<TitleCamera*>(activeCamera);
+
+			if (titleCamera && titleCamera->GetStateIsFinished())
 			{
 				isMoveActive_ = true;
 

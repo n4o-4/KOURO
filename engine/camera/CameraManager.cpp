@@ -4,20 +4,8 @@ namespace Kouro
 {
 	void CameraManager::Initialize()
 	{
-		// デバッグカメラの初期化
-		debugCamera_ = std::make_unique<DebugCamera>();
-		debugCamera_->Initialize();
-
-		// 追従カメラの初期化
-		followCamera_ = std::make_unique<FollowCamera>();
-		followCamera_->Initialize();
-
-		// 最初のアクティブカメラは通常カメラに設定
-		activeCamera_ = Camera::GetInstance();
-
-		// カメラリストに各カメラを追加
-		cameras_.push_back(Camera::GetInstance());
-		cameras_.push_back(debugCamera_.get());
+		cameraRegistry_["DebugCamera"] = std::make_unique<DebugCamera>();
+		cameraRegistry_["DebugCamera"]->Initialize();
 
 		// シード値の初期化
 		std::random_device seedGenerator;
@@ -38,9 +26,23 @@ namespace Kouro
 		DrawDebugUI();
 	}
 
+	void CameraManager::SetActiveCamera(std::string name)
+	{
+		// 名前でカメラを検索し、アクティブカメラを設定
+		auto it = cameraRegistry_.find(name);
+		if (it != cameraRegistry_.end())
+		{
+			activeCamera_ = it->second.get();
+		}
+		else
+		{
+			assert(1); // カメラが見つからない場合はアサート
+		}
+	}
+
 	void CameraManager::CamerasClear()
 	{
-		cameras_.clear();
+		cameraRegistry_.clear();
 	}
 
 	void CameraManager::CameraShake(float time)
@@ -82,16 +84,16 @@ namespace Kouro
 	{
 #ifdef _DEBUG
 
-		ImGui::Begin("CameraManager");
+		ImGui::Begin("Camera Manager");
 
-		if (ImGui::Button("Use Debug Camera"))
+		for (auto& [name, camera] : cameraRegistry_)
 		{
-			activeCamera_ = debugCamera_.get();
-		}
+			bool isActive = (camera.get() == activeCamera_);
 
-		if (ImGui::Button("Use FollowCamera"))
-		{
-			activeCamera_ = followCamera_.get();
+			if (ImGui::RadioButton(name.c_str(), isActive))
+			{
+				activeCamera_ = camera.get();
+			}
 		}
 
 		ImGui::End();

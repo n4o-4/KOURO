@@ -13,6 +13,11 @@ void RotateCameraState::Update(float deltaTime)
 
 	rotate.y += kRotateSpeed_ * deltaTime;
 
+	if(rotate.y > std::numbers::pi * 2)
+	{
+		rotate.y -= std::numbers::pi * 2;
+	}
+
 	camera_->GetWorldTransform().SetRotate(rotate);
 
 	worldTransform->SetTranslate(camera_->CalculationOffset());

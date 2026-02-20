@@ -216,14 +216,14 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	// マウスの入力受付を有効
 	Kouro::Input::GetInstance()->SetIsReception(true);
 
-	railCamera_ = std::make_unique<RailCamera>();
-	railCamera_->Initialize();
-	railCamera_->SetParent(&cameraRail_.GetWorldTransform());
+	std::unique_ptr<RailCamera> camera = std::make_unique<RailCamera>();
+	camera->Initialize();
+	camera->SetParent(&cameraRail_.GetWorldTransform());
+	camera->SetTarget(player_->GetWorldTransform());
+	railCamera_ = camera.get();
+	cameraManager_->AddCamera("railCamera", std::move(camera));
+	cameraManager_->SetActiveCamera("railCamera");
 
-	cameraManager_->CamerasClear();
-	cameraManager_->SetActiveCamera(railCamera_.get());
-	cameraManager_->Update();
-	//cameraManager_->GetActiveCamera()->GetWorldTransform().SetTranslate({0.0f,0.0f,280.0f });
 	player_->SetParentTransform(&playerRail_.GetWorldTransform());
 
 
@@ -311,7 +311,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 		enemies_.push_back(std::move(enemy));
 	}
 
-	railCamera_->SetTarget(player_->GetWorldTransform());
+	
 
 	pointEmitter_ = std::make_unique<Kouro::PointEmitter>();
 	pointEmitter_->Initialize("normal", context);
