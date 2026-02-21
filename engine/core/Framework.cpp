@@ -208,6 +208,8 @@ namespace Kouro
 		// 前回のフレームの時間を更新
 		prevTime_ = now_;
 
+		elapsedTime_ = now_ - startTime_;
+
 #ifdef _DEBUG
 
 		// フレーム
@@ -215,7 +217,6 @@ namespace Kouro
 		
 		// 経過時間用の枠
 		ImGui::BeginChild("ElapsedTimeBox", ImVec2(192, 32), true);
-		elapsedTime_ = now_ - startTime_;
 		ImGui::Text("Elapsed Time: %.2f s", elapsedTime_.count());
 		ImGui::EndChild();
 
