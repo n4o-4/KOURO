@@ -59,7 +59,7 @@ namespace Kouro
 			lineSegments_.push_back(seg);
 		}
 
-		lineCount_ = lineSegments_.size();
+		lineCount_ = static_cast<uint32_t>(lineSegments_.size());
 
 		// ラインセグメントリソース作成
 		CreateSegmentResource();

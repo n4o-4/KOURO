@@ -124,8 +124,16 @@ public: // 公開メンバ関数
 	*/
 	const Kouro::Vector3& GetBasePosition() const { return basePosition_; }
 
+	/**
+	* \brief  ダミーキャラクターの回転の取得
+	* \return ダミーキャラクターの回転
+	*/
 	const Kouro::Vector3& GetDummyRotate() const { return dummy_->GetWorldTransform()->GetRotate(); }
 
+	/**
+	* \brief  ダミーキャラクターの位置の取得
+	* \return ダミーキャラクターの位置
+	*/
 	const Kouro::Vector3& GetDummyPosition() const { return dummy_->GetWorldTransform()->GetTranslate(); }
 
 	/**

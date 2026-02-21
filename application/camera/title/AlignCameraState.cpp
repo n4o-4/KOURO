@@ -15,8 +15,8 @@ void AlignCameraState::Update(float deltaTime)
 	float diff = targetRotate.y - cameraRotate.y;
 
 	// -π ～ π に正規化（最短差分にする）
-	while (diff > std::numbers::pi)  diff -= 2.0f * std::numbers::pi;
-	while (diff < -std::numbers::pi) diff += 2.0f * std::numbers::pi;
+	while (diff > static_cast<float>(std::numbers::pi))  diff -= 2.0f * static_cast<float>(std::numbers::pi);
+	while (diff < -static_cast<float>(std::numbers::pi)) diff += 2.0f * static_cast<float>(std::numbers::pi);
 
 	// 最短方向にイージング
 	cameraRotate.y += diff * 0.04f;

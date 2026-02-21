@@ -47,9 +47,9 @@ namespace Kouro
 		*/
 		const Vector3 GetWorldPosition() const { return Vector3(matWorld_.m[3][0], matWorld_.m[3][1], matWorld_.m[3][2]); }
 
-		const Vector3 GetTranslate() const { return transform.translate; }
-		const Vector3 GetRotate() const { return transform.rotate; }
-		const Vector3 GetScale() const { return transform.scale; }
+		const Vector3& GetTranslate() const { return transform.translate; }
+		const Vector3& GetRotate() const { return transform.rotate; }
+		const Vector3& GetScale() const { return transform.scale; }
 
 		/**
 		* \brief  GetWorldRotationMatrix ワールド回転行列の取得
