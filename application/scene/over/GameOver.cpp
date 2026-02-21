@@ -16,6 +16,12 @@ void GameOver::Initialize(Kouro::EngineContext context)
 	gameOverSprite_->SetAnchorPoint({ 0.5f,0.5f });
 	gameOverSprite_->SetTexSize({ 1536.0f,1024.0f });
 	gameOverSprite_->Update();
+
+	std::unique_ptr<Kouro::Camera> camera = std::make_unique<Kouro::Camera>();
+	camera->Initialize();
+
+	cameraManager_->AddCamera("camera", std::move(camera));
+	cameraManager_->SetActiveCamera("camera");
 }
 
 void GameOver::Finalize() {

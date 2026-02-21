@@ -45,7 +45,7 @@ namespace Kouro
 		ParticleManager::GetInstance()->SetCameraManager(cameraManager_.get());
 
 		// オブジェクト3dコモンに環境マップテクスチャを設定
-		Object3dCommon::GetInstance()->SetEnvironmentMapPath("Resources/envMap.dds");
+		Object3dCommon::GetInstance()->SetEnvironmentMapPath("Resources/texture/envMap.dds");
 
 		eventController_ = std::make_unique<EventController>();
 

@@ -1,4 +1,5 @@
 #include "GameClear.h"
+//#include "Camera.h"
 
 void GameClear::Initialize(Kouro::EngineContext context)
 {
@@ -31,6 +32,12 @@ void GameClear::Initialize(Kouro::EngineContext context)
 	scoreLabelSprite_->SetPosition({ 320.0f,550.0f });
 	scoreLabelSprite_->SetSize({ 480.0f,128.0f });
 	scoreLabelSprite_->Update();
+
+	std::unique_ptr<Kouro::Camera> camera = std::make_unique<Kouro::Camera>();
+	camera->Initialize();
+
+	cameraManager_->AddCamera("camera", std::move(camera));
+	cameraManager_->SetActiveCamera("camera");
 }
 
 void GameClear::Finalize()

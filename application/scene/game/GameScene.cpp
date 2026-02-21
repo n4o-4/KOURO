@@ -226,18 +226,6 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 	player_->SetParentTransform(&playerRail_.GetWorldTransform());
 
-
-	Kouro::LevelLoader loader;
-
-	levelData_ = loader.LoadLevelFromJson("Resources/TL1.json");
-
-	for (auto& object : levelData_->objects)
-	{
-		object.object3d->SetLocalMatrix(Kouro::MakeIdentity4x4());
-	}
-
-	//Kouro::ModelManager::GetInstance()->LoadModel("enemy/enemy.obj");
-
 	colliderManager_ = std::make_unique<ColliderManager>();
 
 	for(uint32_t i = 0; i < 3; ++i)
@@ -281,7 +269,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 	SpawnManager spawnManager;
 
-	std::vector<Kouro::Vector3> enemies = spawnManager.LoadFile("spawnPattern1.json");
+	std::vector<Kouro::Vector3> enemies = spawnManager.LoadFile("config/game/spawnPattern1.json");
 
 	for (size_t i = 0; i < enemies.size(); i++)
 	{
@@ -307,6 +295,8 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 		enemy->ChangeState(std::move(state));
 
 		colliderManager_->AddCollider(enemy);
+
+		enemy->Update();
 
 		enemies_.push_back(std::move(enemy));
 	}

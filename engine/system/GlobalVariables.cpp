@@ -9,7 +9,7 @@ namespace Kouro
         json root;
 
         // 既存のファイルを読み込む（存在しない場合は新規作成）
-        std::ifstream inFile("Resources/Data/global.json");
+        std::ifstream inFile("Resources/config/setting/global.json");
         if (inFile.is_open())
         {
             inFile >> root;
@@ -24,7 +24,7 @@ namespace Kouro
         root[item] = value;
 
         // ファイルに保存（整形出力）
-        std::ofstream outFile("Resources/global.json");
+        std::ofstream outFile("Resources/config/setting/global.json");
         if (outFile.is_open())
         {
             outFile << std::setw(4) << root << std::endl;
@@ -37,7 +37,7 @@ namespace Kouro
         json root;
 
         // ファイル読み込み
-        std::ifstream inFile("Resources/global.json");
+        std::ifstream inFile("Resources/config/setting/global.json");
         if (inFile.is_open())
         {
             try {

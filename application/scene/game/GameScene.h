@@ -119,8 +119,6 @@ private:
 
 	RailCamera* railCamera_ = nullptr;
 
-	std::unique_ptr<Kouro::LevelLoader::LevelData> levelData_ = nullptr;
-
 	std::vector<std::shared_ptr<Enemy>> enemies_;
 
 	std::unique_ptr<ColliderManager> colliderManager_ = nullptr;
