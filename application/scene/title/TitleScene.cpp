@@ -169,17 +169,17 @@ void TitleScene::Update()
 			{
 				isMoveActive_ = true;
 
-				speedFactor_ = kDeltaTime * 0.1f;
+				speedFactor_ = kDeltaTime * 0.05f;
 
 				eventController_->ExecuteEvent("CameraTransitionToFollow");
 			}
 		}
 
-		if (player_->GetWorldPosition().z >= 1200.0f)
+		if (player_->GetWorldPosition().z >= 1300.0f)
 		{
 			eventController_->ExecuteEvent("CameraTransitionToLookAtPlayer");
 
-			fade_->Start(Fade::Status::WhiteFadeOut, 3.0f);
+			fade_->Start(Fade::Status::WhiteFadeOut, 1.0f);
 
 			phase_ = Phase::kFadeOut;
 		}
