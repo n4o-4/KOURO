@@ -794,8 +794,6 @@ namespace Kouro
 		//heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0; // プロセッサの近くに配置
 		heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT; // VRAM上に作る
 
-
-
 		// Resourceの生成
 		//ID3D12Resource* resource = nullptr;
 		Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;

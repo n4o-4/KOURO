@@ -124,7 +124,8 @@ namespace Kouro
 		* \param  sizeInBytes バッファサイズ(バイト単位)
 		* \return バッファリソース
 		*/
-		Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+		Microsoft::WRL::ComPtr<ID3D12Resource> 
+			(size_t sizeInBytes);
 
 		/**
 		* \brief  テクスチャリソース作成

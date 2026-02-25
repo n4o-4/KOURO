@@ -571,6 +571,7 @@
     <ClCompile Include="application\camera\title\LookAtPlayerState.cpp">
       <Filter>application\camera\title</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTargetManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -1059,6 +1060,7 @@
     <ClInclude Include="application\camera\title\LookAtPlayerState.h">
       <Filter>application\camera\title</Filter>
     </ClInclude>
+    <ClInclude Include="RenderTargetManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

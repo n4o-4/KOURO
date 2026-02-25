@@ -166,6 +166,7 @@
     <ClCompile Include="application\system\UIController.cpp" />
     <ClCompile Include="application\system\UIManager.cpp" />
     <ClCompile Include="engine\system\YamlLoader.cpp" />
+    <ClCompile Include="RenderTargetManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\system\Event.h" />
@@ -333,6 +334,7 @@
     <ClInclude Include="application\system\UIController.h" />
     <ClInclude Include="application\system\UIManager.h" />
     <ClInclude Include="engine\system\YamlLoader.h" />
+    <ClInclude Include="RenderTargetManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

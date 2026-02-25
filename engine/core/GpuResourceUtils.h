@@ -14,7 +14,7 @@ namespace Kouro
 		* \brief  コンストラクタ
 		* \param  device : ID3D12Deviceのポインタ
 		*/
-		GpuResourceUtils(ID3D12Device* device);
+		GpuResourceUtils(ID3D12Device* device) : device_(device){}
 
 		/**
 		* \brief  バッファリソース作成関数
