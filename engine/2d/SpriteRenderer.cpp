@@ -1,22 +1,11 @@
-#include "SpriteCommon.h"
+#include "SpriteRenderer.h"
 
 namespace Kouro
 {
-	std::unique_ptr<SpriteCommon> SpriteCommon::instance = nullptr;
-
-	SpriteCommon* SpriteCommon::GetInstance()
-	{
-		if (instance == nullptr) {
-			instance = std::make_unique<SpriteCommon>();
-		}
-
-		return instance.get();
-	}
-
-	void SpriteCommon::Initialize(DirectXCommon* dxCommon)
+	void SpriteRenderer::Initialize(GpuContext& gpuContext)
 	{
 		// 引数で受け取ってメンバ変数に記録する
-		dxCommon_ = dxCommon;
+		gpuContext_ = &gpuContext;
 
 		CreateRootSignature();
 
@@ -25,50 +14,16 @@ namespace Kouro
 		CreateGraphicsPipelineBackground();
 	}
 
-	void SpriteCommon::Finalize()
+	void SpriteRenderer::DrawBackground()
 	{
-
-		instance.reset();
-
+		
 	}
 
-	void SpriteCommon::SetForegroundView()
+	void SpriteRenderer::DrawForeground()
 	{
-		dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
-
-		dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineStateForeground.Get());  // PSOを設定
-
-		// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけばいい
-		dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
-	void SpriteCommon::SetBackgroundView()
-	{
-		dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
-
-		dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineStateBackground.Get());  // PSOを設定
-
-		// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけばいい
-		dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	}
-
-	void SpriteCommon::DrawForeground()
-	{
-
-		isDrawForeground = true;
-		isDrawBackground = false;
-
-	}
-
-	void SpriteCommon::DrawBackground()
-	{
-
-		isDrawBackground = true;
-		isDrawForeground = false;
-
-	}
-
-	void SpriteCommon::CreateRootSignature()
+	void SpriteRenderer::CreateRootSignature()
 	{
 		HRESULT hr;
 
@@ -133,7 +88,7 @@ namespace Kouro
 		assert(SUCCEEDED(hr));
 	}
 
-	void SpriteCommon::CreateGraphicsPipelineForeground()
+	void SpriteRenderer::CreateGraphicsPipelineForeground()
 	{
 		HRESULT hr;
 
@@ -226,7 +181,7 @@ namespace Kouro
 		assert(SUCCEEDED(hr));
 	}
 
-	void SpriteCommon::CreateGraphicsPipelineBackground()
+	void SpriteRenderer::CreateGraphicsPipelineBackground()
 	{
 		HRESULT hr;
 

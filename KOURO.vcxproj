@@ -122,7 +122,7 @@
     <ClCompile Include="engine\3d\object\Object3d.cpp" />
     <ClCompile Include="engine\3d\object\Object3dCommon.cpp" />
     <ClCompile Include="engine\2d\Sprite.cpp" />
-    <ClCompile Include="engine\2d\SpriteCommon.cpp" />
+    <ClCompile Include="engine\2d\SpriteRenderer.cpp" />
     <ClCompile Include="engine\system\StringUtility.cpp" />
     <ClCompile Include="engine\system\TextureManager.cpp" />
     <ClCompile Include="engine\core\WinApp.cpp" />
@@ -245,7 +245,7 @@
     <ClInclude Include="engine\3d\object\Object3d.h" />
     <ClInclude Include="engine\3d\object\Object3dCommon.h" />
     <ClInclude Include="engine\2d\Sprite.h" />
-    <ClInclude Include="engine\2d\SpriteCommon.h" />
+    <ClInclude Include="engine\2d\SpriteRenderer.h" />
     <ClInclude Include="engine\system\StringUtility.h" />
     <ClInclude Include="engine\system\TextureManager.h" />
     <ClInclude Include="engine\math\Vectors.h" />

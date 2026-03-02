@@ -178,7 +178,7 @@
     <ClCompile Include="engine\2d\Sprite.cpp">
       <Filter>engine\2d</Filter>
     </ClCompile>
-    <ClCompile Include="engine\2d\SpriteCommon.cpp">
+    <ClCompile Include="engine\2d\SpriteRenderer.cpp">
       <Filter>engine\2d</Filter>
     </ClCompile>
     <ClCompile Include="engine\3d\animation\AnimationManager.cpp">
@@ -633,7 +633,7 @@
     <ClInclude Include="engine\2d\Sprite.h">
       <Filter>engine\2d</Filter>
     </ClInclude>
-    <ClInclude Include="engine\2d\SpriteCommon.h">
+    <ClInclude Include="engine\2d\SpriteRenderer.h">
       <Filter>engine\2d</Filter>
     </ClInclude>
     <ClInclude Include="engine\3d\animation\AnimationManager.h">

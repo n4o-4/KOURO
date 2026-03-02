@@ -5,7 +5,6 @@
 #include "MyMath.h"
 #include <cstdint>
 #include <string>
-#include "SpriteCommon.h"
 
 // \brief Sprite
 // 2Dスプライト描画を管理するクラス。
@@ -141,12 +140,6 @@ namespace Kouro
 
 	private:
 
-		/// \brief CreateVertexData 頂点データ作成
-		void CreateVertexData();
-
-		/// \brief CreateIndexData インデックスデータ作成
-		void CreateIndexData();
-
 		/// \brief CreateMaterialData マテリアルデータ作成
 		void CreateMaterialData();
 
@@ -157,12 +150,6 @@ namespace Kouro
 		void AdjustTextureSize(std::string textureFilePath);
 
 	private:
-
-		struct VertexData {
-			Vector4 position;
-			Vector2 texcoord;
-			Vector3 normal;
-		};
 
 		struct Material {
 			Vector4 color;
@@ -183,17 +170,6 @@ namespace Kouro
 			Vector3 translate;
 		};
 
-		// バッファリソース
-		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;
-		Microsoft::WRL::ComPtr<ID3D12Resource> indexResource = nullptr;
-
-		// バッファリソース内のデータを指すポインタ
-		VertexData* vertexData = nullptr;
-		uint32_t* indexData = nullptr;
-
-		// バッファリソースの使い道を補足するバッファビュー
-		D3D12_VERTEX_BUFFER_VIEW vertexBufferView = {};
-		D3D12_INDEX_BUFFER_VIEW indexBufferView = {};
 
 		Microsoft::WRL::ComPtr<ID3D12Resource> materialResource = nullptr;
 		Material* materialData = nullptr;

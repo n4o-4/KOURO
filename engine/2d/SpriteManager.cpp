@@ -39,7 +39,7 @@ void Kouro::SpriteManager::LoadSpriteGroupsFromYaml(const std::string& yamlFileP
 
             // スプライト生成・初期化
             auto sprite = std::make_unique<Sprite>();
-            sprite->Initialize(SpriteCommon::GetInstance(), texturePath);
+            sprite->Initialize(gpuContext_->gpuResourceUtils, texturePath);
 
             // --- 各項目が存在すれば設定 ---
             if (spriteNode["position"]) {
@@ -62,7 +62,7 @@ void Kouro::SpriteManager::LoadSpriteGroupsFromYaml(const std::string& yamlFileP
             sprite->Update();
 
             // --- 名前で登録 ---
-            // 重複キーがある場合は上書きを警告できるようにしておくと安全
+            // 重複キーがある場合は上書きを警告
 #ifdef _DEBUG
             if (spriteGroup.sprites.contains(spriteName)) {
                 printf("Warning: Duplicate sprite name '%s' in group '%s'\n", spriteName.c_str(), groupName.c_str());
@@ -71,16 +71,42 @@ void Kouro::SpriteManager::LoadSpriteGroupsFromYaml(const std::string& yamlFileP
 
             // tupleにまとめる: second要素はまだnullptr
             spriteGroup.sprites[spriteName] = std::make_tuple(std::move(sprite), nullptr);
-        }
 
-        // グループをマップに登録
-        spriteGroups_[groupName] = std::move(spriteGroup);
+            std::string layer = spriteNode["render_layer"].as<std::string>();
+
+            if (layer == "foreground")
+            {
+				foregroundGroups_[groupName] = std::move(spriteGroup);
+            }
+            else if (layer == "background")
+            {
+				backgroundGroups_[groupName] = std::move(spriteGroup);
+            }
+            else
+            {
+            }
+        }
     }
 }
 
 void Kouro::SpriteManager::UpdateVisibleGroups()
 {
-    for (auto& [groupName, spriteGroup] : spriteGroups_)
+	// 前景グループと背景グループの両方を更新
+    for (auto& [groupName, spriteGroup] : foregroundGroups_)
+    {
+        if (!spriteGroup.isVisible) continue; // 非表示グループは先にスキップ
+
+        for (auto& [spriteName, spriteTuple] : spriteGroup.sprites)
+        {
+            auto& [spritePtr, updateFunc] = spriteTuple;
+            if (!spritePtr) continue;
+
+            if (updateFunc) updateFunc(*spritePtr);
+            spritePtr->Update();
+        }
+    }
+
+    for (auto& [groupName, spriteGroup] : backgroundGroups_)
     {
         if (!spriteGroup.isVisible) continue; // 非表示グループは先にスキップ
 
@@ -95,33 +121,59 @@ void Kouro::SpriteManager::UpdateVisibleGroups()
     }
 }
 
-void Kouro::SpriteManager::DrawGroup(const std::string& groupName)
-{
-	// 指定されたグループ名のスプライトグループを描画
-	auto it = spriteGroups_.find(groupName);
-	if (it != spriteGroups_.end())
-	{
-		SpriteContext::SpriteGroup& spriteGroup = it->second;
-		if (spriteGroup.isVisible)
-		{
-            // グループ内の全スプライトを描画
-            for (auto& [spriteName, spriteTuple] : spriteGroup.sprites)
-            {
-                auto& [spritePtr, updateFunc] = spriteTuple;
-                if (!spritePtr) continue;
-
-                spritePtr->Draw();
-            }
-		}
-	}
-}
-
 void Kouro::SpriteManager::SetGroupVisibility(const std::string& groupName, bool isVisible)
 {
 	// 指定されたグループ名の表示状態を設定
-	auto it = spriteGroups_.find(groupName);
-	if (it != spriteGroups_.end())
+	auto it = foregroundGroups_.find(groupName);
+	if (it != foregroundGroups_.end())
 	{
 		it->second.isVisible = isVisible;
 	}
+
+	it = backgroundGroups_.find(groupName);
+    if (it != backgroundGroups_.end())
+    {
+        it->second.isVisible = isVisible;
+	}
+}
+
+void Kouro::SpriteManager::CreateVertexData()
+{
+    auto utils = gpuContext_->gpuResourceUtils;
+
+    vertexResource_ = utils->CreateBufferResource(sizeof(SpriteContext::VertexData) * 4);
+
+    // リソースの先頭アドレスから使う
+    vertexBufferView.BufferLocation = vertexResource_.Get()->GetGPUVirtualAddress();
+
+    // 使用するリソースのサイズは頂点6つ分のサイズ
+    vertexBufferView.SizeInBytes = sizeof(SpriteContext::VertexData) * 4;
+
+    // 1頂点当たりのサイズ
+    vertexBufferView.StrideInBytes = sizeof(SpriteContext::VertexData);
+
+    vertexData = nullptr;
+
+    vertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+}
+
+void Kouro::SpriteManager::CreateIndexData()
+{
+    auto utils = gpuContext_->gpuResourceUtils;
+
+    indexResource_ = utils->CreateBufferResource(sizeof(uint32_t) * 6);
+
+    // リソースの先頭アドレスから使う
+    indexBufferView.BufferLocation = indexResource_.Get()->GetGPUVirtualAddress();
+
+    // 使用するリソースのサイズはインデックス6つ分のサイズ
+    indexBufferView.SizeInBytes = sizeof(uint32_t) * 6;
+
+    // インデックスはuint32_tとする
+    indexBufferView.Format = DXGI_FORMAT_R32_UINT;
+
+    // インデックスリソースにデータを書き込む
+    indexData = nullptr;
+
+    indexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
 }

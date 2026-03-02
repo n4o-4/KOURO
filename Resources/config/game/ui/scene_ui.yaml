@@ -1,4 +1,5 @@
 - group_name: play_ui
+  render_layer: foreground
   sprites:
     - name: icon_move_hint
       texture_path: texture/Icon_MoveHint.png
@@ -25,6 +26,7 @@
       color: [0.612, 0.0, 0.357, 1.0]
   
 - group_name: pause_ui
+  render_layer: foreground
   sprites:
     - name: label_title_hint
       texture_path: texture/Label_TitleHint.png
