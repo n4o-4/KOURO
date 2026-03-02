@@ -54,6 +54,8 @@ namespace Kouro
 		dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 
 		CreateOffScreenPipeLine();
+
+		resourceUtils = std::make_unique<GpuResourceUtils>(device.Get());
 	}
 
 	void DirectXCommon::Finalize()
@@ -757,58 +759,58 @@ namespace Kouro
 
 	}
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateBufferResource(size_t sizeInBytes)
-	{
-		//ID3D12Resource* resultResource;
-		Microsoft::WRL::ComPtr<ID3D12Resource> resultResource;
-		D3D12_HEAP_PROPERTIES uploadHeapProperties{};
-		uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
-		D3D12_RESOURCE_DESC vertexBufferDesc{};
-		vertexBufferDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		vertexBufferDesc.Width = sizeInBytes;
-		vertexBufferDesc.Height = 1;
-		vertexBufferDesc.DepthOrArraySize = 1;
-		vertexBufferDesc.MipLevels = 1;
-		vertexBufferDesc.SampleDesc.Count = 1;
-		vertexBufferDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-		device->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &vertexBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resultResource));
-		return resultResource;
-	}
+	//Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateBufferResource(size_t sizeInBytes)
+	//{
+	//	//ID3D12Resource* resultResource;
+	//	Microsoft::WRL::ComPtr<ID3D12Resource> resultResource;
+	//	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+	//	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
+	//	D3D12_RESOURCE_DESC vertexBufferDesc{};
+	//	vertexBufferDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	//	vertexBufferDesc.Width = sizeInBytes;
+	//	vertexBufferDesc.Height = 1;
+	//	vertexBufferDesc.DepthOrArraySize = 1;
+	//	vertexBufferDesc.MipLevels = 1;
+	//	vertexBufferDesc.SampleDesc.Count = 1;
+	//	vertexBufferDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	//	device->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &vertexBufferDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resultResource));
+	//	return resultResource;
+	//}
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateTextureResource(const DirectX::TexMetadata& metadata)
-	{
-		// metadataを基にResourceの設定
-		D3D12_RESOURCE_DESC resourceDesc{};
-		resourceDesc.Width = UINT(metadata.width); // Textureの幅
-		resourceDesc.Height = UINT(metadata.height); // Textureの高さ
-		resourceDesc.MipLevels = UINT16(metadata.mipLevels); // mipmapの数
-		resourceDesc.DepthOrArraySize = UINT16(metadata.arraySize); // 奥行 or 配列Textureの配列数
-		resourceDesc.Format = metadata.format; // TextureのFormat
-		resourceDesc.SampleDesc.Count = 1; // サンプルカウント。1固定
-		resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION(metadata.dimension); // Textureの次元数
+	//Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateTextureResource(const DirectX::TexMetadata& metadata)
+	//{
+	//	// metadataを基にResourceの設定
+	//	D3D12_RESOURCE_DESC resourceDesc{};
+	//	resourceDesc.Width = UINT(metadata.width); // Textureの幅
+	//	resourceDesc.Height = UINT(metadata.height); // Textureの高さ
+	//	resourceDesc.MipLevels = UINT16(metadata.mipLevels); // mipmapの数
+	//	resourceDesc.DepthOrArraySize = UINT16(metadata.arraySize); // 奥行 or 配列Textureの配列数
+	//	resourceDesc.Format = metadata.format; // TextureのFormat
+	//	resourceDesc.SampleDesc.Count = 1; // サンプルカウント。1固定
+	//	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION(metadata.dimension); // Textureの次元数
 
-		// 利用するHeapの設定。
-		D3D12_HEAP_PROPERTIES heapProperties{};
-		//heapProperties.Type = D3D12_HEAP_TYPE_CUSTOM; // 細かい設定を行う
-		//heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK; // WRITEBACKポリシーでCPUにアクセス
-		//heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0; // プロセッサの近くに配置
-		heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT; // VRAM上に作る
+	//	// 利用するHeapの設定。
+	//	D3D12_HEAP_PROPERTIES heapProperties{};
+	//	//heapProperties.Type = D3D12_HEAP_TYPE_CUSTOM; // 細かい設定を行う
+	//	//heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK; // WRITEBACKポリシーでCPUにアクセス
+	//	//heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0; // プロセッサの近くに配置
+	//	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT; // VRAM上に作る
 
 
 
-		// Resourceの生成
-		//ID3D12Resource* resource = nullptr;
-		Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
-		HRESULT hr = device->CreateCommittedResource(
-			&heapProperties,
-			D3D12_HEAP_FLAG_NONE,
-			&resourceDesc,
-			D3D12_RESOURCE_STATE_COPY_DEST,
-			nullptr,
-			IID_PPV_ARGS(&resource));
-		assert(SUCCEEDED(hr));
-		return resource;
-	}
+	//	// Resourceの生成
+	//	//ID3D12Resource* resource = nullptr;
+	//	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
+	//	HRESULT hr = device->CreateCommittedResource(
+	//		&heapProperties,
+	//		D3D12_HEAP_FLAG_NONE,
+	//		&resourceDesc,
+	//		D3D12_RESOURCE_STATE_COPY_DEST,
+	//		nullptr,
+	//		IID_PPV_ARGS(&resource));
+	//	assert(SUCCEEDED(hr));
+	//	return resource;
+	//}
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::UploadTextureData(Microsoft::WRL::ComPtr<ID3D12Resource> texture, const DirectX::ScratchImage& mipImages)
 	{
@@ -837,7 +839,7 @@ namespace Kouro
 
 		uint64_t intermediateSize = GetRequiredIntermediateSize(texture.Get(), 0, UINT(subresources.size()));
 
-		Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = CreateBufferResource(intermediateSize);
+		Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = resourceUtils->CreateBufferResource(intermediateSize);
 
 		UpdateSubresources(commandList.Get(), texture.Get(), intermediateResource.Get(), 0, 0, UINT(subresources.size()), subresources.data());
 

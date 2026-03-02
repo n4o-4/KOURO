@@ -24,7 +24,7 @@ namespace Kouro
 		* \param  spriteCommon SpriteCommonのポインタ
 		* \param  textureFilePath textureのファイルパス
 		*/
-		void Initialize(SpriteCommon* spriteCommon, std::string textureFilePath);
+		void Initialize(GpuResourceUtils* utils, std::string textureFilePath);
 
 		/// \brief Update 更新
 		void Update();
@@ -183,8 +183,6 @@ namespace Kouro
 			Vector3 translate;
 		};
 
-		SpriteCommon* spriteCommon = nullptr;
-
 		// バッファリソース
 		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;
 		Microsoft::WRL::ComPtr<ID3D12Resource> indexResource = nullptr;
@@ -232,5 +230,6 @@ namespace Kouro
 
 		Vector2 textureSize = {}; // !< テクスチャの切り出しサイズ
 
+		GpuResourceUtils* resourceUtils_ = nullptr; //!< GpuResourceUtilsのポインタ
 	};
 }

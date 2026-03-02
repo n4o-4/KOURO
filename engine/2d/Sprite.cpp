@@ -4,10 +4,9 @@
 
 namespace Kouro
 {
-	void Sprite::Initialize(SpriteCommon* spriteCommon, std::string textureFilePath)
+	void Sprite::Initialize(GpuResourceUtils* utils, std::string textureFilePath)
 	{
-		// 引数で受け取ってメンバ変数に記録する
-		this->spriteCommon = spriteCommon;
+		resourceUtils_ = utils;
 
 		textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
 

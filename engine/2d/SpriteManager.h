@@ -4,20 +4,14 @@
 #include <vector>
 #include <unordered_map>
 
+#include "SpriteContext.h"
+
 #include "Sprite.h"
 
 namespace Kouro
 {
 	class SpriteManager
 	{
-	public:
-
-		struct SpriteGroup
-		{
-			std::unordered_map < std::string, std::tuple<std::unique_ptr<Kouro::Sprite>, std::function<void(Kouro::Sprite&)>>> sprites; //!< スプライトのリスト
-			bool isVisible = false;                               //!< グループの表示フラグ
-		};
-
 	public:
 		 
 		/**
@@ -59,7 +53,7 @@ namespace Kouro
 
 	private:
 
-		std::unordered_map<std::string, SpriteGroup> spriteGroups_; //!< スプライトグループのマップ
+		std::unordered_map<std::string, SpriteContext::SpriteGroup> spriteGroups_; //!< スプライトグループのマップ
 
 	};
 }

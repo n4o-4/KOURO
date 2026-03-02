@@ -18,7 +18,7 @@ void Kouro::SpriteManager::LoadSpriteGroupsFromYaml(const std::string& yamlFileP
         std::string groupName = groupNode["group_name"].as<std::string>();
 
         // スプライトグループ生成
-        SpriteGroup spriteGroup;
+        SpriteContext::SpriteGroup spriteGroup;
 
         // スプライトの読み込み
         for (const auto& spriteNode : groupNode["sprites"])
@@ -101,7 +101,7 @@ void Kouro::SpriteManager::DrawGroup(const std::string& groupName)
 	auto it = spriteGroups_.find(groupName);
 	if (it != spriteGroups_.end())
 	{
-		SpriteGroup& spriteGroup = it->second;
+		SpriteContext::SpriteGroup& spriteGroup = it->second;
 		if (spriteGroup.isVisible)
 		{
             // グループ内の全スプライトを描画

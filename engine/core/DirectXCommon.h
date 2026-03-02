@@ -3,22 +3,23 @@
 #include <dxgi1_6.h>
 #include <cassert>
 #include <wrl.h>
-
-#include "Logger.h"
-#include "StringUtility.h"
-#include "WinApp.h"
 #include <dxcapi.h>
 #include <format>
 #include <chrono>
 #include <thread>
 #include <memory>
-#include "externals/DirectXTex/DirectXTex.h"
-#include "externals/DirectXTex/d3dx12.h"
 #include <dxgidebug.h>
 
+#include "Logger.h"
+#include "StringUtility.h"
+#include "WinApp.h"
 #include "Structs.h"
 #include "OffScreenRendring.h"
 #include "D3D12Context.h"
+#include "GpuResourceUtils.h"
+
+#include "externals/DirectXTex/DirectXTex.h"
+#include "externals/DirectXTex/d3dx12.h"
 
 // \brief DirectXCommon DirectX12の初期化と描画処理をまとめて管理するクラス。  デバイスやスワップチェーンなどの生成・制御を一括で行う。
 
@@ -124,14 +125,14 @@ namespace Kouro
 		* \param  sizeInBytes バッファサイズ(バイト単位)
 		* \return バッファリソース
 		*/
-		Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+		//Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
 		/**
 		* \brief  テクスチャリソース作成
 		* \param  metadata テクスチャメタデータ
 		* \return テクスチャリソース
 		*/
-		Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
+		//Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
 
 		/**
 		* \brief  テクスチャデータアップロード
@@ -477,5 +478,7 @@ namespace Kouro
 
 		uint32_t renderResourceIndex_ = 0;
 		uint32_t renderTargetIndex_ = 1;
+
+		std::unique_ptr<GpuResourceUtils> resourceUtils = nullptr;
 	};
 }

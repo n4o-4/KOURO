@@ -333,6 +333,7 @@
     <ClInclude Include="application\system\UIController.h" />
     <ClInclude Include="application\system\UIManager.h" />
     <ClInclude Include="engine\system\YamlLoader.h" />
+    <ClInclude Include="SpriteContext.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

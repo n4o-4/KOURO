@@ -1059,6 +1059,9 @@
     <ClInclude Include="application\camera\title\LookAtPlayerState.h">
       <Filter>application\camera\title</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteContext.h">
+      <Filter>engine\2d</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
