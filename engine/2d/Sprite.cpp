@@ -94,51 +94,51 @@ namespace Kouro
 
 
 
-	void Sprite::Draw()
-	{
+	//void Sprite::Draw()
+	//{
 
-		// 背景描画のフラグが立っている場合	
-		if (spriteCommon->GetIsDrawBackground())
-		{
-			transform.translate.z = -100.0f;
+	//	// 背景描画のフラグが立っている場合	
+	//	if (spriteCommon->GetIsDrawBackground())
+	//	{
+	//		transform.translate.z = -100.0f;
 
-			Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
-			Matrix4x4 viewMatrix = MakeIdentity4x4();
-			Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, WinApp::kClientWidth, WinApp::kClientHeight, 0.0f, 100.0f);
-			Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
-			transformationMatrixData->WVP = worldViewProjectionMatrix;
-			transformationMatrixData->World = worldMatrix;
-		}
+	//		Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+	//		Matrix4x4 viewMatrix = MakeIdentity4x4();
+	//		Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, WinApp::kClientWidth, WinApp::kClientHeight, 0.0f, 100.0f);
+	//		Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
+	//		transformationMatrixData->WVP = worldViewProjectionMatrix;
+	//		transformationMatrixData->World = worldMatrix;
+	//	}
 
-		// 前景描画のフラグが立っている場合
-		else if (spriteCommon->GetIsDrawForeground())
-		{
-			transform.translate.z = 0.000000f;
+	//	// 前景描画のフラグが立っている場合
+	//	else if (spriteCommon->GetIsDrawForeground())
+	//	{
+	//		transform.translate.z = 0.000000f;
 
-			Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
-			Matrix4x4 viewMatrix = MakeIdentity4x4();
-			Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, WinApp::kClientWidth, WinApp::kClientHeight, 0.0f, 100.0f);
-			Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
-			transformationMatrixData->WVP = worldViewProjectionMatrix;
-			transformationMatrixData->World = worldMatrix;
-		}
+	//		Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+	//		Matrix4x4 viewMatrix = MakeIdentity4x4();
+	//		Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, WinApp::kClientWidth, WinApp::kClientHeight, 0.0f, 100.0f);
+	//		Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
+	//		transformationMatrixData->WVP = worldViewProjectionMatrix;
+	//		transformationMatrixData->World = worldMatrix;
+	//	}
 
-		spriteCommon->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);  // VBVを設定
+	//	spriteCommon->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);  // VBVを設定
 
-		spriteCommon->GetDxCommon()->GetCommandList()->IASetIndexBuffer(&indexBufferView); // IBVの設定
+	//	spriteCommon->GetDxCommon()->GetCommandList()->IASetIndexBuffer(&indexBufferView); // IBVの設定
 
-		spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource.Get()->GetGPUVirtualAddress());
+	//	spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource.Get()->GetGPUVirtualAddress());
 
-		spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationResource.Get()->GetGPUVirtualAddress());
+	//	spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationResource.Get()->GetGPUVirtualAddress());
 
-		spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureFilePath_));
+	//	spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureFilePath_));
 
-		spriteCommon->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
-	}
+	//	spriteCommon->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
+	//}
 
 	void Sprite::CreateVertexData()
 	{
-		vertexResource = spriteCommon->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * 4);
+		vertexResource = resourceUtils_->CreateBufferResource(sizeof(VertexData) * 4);
 
 		// リソースの先頭アドレスから使う
 		vertexBufferView.BufferLocation = vertexResource.Get()->GetGPUVirtualAddress();
@@ -156,7 +156,7 @@ namespace Kouro
 
 	void Sprite::CreateIndexData()
 	{
-		indexResource = this->spriteCommon->GetDxCommon()->CreateBufferResource(sizeof(uint32_t) * 6);
+		indexResource = resourceUtils_->CreateBufferResource(sizeof(uint32_t) * 6);
 
 		// リソースの先頭アドレスから使う
 		indexBufferView.BufferLocation = indexResource.Get()->GetGPUVirtualAddress();
@@ -175,7 +175,7 @@ namespace Kouro
 
 	void Sprite::CreateMaterialData()
 	{
-		materialResource = this->spriteCommon->GetDxCommon()->CreateBufferResource(sizeof(Material));
+		materialResource = resourceUtils_->CreateBufferResource(sizeof(Material));
 
 		materialResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 
@@ -188,7 +188,7 @@ namespace Kouro
 
 	void Sprite::CreateTransformationMatrixData()
 	{
-		transformationResource = this->spriteCommon->GetDxCommon()->CreateBufferResource(sizeof(TransformationMatrix));
+		transformationResource = resourceUtils_->CreateBufferResource(sizeof(TransformationMatrix));
 
 		// データを書き込むためのアドレスを取得
 		transformationResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData));
