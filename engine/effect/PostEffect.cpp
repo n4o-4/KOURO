@@ -2,11 +2,11 @@
 
 namespace Kouro
 {
-	void PostEffect::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void PostEffect::Initialize(DirectXCommon* dxCommon, GpuContext* context)
 	{
 		dxCommon_ = dxCommon;
 
-		srvManager_ = srvManager;
+		gpuContext_ = context;
 	}
 
 	void PostEffect::Finalize()
@@ -81,73 +81,73 @@ namespace Kouro
 		if (type == EffectType::Grayscale)
 		{
 			newEffect->effect = std::make_unique<Grayscale>();
-			newEffect->effect->Initialize(dxCommon_, srvManager_);
+			newEffect->effect->Initialize(dxCommon_, gpuContext_);
 		}
 		else if (type == EffectType::Vignette)
 		{
 			newEffect->effect = std::make_unique<Vignette>();
-			newEffect->effect->Initialize(dxCommon_, srvManager_);
+			newEffect->effect->Initialize(dxCommon_, gpuContext_);
 		}
 		else if (type == EffectType::BoxFilter)
 		{
 			newEffect->effect = std::make_unique<BoxFilter>();
-			newEffect->effect->Initialize(dxCommon_, srvManager_);
+			newEffect->effect->Initialize(dxCommon_, gpuContext_);
 		}
 		else if (type == EffectType::GaussianFilter)
 		{
 			newEffect->effect = std::make_unique<GaussianFilter>();
-			newEffect->effect->Initialize(dxCommon_, srvManager_);
+			newEffect->effect->Initialize(dxCommon_, gpuContext_);
 		}
 		else if (type == EffectType::LuminanceBasedOutline)
 		{
 			newEffect->effect = std::make_unique<LuminanceBasedOutline>();
-			newEffect->effect->Initialize(dxCommon_, srvManager_);
+			newEffect->effect->Initialize(dxCommon_, gpuContext_);
 		}
 		else if (type == EffectType::DepthBasedOutline)
 		{
 			newEffect->effect = std::make_unique<DepthBasedOutline>();
-			newEffect->effect->Initialize(dxCommon_, srvManager_);
+			newEffect->effect->Initialize(dxCommon_, gpuContext_);
 
 			newEffect->effect->SetCameraManager(cameraManager_);
 		}
 		else if (type == EffectType::RadialBlur)
 		{
 			newEffect->effect = std::make_unique<RadialBlur>();
-			newEffect->effect->Initialize(dxCommon_, srvManager_);
+			newEffect->effect->Initialize(dxCommon_, gpuContext_);
 		}
 		else if (type == EffectType::Dissolve)
 		{
 			newEffect->effect = std::make_unique<Dissolve>();
-			newEffect->effect->Initialize(dxCommon_, srvManager_);
+			newEffect->effect->Initialize(dxCommon_, gpuContext_);
 		}
 		else if (type == EffectType::Random)
 		{
 			newEffect->effect = std::make_unique<Random>();
-			newEffect->effect->Initialize(dxCommon_, srvManager_);
+			newEffect->effect->Initialize(dxCommon_, gpuContext_);
 		}
 		else if (type == EffectType::LinearFog)
 		{
 			newEffect->effect = std::make_unique<LinearFog>();
-			newEffect->effect->Initialize(dxCommon_, srvManager_);
+			newEffect->effect->Initialize(dxCommon_, gpuContext_);
 
 			newEffect->effect->SetCameraManager(cameraManager_);
 		}
 		else if (type == EffectType::MotionBlur)
 		{
 			newEffect->effect = std::make_unique<MotionBlur>();
-			newEffect->effect->Initialize(dxCommon_, srvManager_);
+			newEffect->effect->Initialize(dxCommon_, gpuContext_);
 
 			newEffect->effect->SetCameraManager(cameraManager_);
 		}
 		else if (type == EffectType::ColorSpace)
 		{
 			newEffect->effect = std::make_unique<ColorSpace>();
-			newEffect->effect->Initialize(dxCommon_, srvManager_);
+			newEffect->effect->Initialize(dxCommon_, gpuContext_);
 		}
 		else if (type == EffectType::Absorb)
 		{
 			newEffect->effect = std::make_unique<Absorb>();
-			newEffect->effect->Initialize(dxCommon_, srvManager_);
+			newEffect->effect->Initialize(dxCommon_, gpuContext_);
 		}
 		else
 		{

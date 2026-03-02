@@ -2,10 +2,10 @@
 
 namespace Kouro
 {
-	void Dissolve::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void Dissolve::Initialize(DirectXCommon* dxCommon, GpuContext* context)
 	{
 		// パイプラインの生成
-		BaseEffect::Initialize(dxCommon, srvManager);
+		BaseEffect::Initialize(dxCommon, context);
 
 		// テクスチャの読み込み
 		TextureManager::GetInstance()->LoadTexture("texture/noise_texture.png");
@@ -48,35 +48,32 @@ namespace Kouro
 		uint32_t renderTextureIndex = 2 + renderTargetIndex;
 
 		// 描画先のRTVを設定する
-		dxCommon_->GetCommandList()->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(renderTextureIndex), false, nullptr);
+		cmdList_->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(renderTextureIndex), false, nullptr);
 
 		// 指定した色で画面全体をクリアする
 		float clearColor[] = { 0.0f,0.0f,0.0f,1.0f }; // 青っぽい色 RGBAの順
-		dxCommon_->GetInstance()->GetCommandList()->ClearRenderTargetView(*DirectXCommon::GetInstance()->GetRTVHandle(renderTextureIndex), clearColor, 0, nullptr);
+		cmdList_->ClearRenderTargetView(*DirectXCommon::GetInstance()->GetRTVHandle(renderTextureIndex), clearColor, 0, nullptr);
 
 		// ルートシグネチャの設定	
-		dxCommon_->GetCommandList()->SetGraphicsRootSignature(pipeline_.get()->rootSignature.Get());
+		cmdList_->SetGraphicsRootSignature(pipeline_.get()->rootSignature.Get());
 
 		// パイプラインステートの設定
-		dxCommon_->GetCommandList()->SetPipelineState(pipeline_.get()->pipelineState.Get());
+		cmdList_->SetPipelineState(pipeline_.get()->pipelineState.Get());
 
 		// renderTextureのSrvHandleを取得
 		D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = (renderResourceIndex == 0) ? TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0") : TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
 
 		// SRVを設定
-		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
+		cmdList_->SetGraphicsRootDescriptorTable(0, srvHandle);
 
 		// maskTextureのSrvHandleを取得
-		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, TextureManager::GetInstance()->GetSrvHandleGPU("texture/noise_texture.png"));
+		cmdList_->SetGraphicsRootDescriptorTable(1, TextureManager::GetInstance()->GetSrvHandleGPU("texture/noise_texture.png"));
 
 		// Cbufferの設定
-		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(2, resource_.Get()->GetGPUVirtualAddress());
+		cmdList_->SetGraphicsRootConstantBufferView(2, resource_.Get()->GetGPUVirtualAddress());
 
 		// 描画
-		dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
-
-
-		///
+		cmdList_->DrawInstanced(3, 1, 0, 0);
 	}
 
 	void Dissolve::CreatePipeline()
@@ -241,7 +238,7 @@ namespace Kouro
 	void Dissolve::CreateMaterial()
 	{
 		// bufferResourceの生成
-		resource_ = dxCommon_->CreateBufferResource(sizeof(DissolveShader::Material));
+		resource_ = utils_->CreateBufferResource(sizeof(DissolveShader::Material));
 
 		// データをマップ
 		resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));

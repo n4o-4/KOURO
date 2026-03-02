@@ -6,12 +6,12 @@ namespace Kouro
     static constexpr uint32_t kEdgesPerFace = 3;            //!< 1面あたりの辺数
     static constexpr uint32_t kLineVertexCount = kVertexCount * kEdgesPerFace; //!< ライン描画用頂点数
 
-    void AABBLineObject::Initialize(DirectXCommon* dxCommon)
+    void AABBLineObject::Initialize(GpuContext* context)
     {
         ///	初期化処理
 
         // DirectXCommonのインスタンスをメンバ変数に記録
-        dxCommon_ = dxCommon;
+		gpuContext_ = context;
 
         // vertexResource_を生成
         CreateVertexResource();
@@ -69,7 +69,7 @@ namespace Kouro
     void AABBLineObject::CreateVertexResource()
     {
         // 頂点データの確保
-        vertexResource_ = dxCommon_->CreateBufferResource(sizeof(LineDrawer::VertexData) * kLineVertexCount);
+        vertexResource_ = gpuContext_->gpuResourceUtils->CreateBufferResource(sizeof(LineDrawer::VertexData) * kLineVertexCount);
 
         // 頂点データのマッピング
         vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));

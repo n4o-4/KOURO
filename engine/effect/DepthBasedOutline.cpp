@@ -2,10 +2,10 @@
 
 namespace Kouro
 {
-	void DepthBasedOutline::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void DepthBasedOutline::Initialize(DirectXCommon* dxCommon, GpuContext* context)
 	{
 		// パイプラインの生成
-		BaseEffect::Initialize(dxCommon, srvManager);
+		BaseEffect::Initialize(dxCommon, context);
 
 		//パイプラインの初期化
 		CreatePipeline();
@@ -56,32 +56,32 @@ namespace Kouro
 		uint32_t renderTextureIndex = 2 + renderTargetIndex;
 
 		// バリアーをはる
-		dxCommon_->GetCommandList()->ResourceBarrier(1, &depthbarrier);
+		cmdList_->ResourceBarrier(1, &depthbarrier);
 
 		// 描画先のRTVを設定する
-		dxCommon_->GetCommandList()->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(renderTextureIndex), false, nullptr);
+		cmdList_->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(renderTextureIndex), false, nullptr);
 
 		// ルートシグネチャの設定	
-		dxCommon_->GetCommandList()->SetGraphicsRootSignature(pipeline_.get()->rootSignature.Get());
+		cmdList_->SetGraphicsRootSignature(pipeline_.get()->rootSignature.Get());
 
 		// パイプラインステートの設定
-		dxCommon_->GetCommandList()->SetPipelineState(pipeline_.get()->pipelineState.Get());
+		cmdList_->SetPipelineState(pipeline_.get()->pipelineState.Get());
 
 		// renderTextureのSrvHandleを取得
 		D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = (renderResourceIndex == 0) ? TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0") : TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
 
 		// SRVを設定
-		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
+		cmdList_->SetGraphicsRootDescriptorTable(0, srvHandle);
 
 
 		// ディスクリプタテーブルを設定 (深度テクスチャ SRV)
-		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(dxCommon_->GetDepthSrvIndex()));
+		cmdList_->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUDescriptorHandle(dxCommon_->GetDepthSrvIndex()));
 
 		// 定数バッファを設定
-		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(2, resource_.Get()->GetGPUVirtualAddress());
+		cmdList_->SetGraphicsRootConstantBufferView(2, resource_.Get()->GetGPUVirtualAddress());
 
 		// 描画
-		dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
+		cmdList_->DrawInstanced(3, 1, 0, 0);
 
 		// 深度テクスチャの状態を変更
 		// 読み込み用から書き込み用に変更
@@ -89,7 +89,7 @@ namespace Kouro
 		depthbarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
 
 		// バリアーをはる
-		dxCommon_->GetCommandList()->ResourceBarrier(1, &depthbarrier);
+		cmdList_->ResourceBarrier(1, &depthbarrier);
 	}
 
 	void DepthBasedOutline::CreatePipeline()
@@ -263,7 +263,7 @@ namespace Kouro
 	void DepthBasedOutline::CreateMaterial()
 	{
 		// bufferResourceの生成
-		resource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(DepthOutline::Material));
+		resource_ = utils_->CreateBufferResource(sizeof(DepthOutline::Material));
 
 		// データをマップ
 		resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));

@@ -2,10 +2,10 @@
 
 namespace Kouro
 {
-	void LinearFog::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void LinearFog::Initialize(DirectXCommon* dxCommon, GpuContext* context)
 	{
 		// パイプラインの生成
-		BaseEffect::Initialize(dxCommon, srvManager);
+		BaseEffect::Initialize(dxCommon, context);
 
 		//パイプラインの初期化
 		CreatePipeline();
@@ -259,7 +259,7 @@ namespace Kouro
 	void LinearFog::CreateMaterial()
 	{
 		// bufferResourceの生成
-		resource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(LinearFogShader::Material));
+		resource_ = utils_->CreateBufferResource(sizeof(LinearFogShader::Material));
 
 		// データをマップ
 		resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));

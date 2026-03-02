@@ -1,7 +1,10 @@
 #pragma once
+#include "GpuContext.h"
+
 #include "BaseLineObject.h"
 
 #include "AABBCollider.h"
+
 
 // \brief AABBLineObject  
 // AABB（軸平行境界ボックス）を線で可視化するデバッグ用オブジェクトクラス。  
@@ -20,7 +23,7 @@ namespace Kouro
 		 * \brief  Initialize 初期化
 		 * \param  dxCommon DirectXCommonのポインタ
 		 */
-		void Initialize(DirectXCommon* dxCommon)override;
+		void Initialize(GpuContext* context)override;
 
 		/// \brief  Update 更新
 		void Update()override;

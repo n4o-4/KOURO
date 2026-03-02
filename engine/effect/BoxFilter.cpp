@@ -2,10 +2,10 @@
 
 namespace Kouro
 {
-	void BoxFilter::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void BoxFilter::Initialize(DirectXCommon* dxCommon, GpuContext* context)
 	{
 		// パイプラインの生成
-		BaseEffect::Initialize(dxCommon, srvManager);
+		BaseEffect::Initialize(dxCommon, context);
 
 		//パイプラインの初期化
 		CreatePipeline();
@@ -26,22 +26,22 @@ namespace Kouro
 		uint32_t renderTextureIndex = 2 + renderTargetIndex;
 
 		// 描画先のRTVを設定する
-		dxCommon_->GetCommandList()->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(renderTextureIndex), false, nullptr);
+		cmdList_->OMSetRenderTargets(1, &*dxCommon_->GetRTVHandle(renderTextureIndex), false, nullptr);
 
 		// ルートシグネチャの設定	
-		dxCommon_->GetCommandList()->SetGraphicsRootSignature(pipeline_.get()->rootSignature.Get());
+		cmdList_->SetGraphicsRootSignature(pipeline_.get()->rootSignature.Get());
 
 		// パイプラインステートの設定
-		dxCommon_->GetCommandList()->SetPipelineState(pipeline_.get()->pipelineState.Get());
+		cmdList_->SetPipelineState(pipeline_.get()->pipelineState.Get());
 
 		// renderTextureのSrvHandleを取得
 		D3D12_GPU_DESCRIPTOR_HANDLE srvHandle = (renderResourceIndex == 0) ? TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture0") : TextureManager::GetInstance()->GetSrvHandleGPU("RenderTexture1");
 
 		// SRVを設定
-		dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, srvHandle);
+		cmdList_->SetGraphicsRootDescriptorTable(0, srvHandle);
 
 		// 描画
-		dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
+		cmdList_->DrawInstanced(3, 1, 0, 0);
 	}
 
 	void BoxFilter::CreatePipeline()

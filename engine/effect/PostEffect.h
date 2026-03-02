@@ -96,7 +96,7 @@ namespace Kouro
 	public:
 
 		// 初期化
-		void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
+		void Initialize(DirectXCommon* dxCommon, GpuContext* context);
 
 		// 終了
 		void Finalize();
@@ -130,7 +130,7 @@ namespace Kouro
 
 		DirectXCommon* dxCommon_ = nullptr;
 
-		SrvManager* srvManager_ = nullptr;
+		GpuContext* gpuContext_ = nullptr;
 
 		CameraManager* cameraManager_ = nullptr;
 

@@ -6,6 +6,9 @@
 #include <cstdint>
 #include <string>
 
+#include "GpuResourceUtils.h"
+#include "SpriteContext.h"
+
 // \brief Sprite
 // 2Dスプライト描画を管理するクラス。
 // テクスチャ、位置、回転、スケール、アンカーポイント、色、左右・上下反転などを設定可能。
@@ -35,30 +38,30 @@ namespace Kouro
 		* \brief  GetPosition スプライトの位置を取得する
 		* \return position スプライトの位置
 		*/
-		const Vector2& GetPosition() const { return position; }
+		const Vector2& GetPosition() const { return position_; }
 
 		/**
 		* \brief  GetRotation スプライトの回転を取得する
 		* /return rotation スプライトの回転
 		*/
-		float GetRotation() const { return rotation; }
+		float GetRotation() const { return rotation_; }
 
 		/**
 		* \brief  GetColor スプライトの色を取得する
 		* \return color スプライトの色
 		*/
-		const Vector4 GetColor() const { return materialData->color; }
+		const Vector4& GetColor() const { return materialData_->color; }
 
 		/**
 		* \brief  GetSize	描画サイズを取得する
 		* \return size 描画サイズ
 		*/
-		const Vector2& GetSize() const { return size; }
+		const Vector2& GetSize() const { return size_; }
 
 		/**
 		* \brief GetAnchorPoint アンカーポイントを取得する
 		*/
-		const Vector2& GetAnchorPoint() const { return anchorPoint; }
+		const Vector2& GetAnchorPoint() const { return anchorPoint_; }
 
 		/**
 		* \brief GetIsFlipX X方向の反転フラグを取得する
@@ -76,43 +79,43 @@ namespace Kouro
 		* \brief  GetTexLeftTop スプライト上の左上切り出し位置を取得する
 		* \param textureLeftTop スプライト上の左上切り出し位置
 		*/
-		const Vector2& GetTexLeftTop() { return textureLeftTop; }
+		const Vector2& GetTexLeftTop() { return textureLeftTop_; }
 
 		/**
 		* \brief  GetTexSize　テクスチャの切り出しサイズを取得する
 		* \return textureSize テクスチャの切り出しサイズ
 		*/
-		const Vector2& GetTexSize() { return textureSize; }
+		const Vector2& GetTexSize() { return textureSize_; }
 
 		/**
 		* \brief  SetPosition スプライトの位置を設定する
 		* \param  position スプライトの位置
 		*/
-		void SetPosition(const Vector2& position) { this->position = position; }
+		void SetPosition(const Vector2& position) { position_ = position; }
 
 		/**
 		* \brief  SetRotation スプライトの回転を設定する
 		* \param  rotation スプライトの回転
 		*/
-		void SetRotation(float rotation) { this->rotation = rotation; }
+		void SetRotation(float rotation) { rotation_ = rotation; }
 
 		/**
 		* \brief  SetColor スプライトの色を設定する
 		* \param  color スプライトの色
 		*/
-		void SetColor(const Vector4& color) { materialData->color = color; }
+		void SetColor(const Vector4& color) { materialData_->color = color; }
 
 		/**
 		* \brief  SetSize 描画サイズを設定する
 		* \param  size 描画サイズ
 		*/
-		void SetSize(const Vector2& size) { this->size = size; }
+		void SetSize(const Vector2& size) { size_ = size; }
 
 		/**
 		* \brief  SetAnchorPoint アンカーポイントを設定
 		* \param  anchorPoint アンカーポイント
 		*/
-		void SetAnchorPoint(const Vector2& anchorPoint) { this->anchorPoint = anchorPoint; }
+		void SetAnchorPoint(const Vector2& anchorPoint) { anchorPoint_ = anchorPoint; }
 
 		/**
 		* \brief  SetIsFlipX X方向の反転フラグを設定
@@ -130,15 +133,17 @@ namespace Kouro
 		* \brief  SetTexLeftTop スプライト上の左上切り出し位置を設定
 		* \param textureLeftTop スプライト上の左上切り出し位置
 		*/
-		void SetTexLeftTop(const Vector2& leftTop) { textureLeftTop = leftTop; }
+		void SetTexLeftTop(const Vector2& leftTop) { textureLeftTop_ = leftTop; }
 
 		/*
 		 * \brief  SetTexSize テクスチャの切り出しサイズを設定
 		 * \param textureSize テクスチャの切り出しサイズ
 		*/
-		void SetTexSize(const Vector2& TexSize) { textureSize = TexSize; }
+		void SetTexSize(const Vector2& TexSize) { textureSize_ = TexSize; }
 
 	private:
+
+		void CreateVertexData();
 
 		/// \brief CreateMaterialData マテリアルデータ作成
 		void CreateMaterialData();
@@ -151,14 +156,16 @@ namespace Kouro
 
 	private:
 
-		struct Material {
+		struct Material
+		{
 			Vector4 color;
 			int enableLighting;
 			float padding[3];
 			Matrix4x4 uvTransform;
 		};
 
-		struct TransformationMatrix {
+		struct TransformationMatrix
+		{
 			Matrix4x4 WVP;
 			Matrix4x4 World;
 		};
@@ -171,16 +178,22 @@ namespace Kouro
 		};
 
 
-		Microsoft::WRL::ComPtr<ID3D12Resource> materialResource = nullptr;
-		Material* materialData = nullptr;
+		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr; //!< 頂点バッファリソース
+		SpriteContext::VertexData* vertexData_ = nullptr; //!< 頂点データへのポインタ
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView_ = {}; //!< 頂点バッファビュー
 
-		Microsoft::WRL::ComPtr<ID3D12Resource> transformationResource = nullptr;
 
-		TransformationMatrix* transformationMatrixData = nullptr;
+		Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;
+		Material* materialData_ = nullptr;
 
-		Transform transform{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+		Microsoft::WRL::ComPtr<ID3D12Resource> transformationResource_ = nullptr;
 
-		Transform uvTransform{
+		TransformationMatrix* transformationMatrixData_ = nullptr;
+
+		Transform transform_{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
+
+		Transform uvTransform_
+		{
 			{1.0f,1.0f,1.0f},
 			{0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f},
@@ -188,23 +201,23 @@ namespace Kouro
 
 		std::string textureFilePath_; //!< テクスチャファイルパス
 
-		Vector2 position = { 0.0f,0.0f }; //!< 位置
+		Vector2 position_ = { 0.0f,0.0f }; //!< 位置
 
-		float rotation = 0.0f; //!< 回転角度(ラジアン)
+		float rotation_ = 0.0f; //!< 回転角度(ラジアン)
 
-		Vector2 size = {}; //!< 描画サイズ
+		Vector2 size_ = {}; //!< 描画サイズ
 
-		uint32_t textureIndex = 0; //!< テクスチャ番号
+		uint32_t textureIndex_ = 0; //!< テクスチャ番号
 
-		Vector2 anchorPoint = { 0.0f,0.0f }; //!< アンカーポイント(0.0~1.0)
+		Vector2 anchorPoint_ = { 0.0f,0.0f }; //!< アンカーポイント(0.0~1.0)
 
 		bool isFlipX_ = false; //!< 左右フリップ
 
 		bool isFlipY_ = false; //!< 上下フリップ
 
-		Vector2 textureLeftTop = {}; //!< スプライト上の左上切り出し位置
+		Vector2 textureLeftTop_ = {}; //!< スプライト上の左上切り出し位置
 
-		Vector2 textureSize = {}; // !< テクスチャの切り出しサイズ
+		Vector2 textureSize_ = {}; // !< テクスチャの切り出しサイズ
 
 		GpuResourceUtils* resourceUtils_ = nullptr; //!< GpuResourceUtilsのポインタ
 	};

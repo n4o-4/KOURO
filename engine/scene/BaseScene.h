@@ -6,7 +6,7 @@
 
 #include "CameraManager.h"
 
-#include "SpriteCommon.h"
+#include "SpriteRenderer.h"
 #include "Object3dCommon.h"	
 #include "LineDrawerBase.h"
 #include "SpriteManager.h"

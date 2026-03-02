@@ -5,7 +5,6 @@
 #include <json.hpp>
 #include <regex>
 
-#include "Kouro.h"
 #include "Structs.h"
 
 // \brief LevelLoader  

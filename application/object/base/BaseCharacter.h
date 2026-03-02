@@ -1,6 +1,5 @@
 #pragma once
 // Engine
-#include "Kouro.h"
 #include "ObjectLine.h"
 #include "BaseEntity.h"
 

@@ -2,13 +2,12 @@
 
 namespace Kouro
 {
-	void BaseEffect::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void BaseEffect::Initialize(DirectXCommon* dxCommon, GpuContext* context)
 	{
-		// 
 		dxCommon_ = dxCommon;
-
-		//
-		srvManager_ = srvManager;
+		cmdList_ = context->d3d12Context.commandList;
+		srvManager_ = context->srvManager;
+		utils_ = context->gpuResourceUtils;
 
 		// パイプラインの生成
 		pipeline_ = std::make_unique<Pipeline>();

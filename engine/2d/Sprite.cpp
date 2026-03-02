@@ -1,5 +1,5 @@
 #include "Sprite.h"
-#include "SpriteCommon.h"
+#include "SpriteRenderer.h"
 #include "TextureManager.h"
 
 namespace Kouro
@@ -49,24 +49,21 @@ namespace Kouro
 		float tex_bottom = (textureLeftTop.y + textureSize.y) / metadata.height;
 
 		// 1枚目の三角形
-		vertexData[0].position = { left,bottom,0.0f,1.0f }; // 左下
-		vertexData[0].texcoord = { tex_left,tex_bottom };
-		vertexData[0].normal = { 0.0f,0.0f,-1.0f };
+		vertexData_[0].position = { left,bottom,0.0f,1.0f }; // 左下
+		vertexData_[0].texcoord = { tex_left,tex_bottom };
+		vertexData_[0].normal = { 0.0f,0.0f,-1.0f };
 
-		vertexData[1].position = { left,top,0.0f,1.0f }; // 左上
-		vertexData[1].texcoord = { tex_left,tex_top };
-		vertexData[1].normal = { 0.0f,0.0f,-1.0f };
+		vertexData_[1].position = { left,top,0.0f,1.0f }; // 左上
+		vertexData_[1].texcoord = { tex_left,tex_top };
+		vertexData_[1].normal = { 0.0f,0.0f,-1.0f };
 
-		vertexData[2].position = { right,bottom,0.0f,1.0f }; // 右下
-		vertexData[2].texcoord = { tex_right,tex_bottom };
-		vertexData[2].normal = { 0.0f,0.0f,-1.0f };
+		vertexData_[2].position = { right,bottom,0.0f,1.0f }; // 右下
+		vertexData_[2].texcoord = { tex_right,tex_bottom };
+		vertexData_[2].normal = { 0.0f,0.0f,-1.0f };
 
-		vertexData[3].position = { right,top,0.0f,1.0f }; // 右上
-		vertexData[3].texcoord = { tex_right,tex_top };
-		vertexData[3].normal = { 0.0f,0.0f,-1.0f };
-
-		indexData[0] = 0; indexData[1] = 1; indexData[2] = 2;
-		indexData[3] = 1; indexData[4] = 3; indexData[5] = 2;
+		vertexData_[3].position = { right,top,0.0f,1.0f }; // 右上
+		vertexData_[3].texcoord = { tex_right,tex_top };
+		vertexData_[3].normal = { 0.0f,0.0f,-1.0f };
 
 		transform.scale = { size.x,size.y };
 
@@ -119,13 +116,11 @@ namespace Kouro
 			transformationMatrixData->World = worldMatrix;
 		}
 
-		spriteCommon->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);  // VBVを設定
+		spriteCommon->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);  // VBVを設定
 
-		spriteCommon->GetDxCommon()->GetCommandList()->IASetIndexBuffer(&indexBufferView); // IBVの設定
+		spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_.Get()->GetGPUVirtualAddress());
 
-		spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource.Get()->GetGPUVirtualAddress());
-
-		spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationResource.Get()->GetGPUVirtualAddress());
+		spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationResource_.Get()->GetGPUVirtualAddress());
 
 		spriteCommon->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureFilePath_));
 
@@ -133,28 +128,34 @@ namespace Kouro
 	}
 
 	
+	void Sprite::CreateVertexData()
+	{
+		vertexResource_ = resourceUtils_->CreateBufferResource(sizeof(SpriteContext::VertexData) * 4);
+		vertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
+	}
+
 	void Sprite::CreateMaterialData()
 	{
-		materialResource = resourceUtils_->CreateBufferResource(sizeof(Material));
+		materialResource_ = resourceUtils_->CreateBufferResource(sizeof(Material));
 
-		materialResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
+		materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 
-		materialData->color = { 1.0f,1.0f,1.0f,1.0f };
+		materialData_->color = { 1.0f,1.0f,1.0f,1.0f };
 
-		materialData->enableLighting = false;
+		materialData_->enableLighting = false;
 
-		materialData->uvTransform = MakeIdentity4x4();
+		materialData_->uvTransform = MakeIdentity4x4();
 	}
 
 	void Sprite::CreateTransformationMatrixData()
 	{
-		transformationResource = resourceUtils_->CreateBufferResource(sizeof(TransformationMatrix));
+		transformationResource_ = resourceUtils_->CreateBufferResource(sizeof(TransformationMatrix));
 
 		// データを書き込むためのアドレスを取得
-		transformationResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData));
+		transformationResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData));
 
 		//　単位行列を書き込んでおく
-		transformationMatrixData->WVP = MakeIdentity4x4();
+		transformationMatrixData->WVP = MakeIdentity4x4();zz
 		transformationMatrixData->World = MakeIdentity4x4();
 	}
 

@@ -2,10 +2,10 @@
 
 namespace Kouro
 {
-	void LuminanceBasedOutline::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void LuminanceBasedOutline::Initialize(DirectXCommon* dxCommon, GpuContext* context)
 	{
 		// パイプラインの生成
-		BaseEffect::Initialize(dxCommon, srvManager);
+		BaseEffect::Initialize(dxCommon, context);
 
 		//パイプラインの初期化
 		CreatePipeline();
@@ -200,7 +200,7 @@ namespace Kouro
 	void LuminanceBasedOutline::CreateMaterial()
 	{
 		// bufferResourceの生成
-		resource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(LuminanceOutline::Material));
+		resource_ = utils_->CreateBufferResource(sizeof(LuminanceOutline::Material));
 
 		// データをマップ
 		resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));

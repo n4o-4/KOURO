@@ -1,5 +1,6 @@
 #pragma once
 #include "GpuContext.h"
+#include "Sprite.h"
 
 // \brief SpriteCommon
 // スプライト描画に必要な共通リソースやパイプラインを管理するクラス。
@@ -37,7 +38,7 @@ namespace Kouro
 		void CreateGraphicsPipelineBackground();
 
 	private:
-		DirectXCommon* dxCommon_;
+		
 
 		Microsoft::WRL::ComPtr< ID3D12RootSignature> rootSignature;
 

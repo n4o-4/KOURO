@@ -13,6 +13,37 @@ namespace Kouro
 {
 	class SpriteManager
 	{
+	private:
+
+		/**
+		* \brief  スプライトエントリー
+		* \param  sprite     : スプライトのポインタ
+		* \param  updateFunc : スプライトの更新関数（引数にスプライトを受け取る関数オブジェクト）
+		*/
+		struct SpriteEntry
+		{
+			std::unique_ptr<Sprite> sprite;          //!< スプライトのポインタ
+			std::function<void(Sprite&)> updateFunc; //!< スプライトの更新関数
+		};
+
+		/**
+		* \brief  スプライトグループ
+		* \param  sprites : スプライトのリスト（名前をキーとしたマップ）
+		* \param  isVisible : グループの表示フラグ
+		*/
+		struct SpriteGroup
+		{
+			std::unordered_map < std::string, SpriteEntry> sprites; //!< スプライトのリスト
+			bool isVisible = false;                                 //!< グループの表示フラグ
+		};
+
+		/**
+		* \brief  グループ名をキーとしたスプライトグループのマップ
+		* \param  string      : グループ名
+		* \param  SpriteGroup : スプライトのリストと表示フラグを持つ構造体
+		*/
+		using SpriteGroups = std::unordered_map<std::string, SpriteGroup>;
+
 	public:
 		 
 		SpriteManager(GpuContext& context) : gpuContext_(&context) {}
@@ -35,22 +66,16 @@ namespace Kouro
 
 	private:
 
-		void CreateVertexData();
-
 		void CreateIndexData();
 
 	private:
-
-		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr; //!< 頂点バッファリソース
-		SpriteContext::VertexData* vertexData = nullptr; //!< 頂点データへのポインタ
-		D3D12_VERTEX_BUFFER_VIEW vertexBufferView = {}; //!< 頂点バッファビュー
 
 		Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_ = nullptr; //!< インデックスバッファリソース
 		uint32_t* indexData = nullptr; //!< インデックスデータへのポインタ
 		D3D12_INDEX_BUFFER_VIEW indexBufferView = {}; //!< インデックスバッファビュー
 
-		SpriteContext::SpriteGroups foregroundGroups_; //!< 前景スプライトグループのマップ
-		SpriteContext::SpriteGroups backgroundGroups_; //!< 背景スプライトグループのマップ
+		SpriteGroups foregroundGroups_; //!< 前景スプライトグループのマップ
+		SpriteGroups backgroundGroups_; //!< 背景スプライトグループのマップ
 
 		GpuContext* gpuContext_; //!< GPUリソース管理クラスへのポインタ
 

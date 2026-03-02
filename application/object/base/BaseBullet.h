@@ -1,6 +1,4 @@
 #pragma once
-
-#include "Kouro.h"
 #include "BaseEntity.h"
 #include "ObjectLine.h"
 

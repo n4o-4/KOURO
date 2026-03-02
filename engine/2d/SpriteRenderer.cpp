@@ -84,7 +84,7 @@ namespace Kouro
 
 		// バイナリを元に生成
 		rootSignature = nullptr;
-		hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
+		hr = gpuContext_->d3d12Context.device->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
 		assert(SUCCEEDED(hr));
 	}
 

@@ -28,7 +28,7 @@ namespace Kouro
 		* \param  dxCommon DirectX共通
 		* \param  srvManager SRVマネージャー
 		*/
-		void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) override;
+		void Initialize(DirectXCommon* dxCommon, GpuContext* context) override;
 
 		/**
 		* \brief  Update 更新

@@ -1,6 +1,6 @@
 #pragma once
+#include "GpuContext.h"
 
-#include "DirectXCommon.h"
 #include "SrvManager.h"
 #include "WorldTransform.h"
 #include "ViewProjection.h"
@@ -34,20 +34,20 @@ namespace Kouro
 		 * \brief  Initialize 初期化
 		 * \param  dxCommon DirectXCommonのインスタンス
 		 */
-		virtual void Initialize(DirectXCommon* dxCommon);
+		virtual void Initialize(GpuContext* context) =0;
 
 		/// \brief  Update 更新
-		virtual void Update();
+		virtual void Update() = 0;
 
 		/**
 		 * \brief  Draw 描画
 		 * \param  viewProjection ビュープロジェクション行列
 		 */
-		virtual void Draw(const ViewProjection& viewProjection);
+		virtual void Draw(const ViewProjection& viewProjection) = 0;
 
 	protected:
 
-		DirectXCommon* dxCommon_ = nullptr;
+		GpuContext* gpuContext_ = nullptr; //!< GPUリソース管理クラスへのポインタ
 
 		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 

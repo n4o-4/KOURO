@@ -18,7 +18,7 @@ void Kouro::SpriteManager::LoadSpriteGroupsFromYaml(const std::string& yamlFileP
         std::string groupName = groupNode["group_name"].as<std::string>();
 
         // スプライトグループ生成
-        SpriteContext::SpriteGroup spriteGroup;
+        SpriteGroup spriteGroup;
 
         // スプライトの読み込み
         for (const auto& spriteNode : groupNode["sprites"])
@@ -62,15 +62,20 @@ void Kouro::SpriteManager::LoadSpriteGroupsFromYaml(const std::string& yamlFileP
             sprite->Update();
 
             // --- 名前で登録 ---
-            // 重複キーがある場合は上書きを警告
+            
 #ifdef _DEBUG
-            if (spriteGroup.sprites.contains(spriteName)) {
+
+            // 重複キーがある場合は上書きを警告
+            if (spriteGroup.sprites.contains(spriteName))
+            {
                 printf("Warning: Duplicate sprite name '%s' in group '%s'\n", spriteName.c_str(), groupName.c_str());
             }
 #endif
 
+			SpriteEntry entry{ std::move(sprite), nullptr };
+
             // tupleにまとめる: second要素はまだnullptr
-            spriteGroup.sprites[spriteName] = std::make_tuple(std::move(sprite), nullptr);
+            spriteGroup.sprites[spriteName] = std::move(entry);
 
             std::string layer = spriteNode["render_layer"].as<std::string>();
 
@@ -137,26 +142,6 @@ void Kouro::SpriteManager::SetGroupVisibility(const std::string& groupName, bool
 	}
 }
 
-void Kouro::SpriteManager::CreateVertexData()
-{
-    auto utils = gpuContext_->gpuResourceUtils;
-
-    vertexResource_ = utils->CreateBufferResource(sizeof(SpriteContext::VertexData) * 4);
-
-    // リソースの先頭アドレスから使う
-    vertexBufferView.BufferLocation = vertexResource_.Get()->GetGPUVirtualAddress();
-
-    // 使用するリソースのサイズは頂点6つ分のサイズ
-    vertexBufferView.SizeInBytes = sizeof(SpriteContext::VertexData) * 4;
-
-    // 1頂点当たりのサイズ
-    vertexBufferView.StrideInBytes = sizeof(SpriteContext::VertexData);
-
-    vertexData = nullptr;
-
-    vertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-}
-
 void Kouro::SpriteManager::CreateIndexData()
 {
     auto utils = gpuContext_->gpuResourceUtils;
@@ -176,4 +161,7 @@ void Kouro::SpriteManager::CreateIndexData()
     indexData = nullptr;
 
     indexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
+
+    indexData[0] = 0; indexData[1] = 1; indexData[2] = 2;
+    indexData[3] = 1; indexData[4] = 3; indexData[5] = 2;
 }

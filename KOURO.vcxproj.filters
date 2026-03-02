@@ -262,9 +262,6 @@
     <ClCompile Include="engine\line\AABBLineObject.cpp">
       <Filter>engine\line</Filter>
     </ClCompile>
-    <ClCompile Include="engine\line\BaseLineObject.cpp">
-      <Filter>engine\line</Filter>
-    </ClCompile>
     <ClCompile Include="engine\line\LineDrawerBase.cpp">
       <Filter>engine\line</Filter>
     </ClCompile>
@@ -803,9 +800,6 @@
     </ClInclude>
     <ClInclude Include="engine\effect\Vignette.h">
       <Filter>engine\effect</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\core\Kouro.h">
-      <Filter>engine\core</Filter>
     </ClInclude>
     <ClInclude Include="application\camera\ICameraState.h">
       <Filter>application\camera</Filter>

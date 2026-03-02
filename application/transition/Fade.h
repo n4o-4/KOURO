@@ -4,7 +4,7 @@
 //==============================
 // engine
 #include "TextureManager.h"
-#include "SpriteCommon.h"
+#include "SpriteRenderer.h"
 #include "Sprite.h"
 
 // \brief Fade

@@ -1,5 +1,6 @@
 #include "ShaderCompiler.h"
 #include <format>
+#include <dxcapi.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -42,7 +43,7 @@ namespace Kouro
 
 		// 実際にShaderをコンパイルする
 		Microsoft::WRL::ComPtr<IDxcResult> shaderResult = nullptr;
-		hr = dxcCompiler.Get()->Compile(
+		hr = dxcCompiler->Compile(
 			&shaderSourceBuffer,
 			arguments,
 			_countof(arguments),

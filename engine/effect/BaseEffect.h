@@ -1,11 +1,10 @@
 #pragma once
 #include "DirectXCommon.h"
+#include "GpuContext.h"
 #include "TextureManager.h"
 #include "CameraManager.h"
 
 #include "Vectors.h"
-
-
 
 // \brief BaseEffect ポストエフェクト基底クラス
 
@@ -31,7 +30,7 @@ namespace Kouro
 		* \param  dxCommon DirectXCommonのポインタ
 		* \param  srvManager SrvManagerのポインタ
 		*/
-		virtual void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
+		virtual void Initialize(DirectXCommon* dxCommon, GpuContext* context);
 
 		/// \brief  更新
 		virtual void Update() = 0;
@@ -61,7 +60,11 @@ namespace Kouro
 
 		DirectXCommon* dxCommon_ = nullptr;
 
+		ID3D12GraphicsCommandList* cmdList_ = nullptr;
+
 		SrvManager* srvManager_ = nullptr;
+
+		GpuResourceUtils* utils_ = nullptr;
 
 		std::unique_ptr<Pipeline> pipeline_ = nullptr;
 	};

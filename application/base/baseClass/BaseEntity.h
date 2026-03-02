@@ -1,6 +1,5 @@
 #pragma once
-// Engine
-#include "Kouro.h"
+#include "WorldTransform.h"
 
 // 全てのオブジェクトの基底クラス
 

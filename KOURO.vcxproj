@@ -35,7 +35,6 @@
     <ClCompile Include="application\object\enemy\EnemyState.cpp" />
     <ClCompile Include="engine\math\CollisionMath.cpp" />
     <ClCompile Include="application\object\enemy\EnemyBullet.cpp" />
-    <ClCompile Include="engine\line\BaseLineObject.cpp" />
     <ClCompile Include="engine\effect\ColorSpace.cpp" />
     <ClCompile Include="application\object\enemy\Enemy.cpp" />
     <ClCompile Include="engine\3d\ModelDatas.cpp" />
@@ -226,7 +225,6 @@
     <ClInclude Include="engine\3d\transform\WorldTransform.h" />
     <ClInclude Include="engine\audio\Audio.h" />
     <ClInclude Include="engine\audio\AudioManager.h" />
-    <ClInclude Include="engine\core\Kouro.h" />
     <ClInclude Include="engine\system\LeakChecker.h" />
     <ClInclude Include="engine\rendering\OffScreenRendring.h" />
     <ClInclude Include="engine\core\Structs.h" />
