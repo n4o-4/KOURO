@@ -1,7 +1,6 @@
 #pragma once
 #define NOMINMAX
-#include "DirectXCommon.h"
-#include "SrvManager.h"
+#include "GpuContext.h"
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 #include "ModelDatas.h"
@@ -94,19 +93,13 @@ namespace Kouro
 		* \param  dxCommon DirectXCommonのポインタ
 		* \param  srvManager SrvManagerのポインタ
 		*/
-		void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
+		void Initialize(GpuContext& gpuContext);
 
 		/**
 		* \brief  描画前処理
 		* \param  viewProjection ビュープロジェクション行列
 		*/
 		void PreDraw(ViewProjection viewProjection);
-
-		/**
-		* \brief  directXCommonのポインタ取得
-		* \return directXCommonのポインタ
-		*/
-		DirectXCommon* GetdxCommon() { return dxCommon_; }
 
 	private: // メンバ関数
 
@@ -118,9 +111,7 @@ namespace Kouro
 
 	private: // メンバ変数
 
-		DirectXCommon* dxCommon_ = nullptr;
-
-		SrvManager* srvManager_ = nullptr;
+		GpuContext* gpuContext_; //!< GpuContextのポインタ
 
 		std::unique_ptr<Pipeline> pipeline_ = nullptr;
 

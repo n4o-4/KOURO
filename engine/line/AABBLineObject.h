@@ -13,14 +13,11 @@ namespace Kouro
 	{
 	public: // 公開メンバ関数
 
-		/// \brief デストラクタ
-		~AABBLineObject() override = default;
-
 		/**
 		 * \brief  Initialize 初期化
 		 * \param  dxCommon DirectXCommonのポインタ
 		 */
-		void Initialize(DirectXCommon* dxCommon)override;
+		void Initialize(GpuResourceUtils* gpuResourceUtils)override;
 
 		/// \brief  Update 更新
 		void Update()override;

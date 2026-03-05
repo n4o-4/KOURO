@@ -4,10 +4,9 @@
 
 namespace Kouro
 {
-	void LineDrawerBase::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void LineDrawerBase::Initialize(GpuContext& gpuContext)
 	{
-		dxCommon_ = dxCommon;
-		srvManager_ = srvManager;
+		gpuContext_ = &gpuContext;
 
 		pipeline_ = std::make_unique<Pipeline>();
 
@@ -19,6 +18,8 @@ namespace Kouro
 
 	void LineDrawerBase::PreDraw(ViewProjection viewProjection)
 	{
+		ID3D12GraphicsCommandList* cmdList = gpuContext_->d3d12Context.commandList;
+
 		// プリミティブトポロジーを設定
 		dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
 

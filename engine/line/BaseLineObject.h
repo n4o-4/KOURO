@@ -1,7 +1,6 @@
 #pragma once
 
-#include "DirectXCommon.h"
-#include "SrvManager.h"
+#include "GpuResourceUtils.h"
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 
@@ -31,28 +30,28 @@ namespace Kouro
 		virtual ~BaseLineObject() = default;
 
 		/**
-		 * \brief  Initialize 初期化
-		 * \param  dxCommon DirectXCommonのインスタンス
+		 * \brief  初期化
+		 * \param  utils GpuResourceUtilsのポインタ
 		 */
-		virtual void Initialize(DirectXCommon* dxCommon);
+		virtual void Initialize(GpuResourceUtils* gpuResourceUtils) = 0;
 
 		/// \brief  Update 更新
-		virtual void Update();
+		virtual void Update() = 0;
 
 		/**
 		 * \brief  Draw 描画
 		 * \param  viewProjection ビュープロジェクション行列
 		 */
-		virtual void Draw(const ViewProjection& viewProjection);
+		virtual void Draw(const ViewProjection& viewProjection) = 0;
 
 	protected:
 
-		DirectXCommon* dxCommon_ = nullptr;
+		GpuResourceUtils* gpuResourceUtils_ = nullptr; //!< GpuResourceUtilsのポインタ
 
-		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
+		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr; //!< 頂点リソース
 
-		LineDrawer::VertexData* vertexData_ = nullptr;
+		LineDrawer::VertexData* vertexData_ = nullptr; //!< 頂点データのCPU側コピー
 
-		D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView_; //!< 頂点バッファビュー
 	};
 }
