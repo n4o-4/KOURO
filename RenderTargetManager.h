@@ -27,7 +27,7 @@ namespace Kouro
 	public:
 
 		
-		RenderTargetManager()
+		RenderTargetManager();
 
 	private:
 

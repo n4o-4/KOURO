@@ -1,6 +1,7 @@
 #include "Framework.h"
 
 #include "LeakChecker.h"
+#include "ShaderCompiler.h"
 
 namespace Kouro
 {
@@ -56,9 +57,6 @@ namespace Kouro
 		gpuParticleManager_->Initialize();
 
 		SceneManager::GetInstance()->Initialize(dxCommon_, srvManager_.get(), Camera::GetInstance(), CreateEngineContext());
-
-		lineDrawer_ = std::make_unique<LineDrawerBase>();
-		lineDrawer_->Initialize(dxCommon_, srvManager_.get());
 
 		postEffect_ = std::make_unique<PostEffect>();
 		postEffect_->Initialize(dxCommon_, srvManager_.get());
@@ -234,5 +232,24 @@ namespace Kouro
 
 		ImGui::End();
 #endif
+	}
+
+	void Framework::ShaderCompile()
+	{
+		// コンパイラの初期化
+		ShaderCompiler compiler;
+		compiler.Initialize();
+		Shader::GraphicsShader compileResult;
+
+		// シェーダープロファイルの取得
+		std::wstring vsProfile = compiler.GetPixelShaderProfile(ShaderCompiler::ShaderType::VertexShader);
+		std::wstring psProfile = compiler.GetPixelShaderProfile(ShaderCompiler::ShaderType::PixelShader);
+
+		// Sprite用シェーダーのコンパイルと追加
+		compileResult.vertexShader = compiler.CompileShader(L"Resources/Shaders/SpriteVS.hlsl", vsProfile.c_str());
+		compileResult.pixelShader = compiler.CompileShader(L"Resources/Shaders/SpritePS.hlsl", psProfile.c_str());
+		shaderManager_.AddShader("Sprite", compileResult);
+
+
 	}
 }

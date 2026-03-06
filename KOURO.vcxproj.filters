@@ -572,6 +572,8 @@
       <Filter>application\camera\title</Filter>
     </ClCompile>
     <ClCompile Include="RenderTargetManager.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="StringUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -1061,6 +1063,9 @@
       <Filter>application\camera\title</Filter>
     </ClInclude>
     <ClInclude Include="RenderTargetManager.h" />
+    <ClInclude Include="engine\system\ShaderTypes.h" />
+    <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="StringUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

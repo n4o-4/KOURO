@@ -232,9 +232,6 @@ namespace Kouro
 		// ディスクリプタヒープの生成
 		rtvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 5, false);
 
-		// SRV用のヒープでディスクリプタの数は１２８。SRVはShader内でさわるものなので、ShaderVisibleはfalse
-		//srvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
-
 		// DSV用のヒープでディスクリプタの数は1。DSVはShader内で触るものではないので、ShaderVisibleはfalse
 		dsvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, false);
 
@@ -748,9 +745,6 @@ namespace Kouro
 		Microsoft::WRL::ComPtr<IDxcBlob> shaderBlob = nullptr;
 		hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
 		assert(SUCCEEDED(hr));
-
-		// 成功したログを出す
-		//Log(ConvertString(std::format(L"Compile Succeeded, path:{},profile:{}\n", filePath, profile)));
 
 		// 実行用のバイナリを返却
 		return shaderBlob;

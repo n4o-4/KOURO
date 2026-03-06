@@ -1,24 +1,23 @@
 #include "ShaderCompiler.h"
+
 #include <format>
 
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
-
-#pragma comment(lib,"dxguid.lib")
-#pragma comment(lib,"dxcompiler.lib")
+#include "StringUtils.h"
 
 namespace Kouro
 {
 	void ShaderCompiler::Initialize()
 	{
+		// DXCコンパイラー関連のインターフェースを生成、初期化する
 		CreateDXCCompiler();
 	}
 
 	Microsoft::WRL::ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& filePath, const wchar_t* profile)
 	{
+		HRESULT hr;
+
 		// hlslファイルを読み込む
 		Microsoft::WRL::ComPtr<IDxcBlobEncoding> shaderSource = nullptr;
-		HRESULT hr;
 		hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, &shaderSource);
 
 		// 読めなかったら止める
@@ -36,7 +35,7 @@ namespace Kouro
 			L"-E",L"main", // エントリーポイントの指定。基本的にmain以外にはしない
 			L"-T", profile, // ShaderProfileの設定
 			L"-Zi", L"-Qembed_debug", // デバッグ用の情報を埋め込む
-			L"-Od",    // 最適化しておく
+			L"-O3"/*"-Od"*/,    // 最適化しておく
 			L"-Zpr",   // メモリレイアウトは最優先
 		};
 
@@ -50,6 +49,7 @@ namespace Kouro
 			IID_PPV_ARGS(&shaderResult)
 		);
 
+		// コンパイル結果が得られなかったら止める
 		assert(shaderResult != nullptr);
 
 		// コンパイルエラーでなくdxcが起動出来ないなど致命的な状況
@@ -78,13 +78,31 @@ namespace Kouro
 		return shaderBlob;
 	}
 
+	const std::wstring& ShaderCompiler::GetPixelShaderProfile(ShaderType type) const
+	{
+		switch (type)
+		{
+		case ShaderType::VertexShader:
+			return vertexShaderProfile_;
+		case ShaderType::PixelShader:
+			return pixelShaderProfile_;
+		default:
+			assert(false);
+			return pixelShaderProfile_;
+		}
+	}
+
 	void ShaderCompiler::CreateDXCCompiler()
 	{
 		HRESULT hr;
 
-		// dxCompilerを初期化
+		/// DXCコンパイラー関連のインターフェースを生成、初期化する
+
+		// DXCユーティリティーインターフェースの生成
 		hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils));
 		assert(SUCCEEDED(hr));
+
+		// DXCコンパイラーインターフェースの生成
 		hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler));
 		assert(SUCCEEDED(hr));
 

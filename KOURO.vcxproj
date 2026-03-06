@@ -155,7 +155,7 @@
     <ClCompile Include="application\camera\title\RotateCameraState.cpp" />
     <ClCompile Include="engine\system\ShaderCompiler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="application\system\SpawnManager.cpp" />
     <ClCompile Include="application\object\enemy\TackleChargeState.cpp" />
@@ -167,6 +167,8 @@
     <ClCompile Include="application\system\UIManager.cpp" />
     <ClCompile Include="engine\system\YamlLoader.cpp" />
     <ClCompile Include="RenderTargetManager.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="StringUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\system\Event.h" />
@@ -247,6 +249,7 @@
     <ClInclude Include="engine\3d\object\Object3dCommon.h" />
     <ClInclude Include="engine\2d\Sprite.h" />
     <ClInclude Include="engine\2d\SpriteCommon.h" />
+    <ClInclude Include="engine\system\ShaderTypes.h" />
     <ClInclude Include="engine\system\StringUtility.h" />
     <ClInclude Include="engine\system\TextureManager.h" />
     <ClInclude Include="engine\math\Vectors.h" />
@@ -302,7 +305,7 @@
     <ClInclude Include="application\camera\title\RotateCameraState.h" />
     <ClInclude Include="engine\system\ShaderCompiler.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="application\system\SpawnManager.h" />
     <ClInclude Include="externals\yaml-cpp\src\collectionstack.h" />
@@ -335,6 +338,8 @@
     <ClInclude Include="application\system\UIManager.h" />
     <ClInclude Include="engine\system\YamlLoader.h" />
     <ClInclude Include="RenderTargetManager.h" />
+    <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="StringUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

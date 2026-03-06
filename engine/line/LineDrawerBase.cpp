@@ -21,17 +21,17 @@ namespace Kouro
 		ID3D12GraphicsCommandList* cmdList = gpuContext_->d3d12Context.commandList;
 
 		// プリミティブトポロジーを設定
-		dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 		// ルートシグネチャを設定
-		dxCommon_->GetCommandList()->SetGraphicsRootSignature(pipeline_->rootSignature.Get());
+		cmdList->SetGraphicsRootSignature(pipeline_->rootSignature.Get());
 
 		// PSOを設定
-		dxCommon_->GetCommandList()->SetPipelineState(pipeline_->pipelineState.Get());
+		cmdList->SetPipelineState(pipeline_->pipelineState.Get());
 
-		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, viewProjection.GetViewProjectionResource()->GetGPUVirtualAddress());
+		cmdList->SetGraphicsRootConstantBufferView(1, viewProjection.GetViewProjectionResource()->GetGPUVirtualAddress());
 
-		dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 	}
 
 	void LineDrawerBase::CreateRootSignature()
@@ -77,8 +77,9 @@ namespace Kouro
 		/*----------------------------------------------------------
 		* バイナリを元RootSignatureを生成
 		----------------------------------------------------------*/
+		ID3D12Device* device = gpuContext_->d3d12Context.device;
 
-		hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&pipeline_->rootSignature));
+		hr = device->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&pipeline_->rootSignature));
 		assert(SUCCEEDED(hr));
 	}
 

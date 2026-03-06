@@ -69,11 +69,6 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	playerRail_.Update(0.0f);
 	cameraRail_.Update(0.0f);
 
-	///========================================
-	///		ライン描画
-	lineDrawer_ = std::make_unique<Kouro::LineDrawerBase>();
-	lineDrawer_->Initialize(sceneManager_->GetDxCommon(),sceneManager_->GetSrvManager());
-
 	lineModelManager_ = std::make_unique<Kouro::LineModelManager>();
 	lineModelManager_->Initialize(lineDrawer_.get());
 	lineModelManager_->LoadLineModel("player/player.obj");

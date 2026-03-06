@@ -1,6 +1,6 @@
 #pragma once
 #define NOMINMAX
-#include "GpuContext.h"
+#include "ShaderCompiler.h"
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 #include "ModelDatas.h"
@@ -111,7 +111,9 @@ namespace Kouro
 
 	private: // メンバ変数
 
-		GpuContext* gpuContext_; //!< GpuContextのポインタ
+		ID3D12Device* device_ = nullptr;
+		ID3D12GraphicsCommandList* commandList_ = nullptr;
+		ShaderCompiler* shaderCompiler_ = nullptr;
 
 		std::unique_ptr<Pipeline> pipeline_ = nullptr;
 

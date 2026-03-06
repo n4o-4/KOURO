@@ -21,10 +21,6 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 	/// 基底クラスの初期化
 	BaseScene::Initialize(context);
 
-	// ライン描画の初期化
-	lineDrawer_ = std::make_unique<Kouro::LineDrawerBase>();
-	lineDrawer_->Initialize(sceneManager_->GetDxCommon(), sceneManager_->GetSrvManager());
-
 	// ラインモデルマネージャーの初期化
 	lineModelManager_ = std::make_unique<Kouro::LineModelManager>();
 	lineModelManager_->Initialize(lineDrawer_.get());

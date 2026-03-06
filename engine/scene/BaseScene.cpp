@@ -13,7 +13,7 @@ namespace Kouro
 
 		// ライン描画クラスの生成と初期化
 		lineDrawer_ = std::make_unique<LineDrawerBase>();
-		lineDrawer_->Initialize(sceneManager_->GetDxCommon(), srvManager_);
+		lineDrawer_->Initialize(engineContext_.gpuContext);
 
 		// カメラマネージャークラスの生成と初期化
 		cameraManager_ = std::make_unique<CameraManager>();

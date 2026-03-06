@@ -1,7 +1,10 @@
 #pragma once
 
+#include <chrono>
 #include <memory>
+#include <string>
 
+#include "ShaderManager.h"
 #include "WinApp.h"
 #include "DirectXCommon.h"
 #include "Input.h"
@@ -32,8 +35,6 @@
 
 #include "EngineContext.h"
 
-#include <chrono>
-#include <string>
 #include <wrl.h>
 #include <deque>
 
@@ -123,8 +124,14 @@ namespace Kouro
 
 		void UpdateFPS();
 
+		void ShaderCompile();
+
 	private:
 
+		ShaderManager shaderManager_;
+
+
+		/// \brief 時間計測用のメンバ変数
 		std::chrono::steady_clock::time_point startTime_;     // 実行開始時間
 
 		std::chrono::duration<float> elapsedTime_;            // 実行開始からの経過時間
