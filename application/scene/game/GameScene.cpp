@@ -37,7 +37,7 @@ static void ShowMatrix4x4(const Kouro::Matrix4x4 &matrix, const char *label) {
 
 ///=============================================================================
 ///						初期化
-void GameScene::Initialize(Kouro::EngineContext context) {
+void GameScene::Initialize(Kouro::EngineContext& context) {
 	//========================================
 	// 基底シーン
 	BaseScene::Initialize(context);
@@ -70,7 +70,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	cameraRail_.Update(0.0f);
 
 	lineModelManager_ = std::make_unique<Kouro::LineModelManager>();
-	lineModelManager_->Initialize(lineDrawer_.get());
+	lineModelManager_->Initialize(context.gpuContext.d3d12Context.commandList, context.gpuContext.gpuResourceUtils);
 	lineModelManager_->LoadLineModel("player/player.obj");
 	lineModelManager_->LoadLineModel("enemy/enemy.obj");
 	lineModelManager_->LoadLineModel("playerbullet/playerbullet.obj");
@@ -231,7 +231,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 		Kouro::TextureManager::GetInstance()->LoadTexture(filePath);
 
-		countSprite_[i]->Initialize(Kouro::SpriteCommon::GetInstance(), filePath);
+		countSprite_[i]->Initialize(context.gpuContext.d3d12Context.commandList, context.gpuContext.gpuResourceUtils, filePath);
 		countSprite_[i]->SetSize({ 360.0f,360.0f });
 		countSprite_[i]->SetPosition({ 640.0f ,360.0f });
 		countSprite_[i]->SetTexSize({ 1536.0f,1024.0f });

@@ -3,6 +3,7 @@
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
+	// リークチェッカーのインスタンスを生成
 	Kouro::LeakChecker leakChecker;
 	
 	// ゲームのインスタンスを生成

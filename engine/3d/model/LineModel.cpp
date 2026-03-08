@@ -6,22 +6,21 @@
 
 namespace Kouro
 {
-	void LineModel::Initialize(LineDrawerBase* lienDrawer, const std::string& filePath)
+	void LineModel::Initialize(ID3D12GraphicsCommandList* commandList, const GpuResourceUtils* gpuResourceUtils, const std::string& filePath)
 	{
-		lineDrawerBase_ = lienDrawer;
-
-		dxCommon_ = lineDrawerBase_->GetdxCommon();
+		// 引数の値をメンバ変数に保存
+		cmdList_ = commandList;
+		gpuResourceUtils_ = gpuResourceUtils;
 
 		LoadLineModelFile(filePath);
-
 	}
 
 	void LineModel::Draw()
 	{
 		// VBVを設定
-		dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+		cmdList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
-		dxCommon_->GetCommandList()->DrawInstanced(vertexCount_, 1, 0, 0);
+		cmdList_->DrawInstanced(vertexCount_, 1, 0, 0);
 	}
 
 	void LineModel::LoadLineModelFile(const std::string& filePath)
@@ -181,7 +180,7 @@ namespace Kouro
 		}
 
 		// ---- VertexBuffer 作成（インデックスは使わない）----
-		vertexResource_ = dxCommon_->CreateBufferResource(sizeof(LineVertex) * lineVertices.size());
+		vertexResource_ = gpuResourceUtils_->CreateBufferResource(sizeof(LineVertex) * lineVertices.size());
 
 		vertexData_ = nullptr;
 		vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));

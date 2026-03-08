@@ -19,6 +19,7 @@
 #include "Structs.h"
 #include "OffScreenRendring.h"
 #include "D3D12Context.h"
+#include "GpuResourceUtils.h"
 
 // \brief DirectXCommon DirectX12の初期化と描画処理をまとめて管理するクラス。  デバイスやスワップチェーンなどの生成・制御を一括で行う。
 
@@ -181,6 +182,12 @@ namespace Kouro
 		* \return レンダーターゲットビューのCPUハンドル
 		*/
 		D3D12_CPU_DESCRIPTOR_HANDLE* GetRTVHandle(const int index) { return &rtvHandles[index]; }
+
+		/**
+		* \brief  GPUリソースユーティリティの取得
+		* \return GPUリソースユーティリティ
+		*/
+		const GpuResourceUtils& GetGpuResourceUtils() const { return *gpuResourceUtils_; }
 
 		/**
 		* \brief  レンダーターゲットビューのCPUハンドル設定
@@ -439,7 +446,7 @@ namespace Kouro
 
 		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList = nullptr;
 
-		//uint32_t descriptorSizeSRV = 0;
+		std::unique_ptr<GpuResourceUtils> gpuResourceUtils_ = nullptr;
 
 		uint32_t descriptorSizeRTV = 0;
 

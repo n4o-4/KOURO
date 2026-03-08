@@ -33,16 +33,15 @@ namespace Kouro
 
 		InitializeDevice();
 		InitializeCommands();
+
+		gpuResourceUtils_ = std::make_unique<GpuResourceUtils>(device);
+
 		CreateSwapChain();
 		CreateDepthBuffer();
 		CreateDescriptorHeaps();
 		InitializeRenderTergetView();
 
-		/// 追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
 		CreateRenderTextureRTV();
-
-		/// 追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 		InitializeDepthStencilView();
 		InitializeFence();
@@ -583,20 +582,6 @@ namespace Kouro
 		// 描画先のRTVを設定する
 		commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, nullptr);
 
-		//// DSV設定
-		//commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
-
-		//// 指定した色で画面全体をクリアする
-		//float clearColor[] = { 0.1f,0.25,0.5f,1.0f }; // 青っぽい色 RGBAの順
-		//commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], clearColor, 0, nullptr);
-
-		//// 画面全体の深度をクリア
-		//commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-		// SRV用のデスクリプタヒープを指定
-		//Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>  descriptorHeaps[] = { srvDescriptorHeap.Get() };
-		//commandList->SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
-
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		commandList->RSSetViewports(1, &viewport); // Viewportを設定
@@ -814,7 +799,7 @@ namespace Kouro
 		//	const DirectX::Image* img = mipImages.GetImage(mipLevel, 0, 0);
 
 		//	// Textureに転送
-		//	HRESULT hr = texture->WriteToSubresource(
+		//	HRESULT hr = texture->WriteToSubResource(
 		//		UINT(mipLevel),
 		//		nullptr,              // 全領域へコピー
 		//		img->pixels,          // 元データアドレス
@@ -829,7 +814,7 @@ namespace Kouro
 
 		uint64_t intermediateSize = GetRequiredIntermediateSize(texture.Get(), 0, UINT(subresources.size()));
 
-		Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = CreateBufferResource(intermediateSize);
+		Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = gpuResourceUtils_->CreateBufferResource(intermediateSize);
 
 		UpdateSubresources(commandList.Get(), texture.Get(), intermediateResource.Get(), 0, 0, UINT(subresources.size()), subresources.data());
 

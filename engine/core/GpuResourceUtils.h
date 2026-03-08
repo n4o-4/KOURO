@@ -20,7 +20,7 @@ namespace Kouro
 		* \brief  バッファリソース作成関数
 		* \param  sizeInBytes : バッファサイズ（バイト単位）
 		*/
-		Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+		Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes) const;
 
 	private:
 

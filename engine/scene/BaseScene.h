@@ -52,7 +52,7 @@ namespace Kouro
 		virtual ~BaseScene() = default;
 
 		// \brief Initialize 初期化
-		virtual void Initialize(EngineContext context);
+		virtual void Initialize(EngineContext& context);
 
 		// \brief Finalize 終了
 		virtual void Finalize();

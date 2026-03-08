@@ -166,6 +166,7 @@
     <ClCompile Include="application\system\UIController.cpp" />
     <ClCompile Include="application\system\UIManager.cpp" />
     <ClCompile Include="engine\system\YamlLoader.cpp" />
+    <ClCompile Include="PipelineUtils.cpp" />
     <ClCompile Include="RenderTargetManager.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="StringUtils.cpp" />
@@ -337,6 +338,7 @@
     <ClInclude Include="application\system\UIController.h" />
     <ClInclude Include="application\system\UIManager.h" />
     <ClInclude Include="engine\system\YamlLoader.h" />
+    <ClInclude Include="PipelineUtils.h" />
     <ClInclude Include="RenderTargetManager.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="StringUtils.h" />

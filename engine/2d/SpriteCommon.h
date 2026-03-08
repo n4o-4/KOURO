@@ -1,5 +1,9 @@
-#pragma once
-#include "DirectXCommon.h"
+#pragma once]
+
+#include <d3dx12.h>
+#include <wrl.h>
+
+#include "ShaderTypes.h"
 
 // \brief SpriteCommon
 // スプライト描画に必要な共通リソースやパイプラインを管理するクラス。
@@ -23,7 +27,7 @@ namespace Kouro
 		* \brief  初期化
 		* \param  dxCommon DirectX共通クラスへのポインタ
 		*/
-		void Initialize(DirectXCommon* dxCommon);
+		void Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, const Shader::GraphicsShader& shader);
 
 		/// \brief 終了処理
 		void Finalize();
@@ -39,12 +43,6 @@ namespace Kouro
 
 		/// \brief 背景描画
 		void DrawBackground();
-
-		/**
-		* \brief  directXCommon取得
-		* \return directXCommon
-		*/
-		DirectXCommon* GetDxCommon() const { return dxCommon_; }
 
 		/**
 		* \brief  背景描画フラグ取得
@@ -80,18 +78,16 @@ namespace Kouro
 		void CreateGraphicsPipelineBackground();
 
 	private:
-		DirectXCommon* dxCommon_;
 
-		Microsoft::WRL::ComPtr< ID3D12RootSignature> rootSignature;
+		ID3D12Device* device_ = nullptr; //!< デバイスへのポインタ
+		ID3D12GraphicsCommandList* cmdList_ = nullptr; //!< コマンドリストへのポインタ
+		Shader::GraphicsShader shader_ = {}; //!< シェーダー
 
-		Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineStateBackground;
-
-		Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineStateForeground;
-
-		//ID3DBlob* signatureBlob = nullptr;
-		Microsoft::WRL::ComPtr< ID3DBlob> signatureBlob = nullptr;
-		//ID3DBlob* errorBlob = nullptr;
-		Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+		Microsoft::WRL::ComPtr< ID3D12RootSignature> rootSignature; //!< ルートシグネチャ
+		Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineStateBackground; //!< グラフィックスパイプラインステート（背景）
+		Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineStateForeground; //!< グラフィックスパイプラインステート（前景）
+		Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr; //!< ルートシグネチャのバイナリ
+		Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr; //!< ルートシグネチャのエラー情報
 
 		bool isDrawBackground = false;
 

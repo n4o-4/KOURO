@@ -7,13 +7,15 @@
 
 namespace Kouro
 {
-	void BaseScene::Initialize(EngineContext context)
+	void BaseScene::Initialize(EngineContext& context)
 	{
+		// スプライトマネージャーの初期化
 		spriteManager_ = std::make_unique<SpriteManager>();
-
+		spriteManager_->Initialize(context.gpuContext.d3d12Context.commandList, context.gpuContext.gpuResourceUtils);
+		
 		// ライン描画クラスの生成と初期化
 		lineDrawer_ = std::make_unique<LineDrawerBase>();
-		lineDrawer_->Initialize(engineContext_.gpuContext);
+		lineDrawer_->Initialize(context.gpuContext.d3d12Context.device, context.gpuContext.d3d12Context.commandList,context.shaderManager.GetShader("PrimitiveDrawer"));
 
 		// カメラマネージャークラスの生成と初期化
 		cameraManager_ = std::make_unique<CameraManager>();
@@ -21,7 +23,7 @@ namespace Kouro
 
 		// フェードクラスの生成と初期化
 		fade_ = std::make_unique<Fade>();
-		fade_->Initialize();
+		fade_->Initialize(context.gpuContext.d3d12Context.commandList, context.gpuContext.gpuResourceUtils);
 
 		// フェーズをフェードインに設定
 		phase_ = Phase::kFadeIn;

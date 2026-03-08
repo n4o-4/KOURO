@@ -1,6 +1,6 @@
 #include "Fade.h"
 
-void Fade::Initialize()
+void Fade::Initialize(ID3D12GraphicsCommandList* commandList, const Kouro::GpuResourceUtils* gpuResourceUtils)
 {
 	Kouro::TextureManager::GetInstance()->LoadTexture("texture/white.png");
 
@@ -8,7 +8,7 @@ void Fade::Initialize()
 	curtain_ = std::make_unique<Kouro::Sprite>();
 
 	// スプライトの初期化
-	curtain_->Initialize(Kouro::SpriteCommon::GetInstance(), "texture/white.png");
+	curtain_->Initialize(commandList, gpuResourceUtils, "texture/white.png");
 
 	// スプライトのアンカーポイントを真ん中に設定
 	curtain_->SetAnchorPoint(Kouro::Vector2(0.5f, 0.5f));

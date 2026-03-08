@@ -1,4 +1,6 @@
 #pragma once
+#include <map>
+
 #include "LineModel.h"
 
 // \brief LineModelManager
@@ -16,7 +18,7 @@ namespace Kouro
 		* \brief  初期化
 		* \param  lineDrawerBase : LineDrawerBaseのポインタ
 		*/
-		void Initialize(LineDrawerBase* lineDrawerBase);
+		void Initialize(ID3D12GraphicsCommandList* commandList, const GpuResourceUtils* gpuResourceUtils);
 
 		/**
 		* \brief  ラインモデルの読み込み
@@ -31,10 +33,11 @@ namespace Kouro
 		LineModel* FindLineModel(const std::string filePath);
 	private:
 
-		LineDrawerBase* lineDrawerBase_ = nullptr;
+		ID3D12GraphicsCommandList* cmdList_ = nullptr; //!< コマンドリストのポインタ
 
-		// モデルデータ
-		std::map<std::string, std::unique_ptr<LineModel>> models_;
+		const GpuResourceUtils* gpuResourceUtils_ = nullptr; //!< GpuResourceUtilsのポインタ
+
+		std::map<std::string, std::unique_ptr<LineModel>> models_; //!< ファイルパスとLineModelの対応を管理するマップコンテナ
 
 	};
 }

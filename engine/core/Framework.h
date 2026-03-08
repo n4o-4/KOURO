@@ -46,42 +46,6 @@ namespace Kouro
 	{
 	public:
 
-	protected:
-
-		std::unique_ptr<WinApp> winApp = nullptr;
-
-		DirectXCommon* dxCommon_ = nullptr;
-
-		std::unique_ptr<SrvManager> srvManager_ = nullptr;
-
-		std::unique_ptr<ModelCommon> modelCommon = nullptr;
-
-		std::unique_ptr<UavManager> uavManager_ = nullptr;
-
-		std::unique_ptr<GpuResourceUtils> gpuResourceUtils_ = nullptr;
-
-#ifdef _DEBUG
-
-		std::unique_ptr<ImGuiManager> imGuiManager = nullptr;
-
-#endif
-		std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
-
-
-		bool endRequest_ = false;
-
-		std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
-
-		std::unique_ptr<PostEffect> postEffect_ = nullptr;
-
-		std::unique_ptr<GpuParticleManager> gpuParticleManager_ = nullptr;
-
-		GpuParticle* gpuParticle_ = nullptr;
-
-		
-
-	public:
-
 		virtual~Framework() = default;
 
 		/// \brief 初期化
@@ -120,15 +84,74 @@ namespace Kouro
 		/// \brief EngineContextの作成
 		EngineContext CreateEngineContext();
 
+	protected:
+		
+		/**
+		* \brief  SrvManagerの取得
+		* \return srvManager_ SrvManagerのポインタ
+		*/
+		SrvManager* GetSrvManager() { return srvManager_.get(); }
+
+		/**
+		* \brief  GpuParticleManagerの取得
+		* \return gpuParticleManager_ GpuParticleManagerのポインタ
+		*/
+		GpuParticleManager* GetGpuParticleManager() { return gpuParticleManager_.get(); }
+
+		/**
+		* \brief  PostEffectの取得
+		* \return postEffect_ PostEffectのポインタ
+		*/
+		PostEffect* GetPostEffect() { return postEffect_.get(); }
+
+#ifdef _DEBUG
+		/**
+		* \brief  ImGuiManagerの取得
+		* \return imGuiManager_ ImGuiManagerのポインタ。デバッグビルドでない場合はnullptr
+		*/
+		ImGuiManager* GetImGuiManager() { return imGuiManager_.get(); }
+#endif
+
 	private:
 
 		void UpdateFPS();
 
-		void ShaderCompile();
+		void CompileShaders();
 
 	private:
 
+		std::unique_ptr<WinApp> winApp_ = nullptr;
+
 		ShaderManager shaderManager_;
+
+		DirectXCommon* dxCommon_ = nullptr;
+
+		std::unique_ptr<SrvManager> srvManager_ = nullptr;
+
+		std::unique_ptr<ModelCommon> modelCommon_ = nullptr;
+
+		std::unique_ptr<UavManager> uavManager_ = nullptr;
+
+		const GpuResourceUtils* gpuResourceUtils_ = nullptr;
+
+		EngineContext engineContext_;
+
+#ifdef _DEBUG
+
+		std::unique_ptr<ImGuiManager> imGuiManager_ = nullptr;
+
+#endif
+		std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
+
+		std::unique_ptr<LineDrawerBase> lineDrawer_ = nullptr;
+
+		std::unique_ptr<PostEffect> postEffect_ = nullptr;
+
+		std::unique_ptr<GpuParticleManager> gpuParticleManager_ = nullptr;
+
+		GpuParticle* gpuParticle_ = nullptr;
+
+		bool endRequest_ = false;
 
 
 		/// \brief 時間計測用のメンバ変数

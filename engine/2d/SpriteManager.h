@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <unordered_map>
+#include <functional>
 
 #include "Sprite.h"
 
@@ -15,14 +16,21 @@ namespace Kouro
 		struct SpriteGroup
 		{
 			std::unordered_map < std::string, std::tuple<std::unique_ptr<Kouro::Sprite>, std::function<void(Kouro::Sprite&)>>> sprites; //!< スプライトのリスト
-			bool isVisible = false;                               //!< グループの表示フラグ
+			bool isVisible = false; //!< グループの表示フラグ
 		};
 
 	public:
 		 
 		/**
+		* \brief  初期化
+		* \param  commandList      : ID3D12GraphicsCommandListのポインタ
+		* \param  gpuResourceUtils : GpuResourceUtilsのポインタ
+		*/
+		void Initialize(ID3D12GraphicsCommandList* commandList, const GpuResourceUtils* gpuResourceUtils);
+
+		/**
 		* \brief  YAMLファイルからスプライトグループを読み込む
-		* \param  yamlFilePath YAMLファイルのパス
+		* \param  yamlFilePath : YAMLファイルのパス
 		*/
 		void LoadSpriteGroupsFromYaml(const std::string& yamlFilePath);
 
@@ -31,14 +39,14 @@ namespace Kouro
 
 		/**
 		* \brief  指定したグループのスプライトを描画する
-		* \param  groupName グループ名
+		* \param  groupName : グループ名
 		*/
 		void DrawGroup(const std::string& groupName);
 
 		/**
 		* \brief  指定したグループの表示状態を設定する
-		* \param  groupName グループ名
-		* \param  isVisible 表示状態
+		* \param  groupName : グループ名
+		* \param  isVisible : 表示状態
 		*/
 		void SetGroupVisibility(const std::string& groupName, bool isVisible);
 
@@ -58,6 +66,10 @@ namespace Kouro
 		}
 
 	private:
+
+		ID3D12GraphicsCommandList* cmdList_; //!< コマンドリストのポインタ
+
+		const GpuResourceUtils* gpuResourceUtils_; //!< GpuResourceUtilsのポインタ
 
 		std::unordered_map<std::string, SpriteGroup> spriteGroups_; //!< スプライトグループのマップ
 

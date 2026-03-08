@@ -58,8 +58,6 @@ namespace Kouro
 
 		LineModel* model_ = nullptr;
 
-		DirectXCommon* dxCommon_ = nullptr;
-
 		Microsoft::WRL::ComPtr<ID3D12Resource> lineResource_ = nullptr;
 		LineForGPU* lineData_ = nullptr;
 

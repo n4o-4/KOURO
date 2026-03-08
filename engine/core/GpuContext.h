@@ -11,6 +11,6 @@ namespace Kouro
 		D3D12Context d3d12Context;
 		SrvManager* srvManager = nullptr;
 		UavManager* uavManager = nullptr;
-		GpuResourceUtils* gpuResourceUtils = nullptr;
+		const GpuResourceUtils* gpuResourceUtils = nullptr;
 	};
 }

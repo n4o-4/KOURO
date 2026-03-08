@@ -16,9 +16,6 @@ void BaseCharacter::Initialize(Kouro::LineModel* model)
 	worldTransform_ = std::make_unique<Kouro::WorldTransform>();
 	worldTransform_->Initialize();
 
-	// 初期値の設定
-
-
 	///========================================
 	/// その他変数
 	
@@ -72,6 +69,5 @@ const Kouro::Vector3& BaseCharacter::GetWorldPosition()
 void BaseCharacter::DrawImGui()
 {
 #ifdef _DEBUG
-#endif 
-
+#endif
 }

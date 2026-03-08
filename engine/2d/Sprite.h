@@ -1,11 +1,13 @@
 #pragma once
-#include "wrl.h"
-#include "d3d12.h"
-#include "Vectors.h"
-#include "MyMath.h"
+#include <wrl.h>
+#include <d3d12.h>
 #include <cstdint>
 #include <string>
+
+#include "Vectors.h"
+#include "MyMath.h"
 #include "SpriteCommon.h"
+#include "GpuResourceUtils.h"
 
 // \brief Sprite
 // 2Dスプライト描画を管理するクラス。
@@ -21,10 +23,11 @@ namespace Kouro
 
 		/**
 		* \brief  Initialize 初期化
-		* \param  spriteCommon SpriteCommonのポインタ
+		* \param  commandList ID3D12GraphicsCommandListのポインタ
+		* \param  gpuResourceUtils GpuResourceUtilsのポインタ
 		* \param  textureFilePath textureのファイルパス
 		*/
-		void Initialize(SpriteCommon* spriteCommon, std::string textureFilePath);
+		void Initialize(ID3D12GraphicsCommandList* commandList, const GpuResourceUtils* gpuResourceUtils, std::string textureFilePath);
 
 		/// \brief Update 更新
 		void Update();
@@ -158,20 +161,23 @@ namespace Kouro
 
 	private:
 
-		struct VertexData {
+		struct VertexData
+		{
 			Vector4 position;
 			Vector2 texcoord;
 			Vector3 normal;
 		};
 
-		struct Material {
+		struct Material
+		{
 			Vector4 color;
 			int enableLighting;
 			float padding[3];
 			Matrix4x4 uvTransform;
 		};
 
-		struct TransformationMatrix {
+		struct TransformationMatrix
+		{
 			Matrix4x4 WVP;
 			Matrix4x4 World;
 		};
@@ -183,7 +189,8 @@ namespace Kouro
 			Vector3 translate;
 		};
 
-		SpriteCommon* spriteCommon = nullptr;
+		ID3D12GraphicsCommandList* cmdList_ = nullptr; //!< コマンドリストへのポインタ
+		const GpuResourceUtils* gpuResourceUtils_ = nullptr; //!< GpuResourceUtilsへのポインタ
 
 		// バッファリソース
 		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;
@@ -206,7 +213,8 @@ namespace Kouro
 
 		Transform transform{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 
-		Transform uvTransform{
+		Transform uvTransform
+		{
 			{1.0f,1.0f,1.0f},
 			{0.0f,0.0f,0.0f},
 			{0.0f,0.0f,0.0f},

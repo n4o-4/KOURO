@@ -1,6 +1,6 @@
 #include "GameOver.h"
 
-void GameOver::Initialize(Kouro::EngineContext context)
+void GameOver::Initialize(Kouro::EngineContext& context)
 {
 	// 基底クラスの初期化
 	BaseScene::Initialize(context);
@@ -10,7 +10,7 @@ void GameOver::Initialize(Kouro::EngineContext context)
 
 	// ゲームオーバー用のスプライトの生成と初期化
 	gameOverSprite_ = std::make_unique<Kouro::Sprite>();
-	gameOverSprite_->Initialize(Kouro::SpriteCommon::GetInstance(), "texture/GameOver.png");
+	gameOverSprite_->Initialize(context.gpuContext.d3d12Context.commandList, context.gpuContext.gpuResourceUtils, "texture/GameOver.png");
 	gameOverSprite_->SetSize({ 1280.0f,720.0f });
 	gameOverSprite_->SetPosition({ 640.0f,360.0f });
 	gameOverSprite_->SetAnchorPoint({ 0.5f,0.5f });

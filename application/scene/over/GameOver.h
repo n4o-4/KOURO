@@ -23,7 +23,7 @@ class GameOver : public Kouro::BaseScene {
 public: 
 
 	// \brief 初期化
-	void Initialize(Kouro::EngineContext context) override;
+	void Initialize(Kouro::EngineContext& context) override;
 
 	// \brief Finalize 終了
 	void Finalize() override;

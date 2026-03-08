@@ -11,15 +11,21 @@ namespace Kouro
 		startTime_ = std::chrono::steady_clock::now();
 
 		// WinAppの生成と初期化
-		winApp = std::make_unique<WinApp>();
-		winApp->Initialize();
+		winApp_ = std::make_unique<WinApp>();
+		winApp_->Initialize();
 
 		// DirectXCommonの生成と初期化
-		DirectXCommon::GetInstance()->Initialize(winApp.get());
+		DirectXCommon::GetInstance()->Initialize(winApp_.get());
 		dxCommon_ = DirectXCommon::GetInstance();
 
+		gpuResourceUtils_ = &dxCommon_->GetGpuResourceUtils();
+
+		D3D12Context d3d12Context = dxCommon_->CreateD3D12Context();
+
+		CompileShaders();
+
 		// Inputの生成と初期化
-		Input::GetInstance()->Initialize(winApp.get());
+		Input::GetInstance()->Initialize(winApp_.get());
 
 		// SrvManagerの生成と初期化
 		srvManager_ = std::make_unique<SrvManager>();
@@ -29,20 +35,18 @@ namespace Kouro
 		uavManager_ = std::make_unique<UavManager>();
 		uavManager_->Initialize(dxCommon_);
 
-		gpuResourceUtils_ = std::make_unique<GpuResourceUtils>(dxCommon_->GetDevice().Get());
-
 		// TextureManagerの初期化
 		TextureManager::GetInstance()->Initialize(dxCommon_, srvManager_.get());
 
 		// SpriteCommon初期化
-		SpriteCommon::GetInstance()->Initialize(dxCommon_);
+		SpriteCommon::GetInstance()->Initialize(d3d12Context.device,d3d12Context.commandList, shaderManager_.GetShader("Sprite"));
 
 		// Object3dCommonの生成と初期化
 		Object3dCommon::GetInstance()->Initialize(dxCommon_);
 
 		// ModelCommonの生成と初期化
-		modelCommon = std::make_unique<ModelCommon>();
-		modelCommon->Initialize(dxCommon_);
+		modelCommon_ = std::make_unique<ModelCommon>();
+		modelCommon_->Initialize(dxCommon_);
 
 		// ModelManagerの生成と初期化
 		ModelManager::GetInstance()->Initialize(dxCommon_);
@@ -65,6 +69,14 @@ namespace Kouro
 
 		gpuParticle_ = GpuParticle::GetInstance();
 		//gpuParticle_->Initialize(dxCommon_, srvManager.get(), uavManager_.get());
+
+#ifdef _DEBUG
+
+        // ImGuiマネージャーの生成と初期化
+		imGuiManager_ = std::make_unique<Kouro::ImGuiManager>();
+		imGuiManager_->Initialize(winApp_.get(), Kouro::DirectXCommon::GetInstance());
+
+#endif
 	}
 
 	void Framework::Finalize()
@@ -91,7 +103,7 @@ namespace Kouro
 
 		DirectXCommon::GetInstance()->Finalize();
 
-		winApp->Finalize();
+		winApp_->Finalize();
 	}
 
 	void Framework::Update()
@@ -99,7 +111,7 @@ namespace Kouro
 		Camera::GetInstance()->Update();
 
 		// メッセージ処理
-		if (winApp->ProcessMessage()) {
+		if (winApp_->ProcessMessage()) {
 			endRequest_ = true;
 		}
 
@@ -153,10 +165,10 @@ namespace Kouro
 		// GpuContextの作成
 		GpuContext gpuContext;
 
-		gpuContext.d3d12Context = DirectXCommon::GetInstance()->CreateD3D12Context();
+		gpuContext.d3d12Context = dxCommon_->CreateD3D12Context();
 		gpuContext.srvManager = srvManager_.get();
 		gpuContext.uavManager = uavManager_.get();
-		gpuContext.gpuResourceUtils = gpuResourceUtils_.get();
+		gpuContext.gpuResourceUtils = gpuResourceUtils_;
 
 		return gpuContext;
 	}
@@ -168,6 +180,7 @@ namespace Kouro
 
 		engineContext.gpuContext = CreateGpuContext();
 		engineContext.gpuParticleManager = gpuParticleManager_.get();
+		engineContext.shaderManager = shaderManager_;
 
 		return engineContext;
 	}
@@ -234,7 +247,7 @@ namespace Kouro
 #endif
 	}
 
-	void Framework::ShaderCompile()
+	void Framework::CompileShaders()
 	{
 		// コンパイラの初期化
 		ShaderCompiler compiler;
@@ -250,6 +263,8 @@ namespace Kouro
 		compileResult.pixelShader = compiler.CompileShader(L"Resources/Shaders/SpritePS.hlsl", psProfile.c_str());
 		shaderManager_.AddShader("Sprite", compileResult);
 
-
+		compileResult.vertexShader = compiler.CompileShader(L"Resources/shaders/PrimitiveDrawerVS.hlsl", vsProfile.c_str());
+		compileResult.pixelShader = compiler.CompileShader(L"Resources/shaders/PrimitiveDrawerPS.hlsl", psProfile.c_str());
+		shaderManager_.AddShader("PrimitiveDrawer", compileResult);
 	}
 }

@@ -6,12 +6,12 @@
 #include <vector>
 #include <set>
 #include <wrl.h>
-#include <d3d12.h>
+#include <dxcapi.h>
 #include<unordered_map>
 
 #include "Vectors.h"
 #include "MyMath.h"
-#include "LineDrawerBase.h"
+#include "GpuResourceUtils.h"
 
 
 
@@ -32,8 +32,6 @@ namespace Kouro
 		std::vector<uint32_t> indices;
 	};
 
-
-
 	class LineModel
 	{
 	public:
@@ -44,17 +42,11 @@ namespace Kouro
 		* \param  directoryPath ラインモデルファイルのディレクトリパス
 		* \param  filePath ラインモデルファイル名
 		*/
-		void Initialize(LineDrawerBase* lienDrawer, const std::string& filePath);
+		void Initialize(ID3D12GraphicsCommandList* commandList, const GpuResourceUtils* gpuResourceUtils, const std::string& filePath);
 
 
 		/// \brief 描画
 		void Draw();
-
-		/**
-		* \brief  directXCommonのポインタ取得
-		* \return directXCommonのポインタ
-		*/
-		DirectXCommon* GetdxCommon() { return dxCommon_; }
 
 	private:
 
@@ -67,9 +59,8 @@ namespace Kouro
 
 	private:
 
-		LineDrawerBase* lineDrawerBase_ = nullptr;
-
-		DirectXCommon* dxCommon_ = nullptr;
+		ID3D12GraphicsCommandList* cmdList_ = nullptr;
+		const GpuResourceUtils* gpuResourceUtils_ = nullptr;
 
 		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 		LineVertex* vertexData_ = nullptr;

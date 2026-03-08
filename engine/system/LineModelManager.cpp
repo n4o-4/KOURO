@@ -2,9 +2,11 @@
 
 namespace Kouro
 {
-	void LineModelManager::Initialize(LineDrawerBase* lineDrawerBase)
+	void LineModelManager::Initialize(ID3D12GraphicsCommandList* commandList, const GpuResourceUtils* gpuResourceUtils)
 	{
-		lineDrawerBase_ = lineDrawerBase;
+		// コマンドリストとGpuResourceUtilsのポインタをメンバ変数に保存
+		cmdList_ = commandList;
+		gpuResourceUtils_ = gpuResourceUtils;
 	}
 
 	void LineModelManager::LoadLineModel(std::string filePath)
@@ -16,7 +18,7 @@ namespace Kouro
 
 		// モデルの生成とファイル読み込み、初期化
 		std::unique_ptr<LineModel> model = std::make_unique<LineModel>();
-		model->Initialize(lineDrawerBase_, filePath);
+		model->Initialize(cmdList_, gpuResourceUtils_, filePath);
 
 		// モデルをmapコンテナに格納する
 		models_.insert(std::make_pair(filePath, std::move(model)));

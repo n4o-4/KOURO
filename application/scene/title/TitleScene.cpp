@@ -14,7 +14,7 @@
 
 #include "title/state/FadeInState.h"
 
-void TitleScene::Initialize(Kouro::EngineContext context)
+void TitleScene::Initialize(Kouro::EngineContext& context)
 {
 	startTime = std::chrono::steady_clock::now();
 
@@ -23,7 +23,7 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 
 	// ラインモデルマネージャーの初期化
 	lineModelManager_ = std::make_unique<Kouro::LineModelManager>();
-	lineModelManager_->Initialize(lineDrawer_.get());
+	lineModelManager_->Initialize(context.gpuContext.d3d12Context.commandList, context.gpuContext.gpuResourceUtils);
 
 	/// 各種素材の読み込み
 	// テクスチャの読み込み
@@ -44,7 +44,7 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 
 	// スタートボタンの生成
 	startBotton_ = std::make_unique<Kouro::Sprite>();
-	startBotton_->Initialize(Kouro::SpriteCommon::GetInstance(),"texture/StartButton.png");
+	startBotton_->Initialize(context.gpuContext.d3d12Context.commandList, context.gpuContext.gpuResourceUtils, "texture/StartButton.png");
 
 	// スタートボタンの各種設定
 	startBotton_->SetPosition(sprite_config["start_button"]["position"].as<Kouro::Vector2>());

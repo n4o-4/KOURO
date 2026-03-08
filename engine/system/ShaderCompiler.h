@@ -9,7 +9,7 @@ namespace Kouro
 	/// \brief シェーダーコンパイラークラス
 	class ShaderCompiler
 	{
-	public
+	public:
 
 		enum class ShaderType
 		{

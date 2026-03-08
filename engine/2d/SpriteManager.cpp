@@ -6,6 +6,13 @@
 #include "Vector3Yaml.h"
 #include "Vector4Yaml.h"
 
+void Kouro::SpriteManager::Initialize(ID3D12GraphicsCommandList* commandList, const GpuResourceUtils* gpuResourceUtils)
+{
+	// コマンドリストとGPUリソースユーティリティの保存
+    cmdList_ = commandList;
+    gpuResourceUtils_ = gpuResourceUtils;
+}
+
 void Kouro::SpriteManager::LoadSpriteGroupsFromYaml(const std::string& yamlFilePath)
 {
     // YAMLファイルの読み込み
@@ -39,7 +46,7 @@ void Kouro::SpriteManager::LoadSpriteGroupsFromYaml(const std::string& yamlFileP
 
             // スプライト生成・初期化
             auto sprite = std::make_unique<Sprite>();
-            sprite->Initialize(SpriteCommon::GetInstance(), texturePath);
+            sprite->Initialize(cmdList_, gpuResourceUtils_, texturePath);
 
             // --- 各項目が存在すれば設定 ---
             if (spriteNode["position"]) {

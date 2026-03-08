@@ -1,6 +1,7 @@
 #pragma once
 #include "GpuContext.h"
 #include "GpuParticleManager.h"
+#include "ShaderManager.h"
 
 namespace Kouro
 {
@@ -8,7 +9,8 @@ namespace Kouro
 
 	struct EngineContext
 	{
-		GpuContext gpuContext;
+		GpuContext gpuContext = {};
 		GpuParticleManager* gpuParticleManager = nullptr;
+		ShaderManager shaderManager = {};
 	};
 }

@@ -4,9 +4,12 @@
 
 namespace Kouro
 {
-	void LineDrawerBase::Initialize(GpuContext& gpuContext)
+	void LineDrawerBase::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, const Shader::GraphicsShader& shader)
 	{
-		gpuContext_ = &gpuContext;
+		// 引数の値をメンバ変数に保存
+		device_ = device;
+		cmdList_ = commandList;
+		shader_ = shader;
 
 		pipeline_ = std::make_unique<Pipeline>();
 
@@ -18,20 +21,18 @@ namespace Kouro
 
 	void LineDrawerBase::PreDraw(ViewProjection viewProjection)
 	{
-		ID3D12GraphicsCommandList* cmdList = gpuContext_->d3d12Context.commandList;
-
 		// プリミティブトポロジーを設定
-		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		cmdList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 		// ルートシグネチャを設定
-		cmdList->SetGraphicsRootSignature(pipeline_->rootSignature.Get());
+		cmdList_->SetGraphicsRootSignature(pipeline_->rootSignature.Get());
 
 		// PSOを設定
-		cmdList->SetPipelineState(pipeline_->pipelineState.Get());
+		cmdList_->SetPipelineState(pipeline_->pipelineState.Get());
 
-		cmdList->SetGraphicsRootConstantBufferView(1, viewProjection.GetViewProjectionResource()->GetGPUVirtualAddress());
+		cmdList_->SetGraphicsRootConstantBufferView(1, viewProjection.GetViewProjectionResource()->GetGPUVirtualAddress());
 
-		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+		cmdList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 	}
 
 	void LineDrawerBase::CreateRootSignature()
@@ -41,8 +42,6 @@ namespace Kouro
 		//RootSignature作成
 		D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 		descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-
-
 
 		D3D12_ROOT_PARAMETER rootParameters[3] = {};
 
@@ -77,9 +76,7 @@ namespace Kouro
 		/*----------------------------------------------------------
 		* バイナリを元RootSignatureを生成
 		----------------------------------------------------------*/
-		ID3D12Device* device = gpuContext_->d3d12Context.device;
-
-		hr = device->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&pipeline_->rootSignature));
+		hr = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&pipeline_->rootSignature));
 		assert(SUCCEEDED(hr));
 	}
 
@@ -110,14 +107,6 @@ namespace Kouro
 
 		// 三角形の中を塗りつぶす
 		rasterizerDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
-
-		/*----------------------------------------------------------
-		* Shaderのコンパイル
-		----------------------------------------------------------*/
-
-		Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/PrimitiveDrawerVS.hlsl", L"vs_6_0");
-
-		Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/PrimitiveDrawerPS.hlsl", L"ps_6_0");
 
 		/*----------------------------------------------------------
 		* DepthStencilStateの設定
@@ -152,8 +141,8 @@ namespace Kouro
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
 		graphicsPipelineStateDesc.pRootSignature = pipeline_->rootSignature.Get();
 		graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;
-		graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),vertexShaderBlob->GetBufferSize() };
-		graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(),pixelShaderBlob->GetBufferSize() };
+		graphicsPipelineStateDesc.VS = { shader_.vertexShader->GetBufferPointer(),shader_.vertexShader->GetBufferSize() };
+		graphicsPipelineStateDesc.PS = { shader_.pixelShader->GetBufferPointer(),shader_.pixelShader->GetBufferSize() };
 		graphicsPipelineStateDesc.BlendState = blendDesc;
 		graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;
 
@@ -173,7 +162,7 @@ namespace Kouro
 		graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 		// 実際に生成
-		hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&pipeline_->pipelineState));
+		hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&pipeline_->pipelineState));
 
 		assert(SUCCEEDED(hr));
 	}

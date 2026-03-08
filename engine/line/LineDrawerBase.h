@@ -1,11 +1,15 @@
 #pragma once
+
+#include <set>
+
 #define NOMINMAX
 #include "ShaderCompiler.h"
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 #include "ModelDatas.h"
 
-#include <set>
+#include "ShaderTypes.h"
+
 
 // \brief LineDrawerBase  
 // ライン描画の基底クラスで、AABBや球、グリッド、スケルトンなど様々なラインオブジェクトを描画可能。  
@@ -93,7 +97,7 @@ namespace Kouro
 		* \param  dxCommon DirectXCommonのポインタ
 		* \param  srvManager SrvManagerのポインタ
 		*/
-		void Initialize(GpuContext& gpuContext);
+		void Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, const Shader::GraphicsShader& shader);
 
 		/**
 		* \brief  描画前処理
@@ -112,8 +116,8 @@ namespace Kouro
 	private: // メンバ変数
 
 		ID3D12Device* device_ = nullptr;
-		ID3D12GraphicsCommandList* commandList_ = nullptr;
-		ShaderCompiler* shaderCompiler_ = nullptr;
+		ID3D12GraphicsCommandList* cmdList_ = nullptr;
+		Shader::GraphicsShader shader_ = {};
 
 		std::unique_ptr<Pipeline> pipeline_ = nullptr;
 

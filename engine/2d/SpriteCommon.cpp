@@ -1,5 +1,9 @@
 #include "SpriteCommon.h"
 
+#include <cassert>
+
+#include "Logger.h"
+
 namespace Kouro
 {
 	std::unique_ptr<SpriteCommon> SpriteCommon::instance = nullptr;
@@ -13,10 +17,12 @@ namespace Kouro
 		return instance.get();
 	}
 
-	void SpriteCommon::Initialize(DirectXCommon* dxCommon)
+	void SpriteCommon::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, const Shader::GraphicsShader& shader)
 	{
 		// 引数で受け取ってメンバ変数に記録する
-		dxCommon_ = dxCommon;
+		device_ = device;
+		cmdList_ = commandList;
+		shader_ = shader;
 
 		CreateRootSignature();
 
@@ -27,29 +33,27 @@ namespace Kouro
 
 	void SpriteCommon::Finalize()
 	{
-
 		instance.reset();
-
 	}
 
 	void SpriteCommon::SetForegroundView()
 	{
-		dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+		cmdList_->SetGraphicsRootSignature(rootSignature.Get());
 
-		dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineStateForeground.Get());  // PSOを設定
+		cmdList_->SetPipelineState(graphicsPipelineStateForeground.Get());  // PSOを設定
 
 		// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけばいい
-		dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		cmdList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
 	void SpriteCommon::SetBackgroundView()
 	{
-		dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
+		cmdList_->SetGraphicsRootSignature(rootSignature.Get());
 
-		dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineStateBackground.Get());  // PSOを設定
+		cmdList_->SetPipelineState(graphicsPipelineStateBackground.Get());  // PSOを設定
 
 		// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけばいい
-		dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		cmdList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 
 	void SpriteCommon::DrawForeground()
@@ -129,7 +133,7 @@ namespace Kouro
 
 		// バイナリを元に生成
 		rootSignature = nullptr;
-		hr = dxCommon_->GetDevice()->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
+		hr = device_->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
 		assert(SUCCEEDED(hr));
 	}
 
@@ -163,19 +167,18 @@ namespace Kouro
 		// すべての要素数を書き込む
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
-		// 
+		// ブレンドを有効化する
 		blendDesc.RenderTarget[0].BlendEnable = TRUE;
 
 
 		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
 		blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;
-
 		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
 		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 
-		// RasiterzerStateの設定
+		// RasterizerStateの設定
 		D3D12_RASTERIZER_DESC rasterizerDesc{};
 
 		// 裏面(時計回り)を表示しない
@@ -184,26 +187,20 @@ namespace Kouro
 		// 三角形の中を塗りつぶす
 		rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
-		// Shaderをコンパイルする
-		Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Sprite.VS.hlsl", L"vs_6_0");
-		assert(vertexShaderBlob != nullptr);
-
-		Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Sprite.PS.hlsl", L"ps_6_0");
-		assert(pixelShaderBlob != nullptr);
-
 		// DepthStencilStateの設定
 		D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 
 		// Depthの機能を有効化する
 		depthStencilDesc.DepthEnable = false;
 
+		// グラフィックスパイプラインステートの設定
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-		graphicsPipelineStateDesc.pRootSignature = rootSignature.Get(); // RootSignature
-		graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;  // InputLayout
-		graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),vertexShaderBlob->GetBufferSize() }; // VertexShader
-		graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(),pixelShaderBlob->GetBufferSize() };   // PixelShader
-		graphicsPipelineStateDesc.BlendState = blendDesc; //BlendState
-		graphicsPipelineStateDesc.RasterizerState = rasterizerDesc; // RasterizerState
+		graphicsPipelineStateDesc.pRootSignature = rootSignature.Get();
+		graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;
+		graphicsPipelineStateDesc.VS = { shader_.vertexShader->GetBufferPointer(),shader_.vertexShader->GetBufferSize() };
+		graphicsPipelineStateDesc.PS = { shader_.pixelShader->GetBufferPointer(),shader_.pixelShader->GetBufferSize() };
+		graphicsPipelineStateDesc.BlendState = blendDesc;
+		graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;
 
 		// 書き込むRTVの情報
 		graphicsPipelineStateDesc.NumRenderTargets = 1;
@@ -222,7 +219,7 @@ namespace Kouro
 
 		// 実際に生成
 		graphicsPipelineStateForeground = nullptr;
-		hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineStateForeground));
+		hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineStateForeground));
 		assert(SUCCEEDED(hr));
 	}
 
@@ -268,7 +265,7 @@ namespace Kouro
 		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 
-		// RasiterzerStateの設定
+		// RasterizerStateの設定
 		D3D12_RASTERIZER_DESC rasterizerDesc{};
 
 		// 裏面(時計回り)を表示しない
@@ -276,13 +273,6 @@ namespace Kouro
 
 		// 三角形の中を塗りつぶす
 		rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-
-		// Shaderをコンパイルする
-		Microsoft::WRL::ComPtr<IDxcBlob> vertexShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Sprite.VS.hlsl", L"vs_6_0");
-		assert(vertexShaderBlob != nullptr);
-
-		Microsoft::WRL::ComPtr<IDxcBlob> pixelShaderBlob = dxCommon_->CompileShader(L"Resources/shaders/Sprite.PS.hlsl", L"ps_6_0");
-		assert(pixelShaderBlob != nullptr);
 
 		// DepthStencilStateの設定
 		D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
@@ -299,8 +289,8 @@ namespace Kouro
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
 		graphicsPipelineStateDesc.pRootSignature = rootSignature.Get(); // RootSignature
 		graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;  // InputLayout
-		graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(),vertexShaderBlob->GetBufferSize() }; // VertexShader
-		graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(),pixelShaderBlob->GetBufferSize() };   // PixelShader
+		graphicsPipelineStateDesc.VS = { shader_.vertexShader->GetBufferPointer(),shader_.vertexShader->GetBufferSize() }; // VertexShader
+		graphicsPipelineStateDesc.PS = { shader_.pixelShader->GetBufferPointer(),shader_.pixelShader->GetBufferSize() };   // PixelShader
 		graphicsPipelineStateDesc.BlendState = blendDesc; //BlendState
 		graphicsPipelineStateDesc.RasterizerState = rasterizerDesc; // RasterizerState
 
@@ -321,7 +311,7 @@ namespace Kouro
 
 		// 実際に生成
 		graphicsPipelineStateBackground = nullptr;
-		hr = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineStateBackground));
+		hr = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineStateBackground));
 		assert(SUCCEEDED(hr));
 	}
 }

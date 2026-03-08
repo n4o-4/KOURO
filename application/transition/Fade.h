@@ -3,6 +3,7 @@
 #include <algorithm>
 //==============================
 // engine
+#include "GpuResourceUtils.h"
 #include "TextureManager.h"
 #include "SpriteCommon.h"
 #include "Sprite.h"
@@ -28,8 +29,9 @@ public:
 
 public:
 
+	// TODO : Spriteを引数として渡すように変更
 	// \brief 初期化
-	void Initialize();
+	void Initialize(ID3D12GraphicsCommandList* commandList, const Kouro::GpuResourceUtils* gpuResourceUtils);
 
 	// \brief Update 更新
 	void Update();
@@ -46,7 +48,7 @@ public:
 
 	/**
 	* \brief  IsFinished フェードの終了フラグを取得する
-	* \return bool       終了している場合ture、していない場合false
+	* \return bool       終了している場合true、していない場合false
 	*/
 	bool IsFinished() const;
 
@@ -69,16 +71,12 @@ private:
 
 private:
 
-	// フェード用のスプライト
 	std::unique_ptr<Kouro::Sprite> curtain_ = nullptr;
 
-	// フェードのステータス
 	Status status_ = Status::None;
 
-	// フェードの持続時間
 	float duration_ = 0.0f;
 
-	// 経過時間のカウンター		
 	float counter_ = 0.0f;
 };
 

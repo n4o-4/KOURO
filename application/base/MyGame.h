@@ -25,10 +25,10 @@ public: //　メンバ関数
 	void Draw() override;
 
 	/**
-	* \brief  IsEndRequest 終了要求が来ているか
-	* \return 終了要求が来ているか
+	* \brief  終了要求が来ているか
+	* \return isEndRequest 終了要求のフラグ
 	*/
-	bool IsEndRequest() override { return endRequest_; }
+	bool IsEndRequest() override { return Framework::IsEndRequest(); }
 
 private:
 

@@ -1,7 +1,7 @@
 #include "GameClear.h"
 //#include "Camera.h"
 
-void GameClear::Initialize(Kouro::EngineContext context)
+void GameClear::Initialize(Kouro::EngineContext& context)
 {
 	// 基底クラスの初期化
 	BaseScene::Initialize(context);
@@ -12,7 +12,7 @@ void GameClear::Initialize(Kouro::EngineContext context)
 
 	// ゲームクリア用のスプライトの生成と初期化
 	gameClearSprite_ = std::make_unique<Kouro::Sprite>();
-	gameClearSprite_->Initialize(Kouro::SpriteCommon::GetInstance(), "texture/GameClear.png");
+	gameClearSprite_->Initialize(context.gpuContext.d3d12Context.commandList, context.gpuContext.gpuResourceUtils, "texture/GameClear.png");
 	gameClearSprite_->SetSize({ 1280.0f,720.0f });
 	gameClearSprite_->SetPosition({ 640.0f,360.0f });
 	gameClearSprite_->SetAnchorPoint({ 0.5f,0.5f });
@@ -27,7 +27,7 @@ void GameClear::Initialize(Kouro::EngineContext context)
 
 	// スコア(文字)用のスプライトクラスの生成と初期化
 	scoreLabelSprite_ = std::make_unique<Kouro::Sprite>();
-	scoreLabelSprite_->Initialize(Kouro::SpriteCommon::GetInstance(), "texture/score.png");
+	scoreLabelSprite_->Initialize(context.gpuContext.d3d12Context.commandList, context.gpuContext.gpuResourceUtils, "texture/score.png");
 	scoreLabelSprite_->SetTexSize({ 640.0f,128.0f });
 	scoreLabelSprite_->SetPosition({ 320.0f,550.0f });
 	scoreLabelSprite_->SetSize({ 480.0f,128.0f });

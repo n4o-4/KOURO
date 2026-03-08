@@ -16,7 +16,7 @@ namespace Kouro
 		shaderCache_[key] = shader;
 	}
 
-	Shader::GraphicsShader Kouro::ShaderManager::GetShader(const std::string& key) const
+	const Shader::GraphicsShader& ShaderManager::GetShader(const std::string& key) const
 	{
 		// キーが存在するか確認
 		auto it = shaderCache_.find(key);
@@ -32,7 +32,8 @@ namespace Kouro
 		{
 			Logger::Log("Shader with key \"" + key + "\" not found. Returning an empty shader.");
 
-			return Shader::GraphicsShader{};
+			static Shader::GraphicsShader emptyShader;
+			return emptyShader;
 		}
 	}
 }
