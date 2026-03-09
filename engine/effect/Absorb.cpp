@@ -2,10 +2,10 @@
 
 namespace Kouro
 {
-	void Absorb::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void Absorb::Initialize(GpuContext context, SrvManager* srvManager)
 	{
 		// パイプラインの生成
-		BaseEffect::Initialize(dxCommon, srvManager);
+		BaseEffect::Initialize(context,srvManager);
 
 		//パイプラインの初期化
 		CreatePipeline();
@@ -198,7 +198,7 @@ namespace Kouro
 	void Absorb::CreateMaterial()
 	{
 		// bufferResourceの生成
-		resource_ = dxCommon_->CreateBufferResource(sizeof(AbsorbShader::Material));
+		resource_ = gpuResourceUtils_.CreateBufferResource(sizeof(AbsorbShader::Material));
 
 		// データをマップ
 		resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));

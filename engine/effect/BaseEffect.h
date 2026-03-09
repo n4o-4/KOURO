@@ -4,6 +4,7 @@
 #include "CameraManager.h"
 
 #include "Vectors.h"
+#include "GpuContext.h"
 
 
 
@@ -31,7 +32,7 @@ namespace Kouro
 		* \param  dxCommon DirectXCommonのポインタ
 		* \param  srvManager SrvManagerのポインタ
 		*/
-		virtual void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager);
+		virtual void Initialize(GpuContext context, SrvManager* srvManager);
 
 		/// \brief  更新
 		virtual void Update() = 0;
@@ -47,10 +48,10 @@ namespace Kouro
 		* \brief  カメラマネージャーのセット
 		* \param  cameraManager カメラマネージャーのポインタ
 		*/
-		virtual void SetCameraManager(CameraManager* cameraManager);
+		virtual void SetCameraManager(CameraManager* cameraManager) = 0;
 
 		/// \brief  リセット
-		virtual void Reset();
+		virtual void Reset() = 0;
 
 	private:
 
@@ -59,8 +60,10 @@ namespace Kouro
 
 	protected:
 
-		DirectXCommon* dxCommon_ = nullptr;
-
+		DirectXCommon* dxCommon_ = nullptr; //!< DirectXCommonのポインタ
+		ID3D12Device* device_ = nullptr; //!< デバイスのポインタ
+		ID3D12GraphicsCommandList* commandList_ = nullptr; //!< コマンドリストのポインタ
+		GpuResourceUtils& gpuResourceUtils_; //!< GPUリソースユーティリティ
 		SrvManager* srvManager_ = nullptr;
 
 		std::unique_ptr<Pipeline> pipeline_ = nullptr;

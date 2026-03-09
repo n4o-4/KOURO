@@ -1,8 +1,8 @@
-#include "ObjectLine.h"
+#include "LineObject.h"
 
 namespace Kouro
 {
-	void ObjectLine::Initialize(LineModel* model)
+	void LineObject::Initialize(LineModel* model)
 	{
 		model_ = model;
 
@@ -25,7 +25,7 @@ namespace Kouro
 		lineData_->color = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
-	void ObjectLine::Draw(WorldTransform* worldTransform)
+	void LineObject::Draw(WorldTransform* worldTransform)
 	{
 		// モデルがセットされていない場合は描画しない
 		if (model_ == nullptr)

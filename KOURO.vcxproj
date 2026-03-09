@@ -16,6 +16,7 @@
     <ClCompile Include="application\object\enemy\LissajousMoveState.cpp" />
     <ClCompile Include="application\object\enemy\AttackState.cpp" />
     <ClCompile Include="application\camera\title\AlignCameraState.cpp" />
+    <ClCompile Include="BaseRenderer.cpp" />
     <ClCompile Include="engine\core\GpuResourceInternal.cpp" />
     <ClCompile Include="engine\3d\particle\BaseParticleEmitter.cpp" />
     <ClCompile Include="engine\effect\Absorb.cpp" />
@@ -145,7 +146,7 @@
     <ClCompile Include="application\camera\title\TitleCamera.cpp" />
     <ClCompile Include="engine\system\ModelLoader.cpp" />
     <ClCompile Include="engine\system\NumUi.cpp" />
-    <ClCompile Include="engine\3d\object\ObjectLine.cpp" />
+    <ClCompile Include="engine\3d\object\LineObject.cpp" />
     <ClCompile Include="application\base\Rail.cpp" />
     <ClCompile Include="engine\system\UavManager.cpp" />
     <ClCompile Include="engine\3d\particle\ModelEdgeEmitter.cpp" />
@@ -167,8 +168,12 @@
     <ClCompile Include="application\system\UIManager.cpp" />
     <ClCompile Include="engine\system\YamlLoader.cpp" />
     <ClCompile Include="PipelineUtils.cpp" />
+    <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="RenderTargetManager.cpp" />
+    <ClCompile Include="Resources\scenes\title.yaml" />
+    <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="SpriteRenderer.cpp" />
     <ClCompile Include="StringUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +181,7 @@
     <ClInclude Include="application\system\EventController.h" />
     <ClInclude Include="application\camera\title\FollowCameraState.h" />
     <ClInclude Include="application\camera\title\LookAtPlayerState.h" />
+    <ClInclude Include="BaseRenderer.h" />
     <ClInclude Include="engine\3d\particle\PointEmitter.h" />
     <ClInclude Include="application\system\SpriteMotionLibrary.h" />
     <ClInclude Include="application\scene\SceneCommand.h" />
@@ -293,7 +299,7 @@
     <ClInclude Include="engine\system\LineObjectManager.h" />
     <ClInclude Include="engine\system\ModelLoader.h" />
     <ClInclude Include="engine\system\NumUi.h" />
-    <ClInclude Include="engine\3d\object\ObjectLine.h" />
+    <ClInclude Include="engine\3d\object\LineObject.h" />
     <ClInclude Include="application\base\Rail.h" />
     <ClInclude Include="engine\system\UavManager.h" />
     <ClInclude Include="engine\3d\particle\GpuParticleManager.h" />
@@ -339,9 +345,13 @@
     <ClInclude Include="application\system\UIManager.h" />
     <ClInclude Include="engine\system\YamlLoader.h" />
     <ClInclude Include="PipelineUtils.h" />
+    <ClInclude Include="RenderManager.h" />
     <ClInclude Include="RenderTargetManager.h" />
+    <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="StringUtils.h" />
+    <ClInclude Include="UploadBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

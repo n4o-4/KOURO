@@ -2,10 +2,10 @@
 
 namespace Kouro
 {
-	void RadialBlur::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void RadialBlur::Initialize(GpuContext context, SrvManager* srvManager)
 	{
 		// パイプラインの生成
-		BaseEffect::Initialize(dxCommon, srvManager);
+		BaseEffect::Initialize(context, srvManager);
 
 		//パイプラインの初期化
 		CreatePipeline();

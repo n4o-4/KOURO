@@ -2,10 +2,10 @@
 
 namespace Kouro
 {
-	void Vignette::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void Vignette::Initialize(GpuContext context, SrvManager* srvManager)
 	{
 		// パイプラインの生成
-		BaseEffect::Initialize(dxCommon, srvManager);
+		BaseEffect::Initialize(context, srvManager);
 
 		//パイプラインの初期化
 		CreatePipeline();

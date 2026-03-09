@@ -394,7 +394,7 @@
     <ClCompile Include="engine\system\GlobalVariables.cpp">
       <Filter>engine\system</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\object\ObjectLine.cpp">
+    <ClCompile Include="engine\3d\object\LineObject.cpp">
       <Filter>engine\3d\model</Filter>
     </ClCompile>
     <ClCompile Include="engine\3d\particle\BaseParticleEmitter.cpp">
@@ -575,6 +575,11 @@
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="PipelineUtils.cpp" />
+    <ClCompile Include="SceneLoader.cpp" />
+    <ClCompile Include="Resources\scenes\title.yaml" />
+    <ClCompile Include="RenderManager.cpp" />
+    <ClCompile Include="BaseRenderer.cpp" />
+    <ClCompile Include="SpriteRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -880,7 +885,7 @@
     <ClInclude Include="engine\system\GlobalVariables.h">
       <Filter>engine\system</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\object\ObjectLine.h">
+    <ClInclude Include="engine\3d\object\LineObject.h">
       <Filter>engine\3d\model</Filter>
     </ClInclude>
     <ClInclude Include="engine\system\LineObjectFactory.h">
@@ -1068,6 +1073,11 @@
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="PipelineUtils.h" />
+    <ClInclude Include="SceneLoader.h" />
+    <ClInclude Include="RenderManager.h" />
+    <ClInclude Include="BaseRenderer.h" />
+    <ClInclude Include="SpriteRenderer.h" />
+    <ClInclude Include="UploadBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

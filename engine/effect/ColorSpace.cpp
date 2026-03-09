@@ -2,10 +2,10 @@
 
 namespace Kouro
 {
-	void ColorSpace::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void ColorSpace::Initialize(GpuContext context, SrvManager* srvManager)
 	{
 		// パイプラインの生成
-		BaseEffect::Initialize(dxCommon, srvManager);
+		BaseEffect::Initialize(context, srvManager);
 
 		//パイプラインの初期化
 		CreatePipeline();
@@ -205,7 +205,7 @@ namespace Kouro
 	void ColorSpace::CreateMaterial()
 	{
 		// bufferResourceの生成
-		resource_ = dxCommon_->CreateBufferResource(sizeof(ColorSpaceShader::Material));
+		resource_ = gpuResourceUtils_.CreateBufferResource(sizeof(ColorSpaceShader::Material));
 
 		// データをマップ
 		resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));

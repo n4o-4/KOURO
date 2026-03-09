@@ -2,10 +2,10 @@
 
 namespace Kouro
 {
-	void Grayscale::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void Grayscale::Initialize(GpuContext context, SrvManager* srvManager)
 	{
 		// パイプラインの生成
-		BaseEffect::Initialize(dxCommon, srvManager);
+		BaseEffect::Initialize(context, srvManager);
 
 		//パイプラインの初期化
 		CreatePipeline();

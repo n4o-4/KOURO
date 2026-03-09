@@ -2,10 +2,10 @@
 
 namespace Kouro
 {
-	void Dissolve::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void Dissolve::Initialize(GpuContext context, SrvManager* srvManager)
 	{
 		// パイプラインの生成
-		BaseEffect::Initialize(dxCommon, srvManager);
+		BaseEffect::Initialize(context, srvManager);
 
 		// テクスチャの読み込み
 		TextureManager::GetInstance()->LoadTexture("texture/noise_texture.png");
@@ -241,7 +241,7 @@ namespace Kouro
 	void Dissolve::CreateMaterial()
 	{
 		// bufferResourceの生成
-		resource_ = dxCommon_->CreateBufferResource(sizeof(DissolveShader::Material));
+		resource_ = gpuResourceUtils_.CreateBufferResource(sizeof(DissolveShader::Material));
 
 		// データをマップ
 		resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));

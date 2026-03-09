@@ -12,5 +12,12 @@ namespace Kouro
 		* \param  sizeInBytes : バッファサイズ（バイト単位）
 		*/
 		Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(ID3D12Device* device, size_t sizeInBytes);
+
+		/**
+		* \brief  アップロードバッファリソース作成関数
+		* \param  device      : ID3D12Deviceのポインタ
+		* \param  sizeInBytes : バッファサイズ（バイト単位）
+		*/
+		Microsoft::WRL::ComPtr<ID3D12Resource> CreateUploadBufferResource(ID3D12Device* device, size_t sizeInBytes);
 	}
 }

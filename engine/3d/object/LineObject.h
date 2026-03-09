@@ -29,7 +29,7 @@ namespace Kouro
 
 	// ==============================================================
 
-	class ObjectLine
+	class LineObject
 	{
 	public:
 

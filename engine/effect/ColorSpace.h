@@ -29,7 +29,7 @@ namespace Kouro
 		* \param	dxCommon DirectXCommonのポインタ
 		* \param	srvManager SrvManagerのポインタ
 		*/
-		void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager) override;
+		void Initialize(GpuContext context, SrvManager* srvManager) override;
 
 		/// \brief  更新
 		void Update() override;

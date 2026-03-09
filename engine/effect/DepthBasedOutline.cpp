@@ -2,10 +2,10 @@
 
 namespace Kouro
 {
-	void DepthBasedOutline::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void DepthBasedOutline::Initialize(GpuContext context, SrvManager* srvManager)
 	{
 		// パイプラインの生成
-		BaseEffect::Initialize(dxCommon, srvManager);
+		BaseEffect::Initialize(context, srvManager);
 
 		//パイプラインの初期化
 		CreatePipeline();
@@ -263,7 +263,7 @@ namespace Kouro
 	void DepthBasedOutline::CreateMaterial()
 	{
 		// bufferResourceの生成
-		resource_ = DirectXCommon::GetInstance()->CreateBufferResource(sizeof(DepthOutline::Material));
+		resource_ = gpuResourceUtils_.CreateBufferResource(sizeof(DepthOutline::Material));
 
 		// データをマップ
 		resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data_));

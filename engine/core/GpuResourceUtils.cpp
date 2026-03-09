@@ -9,4 +9,9 @@ namespace Kouro
 		// GpuResourceInternalのCreateBufferResourceを呼び出す
 		return GpuResourceInternal::CreateBufferResource(device_, sizeInBytes);
 	}
+	Microsoft::WRL::ComPtr<ID3D12Resource> GpuResourceUtils::CreateUploadBufferResource(size_t sizeInBytes) const
+	{
+		// GpuResourceInternalのCreateUploadBufferResourceを呼び出す
+		return GpuResourceInternal::CreateUploadBufferResource(device_, sizeInBytes);
+	}
 }

@@ -2,10 +2,10 @@
 
 namespace Kouro
 {
-	void Random::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
+	void Random::Initialize(GpuContext context, SrvManager* srvManager)
 	{
 		// パイプラインの生成
-		BaseEffect::Initialize(dxCommon, srvManager);
+		BaseEffect::Initialize(context, srvManager);
 
 		//パイプラインの初期化
 		CreatePipeline();
