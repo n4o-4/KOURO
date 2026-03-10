@@ -5,6 +5,7 @@
 
 namespace Kouro
 {
+	/// \brief UploadBuffer アップロードバッファクラス
 	template <typename T>
 	class UploadBuffer
 	{
@@ -42,7 +43,7 @@ namespace Kouro
 
 	private:
 
-		const SIZE_T elementCount_; //!< 
+		const SIZE_T elementCount_; //!< バッファ数
 
 		Microsoft::WRL::ComPtr<ID3D12Resource> resource_; //!< アップロードバッファのリソース
 		T* mappedData_ = nullptr; //!< マップされたデータのポインタ

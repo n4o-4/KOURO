@@ -175,6 +175,7 @@
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
     <ClCompile Include="StringUtils.cpp" />
+    <ClCompile Include="UploadRingBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\system\Event.h" />
@@ -182,6 +183,7 @@
     <ClInclude Include="application\camera\title\FollowCameraState.h" />
     <ClInclude Include="application\camera\title\LookAtPlayerState.h" />
     <ClInclude Include="BaseRenderer.h" />
+    <ClInclude Include="engine\2d\SpriteTypes.h" />
     <ClInclude Include="engine\3d\particle\PointEmitter.h" />
     <ClInclude Include="application\system\SpriteMotionLibrary.h" />
     <ClInclude Include="application\scene\SceneCommand.h" />
@@ -352,6 +354,7 @@
     <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="UploadBuffer.h" />
+    <ClInclude Include="UploadRingBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

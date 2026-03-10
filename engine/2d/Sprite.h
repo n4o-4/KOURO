@@ -161,33 +161,7 @@ namespace Kouro
 
 	private:
 
-		struct VertexData
-		{
-			Vector4 position;
-			Vector2 texcoord;
-			Vector3 normal;
-		};
-
-		struct Material
-		{
-			Vector4 color;
-			int enableLighting;
-			float padding[3];
-			Matrix4x4 uvTransform;
-		};
-
-		struct TransformationMatrix
-		{
-			Matrix4x4 WVP;
-			Matrix4x4 World;
-		};
-
-		struct Transform
-		{
-			Vector3 scale;
-			Vector3 rotate;
-			Vector3 translate;
-		};
+		
 
 		ID3D12GraphicsCommandList* cmdList_ = nullptr; //!< コマンドリストへのポインタ
 		const GpuResourceUtils* gpuResourceUtils_ = nullptr; //!< GpuResourceUtilsへのポインタ

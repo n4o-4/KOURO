@@ -580,6 +580,7 @@
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="BaseRenderer.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
+    <ClCompile Include="UploadRingBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -1078,6 +1079,8 @@
     <ClInclude Include="BaseRenderer.h" />
     <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="UploadBuffer.h" />
+    <ClInclude Include="engine\2d\SpriteTypes.h" />
+    <ClInclude Include="UploadRingBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
