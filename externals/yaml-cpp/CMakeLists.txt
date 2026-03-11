@@ -185,7 +185,8 @@ if (YAML_CPP_INSTALL)
 endif()
 
 if(YAML_CPP_BUILD_TESTS)
-  add_subdirectory(test)
+  add_subdirectory(externals/yaml-cpp)
+  target_link_libraries(
 endif()
 
 if(YAML_CPP_BUILD_TOOLS)

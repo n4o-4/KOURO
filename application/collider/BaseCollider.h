@@ -15,6 +15,8 @@ class BaseEntity; // 前方宣言
 class BaseCollider
 {
 public: /// 公開メンバ関数
+	
+	virtual ~BaseCollider() = default;
 
 	/**
 	 * \brief  Initialize 初期化

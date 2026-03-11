@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <d3d12.h>
 
+#include "GpuResourceUtils.h"
+
 /// \brief アロケーション構造体
 struct Allocator
 {
@@ -16,9 +18,11 @@ namespace Kouro
 	{
 	public:
 
-
+		void Initialize(Microsoft::WRL::ComPtr<ID3D12Resource> resource);
 
 	private:
+
+		Microsoft::WRL::ComPtr<ID3D12Resource> resource_ = nullptr; //!< アップロードリングバッファのリソース
 
 		uint8_t* mappedData_ = nullptr; //!< マップされたデータのポインタ
 
