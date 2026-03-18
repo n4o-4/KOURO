@@ -98,7 +98,11 @@ namespace Kouro
 		*/
 		const Microsoft::WRL::ComPtr<ID3D12Resource>& GetPointLightResource() { return pointLightResource_; }
 
-	public:
+	private:
+
+		Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource_;
+
+		PointLightData* pointLightData_ = nullptr;
 
 		
 
