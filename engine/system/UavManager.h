@@ -61,7 +61,7 @@ namespace Kouro
 		/**
 		* \brief  CheckUavCount UAVの数が上限に達しているかどうか確認する
 		*/
-		bool CheckUavCount();
+		bool CheckUAVCount();
 
 	private: // 非公開メンバ関数
 

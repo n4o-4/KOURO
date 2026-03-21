@@ -20,12 +20,14 @@ public: // 公開メンバ関数
 	 */
 	Kouro::WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
+	bool IsAlive() const { return isAlive_; }
+
 protected: // 派生用メンバ関数
 
 	// \brief DrawImGui ImGui描画
 	void DrawImGui();
 
-public: // 派生用メンバ変数
+protected: // 派生用メンバ変数
 
 	// ワールドトランスフォーム
 	std::unique_ptr<Kouro::WorldTransform> worldTransform_;

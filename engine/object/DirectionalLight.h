@@ -30,20 +30,54 @@ namespace Kouro
 		void Update();
 
 		/**
+		* \brief  ライトの色を取得する
+		* \return ライトの色
+		*/
+		const Vector4& GetColor() const { return color_; }
+
+		/**
+		* \brief  ライトの方向を取得する
+		* \return ライトの方向
+		*/
+		const Vector3& GetDirection() const { return direction_; }
+
+		/**
+		* \brief  ライトの強度を取得する
+		* \return ライトの強度
+		*/
+		const float GetIntensity() const { return intensity_; }
+
+		/**
+		* \brief  ライトの色を設定する
+		* \param  color ライトの色
+		*/
+		void SetColor(const Vector4& color) { color_ = color; }
+
+		/**
+		* \brief  ライトの方向を設定する
+		* \param  direction ライトの方向
+		*/
+		void SetDirection(const Vector3& direction) { direction_ = direction; }
+
+		/**
+		* \brief  ライトの強度を設定する
+		* \param  intensity ライトの強度
+		*/
+		void SetIntensity(float intensity) { intensity_ = intensity; }
+
+		/**
 		* \brief  DirectionalLight用リソースの取得
 		* \return directionalLightResource
 		*/
 		const Microsoft::WRL::ComPtr<ID3D12Resource>& GetDirectionalLightResource() { return directionalLightResource_; }
 
-	public:
-
-		Vector4 color_;
-		Vector3 direction_;
-		float intensity_;
-
 	private:
 		Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_;
 
 		DirectionalLightData* directionalLightData_ = nullptr;
+
+		Vector4 color_;
+		Vector3 direction_;
+		float intensity_;
 	};
 }

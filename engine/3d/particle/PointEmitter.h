@@ -50,6 +50,10 @@ namespace Kouro
 		*/
 		void SetEmitterProperties(Vector3 translate, uint32_t count, Vector3 velocityMin, Vector3 velocityMax, float lifeTimeMin, float lifeTimeMax, float frequency);
 
+		/**
+		* \brief  ワールド変換クラスのポインタを取得する関数
+		* \return wTransform_ ワールド変換クラスのポインタ
+		*/
 		WorldTransform* GetWorldTransform() { return wTransform_.get(); }
 
 	private:

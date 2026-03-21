@@ -158,7 +158,7 @@ namespace Kouro
 		///------------------------------
 		/// メンバ変数
 		///------------------------------
-	public:
+		private:
 
 		std::unordered_map<std::string, Animation> animations;
 

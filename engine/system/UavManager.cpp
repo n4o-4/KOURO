@@ -16,6 +16,13 @@ namespace Kouro
 
 	uint32_t UavManager::Allocate()
 	{
+		// UAVの数が上限に達していないか確認する
+		if(!CheckUAVCount())
+		{
+			// 上限に達している場合はエラー処理
+			return UINT32_MAX;
+		}
+
 		// return する番号を一旦記録しておく
 		int index = useIndex_;
 
@@ -70,7 +77,7 @@ namespace Kouro
 		return handleGPU;
 	}
 
-	bool UavManager::CheckUavCount()
+	bool UavManager::CheckUAVCount()
 	{
 		// 使用しているUAVインデックスが上限に達しているかどうか確認する
 		if (useIndex_ < kMaxUAVCount)

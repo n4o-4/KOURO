@@ -210,7 +210,7 @@ namespace Kouro
 		Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;
 		Particle::Material* material_ = nullptr;
 
-		// �G�~�b�^�[
+		// emitter
 		Microsoft::WRL::ComPtr<ID3D12Resource> emitterResource_ = nullptr;
 		Particle::EmitterSphere* emitter_ = nullptr;
 
