@@ -8,6 +8,11 @@ class BaseEntity
 {
 public: // 公開メンバ関数
 
+	/**
+	* \brief  デストラクタ
+	*/
+	virtual ~BaseEntity() = default;
+
 	// \brief  Initialize 初期化
 	void Initialize();
 
