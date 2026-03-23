@@ -2,14 +2,14 @@
 
 namespace Kouro
 {
-	std::unique_ptr<LevelLoader::LevelData> LevelLoader::LoadLevel(nlohmann::json deserialized)
+	std::unique_ptr<LevelLoader::LevelData> LevelLoader::LoadLevel(const nlohmann::json& deserialized)
 	{
 
 		// レベルデータ格納用インスタンスを生成
 		std::unique_ptr<LevelLoader::LevelData> levelData = std::make_unique<LevelData>();
 
 		// "objects"の全オブジェクトを走査
-		for (nlohmann::json& object : deserialized["objects"])
+		for (const nlohmann::json& object : deserialized["objects"])
 		{
 			assert(object.contains("type"));
 
@@ -35,7 +35,7 @@ namespace Kouro
 					objectData.worldTransform->Initialize();
 
 					// トランスフォームのパラメータ読み込み
-					nlohmann::json& transform = object["transform"];
+					const nlohmann::json& transform = object["transform"];
 
 					// 平行移動
 					objectData.worldTransform->SetTranslate({ (float)transform["translate"][1], (float)transform["translate"][2], -(float)transform["translate"][0] });
@@ -72,7 +72,7 @@ namespace Kouro
 		return levelData;
 	}
 
-	std::unique_ptr<LevelLoader::LevelData> LevelLoader::LoadLevelFromJson(std::string fileName)
+	std::unique_ptr<LevelLoader::LevelData> LevelLoader::LoadLevelFromJson(const std::string& fileName)
 	{
 		// 連結してフルパスを得る  
 		const std::string fullpath = fileName;

@@ -81,7 +81,7 @@ namespace Kouro
 		* \brief  初期化
 		* \param  dxCommon DirectXCommonのポインタ
 		* \param  srvManager SrvManagerのポインタ
-		* \param  uavManagedr UavManagerのポインタ
+		* \param  uavManager UavManagerのポインタ
 		*/
 		void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, UavManager* uavManagedr);
 

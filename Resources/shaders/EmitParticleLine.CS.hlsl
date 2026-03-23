@@ -1,4 +1,4 @@
-﻿#include "Particle.CS.hlsli"
+#include "Particle.CS.hlsli"
 
 struct TransformData
 {
@@ -29,9 +29,10 @@ RWStructuredBuffer<uint> gNoiseUpdateList : register(u3);   // 7
 RWStructuredBuffer<uint> gBaseUpdateList : register(u4);    // 8
 [numthreads(512, 1, 1)]
 
-void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID)
+void main(uint3 DTid : SV_DispatchThreadID, uint3 Gid : SV_GroupID, uint GTid : SV_GroupThreadID)
 {
     if (gEmitter.emit == 0) return;
+    if (GTid.x >= gEmitter.count) return;
     
     RandomGenerator generator;
     generator.seed = gPerFrame.time + (float)DTid.x * 13.0f;

@@ -1,4 +1,5 @@
 #include "GameOver.h"
+#include "MyMath.h"
 
 void GameOver::Initialize(Kouro::EngineContext context)
 {
@@ -17,8 +18,14 @@ void GameOver::Initialize(Kouro::EngineContext context)
 	gameOverSprite_->SetTexSize({ 1536.0f,1024.0f });
 	gameOverSprite_->Update();
 
+	emitter_ = std::make_unique<Kouro::ModelEdgeEmitter>();
+	emitter_->Initialize("normal",context);
+	emitter_->CreateLineSegment("player/player.obj");
+	emitter_->SetEmitCount(10);
+
 	std::unique_ptr<Kouro::Camera> camera = std::make_unique<Kouro::Camera>();
 	camera->Initialize();
+	camera->SetTranslate(Kouro::Vector3(0.0f, 5.0f, -30.0f));
 
 	cameraManager_->AddCamera("camera", std::move(camera));
 	cameraManager_->SetActiveCamera("camera");
@@ -43,6 +50,8 @@ void GameOver::Update()
 
 			// フェーズをメインに変更
 			phase_ = Phase::kMain;
+
+			emitter_->Emit(Kouro::MakeIdentity4x4());
 		}
 
 		break;

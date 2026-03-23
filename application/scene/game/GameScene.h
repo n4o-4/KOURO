@@ -111,7 +111,6 @@ private:
 	std::unique_ptr<Kouro::ModelEdgeEmitter> mEmitter = nullptr;
 	std::unique_ptr<Kouro::PointEmitter> pointEmitter_ = nullptr;
 
-
 	std::unique_ptr<Kouro::ParticleEmitter> hitEffect2_Circle1_ = nullptr;
 	std::unique_ptr<Kouro::ParticleEmitter> hitEffect2_Circle2_ = nullptr;
 

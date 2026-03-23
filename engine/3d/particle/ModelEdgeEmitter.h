@@ -46,6 +46,11 @@ namespace Kouro
 		*/
 		void CreateLineSegment(std::string filePath);
 
+		/**
+		* \brief  
+		*/
+		void SetEmitCount(uint32_t count);
+
 	private:
 
 		/// \brief ラインセグメントリソース作成関数

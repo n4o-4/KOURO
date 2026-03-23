@@ -370,26 +370,6 @@ void GameScene::Update()
 
 	transform_->UpdateMatrix();
 
-	// プレイヤーが死亡していたら
-	if (!player_->GetIsAlive())
-	{
-		// Dissolveエフェクトの取得
-		auto* dissolve = static_cast<Kouro::Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
-		dissolve->edgeColor = { 1.0f,0.0f,0.0f };
-		dissolve->thresholdWidth = 0.25f;
-
-		k += 0.01f;
-
-		// Dissolveエフェクトの閾値をイージングで増加させる
-		dissolve->threshold = Kouro::Easing::EaseInQuad(k);
-
-		// 閾値が1.0f以上になったらシーンをゲームオーバーに変更
-		if (dissolve->threshold >= 1.0f)
-		{
-			sceneManager_->ChangeScene("OVER");
-		}
-	}
-
 	// 敵の数を取得
 	size_t enemyCount = enemies_.size();
 
@@ -451,13 +431,38 @@ void GameScene::Update()
 			return;
 		}
 
-		UpdateAllObjects(1.0f / 60.0f);
+		if (player_->GetIsAlive())
+		{
+			UpdateAllObjects(1.0f / 60.0f);
+			pointEmitter_->Emit(player_->GetWorldTransform()->GetWorldMatrix());
+		}
+
 
 		for (auto& enemy : enemies_)
 		{
 			if (!enemy->GetIsAlive())
 			{
 				++eliminatedEnemyCount_;
+			}
+		}
+
+		// プレイヤーが死亡していたら
+		if (!player_->GetIsAlive())
+		{
+			// Dissolveエフェクトの取得
+			auto* dissolve = static_cast<Kouro::Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
+			dissolve->edgeColor = { 1.0f,0.0f,0.0f };
+			dissolve->thresholdWidth = 0.25f;
+
+			k += 0.01f;
+
+			// Dissolveエフェクトの閾値をイージングで増加させる
+			dissolve->threshold = Kouro::Easing::EaseInQuad(k);
+
+			// 閾値が1.0f以上になったらシーンをゲームオーバーに変更
+			if (dissolve->threshold >= 1.0f)
+			{
+				sceneManager_->ChangeScene("OVER");
 			}
 		}
 
@@ -470,7 +475,7 @@ void GameScene::Update()
 		}
 
 		pointEmitter_->Update();
-		pointEmitter_->Emit(player_->GetWorldTransform()->GetWorldMatrix());
+		
 
 		break;
 	case Phase::kFadeOut:

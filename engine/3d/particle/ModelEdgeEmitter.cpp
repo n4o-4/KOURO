@@ -65,6 +65,11 @@ namespace Kouro
 		CreateSegmentResource();
 	}
 
+	void ModelEdgeEmitter::SetEmitCount(uint32_t count)
+	{
+		emitter_->count = count;
+	}
+
 	void ModelEdgeEmitter::CreateSegmentResource()
 	{
 		// ラインセグメント用リソース作成

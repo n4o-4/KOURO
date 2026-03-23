@@ -13,7 +13,7 @@
 #include "ParticleManager.h"
 #include "ParticleEmitter.h"
 #include "SceneManager.h"
-#include "Audio.h"
+#include "ModelEdgeEmitter.h"
 
 // \brief GameOver ゲームオーバーシーンクラス
 
@@ -37,6 +37,8 @@ public:
 private:
 
 	std::unique_ptr<Kouro::Sprite> gameOverSprite_ = nullptr;
+
+	std::unique_ptr<Kouro::ModelEdgeEmitter> emitter_ = nullptr;
 
 	float timer_ = 0.0f;
 
