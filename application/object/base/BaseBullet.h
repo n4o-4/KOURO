@@ -10,6 +10,9 @@ class BaseBullet : public BaseEntity
 {
 public: // 公開メンバ関数
 	
+	/// \brief 仮想デストラクタ
+	virtual ~BaseBullet() = default;
+
 	/**
 	 * \brief  Initialize 初期化
 	 * \param  model モデル

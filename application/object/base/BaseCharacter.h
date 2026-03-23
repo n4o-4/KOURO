@@ -19,6 +19,9 @@ private:
 
 public: // 公開メンバ関数
 
+	/// \brief 仮想デストラクタ
+	virtual ~BaseCharacter() = default;
+
 	/**
 	* \brief  Initialize 初期化
 	* \param  LineModel 線モデル

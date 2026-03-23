@@ -16,6 +16,9 @@ class BaseCollider
 {
 public: /// 公開メンバ関数
 
+	/// \brief 仮想デストラクタ
+	virtual ~BaseCollider() = default;
+
 	/**
 	 * \brief  Initialize 初期化
 	 * \param  worldTransform ワールド変形情報
