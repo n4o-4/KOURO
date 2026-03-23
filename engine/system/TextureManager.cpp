@@ -160,13 +160,13 @@ namespace Kouro
 		return 0;
 	}
 
-	D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(std::string filePath)
+	D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const std::string& filePath)
 	{
 		TextureData& textureData = textureDatas[filePath];
 		return textureData.srvHandleGPU;
 	}
 
-	const DirectX::TexMetadata& TextureManager::GetMetaData(std::string filePath)
+	const DirectX::TexMetadata& TextureManager::GetMetaData(const std::string& filePath)
 	{
 		// TODO: return ステートメントをここに挿入します
 		TextureData& textureData = textureDatas[filePath];

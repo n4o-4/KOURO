@@ -29,18 +29,18 @@ namespace Kouro
 
 		// 波系フォーマットを元にSourceVoiceの生成
 
-		auto soundDatas = AudioManager::GetInstance()->GetSoundData();
+		std::unordered_map<std::string, SoundData>* soundDatas = &AudioManager::GetInstance()->GetSoundData();
 
-		if (soundDatas.find(filename) != soundDatas.end())
+		if (soundDatas->find(filename) != soundDatas->end())
 		{
 
-			result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundDatas.find(filename)->second.wfex);
+			result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundDatas->find(filename)->second.wfex);
 			assert(SUCCEEDED(result));
 
 			// 再生する波形データの設定
 			XAUDIO2_BUFFER buf{};
-			buf.pAudioData = soundDatas.find(filename)->second.pBuffer;
-			buf.AudioBytes = soundDatas.find(filename)->second.bufferSize;
+			buf.pAudioData = soundDatas->find(filename)->second.pBuffer.get();
+			buf.AudioBytes = soundDatas->find(filename)->second.bufferSize;
 			buf.Flags = XAUDIO2_END_OF_STREAM;
 
 			if (loopCount != 0)
@@ -71,14 +71,14 @@ namespace Kouro
 	void Audio::SoundStop(const char* filename)
 	{
 		// 波系フォーマットを元にSourceVoiceの生成
-		auto soundDatas = AudioManager::GetInstance()->GetSoundData();
+		std::unordered_map<std::string, SoundData>* soundDatas = &AudioManager::GetInstance()->GetSoundData();
 
-		if (soundDatas.find(filename) != soundDatas.end())
+		if (soundDatas->find(filename) != soundDatas->end())
 		{
 			// 再生する波形データの設定
 			XAUDIO2_BUFFER buf{};
-			buf.pAudioData = soundDatas.find(filename)->second.pBuffer;
-			buf.AudioBytes = soundDatas.find(filename)->second.bufferSize;
+			buf.pAudioData = soundDatas->find(filename)->second.pBuffer.get();
+			buf.AudioBytes = soundDatas->find(filename)->second.bufferSize;
 			buf.Flags = XAUDIO2_END_OF_STREAM;
 
 			// 波形データの再生

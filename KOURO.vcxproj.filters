@@ -1059,6 +1059,7 @@
     <ClInclude Include="application\camera\title\LookAtPlayerState.h">
       <Filter>application\camera\title</Filter>
     </ClInclude>
+    <ClInclude Include="engine\audio\SoundStruct.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

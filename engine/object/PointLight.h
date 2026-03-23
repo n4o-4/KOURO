@@ -104,14 +104,6 @@ namespace Kouro
 
 		PointLightData* pointLightData_ = nullptr;
 
-		
-
-	private:
-
-		Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource_;
-
-		PointLightData* pointLightData_ = nullptr;
-
 		Vector4 color_;
 		Vector3 position_;
 		float intensity_;

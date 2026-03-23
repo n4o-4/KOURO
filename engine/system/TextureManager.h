@@ -3,10 +3,8 @@
 #include <wrl.h>
 
 #include <d3d12.h>
-//#include <dxgi1_6.h>
 #include "DirectXCommon.h"
 #include "SrvManager.h"
-
 #include "externals/DirectXTex/DirectXTex.h"
 #include <unordered_map>
 #include "externals//DirectXTex/d3dx12.h"
@@ -51,15 +49,15 @@ namespace Kouro
 		/**
 		* \brief  ファイルパスからGPUハンドルを取得する
 		* \param  filePath : ファイルパス
-		* \reutne GPUハンドル
+		* \return GPUハンドル
 		*/
-		D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(std::string filePath);
+		D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(const std::string& filePath);
 
 		/**
 		* \brief  ファイルパスからメタデータを取得する
 		* \param  filePath : ファイルパス
 		*/
-		const DirectX::TexMetadata& GetMetaData(std::string filePath);
+		const DirectX::TexMetadata& GetMetaData(const std::string& filePath);
 
 		/// \brief オフスクリーンレンダリング用のテクスチャを作る
 		void CreateRenderTextureMetaData();

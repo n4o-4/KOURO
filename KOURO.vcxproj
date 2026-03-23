@@ -175,6 +175,7 @@
     <ClInclude Include="engine\3d\particle\PointEmitter.h" />
     <ClInclude Include="application\system\SpriteMotionLibrary.h" />
     <ClInclude Include="application\scene\SceneCommand.h" />
+    <ClInclude Include="engine\audio\SoundStruct.h" />
     <ClInclude Include="engine\math\Vector4.h" />
     <ClInclude Include="engine\math\Vector4Yaml.h" />
     <ClInclude Include="engine\scene\ISceneState.h" />

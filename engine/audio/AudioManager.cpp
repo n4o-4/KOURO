@@ -4,6 +4,8 @@
 
 #include "assert.h"
 
+#include "Audio.h"
+
 namespace Kouro
 {
 	std::unique_ptr<AudioManager> AudioManager::instance = nullptr;
@@ -61,7 +63,6 @@ namespace Kouro
 			// バッファが存在すれば解放
 			if (soundData.pBuffer)
 			{
-				delete[] soundData.pBuffer;
 				soundData.pBuffer = nullptr;
 				soundData.bufferSize = 0;
 				soundData.wfex = {};
@@ -86,8 +87,10 @@ namespace Kouro
 		// ファイル入力ストリームのインスタンス
 		std::ifstream file;
 
+		std::string fullPath = filePath_ + filename;
+
 		// .wavファイルをバイナリモードで開く
-		file.open(filename, std::ios_base::binary);
+		file.open(fullPath, std::ios_base::binary);
 
 		// ファイルオープン失敗を検出する
 		assert(file.is_open());
@@ -150,8 +153,8 @@ namespace Kouro
 		}
 
 		// Dataチャンクのデータ部(波系データ)の読み
-		char* pBuffer = new char[data.size];
-		file.read(pBuffer, data.size);
+		auto pBuffer = std::make_unique<BYTE[]>(data.size);
+		file.read(reinterpret_cast<char*>(pBuffer.get()), data.size);
 
 		// waveファイルを閉じる
 		file.close();
@@ -161,12 +164,13 @@ namespace Kouro
 		-----------------------------*/
 
 		// returnする為の音声データ
+		SoundData soundData{};
 
 		soundData.wfex = format.fmt;
-		soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer);
+		soundData.pBuffer = std::move(pBuffer);
 		soundData.bufferSize = data.size;
 
-		soundDatas[filename] = soundData;
+		soundDatas[filename] = std::move(soundData);
 	}
 
 	void AudioManager::SoundLoadMP3(const char* filename)
@@ -193,6 +197,8 @@ namespace Kouro
 		// メディアタイプからWaveFormatexを生成
 		WAVEFORMATEX* tempWfex = nullptr;
 		MFCreateWaveFormatExFromMFMediaType(pMediaType, &tempWfex, nullptr);
+
+		SoundData soundData{};
 
 		soundData.wfex = *tempWfex;
 		std::vector<BYTE> mediaData; // 一時的なバッファ
@@ -244,9 +250,9 @@ namespace Kouro
 
 		// 結果をSoundDataに格納
 		soundData.bufferSize = static_cast<unsigned int>(mediaData.size());
-		soundData.pBuffer = new BYTE[soundData.bufferSize];
-		memcpy(soundData.pBuffer, mediaData.data(), soundData.bufferSize);
+		soundData.pBuffer = std::make_unique<BYTE[]>(soundData.bufferSize);
+		memcpy(soundData.pBuffer.get(), mediaData.data(), soundData.bufferSize);
 
-		soundDatas[filename] = soundData;
+		soundDatas[filename] = std::move(soundData);
 	}
 }

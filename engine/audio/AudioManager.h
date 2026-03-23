@@ -4,18 +4,8 @@
 #include <wrl.h>
 #include <memory>
 #include <unordered_map>
-#include <xaudio2.h>
 
-#pragma comment(lib,"xaudio2.lib")
-
-#include <mfapi.h>
-#include <mfidl.h>
-#include <mfreadwrite.h>
-
-#pragma comment(lib, "Mf.lib")
-#pragma comment(lib, "mfplat.lib")
-#pragma comment(lib, "Mfreadwrite.lib")
-#pragma comment(lib, "mfuuid.lib")
+#include "SoundStruct.h"
 
 // \brief AudioManager
 // 音声ファイルの読み込みと管理を行うシングルトンクラス。
@@ -23,43 +13,12 @@
 
 namespace Kouro
 {
+	class Audio;
+
 	class AudioManager
 	{
 	private:
-		// チャンクヘッダ
-		struct ChunkHeader
-		{
-			char id[4];   // チャンク毎のID
-			int32_t size; // チャンクサイズ
-		};
-
-		// RIFFヘッダチャンク
-		struct RiffHeader
-		{
-			ChunkHeader chunk; // "RIFF"
-			char type[4];      // WAVE"
-		};
-
-		// FMTチャンク
-		struct FormatChunk
-		{
-			ChunkHeader chunk; // "fmt"
-			WAVEFORMATEX fmt;  // 波系フォーマット
-		};
-
-		// 音声データ
-		struct SoundData
-		{
-			// 波系フォーマット
-			WAVEFORMATEX wfex;
-
-			// バッファの先頭アドレス
-			BYTE* pBuffer;
-
-			// バッファのサイズ
-			unsigned int bufferSize;
-		};
-
+		
 	public:
 
 		/// \brief インスタンス取得
@@ -84,7 +43,7 @@ namespace Kouro
 		* \brief 音声データ取得
 		* \return soundDatas 音声データ群
 		*/
-		std::unordered_map<std::string, SoundData> GetSoundData() { return soundDatas; }
+		std::unordered_map < std::string, SoundData > & GetSoundData() { return soundDatas; }
 
 	private:
 
@@ -112,9 +71,9 @@ namespace Kouro
 		AudioManager(AudioManager&) = delete;
 		AudioManager& operator=(AudioManager&) = delete;
 
-		SoundData soundData{};
+		const std::string filePath_ = "Resources/";
 
-		std::unordered_map<std::string, SoundData> soundDatas;
+		std::unordered_map < std::string, SoundData> soundDatas;
 
 	};
 }
