@@ -7,7 +7,7 @@ namespace Kouro
 		lineDrawerBase_ = lineDrawerBase;
 	}
 
-	void LineModelManager::LoadLineModel(std::string filePath)
+	void LineModelManager::LoadLineModel(const std::string& filePath)
 	{
 		// 読み込み済みモデル検索
 		if (models_.contains(filePath)) {

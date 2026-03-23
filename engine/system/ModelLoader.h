@@ -46,10 +46,10 @@ namespace Kouro
 	public:
 
 		// モデルデータを読み込む関数
-		std::vector<Line::Vertex> LoadLineModel(std::string filePath);
+		std::vector<Line::Vertex> LoadLineModel(const std::string& filePath);
 
 
-		std::vector<VertexData> LoadModel(std::string fileName);
+		std::vector<VertexData> LoadModel(const std::string& fileName);
 
 	private:
 

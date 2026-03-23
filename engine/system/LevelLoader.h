@@ -43,7 +43,7 @@ namespace Kouro
         * \brief  読み込んだLevelDataを実際に使えるように読み込む
         * \param  deserialized : levelData
         */
-        std::unique_ptr<LevelData> LoadLevel(nlohmann::json deserialized);
+        std::unique_ptr<LevelData> LoadLevel(const nlohmann::json& deserialized);
 
     public:
 
@@ -52,7 +52,7 @@ namespace Kouro
         * \param  fileName : 読み込むFileName
         * \return LevelData
         */
-        std::unique_ptr<LevelLoader::LevelData> LoadLevelFromJson(std::string fileName);
+        std::unique_ptr<LevelLoader::LevelData> LoadLevelFromJson(const std::string& fileName);
 
 
     };

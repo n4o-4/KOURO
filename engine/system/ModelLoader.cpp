@@ -2,7 +2,7 @@
 
 namespace Kouro
 {
-	std::vector<Line::Vertex> ModelLoader::LoadLineModel(std::string filePath)
+	std::vector<Line::Vertex> ModelLoader::LoadLineModel(const std::string& filePath)
 	{
 		Line::ModelData modelData;
 		Assimp::Importer importer;
@@ -123,7 +123,7 @@ namespace Kouro
 		return lineVertices;
 	}
 
-	std::vector<VertexData> ModelLoader::LoadModel(std::string fileName)
+	std::vector<VertexData> ModelLoader::LoadModel(const std::string& fileName)
 	{
 		std::vector<VertexData> vertices;
 

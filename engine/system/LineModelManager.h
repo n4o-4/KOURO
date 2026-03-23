@@ -22,7 +22,7 @@ namespace Kouro
 		* \brief  ラインモデルの読み込み
 		* \param  filePath : ラインモデルのファイルパス
 		*/
-		void LoadLineModel(std::string filePath);
+		void LoadLineModel(const std::string& filePath);
 
 		/**
 		* \brief  ラインモデルの検索
