@@ -43,7 +43,7 @@ namespace Kouro
 		* \brief 音声データ取得
 		* \return soundDatas 音声データ群
 		*/
-		std::unordered_map < std::string, SoundData > & GetSoundData() { return soundDatas; }
+		std::unordered_map < std::string, SoundData >& GetSoundData() { return soundDatas; }
 
 	private:
 

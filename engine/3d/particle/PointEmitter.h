@@ -30,7 +30,7 @@ namespace Kouro
 	public:
 
 		/// \brief 初期化
-		void Initialize(std::string groupName, EngineContext context) override;
+		void Initialize(const std::string& groupName, EngineContext context) override;
 
 		/// \brief 更新
 		void Update() override;
@@ -48,7 +48,7 @@ namespace Kouro
 		* \param  lifeTimeMax     : 射出寿命の最大値
 		* \param  frequency       : 射出間隔
 		*/
-		void SetEmitterProperties(Vector3 translate, uint32_t count, Vector3 velocityMin, Vector3 velocityMax, float lifeTimeMin, float lifeTimeMax, float frequency);
+		void SetEmitterProperties(const Vector3& translate, uint32_t count, const Vector3& velocityMin, const Vector3& velocityMax, float lifeTimeMin, float lifeTimeMax, float frequency);
 
 		/**
 		* \brief  ワールド変換クラスのポインタを取得する関数

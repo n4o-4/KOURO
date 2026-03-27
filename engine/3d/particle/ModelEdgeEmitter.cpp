@@ -3,7 +3,7 @@
 
 namespace Kouro
 {
-	void ModelEdgeEmitter::Initialize(std::string groupName, EngineContext context)
+	void ModelEdgeEmitter::Initialize(const std::string& groupName, EngineContext context)
 	{
 		groupName_ = groupName;
 
@@ -28,7 +28,7 @@ namespace Kouro
 		}
 	}
 
-	void ModelEdgeEmitter::Emit(Matrix4x4 mat)
+	void ModelEdgeEmitter::Emit(const Matrix4x4& mat)
 	{
 		// パーティクルマネージャー取得
 		GpuParticleManager* manager = context_.gpuParticleManager;
@@ -40,7 +40,7 @@ namespace Kouro
 		manager->LineEmit(groupName_, srvIndex_, lineCount_, emitterResource_, mat);
 	}
 
-	void ModelEdgeEmitter::CreateLineSegment(std::string filePath)
+	void ModelEdgeEmitter::CreateLineSegment(const std::string& filePath)
 	{
 		ModelLoader loader;
 

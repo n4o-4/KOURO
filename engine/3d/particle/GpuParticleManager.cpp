@@ -148,7 +148,7 @@ namespace Kouro
 		commandList_->Dispatch(kMaxParticleCount / kCSMaxParticleCount, 1, 1);
 	}
 
-	void GpuParticleManager::CreateParticleGroup(const std::string name, const std::string textureFilePath, std::vector<VertexData> vertices)
+	void GpuParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilePath, std::vector<VertexData> vertices)
 	{
 		// キーを検索 なかった場合新しくグループを作る
 		if (particleGroups_.find(name) == particleGroups_.end())
@@ -204,7 +204,7 @@ namespace Kouro
 		}
 	}
 
-	void GpuParticleManager::LineEmit(std::string groupName, uint32_t lineSrvIndex, uint32_t lineCount, Microsoft::WRL::ComPtr<ID3D12Resource> emitterResource, Matrix4x4 world)
+	void GpuParticleManager::LineEmit(const std::string& groupName, uint32_t lineSrvIndex, uint32_t lineCount, Microsoft::WRL::ComPtr<ID3D12Resource> emitterResource, const Matrix4x4& world)
 	{
 		transform_->matWorld = world;
 
@@ -242,7 +242,7 @@ namespace Kouro
 		commandList_->ResourceBarrier(1, &barrier1);
 	}
 
-	void GpuParticleManager::PointEmit(std::string groupName, ID3D12Resource* emitterResource, ID3D12Resource* transformResource)
+	void GpuParticleManager::PointEmit(const std::string& groupName, ID3D12Resource* emitterResource, ID3D12Resource* transformResource)
 	{
 		// 1. Compute RootSignature
 		commandList_->SetComputeRootSignature(pipelineSets_.find("pointEmitter")->second.get()->rootSignature.Get());
@@ -783,7 +783,7 @@ namespace Kouro
 		pipelineSets_["pointEmitter"] = std::move(pSet);
 	}
 
-	void GpuParticleManager::CreateComputePipelineState(PipelineSet* pipelineSet, std::string csFileName)
+	void GpuParticleManager::CreateComputePipelineState(PipelineSet* pipelineSet, const std::string& csFileName)
 	{
 		// Shaderファイル名（UTF-8）をwstring（UTF-16）に変換
 		std::wstring wShaderPath(csFileName.begin(), csFileName.end());

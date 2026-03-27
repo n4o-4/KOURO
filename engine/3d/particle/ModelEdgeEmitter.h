@@ -32,19 +32,19 @@ namespace Kouro
 	public:
 
 		/// \brief 初期化
-		void Initialize(std::string groupName, EngineContext context) override;
+		void Initialize(const std::string& groupName, EngineContext context) override;
 
 		/// \brief 更新
 		void Update() override;
 
 		/// \brief エミット
-		void Emit(Matrix4x4 mat);
+		void Emit(const Matrix4x4& mat);
 
 		/**
 		* \brief  ラインセグメントデータの作成
 		* \param  filePath : ラインセグメントデータのファイルパス
 		*/
-		void CreateLineSegment(std::string filePath);
+		void CreateLineSegment(const std::string& filePath);
 
 	private:
 

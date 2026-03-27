@@ -47,7 +47,7 @@ namespace Kouro
 
 		/**
 		*/
-		void SetActiveCamera(std::string name);
+		void SetActiveCamera(const std::string& name);
 
 		/**
 		* \brief  AddCamera カメラの追加

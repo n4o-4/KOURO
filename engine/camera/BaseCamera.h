@@ -48,13 +48,13 @@ namespace Kouro
 		/**
 		* \brief  シェイクオフセットの設定
 		*/
-		void SetShakeOffset(Vector3 offset) { shakeOffset_ = offset; }
+		void SetShakeOffset(const Vector3& offset) { shakeOffset_ = offset; }
 
 		/**
 		* \brief  オフセット設定
 		* \param offset オフセット値
 		*/
-		void SetOffset(Vector3 offset) { offset_ = offset; }
+		void SetOffset(const Vector3& offset) { offset_ = offset; }
 
 		/**
 		* \brief  親ワールド変換の設定

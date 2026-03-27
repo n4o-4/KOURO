@@ -3,7 +3,7 @@
 
 namespace Kouro
 {
-	void ParticleEmitter::Initialize(std::string name)
+	void ParticleEmitter::Initialize(const std::string& name)
 	{
 		/*----------------------------------------------------------
 		* ランダムエンジンの初期化
@@ -52,7 +52,7 @@ namespace Kouro
 		ParticleManager::GetInstance()->RadialEmit(name, emitter.transform.translate, emitter.count, particleStates);
 	}
 
-	void ParticleEmitter::Emit(uint32_t count, Vector3 startColor, Vector3 finishColor)
+	void ParticleEmitter::Emit(uint32_t count, const Vector3& startColor, const Vector3& finishColor)
 	{
 		// 一時的にカウントを保存
 		uint32_t originalCount = emitter.count;

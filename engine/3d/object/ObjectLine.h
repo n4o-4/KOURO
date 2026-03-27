@@ -43,7 +43,7 @@ namespace Kouro
 		* \brief  描画
 		* \param  worldTransform ワールド変換情報
 		*/
-		void Draw(WorldTransform* worldTransform);
+		void Draw(const WorldTransform* worldTransform);
 
 		/**
 		* \brief  色の設定

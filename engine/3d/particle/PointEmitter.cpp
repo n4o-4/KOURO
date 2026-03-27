@@ -1,6 +1,6 @@
 #include "PointEmitter.h"
 
-void Kouro::PointEmitter::Initialize(std::string groupName, EngineContext context)
+void Kouro::PointEmitter::Initialize(const std::string& groupName, EngineContext context)
 {
 	groupName_ = groupName;
 
@@ -85,7 +85,7 @@ void Kouro::PointEmitter::Emit(const Matrix4x4& mat)
 
 	prevPosition = wTransform_->GetWorldPosition();
 }
-void Kouro::PointEmitter::SetEmitterProperties(Vector3 translate, uint32_t count, Vector3 velocityMin, Vector3 velocityMax, float lifeTimeMin, float lifeTimeMax, float frequency)
+void Kouro::PointEmitter::SetEmitterProperties(const Vector3& translate, uint32_t count, const Vector3& velocityMin, const Vector3& velocityMax, float lifeTimeMin, float lifeTimeMax, float frequency)
 {
 	if (emitter_ == nullptr) return;
 	emitter_->translate = translate;

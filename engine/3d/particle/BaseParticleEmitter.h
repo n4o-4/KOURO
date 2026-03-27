@@ -30,7 +30,7 @@ namespace Kouro
 		* \param  groupName : パーティクルグループの名前
 		* \param  context   : エンジンコンテキスト
 		*/
-		virtual void Initialize(std::string groupName, EngineContext context) = 0;
+		virtual void Initialize(const std::string& groupName, EngineContext context) = 0;
 
 		/// \brief 更新
 		virtual void Update() = 0;

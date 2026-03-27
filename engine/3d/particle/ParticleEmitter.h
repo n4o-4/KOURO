@@ -17,7 +17,7 @@ namespace Kouro
         * \brief  初期化
         * \param  name エミッタの名前
         */
-        void Initialize(std::string name);
+        void Initialize(const std::string& name);
 
         /// \brief パーティクルの単発放出
         void Emit();
@@ -31,7 +31,7 @@ namespace Kouro
         * \param startColor 開始色
         * \param finishColor 終了色
         */
-        void Emit(uint32_t count, Vector3 startColor, Vector3 finishColor);
+        void Emit(uint32_t count, const Vector3& startColor, const Vector3& finishColor);
 
         /**
         * \brief  位置設定

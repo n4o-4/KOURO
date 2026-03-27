@@ -148,7 +148,7 @@ namespace Kouro
 		* \param  textureFilePath : 使用するテクスチャのパス
 		* \param  vertices        : 使用するパーティクル形状の頂点
 		*/
-		void CreateParticleGroup(const std::string name, const std::string textureFilePath, std::vector<VertexData> vertices);
+		void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, std::vector<VertexData> vertices);
 
 		/**
 		* \brief  ライン上にパーティクルを放出する
@@ -158,7 +158,7 @@ namespace Kouro
 		* \param  emitterResource : エミッター情報のリソース
 		* \param  world         : ラインモデルのワールド行列
 		*/
-		void LineEmit(std::string groupName, uint32_t lineSrvIndex, uint32_t lineCount, Microsoft::WRL::ComPtr<ID3D12Resource> emitterResource, Matrix4x4 world);
+		void LineEmit(const std::string& groupName, uint32_t lineSrvIndex, uint32_t lineCount, Microsoft::WRL::ComPtr<ID3D12Resource> emitterResource, const Matrix4x4& world);
 
 		/**
 		* \brief  点からパーティクルを放出する
@@ -166,7 +166,7 @@ namespace Kouro
 		* \param  emitterResource : エミッター情報のリソース
 		* \param  world         : ワールド行列
 		*/
-		void PointEmit(std::string groupName, ID3D12Resource* emitterResource, ID3D12Resource* transformResource);
+		void PointEmit(const std::string& groupName, ID3D12Resource* emitterResource, ID3D12Resource* transformResource);
 
 		/**
 		* \brief  perFrameの値を設定する
@@ -218,7 +218,7 @@ namespace Kouro
 		* \param  pipelineSet : 生成先の pipelineSet のポインタ
 		* \param  csFileName  : 使用するComputeShaderのファイル名
 		*/
-		void CreateComputePipelineState(PipelineSet* pipelineSet, std::string csFileName);
+		void CreateComputePipelineState(PipelineSet* pipelineSet, const std::string& csFileName);
 
 		/// \brief グラフィックスパイプラインセット作成関数
 		void CreateGraphicsPipelineSet();

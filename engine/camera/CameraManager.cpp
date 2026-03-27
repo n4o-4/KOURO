@@ -26,7 +26,7 @@ namespace Kouro
 		DrawDebugUI();
 	}
 
-	void CameraManager::SetActiveCamera(std::string name)
+	void CameraManager::SetActiveCamera(const std::string& name)
 	{
 		// 名前でカメラを検索し、アクティブカメラを設定
 		auto it = cameraRegistry_.find(name);
