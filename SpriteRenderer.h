@@ -11,7 +11,7 @@ namespace Kouro
 	public: // 公開メンバ関数
 
 		/// \brief 初期化
-		void Initialize(const GpuResourceUtils* gpuResourceUtils) override;
+		void Initialize(ID3D12GraphicsCommandList* cmdList, const GpuResourceUtils* gpuResourceUtils) override;
 
 		/**
 		* \brief  描画
@@ -28,6 +28,8 @@ namespace Kouro
 		void CreateIndexBuffer();
 
 	private: // 非公開メンバ関数
+
+		ID3D12GraphicsCommandList* cmdList_ = nullptr; //!< コマンドリストへのポインタ
 
 		const GpuResourceUtils* gpuResourceUtils_ = nullptr; //!< GpuResourceUtilsへのポインタ
 

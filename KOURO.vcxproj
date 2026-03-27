@@ -17,6 +17,7 @@
     <ClCompile Include="application\object\enemy\AttackState.cpp" />
     <ClCompile Include="application\camera\title\AlignCameraState.cpp" />
     <ClCompile Include="BaseRenderer.cpp" />
+    <ClCompile Include="DebugScene.cpp" />
     <ClCompile Include="engine\core\GpuResourceInternal.cpp" />
     <ClCompile Include="engine\3d\particle\BaseParticleEmitter.cpp" />
     <ClCompile Include="engine\effect\Absorb.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="application\camera\title\FollowCameraState.h" />
     <ClInclude Include="application\camera\title\LookAtPlayerState.h" />
     <ClInclude Include="BaseRenderer.h" />
+    <ClInclude Include="DebugScene.h" />
     <ClInclude Include="engine\2d\SpriteTypes.h" />
     <ClInclude Include="engine\3d\particle\PointEmitter.h" />
     <ClInclude Include="application\system\SpriteMotionLibrary.h" />

@@ -1,8 +1,10 @@
 #include "SpriteRenderer.h"
 
-void Kouro::SpriteRenderer::Initialize(const GpuResourceUtils* gpuResourceUtils)
+void Kouro::SpriteRenderer::Initialize(ID3D12GraphicsCommandList* cmdList,const GpuResourceUtils* gpuResourceUtils)
 {
 	// 引数で受け取ってメンバ変数に記録する
+	cmdList_ = cmdList;
+
 	gpuResourceUtils_ = gpuResourceUtils;
 
 	// 頂点バッファとインデックスバッファを作成する関数を呼び出す

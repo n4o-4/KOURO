@@ -18,7 +18,7 @@ namespace Kouro
 		* \brief  初期化
 		* \param  gpuResourceUtils : GpuResourceUtilsのポインタ
 		*/
-		virtual void Initialize(const GpuResourceUtils* gpuResourceUtils) = 0;
+		virtual void Initialize(ID3D12GraphicsCommandList* cmdList, const GpuResourceUtils* gpuResourceUtils) = 0;
 
 		/**
 		* \brief  描画
