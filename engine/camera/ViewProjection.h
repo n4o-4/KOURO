@@ -72,7 +72,7 @@ namespace Kouro
 		* \brief  SetOffset オフセット設定
 		* \param  offset オフセット値
 		*/
-		void SetOffset(Vector3 offset) { shakeOffset_ = offset; }
+		void SetOffset(const Vector3& offset) { shakeOffset_ = offset; }
 
 		/**
 		* \brief  SetFovY 視野角設定

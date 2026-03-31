@@ -1,6 +1,6 @@
 #include "BaseBullet.h"
 
-void BaseBullet::Initialize(Kouro::LineModel* model, Kouro::Vector3 spawnPos)
+void BaseBullet::Initialize(Kouro::LineModel* model, const Kouro::Vector3& spawnPos)
 {
 	///========================================
 	/// オブジェクト3D

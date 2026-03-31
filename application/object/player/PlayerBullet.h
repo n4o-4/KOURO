@@ -10,7 +10,7 @@ public: // 公開メンバ関数
 	 * \brief  Initialize 初期化
 	 * \param  model モデル
 	 */
-	void Initialize(Kouro::LineModel* model, Kouro::Vector3 spawnPos) override;
+	void Initialize(Kouro::LineModel* model, const Kouro::Vector3& spawnPos) override;
 
 	// \brief  Update 更新
 	void Update() override;

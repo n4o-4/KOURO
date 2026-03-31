@@ -24,7 +24,7 @@ namespace Kouro
 		* \param  spriteCommon SpriteCommonのポインタ
 		* \param  textureFilePath textureのファイルパス
 		*/
-		void Initialize(SpriteCommon* spriteCommon, std::string textureFilePath);
+		void Initialize(SpriteCommon* spriteCommon, const std::string& textureFilePath);
 
 		/// \brief Update 更新
 		void Update();
@@ -48,7 +48,7 @@ namespace Kouro
 		* \brief  GetColor スプライトの色を取得する
 		* \return color スプライトの色
 		*/
-		const Vector4 GetColor() const { return materialData->color; }
+		const Vector4& GetColor() const { return materialData->color; }
 
 		/**
 		* \brief  GetSize	描画サイズを取得する

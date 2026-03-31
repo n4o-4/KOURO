@@ -118,13 +118,13 @@ namespace Kouro
 		* \brief  ローカル行列の設定
 		* \param  localMatrix ローカル行列
 		*/
-		void SetLocalMatrix(Matrix4x4 localMatrix) { this->localMatrix = localMatrix; }
+		void SetLocalMatrix(const Matrix4x4& localMatrix) { this->localMatrix = localMatrix; }
 
 		/**
 		* \brief  色の設定
 		* \param  color 色
 		*/
-		void SetColor(Vector4 color) { materialData_->color = color; }
+		void SetColor(const Vector4& color) { materialData_->color = color; }
 
 		/**
 		* \brief  ライティングの有効化設定

@@ -74,7 +74,7 @@ namespace Kouro
 		dxCommon_->SetRenderResourceIndex(resourceIndex);
 	}
 
-	void PostEffect::ApplyEffect(std::string name, EffectType type)
+	void PostEffect::ApplyEffect(const std::string& name, EffectType type)
 	{
 		std::unique_ptr<PostEffect::ActiveEffect> newEffect = std::make_unique<PostEffect::ActiveEffect>();
 

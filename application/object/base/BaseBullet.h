@@ -17,7 +17,7 @@ public: // 公開メンバ関数
 	 * \brief  Initialize 初期化
 	 * \param  model モデル
 	 */
-	virtual void Initialize(Kouro::LineModel* model, Kouro::Vector3 spawnPos);
+	virtual void Initialize(Kouro::LineModel* model, const Kouro::Vector3& spawnPos);
 
 	// \brief  Update 更新
 	virtual void Update();

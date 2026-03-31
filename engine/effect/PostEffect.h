@@ -108,14 +108,14 @@ namespace Kouro
 		void Draw();
 
 		// 指定のエフェクトをる
-		void ApplyEffect(std::string name, EffectType type);
+		void ApplyEffect(const std::string& name, EffectType type);
 
 		// カメラマネージャを設定
 		void SetCameraManager(CameraManager* cameraManager) { cameraManager_ = cameraManager; }
 
 		void ResetActiveEffect();
 
-		BaseEffect* GetEffectData(std::string name) {
+		BaseEffect* GetEffectData(const std::string& name) {
 			auto it = activeEffects_.find(name);
 			if (it != activeEffects_.end()) {
 				return it->second->effect.get();

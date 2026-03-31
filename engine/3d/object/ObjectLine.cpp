@@ -25,7 +25,7 @@ namespace Kouro
 		lineData_->color = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
-	void ObjectLine::Draw(WorldTransform* worldTransform)
+	void ObjectLine::Draw(const WorldTransform* worldTransform)
 	{
 		// モデルがセットされていない場合は描画しない
 		if (model_ == nullptr)

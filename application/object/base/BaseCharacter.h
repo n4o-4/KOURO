@@ -41,7 +41,7 @@ public: // 公開メンバ関数
 	Kouro::WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
 
-	void SetColor(Kouro::Vector4 color) { objectLine_->SetColor({color.x,color.y,color.z,color.w}); }
+	void SetColor(const Kouro::Vector4& color) { objectLine_->SetColor({color.x,color.y,color.z,color.w}); }
 
 	const Kouro::Vector3& GetWorldPosition();
 

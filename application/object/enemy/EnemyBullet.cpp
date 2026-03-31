@@ -2,7 +2,7 @@
 
 #include "PlayerBullet.h"
 
-void EnemyBullet::Initialize(Kouro::LineModel* model, Kouro::Vector3 spawnPos)
+void EnemyBullet::Initialize(Kouro::LineModel* model, const Kouro::Vector3& spawnPos)
 {
 	// 親クラスの初期化
 
