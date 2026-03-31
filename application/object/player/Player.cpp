@@ -35,7 +35,7 @@ void Player::Initialize(Kouro::LineModel* model)
 	// 座標を一度更新
 	colliderTransform_->UpdateMatrix();
 
-	hp_ = 0;
+	hp_ = 100;
 
 	// ブースト用の構造体の生成と初期化
 	quickMoveData_ = std::make_unique<QuickMoveData>();
