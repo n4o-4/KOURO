@@ -24,6 +24,7 @@ namespace Kouro
 
 		Microsoft::WRL::ComPtr<ID3D12Resource> CreateUploadBufferResource(size_t sizeInBytes) const;
 
+		Microsoft::WRL::ComPtr<ID3D12Resource> CreateDefaultBufferResource(size_t sizeInBytes) const;
 	private:
 
 		ID3D12Device* device_ = nullptr; //!< ID3D12Deviceのポインタ

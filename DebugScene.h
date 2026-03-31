@@ -10,11 +10,15 @@ namespace Kouro
 	public:
 
 		/**
-		* \brief  
+		* \brief  初期化
 		\ \param  context : 
 		*/
 		void Initialize(EngineContext& context) override;
-
+		
+		/**
+		* \brief  更新
+		*/
+		void Update() override;
 	};
 }
 
