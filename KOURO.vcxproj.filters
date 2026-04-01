@@ -571,6 +571,8 @@
     <ClCompile Include="application\camera\title\LookAtPlayerState.cpp">
       <Filter>application\camera\title</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteAnimator.cpp" />
+    <ClCompile Include="engine\2d\KeyFrame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -1060,6 +1062,8 @@
       <Filter>application\camera\title</Filter>
     </ClInclude>
     <ClInclude Include="engine\audio\SoundStruct.h" />
+    <ClInclude Include="SpriteAnimator.h" />
+    <ClInclude Include="engine\2d\KeyFrame.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
