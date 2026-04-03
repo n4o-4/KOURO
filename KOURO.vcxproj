@@ -168,6 +168,7 @@
     <ClCompile Include="application\system\UIManager.cpp" />
     <ClCompile Include="engine\system\YamlLoader.cpp" />
     <ClCompile Include="SpriteAnimator.cpp" />
+    <ClCompile Include="application\editor\SpriteAnimationEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\system\Event.h" />
@@ -338,6 +339,7 @@
     <ClInclude Include="engine\system\YamlLoader.h" />
     <ClInclude Include="engine\2d\KeyFrame.h" />
     <ClInclude Include="SpriteAnimator.h" />
+    <ClInclude Include="application\editor\SpriteAnimationEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

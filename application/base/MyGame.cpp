@@ -16,6 +16,9 @@ void MyGame::Initialize()
 	imGuiManager = std::make_unique<Kouro::ImGuiManager>();
 	imGuiManager->Initialize(winApp.get(), Kouro::DirectXCommon::GetInstance());
 
+	// スプライトアニメーションエディタの生成
+	spriteAnimationEditor_ = std::make_unique<Kouro::SpriteAnimationEditor>();
+
 #endif
 
 	// シーンファクトリーの生成とシーンマネージャーへの登録
@@ -80,11 +83,13 @@ void MyGame::Draw()
 	);
 	ImGui::End();*/
 
+	// スプライトアニメーションエディタの描画
+	if (spriteAnimationEditor_)
+	{
+		spriteAnimationEditor_->ShowEditor();
+	}
+
 #endif 
-
-
-
-
 
 
 

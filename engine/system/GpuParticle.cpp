@@ -227,7 +227,7 @@ namespace Kouro
 		CreateLineSegmentResource();
 	}
 
-	void GpuParticle::LineEmit(std::string groupName, Matrix4x4 world)
+	void GpuParticle::LineEmit(std::string groupName, const Matrix4x4& world)
 	{
 		transform_->matWorld = world;
 

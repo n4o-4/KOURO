@@ -68,7 +68,7 @@ public: // 公開メンバ関数
 	* \brief  ゴールオフセットの設定
 	* \param  offset ゴールオフセット
 	*/
-	void SetGoalOffset(const Kouro::Vector3 offset) { kGoalOffset_ = offset; basePosition_ = kGoalOffset_; };
+	void SetGoalOffset(const Kouro::Vector3& offset) { kGoalOffset_ = offset; basePosition_ = kGoalOffset_; };
 
 	/**
 	* \brief  SetParent 親の設定

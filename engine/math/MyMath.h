@@ -29,7 +29,7 @@ namespace Kouro
 		Vector3 axes[3]; //!< OBBの軸（X, Y, Z方向の単位ベクトル）
 	};
 
-	inline Vector3 Normalize(Vector3 v)
+	inline Vector3 Normalize(const Vector3& v)
 	{
 		Vector3 result;
 
@@ -191,7 +191,7 @@ namespace Kouro
 		return rM;
 	}
 
-	static Matrix4x4 Multiply(Matrix4x4 m1, Matrix4x4 m2)
+	static Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2)
 	{
 		Matrix4x4 resultMatrix{};
 
@@ -267,7 +267,7 @@ namespace Kouro
 		return translateMatrix;
 	}
 
-	static Matrix4x4 MakeAffineMatrix(Vector3 scale, Vector3 rotate, Vector3 Translate)
+	static Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& Translate)
 	{
 		Matrix4x4 sM{};
 		Matrix4x4 tM{};
@@ -341,7 +341,7 @@ namespace Kouro
 		return resultMatrix;
 	}
 
-	static Matrix4x4 Inverse(Matrix4x4 matrix)
+	static Matrix4x4 Inverse(const Matrix4x4& matrix)
 	{
 		Matrix4x4 resultMatrix{};
 		float A =
@@ -562,7 +562,7 @@ namespace Kouro
 		return false;
 	}
 
-	static Matrix4x4 MakeRotateAxisAngle(Vector3 axis, float angle)
+	static Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angle)
 	{
 		// 必要な値を事前計算
 		float cosTheta = cos(angle);
@@ -761,7 +761,7 @@ namespace Kouro
 		return matrix;
 	}
 
-	static Quaternion qLerp(Quaternion q0, Quaternion q1, float t)
+	static Quaternion qLerp(const Quaternion& q0, const Quaternion& q1, float t)
 	{
 		Quaternion qu0 = q0;
 

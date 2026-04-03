@@ -108,7 +108,7 @@ namespace Kouro
 		void CreateLineSegment(std::string filePath);
 
 		/// \brief  線分を発生させる
-		void LineEmit(std::string groupName, Matrix4x4 world);
+		void LineEmit(std::string groupName, const Matrix4x4& world);
 
 	private: // 
 

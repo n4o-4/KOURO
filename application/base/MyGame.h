@@ -5,6 +5,7 @@
 #include "Framework.h"
 
 #include "SceneFactory.h"
+#include "application/editor/SpriteAnimationEditor.h"
 
 // \brief  ゲーム全体
 
@@ -34,4 +35,7 @@ private:
 
 	// シーンファクトリー
 	std::unique_ptr<Kouro::AbstractSceneFactory> sceneFactory_ = nullptr;
+
+	// スプライトアニメーションエディタ
+	std::unique_ptr<Kouro::SpriteAnimationEditor> spriteAnimationEditor_ = nullptr;
 };
