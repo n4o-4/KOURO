@@ -573,6 +573,8 @@
     </ClCompile>
     <ClCompile Include="SpriteAnimator.cpp" />
     <ClCompile Include="engine\2d\KeyFrame.cpp" />
+    <ClCompile Include="application\editor\SpriteAnimationEditor.cpp" />
+    <ClCompile Include="externals\imgui\imgui_stdlib.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -1064,6 +1066,8 @@
     <ClInclude Include="engine\audio\SoundStruct.h" />
     <ClInclude Include="SpriteAnimator.h" />
     <ClInclude Include="engine\2d\KeyFrame.h" />
+    <ClInclude Include="application\editor\SpriteAnimationEditor.h" />
+    <ClInclude Include="externals\imgui\imgui_stdlib.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
