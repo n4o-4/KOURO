@@ -22,6 +22,7 @@ namespace Kouro
 
 	void SpriteAnimationEditor::ShowEditor()
 	{
+#ifdef _DEBUG
 		ImGui::SetNextWindowSize(ImVec2(1200, 700), ImGuiCond_FirstUseEver);
 
 		if (ImGui::Begin("Sprite Animation Editor", nullptr, ImGuiWindowFlags_NoMove))
@@ -61,6 +62,8 @@ namespace Kouro
 
 			ImGui::End();
 		}
+
+#endif // _DEBUG
 	}
 
 	void SpriteAnimationEditor::ShowAnimationSelector()

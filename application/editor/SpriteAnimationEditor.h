@@ -46,7 +46,7 @@ namespace Kouro
 		* \param filePath 読み込むYAMLファイルのパス
 		* \return 読み込んだアニメーションデータのマップ（アニメーション名をキーとする）
 		*/
-		std::unordered_map<std::string, SpriteAnimation> LoadAnimationsFromYaml(const std::string& filePath) const;
+		//std::unordered_map<std::string, SpriteAnimation> LoadAnimationsFromYaml(const std::string& filePath) const;
 
 	private:
 		
