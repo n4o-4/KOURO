@@ -602,6 +602,14 @@ void GameScene::UpdateAllObjects(const float deltaTime)
 
 	colliderManager_->Update();
 
+	for (auto& enemy : enemies_)
+	{
+		if (!enemy->GetIsAlive())
+		{
+			++eliminatedEnemyCount_;
+		}
+	}
+
 	// 生存していない敵をリストから削除
 	std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {return !enemy->GetIsAlive(); });
 }
