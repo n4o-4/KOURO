@@ -48,21 +48,14 @@ namespace Kouro
 	/// 
 	/// 使用方法：
 	/// 1. SpriteAnimator インスタンスを作成
-	/// 2. SpriteAnimation を定義してキーフレームを追加
-	/// 3. AddAnimation() でアニメーターに追加
-	/// 4. PlayAnimation() で再生開始
-	/// 5. 毎フレーム Update() と ApplyToSprite() を呼び出し
+	/// 2. LoadFromYaml() でアニメーションを読み込み（SpriteAnimationEditorで編集）
+	/// 3. PlayAnimation() で再生開始
+	/// 4. 毎フレーム Update() と ApplyToSprite() を呼び出し
 	class SpriteAnimator
 	{
 	public:
 		SpriteAnimator();
 		~SpriteAnimator();
-
-		/// \brief アニメーションを追加
-		void AddAnimation(const SpriteAnimation& animation);
-
-		/// \brief アニメーションを削除
-		void RemoveAnimation(const std::string& name);
 
 		/// \brief アニメーションを再生開始
 		void PlayAnimation(const std::string& name, bool loop = false);
@@ -94,27 +87,12 @@ namespace Kouro
 		/// \brief すべてのアニメーション名を取得
 		std::vector<std::string> GetAnimationNames() const;
 
-		/// \brief YAML形式で保存
-		void SaveToYaml(const std::string& filePath) const;
-
 		/// \brief YAML形式から読み込み
 		void LoadFromYaml(const std::string& filePath);
 
 	private:
 		std::unordered_map<std::string, SpriteAnimation> animations_; // 保存されたアニメーション
 		AnimationPlayState playState_;                                 // 現在の再生状態
-
-		/// \brief YAML::Emitterにキーフレーム曲線を保存（Vector2用）
-		void SaveCurveToYaml(YAML::Emitter& out, const std::string& curveName,
-							 const Vector2AnimationCurve& curve) const;
-
-		/// \brief YAML::Emitterにキーフレーム曲線を保存（Scalar用）
-		void SaveCurveToYaml(YAML::Emitter& out, const std::string& curveName,
-							 const ScalarAnimationCurve& curve) const;
-
-		/// \brief YAML::Emitterにキーフレーム曲線を保存（Vector4用）
-		void SaveCurveToYaml(YAML::Emitter& out, const std::string& curveName,
-							 const Vector4AnimationCurve& curve) const;
 
 		/// \brief YAMLノードからキーフレーム曲線を読み込み（Vector2用）
 		void LoadCurveFromYaml(const YAML::Node& node, Vector2AnimationCurve& curve);

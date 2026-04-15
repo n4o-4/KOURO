@@ -82,6 +82,9 @@
     <ClCompile Include="application\camera\ICameraState.cpp" />
     <ClCompile Include="application\system\Event.cpp" />
     <ClCompile Include="application\system\EventController.cpp" />
+    <ClCompile Include="externals\imgui\imgui_stdlib.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="externals\yaml-cpp\src\binary.cpp" />
     <ClCompile Include="externals\yaml-cpp\src\convert.cpp" />
     <ClCompile Include="externals\yaml-cpp\src\depthguard.cpp" />
@@ -308,6 +311,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="application\system\SpawnManager.h" />
+    <ClInclude Include="externals\imgui\imgui_stdlib.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="externals\yaml-cpp\src\collectionstack.h" />
     <ClInclude Include="externals\yaml-cpp\src\directives.h" />
     <ClInclude Include="externals\yaml-cpp\src\emitterstate.h" />

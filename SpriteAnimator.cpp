@@ -88,20 +88,6 @@ namespace Kouro
 
 	SpriteAnimator::~SpriteAnimator() = default;
 
-	void SpriteAnimator::AddAnimation(const SpriteAnimation& animation)
-	{
-		animations_[animation.name] = animation;
-	}
-
-	void SpriteAnimator::RemoveAnimation(const std::string& name)
-	{
-		auto it = animations_.find(name);
-		if (it != animations_.end())
-		{
-			animations_.erase(it);
-		}
-	}
-
 	void SpriteAnimator::PlayAnimation(const std::string& name, bool loop)
 	{
 		auto it = animations_.find(name);
@@ -204,39 +190,6 @@ namespace Kouro
 		return names;
 	}
 
-	void SpriteAnimator::SaveToYaml(const std::string& filePath) const
-	{
-		YAML::Emitter out;
-
-		out << YAML::BeginMap;
-		out << YAML::Key << "animations" << YAML::Value << YAML::BeginSeq;
-
-		for (const auto& pair : animations_)
-		{
-			const auto& anim = pair.second;
-
-			out << YAML::BeginMap;
-			out << YAML::Key << "name" << YAML::Value << anim.name;
-			out << YAML::Key << "duration" << YAML::Value << anim.duration;
-
-			SaveCurveToYaml(out, "position", *anim.position);
-			SaveCurveToYaml(out, "rotation", *anim.rotation);
-			SaveCurveToYaml(out, "scale", *anim.scale);
-			SaveCurveToYaml(out, "alpha", *anim.alpha);
-			SaveCurveToYaml(out, "color", *anim.color);
-
-			out << YAML::EndMap;
-		}
-
-		out << YAML::EndSeq;
-		out << YAML::EndMap;
-
-		// ファイルに書き込み
-		std::ofstream file(filePath);
-		file << out.c_str();
-		file.close();
-	}
-
 	void SpriteAnimator::LoadFromYaml(const std::string& filePath)
 	{
 		YAML::Node config = YAML::LoadFile(filePath);
@@ -268,71 +221,6 @@ namespace Kouro
 
 			animations_[name] = anim;
 		}
-	}
-
-	void SpriteAnimator::SaveCurveToYaml(YAML::Emitter& out, const std::string& curveName,
-										const Vector2AnimationCurve& curve) const
-	{
-		out << YAML::Key << curveName << YAML::Value << YAML::BeginMap;
-		out << YAML::Key << "keyframes" << YAML::Value << YAML::BeginSeq;
-
-		for (size_t i = 0; i < curve.GetKeyframeCount(); ++i)
-		{
-			const auto& kf = curve.GetKeyframe(i);
-			out << YAML::BeginMap;
-			out << YAML::Key << "time" << YAML::Value << kf.time;
-			out << YAML::Key << "value" << YAML::Value << YAML::BeginSeq
-				<< kf.value.x << kf.value.y << YAML::EndSeq;
-			out << YAML::Key << "interpolation" << YAML::Value
-				<< InterpolationTypeToString(kf.interpolation);
-			out << YAML::EndMap;
-		}
-
-		out << YAML::EndSeq;
-		out << YAML::EndMap;
-	}
-
-	void SpriteAnimator::SaveCurveToYaml(YAML::Emitter& out, const std::string& curveName,
-										const ScalarAnimationCurve& curve) const
-	{
-		out << YAML::Key << curveName << YAML::Value << YAML::BeginMap;
-		out << YAML::Key << "keyframes" << YAML::Value << YAML::BeginSeq;
-
-		for (size_t i = 0; i < curve.GetKeyframeCount(); ++i)
-		{
-			const auto& kf = curve.GetKeyframe(i);
-			out << YAML::BeginMap;
-			out << YAML::Key << "time" << YAML::Value << kf.time;
-			out << YAML::Key << "value" << YAML::Value << kf.value;
-			out << YAML::Key << "interpolation" << YAML::Value
-				<< InterpolationTypeToString(kf.interpolation);
-			out << YAML::EndMap;
-		}
-
-		out << YAML::EndSeq;
-		out << YAML::EndMap;
-	}
-
-	void SpriteAnimator::SaveCurveToYaml(YAML::Emitter& out, const std::string& curveName,
-										const Vector4AnimationCurve& curve) const
-	{
-		out << YAML::Key << curveName << YAML::Value << YAML::BeginMap;
-		out << YAML::Key << "keyframes" << YAML::Value << YAML::BeginSeq;
-
-		for (size_t i = 0; i < curve.GetKeyframeCount(); ++i)
-		{
-			const auto& kf = curve.GetKeyframe(i);
-			out << YAML::BeginMap;
-			out << YAML::Key << "time" << YAML::Value << kf.time;
-			out << YAML::Key << "value" << YAML::Value << YAML::BeginSeq
-				<< kf.value.x << kf.value.y << kf.value.z << kf.value.w << YAML::EndSeq;
-			out << YAML::Key << "interpolation" << YAML::Value
-				<< InterpolationTypeToString(kf.interpolation);
-			out << YAML::EndMap;
-		}
-
-		out << YAML::EndSeq;
-		out << YAML::EndMap;
 	}
 
 	void SpriteAnimator::LoadCurveFromYaml(const YAML::Node& node, Vector2AnimationCurve& curve)
