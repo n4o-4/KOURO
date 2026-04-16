@@ -44,7 +44,7 @@ private:
 
 	std::vector<Kouro::Vector3> controlPoints_ = {};
 
-	std::unique_ptr<Kouro::Sprite> startBotton_ = nullptr;
+	//std::unique_ptr<Kouro::Sprite> startBotton_ = nullptr;
 
 	float kFadeStartTime = 4.5f;
 

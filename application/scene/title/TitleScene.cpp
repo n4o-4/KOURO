@@ -44,17 +44,29 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 	// コントロールポイントの読み込み
 	controlPoints_ = rail_config["control_points"].as<std::vector<Kouro::Vector3>>();
 
+
+
+	spriteManager_->LoadSpriteGroupsFromYaml("title/ui/scene_ui.yaml");
+
+	// プレイUIの設定
+	spriteManager_->SetGroupVisibility("start_ui", true);
+
+
+	// ポーズUIの設定
+	spriteManager_->SetGroupVisibility("title_ui", false);
+
+
 	YAML::Node sprite_config = KOURO::YamlLoader::LoadYamlFile("title/sprite_config.yaml");
 
 	// スタートボタンの生成
-	startBotton_ = std::make_unique<Kouro::Sprite>();
-	startBotton_->Initialize(Kouro::SpriteCommon::GetInstance(),"texture/StartButton.png");
+	//startBotton_ = std::make_unique<Kouro::Sprite>();
+	//startBotton_->Initialize(Kouro::SpriteCommon::GetInstance(),"texture/StartButton.png");
 
-	// スタートボタンの各種設定
-	startBotton_->SetPosition(sprite_config["start_button"]["position"].as<Kouro::Vector2>());
-	startBotton_->SetSize(sprite_config["start_button"]["size"].as<Kouro::Vector2>());
-	startBotton_->SetAnchorPoint(sprite_config["start_button"]["anchor_point"].as<Kouro::Vector2>());
-	startBotton_->SetTexSize(sprite_config["start_button"]["texture_size"].as<Kouro::Vector2>());
+	//// スタートボタンの各種設定
+	//startBotton_->SetPosition(sprite_config["start_button"]["position"].as<Kouro::Vector2>());
+	//startBotton_->SetSize(sprite_config["start_button"]["size"].as<Kouro::Vector2>());
+	//startBotton_->SetAnchorPoint(sprite_config["start_button"]["anchor_point"].as<Kouro::Vector2>());
+	//startBotton_->SetTexSize(sprite_config["start_button"]["texture_size"].as<Kouro::Vector2>());
 
 
 	// プレイヤーの生成
@@ -125,6 +137,8 @@ void TitleScene::Update()
 	std::chrono::time_point<std::chrono::steady_clock> now;
 	float elapsedTime;
 
+	spriteManager_->UpdateVisibleGroups();
+
 	// フェーズごとの処理
 	switch (phase_)
 	{
@@ -184,16 +198,16 @@ void TitleScene::Update()
 			phase_ = Phase::kFadeOut;
 		}
 
-		// 現在の経過時間（秒）
-		now = std::chrono::steady_clock::now();
-		elapsedTime = std::chrono::duration<float>(now - startTime).count();
+		//// 現在の経過時間（秒）
+		//now = std::chrono::steady_clock::now();
+		//elapsedTime = std::chrono::duration<float>(now - startTime).count();
 
-		// 時間に基づいてスケールを変化させる
-		scale = std::sin(elapsedTime * 2.0f) * 0.1f + 1.0f;
+		//// 時間に基づいてスケールを変化させる
+		//scale = std::sin(elapsedTime * 2.0f) * 0.1f + 1.0f;
 
-		texSize = { 256.0f * scale,128.0f * scale };
+		//texSize = { 256.0f * scale,128.0f * scale };
 
-		startBotton_->SetSize(texSize);
+		//startBotton_->SetSize(texSize);
 
 		break;
 
@@ -220,7 +234,7 @@ void TitleScene::Update()
 		break;
 	}
 
-	startBotton_->Update();	
+	//startBotton_->Update();	
 
 	if (isMoveActive_) /// 移動開始フラグが有効なら
 	{
@@ -312,9 +326,10 @@ void TitleScene::Draw()
 	DrawForegroundSprite();	
 	/// 前景スプライト描画	
 
-	//scoreUi_->Draw();
+	spriteManager_->DrawGroup("start_ui");
+	spriteManager_->DrawGroup("title_ui");
 
-	startBotton_->Draw();
+	//startBotton_->Draw();
 
 	fade_->Draw();
 

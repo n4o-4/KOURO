@@ -21,7 +21,6 @@ namespace Kouro
 			Vector2AnimationCurve position; // 位置アニメーション
 			ScalarAnimationCurve rotation;  // 回転アニメーション
 			Vector2AnimationCurve scale;    // スケールアニメーション
-			ScalarAnimationCurve alpha;     // 透明度アニメーション
 			Vector4AnimationCurve color;    // 色アニメーション
 		};
 
@@ -35,6 +34,7 @@ namespace Kouro
 
 		/// \brief コンストラクタ
 		SpriteAnimationEditor();
+
 		/// \brief デストラクタ
 		~SpriteAnimationEditor();
 
