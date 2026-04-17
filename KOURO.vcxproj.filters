@@ -575,6 +575,7 @@
     <ClCompile Include="engine\2d\KeyFrame.cpp" />
     <ClCompile Include="application\editor\SpriteAnimationEditor.cpp" />
     <ClCompile Include="externals\imgui\imgui_stdlib.cpp" />
+    <ClCompile Include="Reticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -1068,6 +1069,7 @@
     <ClInclude Include="engine\2d\KeyFrame.h" />
     <ClInclude Include="application\editor\SpriteAnimationEditor.h" />
     <ClInclude Include="externals\imgui\imgui_stdlib.h" />
+    <ClInclude Include="Reticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
