@@ -119,6 +119,7 @@
     <ClCompile Include="engine\system\JsonLoader.cpp" />
     <ClCompile Include="application\camera\title\LookAtPlayerState.cpp" />
     <ClCompile Include="engine\2d\KeyFrame.cpp" />
+    <ClCompile Include="LockOnSystem.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\model\Model.cpp" />
     <ClCompile Include="engine\3d\model\ModelCommon.cpp" />
@@ -170,7 +171,7 @@
     <ClCompile Include="application\system\UIController.cpp" />
     <ClCompile Include="application\system\UIManager.cpp" />
     <ClCompile Include="engine\system\YamlLoader.cpp" />
-    <ClCompile Include="Reticle.cpp" />
+    <ClCompile Include="application\object\player\Reticle.cpp" />
     <ClCompile Include="SpriteAnimator.cpp" />
     <ClCompile Include="application\editor\SpriteAnimationEditor.cpp" />
   </ItemGroup>
@@ -345,7 +346,8 @@
     <ClInclude Include="application\system\UIManager.h" />
     <ClInclude Include="engine\system\YamlLoader.h" />
     <ClInclude Include="engine\2d\KeyFrame.h" />
-    <ClInclude Include="Reticle.h" />
+    <ClInclude Include="application\object\player\Reticle.h" />
+    <ClInclude Include="LockOnSystem.h" />
     <ClInclude Include="SpriteAnimator.h" />
     <ClInclude Include="application\editor\SpriteAnimationEditor.h" />
   </ItemGroup>

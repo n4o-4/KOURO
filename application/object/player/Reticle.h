@@ -25,13 +25,6 @@ public:
 	/// \brief  更新
 	void Update(Kouro::Input* input = Kouro::Input::GetInstance());
 
-	/**
-	* \brief  SetParent 親ワールド変換の設定
-	* \param  parent 親ワールド変換のポインタ
-	*/
-
-	void SetParent(Kouro::WorldTransform* parent) { worldTransform_->SetParent(parent); }
-
 private:
 
 	Kouro::Sprite* sprite_;	// クロスヘアのスプライト
