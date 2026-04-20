@@ -6,10 +6,10 @@
 #include "Vector3Yaml.h"
 #include "Vector4Yaml.h"
 
-void Kouro::SpriteManager::LoadSpriteGroupsFromYaml(const std::string& yamlFilePath)
+void Kouro::SpriteManager::LoadSpriteGroupsFromYaml(const std::string& YAMLFilePath)
 {
     // YAMLファイルの読み込み
-    YAML::Node config = KOURO::YamlLoader::LoadYamlFile(yamlFilePath);
+    YAML::Node config = KOURO::YamlLoader::LoadYamlFile(YAMLFilePath);
 
     // スプライトグループの読み込み
     for (const auto& groupNode : config)
@@ -124,4 +124,36 @@ void Kouro::SpriteManager::SetGroupVisibility(const std::string& groupName, bool
 	{
 		it->second.isVisible = isVisible;
 	}
+}
+
+void Kouro::SpriteManager::SetSpriteUpdateFunction(const std::string& groupName, const std::string& spriteName, std::function<void(Kouro::Sprite&)> updateFunc)
+{
+    auto groupIt = spriteGroups_.find(groupName);
+    if (groupIt != spriteGroups_.end())
+    {
+        auto& spriteGroup = groupIt->second;
+        auto spriteIt = spriteGroup.sprites.find(spriteName);
+        if (spriteIt != spriteGroup.sprites.end())
+        {
+            auto& spriteTuple = spriteIt->second;
+            std::get<1>(spriteTuple) = updateFunc;
+        }
+    }
+}
+
+Kouro::Sprite* Kouro::SpriteManager::GetSprite(const std::string& groupName, const std::string& spriteName)
+{
+        auto groupIt = spriteGroups_.find(groupName);
+    if (groupIt != spriteGroups_.end())
+    {
+        auto& spriteGroup = groupIt->second;
+        auto spriteIt = spriteGroup.sprites.find(spriteName);
+        if (spriteIt != spriteGroup.sprites.end())
+        {
+            auto& spriteTuple = spriteIt->second;
+            return std::get<0>(spriteTuple).get();
+        }
+    }
+
+    return nullptr;
 }

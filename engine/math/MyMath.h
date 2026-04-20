@@ -152,6 +152,44 @@ namespace Kouro
 		return result;
 	}
 
+	namespace MyMath
+	{
+		static Vector3 Transform(const Vector3& position, const Matrix4x4& mat) {
+			Vector3 result;
+
+			float w =
+				position.x * mat.m[0][3] +
+				position.y * mat.m[1][3] +
+				position.z * mat.m[2][3] +
+				mat.m[3][3];
+
+			result.x =
+				position.x * mat.m[0][0] +
+				position.y * mat.m[1][0] +
+				position.z * mat.m[2][0] +
+				mat.m[3][0];
+
+			result.y =
+				position.x * mat.m[0][1] +
+				position.y * mat.m[1][1] +
+				position.z * mat.m[2][1] +
+				mat.m[3][1];
+
+			result.z =
+				position.x * mat.m[0][2] +
+				position.y * mat.m[1][2] +
+				position.z * mat.m[2][2] +
+				mat.m[3][2];
+
+			if (w != 0.0f) {
+				result.x /= w;
+				result.y /= w;
+				result.z /= w;
+			}
+
+			return result;
+		}
+	}
 	static Matrix4x4 MakeRotateXMatrix(float rotate)
 	{
 		Matrix4x4 rM{};
@@ -419,20 +457,12 @@ namespace Kouro
 				matrix.m[0][2] * matrix.m[1][0] * matrix.m[3][3] +
 				matrix.m[0][0] * matrix.m[1][3] * matrix.m[3][2]) / A;
 
-		/*resultMatrix.m[1][3] =
-			(matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][3] +
-				matrix.m[0][2] * matrix.m[1][3] * matrix.m[2][0] +
-				matrix.m[0][3] * matrix.m[1][0] * matrix.m[2][2] -
-				matrix.m[0][3] * matrix.m[1][2] * matrix.m[2][0] -
-				matrix.m[0][2] * matrix.m[1][0] * matrix.m[3][3] -
-				matrix.m[0][0] * matrix.m[1][3] * matrix.m[2][2]) / A;*/
-
 		resultMatrix.m[1][3] =
 			(matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][3] +
 				matrix.m[0][2] * matrix.m[1][3] * matrix.m[2][0] +
 				matrix.m[0][3] * matrix.m[1][0] * matrix.m[2][2] -
 				matrix.m[0][3] * matrix.m[1][2] * matrix.m[2][0] -
-				matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][3] - // 修正: m[3][3] → m[2][3]
+				matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][3] -
 				matrix.m[0][0] * matrix.m[1][3] * matrix.m[2][2]) / A;
 
 		resultMatrix.m[2][0] =
@@ -547,6 +577,18 @@ namespace Kouro
 		resultMatrix.m[3][2] = -(zf + zn) / (zf - zn);
 		resultMatrix.m[3][3] = 1;
 
+		return resultMatrix;
+	}
+
+	static Matrix4x4 MakeViewportMatrix(float x, float y, float width, float height)
+	{
+		Matrix4x4 resultMatrix = {};
+		resultMatrix.m[0][0] = width / 2;
+		resultMatrix.m[1][1] = -height / 2;
+		resultMatrix.m[2][2] = 1;
+		resultMatrix.m[3][0] = x + width / 2;
+		resultMatrix.m[3][1] = y + height / 2;
+		resultMatrix.m[3][3] = 1;
 		return resultMatrix;
 	}
 

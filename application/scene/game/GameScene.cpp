@@ -87,120 +87,9 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 	///========================================
 	///		パーティクル
-	
-	// plane
-	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("plane_Particle", "texture/circle.png", Kouro::ParticleManager::ParticleType::Normal);
-	// ブレンドモードの設定
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
-	// billboardを有効
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableBillboard = true;
-
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->flagsData->enableStretch = true;
-	
-	// 減速を有効
-
-
-
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enableDeceleration = false;
-	// パルスを有効
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("plane_Particle")->enablePulse = false;
-
-
-
-	emitter1_ = std::make_unique<Kouro::ParticleEmitter>();
-	emitter1_->Initialize("plane_Particle");
-	emitter1_->SetPosition({ 1.0f,2.0f,0.0f });
-	emitter1_->SetParticleCount(1);
-	emitter1_->SetVelocityRange({ {0.0f,0.0f,2.0f },{0.0f,0.0f,2.0f} });
-	emitter1_->SetStartScaleRange({ {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} });
-
-	emitter1_->SetFinishScaleRange({ {1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f} });
-
-	emitter1_->SetTranslateRange({ { 0.0f,0.0f,0.0f },{ 0.0f,0.0f,0.0f } });
-
-	emitter1_->SetStartColorRange({ {0.667f, 0.169f, 1.0f, 1.0f}, {0.667f, 0.169f, 1.0f, 1.0f} });
-	emitter1_->SetFinishColorRange({ {0.667f, 0.169f, 1.0f, 1.0f},{0.667f, 0.169f, 1.0f, 1.0f} }); /*{ 1.0f, 0.72f, 0.19f, 1.0f }*/
-	emitter1_->SetLifeTimeRange({ 10.0f,10.0f });
-	emitter1_->SetFrequency(0.07f);
-
 	mEmitter = std::make_unique<Kouro::ModelEdgeEmitter>();
 	mEmitter->Initialize("normal", context);
 	mEmitter->CreateLineSegment("enemy/enemy.obj");
-
-	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("HitEffect", "texture/gradationLine.png", Kouro::ParticleManager::ParticleType::Ring);
-
-	// ブレンドモードの設定
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
-	// billboardを有効
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->flagsData->enableBillboard = false;
-	// 減速を有効
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->enableDeceleration = true;
-	// パルスを有効
-	emitter2_ = std::make_unique<Kouro::ParticleEmitter>();
-	emitter2_->Initialize("HitEffect");
-	emitter2_->SetPosition({ 1.0f,2.0f,20.0f });
-	emitter2_->SetParticleCount(1);
-	emitter2_->SetVelocityRange({ {0.0f,0.0f,0.0f },{0.0f,0.0f,0.0f} });
-	emitter2_->SetStartScaleRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
-	emitter2_->SetFinishScaleRange({ {3.0f,3.0f,3.0f},{3.0f,3.0f,3.0f} });
-	emitter2_->SetRotateRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
-	
-
-	emitter2_->SetTranslateRange({ { 0.0f,0.0f,0.0f },{ 0.0f,0.0f,0.0f } });
-
-	emitter2_->SetStartColorRange({ {1.0f,1.0f,1.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f} });
-	emitter2_->SetFinishColorRange({ {1.0f,1.0f,1.0f,0.0f},{1.0f,1.0f,1.0f,0.0f} }); /*{ 1.0f, 0.72f, 0.19f, 1.0f }*/
-	emitter2_->SetLifeTimeRange({ 0.5f,0.5f });
-	emitter2_->SetFrequency(0.2f);
-
-	///hitEffect1
-
-	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("spark", "texture/circle.png", Kouro::ParticleManager::ParticleType::Normal);
-
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("spark")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("spark")->flagsData->enableBillboard = true;
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("spark")->flagsData->enableStretch = false;
-
-	emitter3_ = std::make_unique<Kouro::ParticleEmitter>();
-	emitter3_->Initialize("spark");
-	emitter3_->SetPosition({ 1.0f,2.0f,20.0f });
-	emitter3_->SetParticleCount(10);
-	emitter3_->SetVelocityRange({ {-10.0f,-10.0f,-10.0f },{10.0f,10.0f,10.0f} });
-	emitter3_->SetStartScaleRange({ {0.3f,0.3f,0.3f},{0.3f,0.3f,0.3f} });
-	emitter3_->SetFinishScaleRange({ {0.1f,0.1f,0.1f},{0.1f,0.1f,0.1f} });
-	emitter3_->SetRotateRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
-
-
-	emitter3_->SetTranslateRange({ { 0.0f,0.0f,0.0f },{ 0.0f,0.0f,0.0f } });
-
-	emitter3_->SetStartColorRange({ {0.667f, 0.169f, 1.0f, 1.0f}, {0.667f, 0.169f, 1.0f, 1.0f} });
-	emitter3_->SetFinishColorRange({ {0.667f, 0.169f, 1.0f, 1.0f}, {0.667f, 0.169f, 1.0f, 1.0f} }); /*{ 1.0f, 0.72f, 0.19f, 1.0f }*/
-	emitter3_->SetLifeTimeRange({ 0.5f,0.5f });
-	emitter3_->SetFrequency(0.01f);
-
-	Kouro::ParticleManager::GetInstance()->CreateParticleGroup("ray", "texture/circle.png", Kouro::ParticleManager::ParticleType::Normal);
-
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("ray")->blendMode = Kouro::ParticleManager::BlendMode::kAdd;
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("ray")->flagsData->enableBillboard = true;
-	Kouro::ParticleManager::GetInstance()->GetParticleGroup("ray")->flagsData->enableStretch = true;
-
-	emitter4_ = std::make_unique<Kouro::ParticleEmitter>();
-	emitter4_->Initialize("ray");
-	emitter4_->SetPosition({ 1.0f,2.0f,20.0f });
-	emitter4_->SetParticleCount(10);
-	emitter4_->SetVelocityRange({ {-10.0f,-10.0f,-10.0f },{10.0f,10.0f,10.0f} });
-	emitter4_->SetStartScaleRange({ {0.3f,0.3f,0.3f},{0.3f,0.3f,0.3f} });
-	emitter4_->SetFinishScaleRange({ {0.1f,0.1f,0.1f},{0.1f,0.1f,0.1f} });
-	emitter4_->SetRotateRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
-
-
-	emitter4_->SetTranslateRange({ { 0.0f,0.0f,0.0f },{ 0.0f,0.0f,0.0f } });
-
-	emitter4_->SetStartColorRange({ {0.667f, 0.169f, 1.0f, 1.0f}, {0.667f, 0.169f, 1.0f, 1.0f} });
-	emitter4_->SetFinishColorRange({ {0.667f, 0.169f, 1.0f, 1.0f}, {0.667f, 0.169f, 1.0f, 1.0f} }); /*{ 1.0f, 0.72f, 0.19f, 1.0f }*/
-	emitter4_->SetLifeTimeRange({ 0.5f,0.5f });
-	emitter4_->SetFrequency(0.01f);
-
 
 	///========================================
 	///		プレイヤー
@@ -249,6 +138,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 	// プレイUIの設定
 	spriteManager_->SetGroupVisibility("play_ui", true);
+	spriteManager_->SetGroupVisibility("reticle_ui", true);
 
 	// 発砲UIの更新関数を設定
 	spriteManager_->SetSpriteUpdateFunction("play_ui","label_fire_hint",PlayerUI::FireUI(kDefaultUIColor_,{ 1.0,1.0f,1.0f,1.0f },player_.get()));
@@ -306,8 +196,12 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	pointEmitter_ = std::make_unique<Kouro::PointEmitter>();
 	pointEmitter_->Initialize("normal", context);
 	pointEmitter_->SetEmitterProperties({ 0.0f,0.0f,0.0f }, 100 ,{ -4.0f,-4.0f,-10.0f }, { 4.0f,4.0f,-1.0f }, 0.5f, 1.5f, 0.0f);
-	//pointEmitter_->SetEmitterProperties({ 0.0f,0.0f,0.0f }, 1, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }, 100.0f, 150.0f, 0.0f);
 	pointEmitter_->GetWorldTransform()->SetParent(player_->GetWorldTransform());
+
+	auto reticleSprite = spriteManager_->GetSprite("reticle_ui", "icon_reticle");
+
+	reticle_ = std::make_unique<Reticle>(reticleSprite, player_->GetWorldTransform(),cameraManager_.get());
+	reticle_->Initialize();
 }
 
 ///=============================================================================
@@ -476,6 +370,7 @@ void GameScene::Update()
 
 		pointEmitter_->Update();
 		
+		reticle_->Update();
 
 		break;
 	case Phase::kFadeOut:
@@ -578,6 +473,7 @@ void GameScene::Draw()
 
 	spriteManager_->DrawGroup("play_ui");
 	spriteManager_->DrawGroup("pause_ui");
+	spriteManager_->DrawGroup("reticle_ui");
 
 	// フェード描画
 	DrawFade();

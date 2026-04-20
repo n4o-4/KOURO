@@ -31,7 +31,6 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 
 	/// 各種素材の読み込み
 	// テクスチャの読み込み
-	Kouro::TextureManager::GetInstance()->LoadTexture("texture/StartButton.png");
 	Kouro::TextureManager::GetInstance()->LoadTexture("texture/num.png");
 
 	// ラインモデルの読み込み
@@ -44,30 +43,16 @@ void TitleScene::Initialize(Kouro::EngineContext context)
 	// コントロールポイントの読み込み
 	controlPoints_ = rail_config["control_points"].as<std::vector<Kouro::Vector3>>();
 
-
-
 	spriteManager_->LoadSpriteGroupsFromYaml("title/ui/scene_ui.yaml");
 
 	// プレイUIの設定
 	spriteManager_->SetGroupVisibility("start_ui", true);
-
 
 	// ポーズUIの設定
 	spriteManager_->SetGroupVisibility("title_ui", false);
 
 
 	YAML::Node sprite_config = KOURO::YamlLoader::LoadYamlFile("title/sprite_config.yaml");
-
-	// スタートボタンの生成
-	//startBotton_ = std::make_unique<Kouro::Sprite>();
-	//startBotton_->Initialize(Kouro::SpriteCommon::GetInstance(),"texture/StartButton.png");
-
-	//// スタートボタンの各種設定
-	//startBotton_->SetPosition(sprite_config["start_button"]["position"].as<Kouro::Vector2>());
-	//startBotton_->SetSize(sprite_config["start_button"]["size"].as<Kouro::Vector2>());
-	//startBotton_->SetAnchorPoint(sprite_config["start_button"]["anchor_point"].as<Kouro::Vector2>());
-	//startBotton_->SetTexSize(sprite_config["start_button"]["texture_size"].as<Kouro::Vector2>());
-
 
 	// プレイヤーの生成
 	player_ = std::make_unique<BaseCharacter>();
@@ -198,17 +183,6 @@ void TitleScene::Update()
 			phase_ = Phase::kFadeOut;
 		}
 
-		//// 現在の経過時間（秒）
-		//now = std::chrono::steady_clock::now();
-		//elapsedTime = std::chrono::duration<float>(now - startTime).count();
-
-		//// 時間に基づいてスケールを変化させる
-		//scale = std::sin(elapsedTime * 2.0f) * 0.1f + 1.0f;
-
-		//texSize = { 256.0f * scale,128.0f * scale };
-
-		//startBotton_->SetSize(texSize);
-
 		break;
 
 		// フェードアウト
@@ -328,8 +302,6 @@ void TitleScene::Draw()
 
 	spriteManager_->DrawGroup("start_ui");
 	spriteManager_->DrawGroup("title_ui");
-
-	//startBotton_->Draw();
 
 	fade_->Draw();
 

@@ -14,6 +14,9 @@
 #include "LevelLoader.h"
 #include "GlobalVariables.h"
 #include "PointEmitter.h"
+#include "Reticle.h"
+
+
 // \brief GameScene ゲームシーンクラス
 
 class GameScene : public Kouro::BaseScene
@@ -95,19 +98,6 @@ private:
 
 	std::unique_ptr<Kouro::WorldTransform> transform_ = nullptr;
 
-	std::unique_ptr<Kouro::ParticleEmitter> emitter1_ = nullptr;
-
-	std::unique_ptr<Kouro::ParticleEmitter> emitter2_ = nullptr;
-
-	std::unique_ptr<Kouro::ParticleEmitter> emitter3_ = nullptr;
-
-	std::unique_ptr<Kouro::ParticleEmitter> emitter4_ = nullptr;
-
-	std::unique_ptr<Kouro::ParticleEmitter> hitEffect1_Ring1_ = nullptr;
-	std::unique_ptr<Kouro::ParticleEmitter> hitEffect1_Ring2_ = nullptr;
-	std::unique_ptr<Kouro::ParticleEmitter> hitEffect1_Circle_ = nullptr;
-	std::unique_ptr<Kouro::ParticleEmitter> hitEffect1_CenterCircle_ = nullptr;
-
 	std::unique_ptr<Kouro::ModelEdgeEmitter> mEmitter = nullptr;
 	std::unique_ptr<Kouro::PointEmitter> pointEmitter_ = nullptr;
 
@@ -115,6 +105,8 @@ private:
 	std::unique_ptr<Kouro::ParticleEmitter> hitEffect2_Circle2_ = nullptr;
 
 	std::shared_ptr<Player> player_ = nullptr;
+
+	std::unique_ptr<Reticle> reticle_ = nullptr;
 
 	RailCamera* railCamera_ = nullptr;
 

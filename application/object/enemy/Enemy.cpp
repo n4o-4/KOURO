@@ -211,9 +211,6 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 
 			// hpをプレイヤーの弾のダメージ分減算
 			hp_ -= playerBullet->GetDamage();
-
-
-			Kouro::ParticleManager::GetInstance()->GetParticleGroup("HitEffect")->enableDeceleration = true;
 			
 			//emitter_.SetPosition(worldTransform_->transform.translate);
 			//emitter_.SetParticleCount(1);
