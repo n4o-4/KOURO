@@ -119,7 +119,9 @@
     <ClCompile Include="engine\system\JsonLoader.cpp" />
     <ClCompile Include="application\camera\title\LookAtPlayerState.cpp" />
     <ClCompile Include="engine\2d\KeyFrame.cpp" />
-    <ClCompile Include="LockOnSystem.cpp" />
+    <ClCompile Include="application\system\lockon\LockOnSystem.cpp" />
+    <ClCompile Include="application\system\lockon\IdleState.cpp" />
+    <ClCompile Include="application\system\lockon\LockingState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\model\Model.cpp" />
     <ClCompile Include="engine\3d\model\ModelCommon.cpp" />
@@ -172,6 +174,7 @@
     <ClCompile Include="application\system\UIManager.cpp" />
     <ClCompile Include="engine\system\YamlLoader.cpp" />
     <ClCompile Include="application\object\player\Reticle.cpp" />
+    <ClCompile Include="application\system\lockon\ReleaseState.cpp" />
     <ClCompile Include="SpriteAnimator.cpp" />
     <ClCompile Include="application\editor\SpriteAnimationEditor.cpp" />
   </ItemGroup>
@@ -347,7 +350,11 @@
     <ClInclude Include="engine\system\YamlLoader.h" />
     <ClInclude Include="engine\2d\KeyFrame.h" />
     <ClInclude Include="application\object\player\Reticle.h" />
-    <ClInclude Include="LockOnSystem.h" />
+    <ClInclude Include="application\system\lockon\ILockOnState.h" />
+    <ClInclude Include="application\system\lockon\LockOnSystem.h" />
+    <ClInclude Include="application\system\lockon\IdleState.h" />
+    <ClInclude Include="application\system\lockon\LockingState.h" />
+    <ClInclude Include="application\system\lockon\ReleaseState.h" />
     <ClInclude Include="SpriteAnimator.h" />
     <ClInclude Include="application\editor\SpriteAnimationEditor.h" />
   </ItemGroup>

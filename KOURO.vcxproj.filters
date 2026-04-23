@@ -576,7 +576,10 @@
     <ClCompile Include="application\editor\SpriteAnimationEditor.cpp" />
     <ClCompile Include="externals\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="application\object\player\Reticle.cpp" />
-    <ClCompile Include="LockOnSystem.cpp" />
+    <ClCompile Include="application\system\lockon\LockOnSystem.cpp" />
+    <ClCompile Include="application\system\lockon\IdleState.cpp" />
+    <ClCompile Include="application\system\lockon\LockingState.cpp" />
+    <ClCompile Include="application\system\lockon\ReleaseState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -1071,7 +1074,11 @@
     <ClInclude Include="application\editor\SpriteAnimationEditor.h" />
     <ClInclude Include="externals\imgui\imgui_stdlib.h" />
     <ClInclude Include="application\object\player\Reticle.h" />
-    <ClInclude Include="LockOnSystem.h" />
+    <ClInclude Include="application\system\lockon\LockOnSystem.h" />
+    <ClInclude Include="application\system\lockon\ILockOnState.h" />
+    <ClInclude Include="application\system\lockon\IdleState.h" />
+    <ClInclude Include="application\system\lockon\LockingState.h" />
+    <ClInclude Include="application\system\lockon\ReleaseState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

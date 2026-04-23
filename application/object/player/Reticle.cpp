@@ -1,5 +1,12 @@
 #include "Reticle.h"
 
+Reticle::Reticle(Kouro::Sprite* sprite, Kouro::WorldTransform* worldTransform, Kouro::CameraManager* cameraManager) : sprite_(sprite), cameraManager_(cameraManager)
+{
+	worldTransform_ = std::make_unique<Kouro::WorldTransform>();
+	worldTransform_->Initialize();
+	worldTransform_->SetParent(worldTransform);
+}
+
 void Reticle::Initialize()
 {
 	worldTransform_->SetTranslate(kReticleOffset_);
