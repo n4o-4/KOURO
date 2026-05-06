@@ -1,7 +1,7 @@
 #include "SpawnManager.h"
 #include <iostream>
 
-std::vector<Kouro::Vector3> SpawnManager::LoadFile(const std::string fileName)
+std::vector<Kouro::Vector3> SpawnManager::LoadFile(const std::string& fileName, const std::string& pattern)
 {
     const std::string filePath = directoryPath + fileName;
 
@@ -16,7 +16,7 @@ std::vector<Kouro::Vector3> SpawnManager::LoadFile(const std::string fileName)
 
         std::vector<Kouro::Vector3> goalOffsets;
 
-        for (auto& e : j["EnemyGroup1"]["enemis"]) {
+        for (auto& e : j[pattern]["enemis"]) {
             Kouro::Vector3 goalOffset;
             goalOffset.x = e["goalOffset"][0].get<float>();
             goalOffset.y = e["goalOffset"][1].get<float>();

@@ -159,7 +159,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 	SpawnManager spawnManager;
 
-	std::vector<Kouro::Vector3> enemies = spawnManager.LoadFile("config/game/spawnPattern1.json");
+	std::vector<Kouro::Vector3> enemies = spawnManager.LoadFile("config/game/spawnPattern1.json", "EnemyGroup1");
 
 	for (size_t i = 0; i < enemies.size(); i++)
 	{
@@ -215,6 +215,9 @@ void GameScene::Finalize()
 ///						更新
 void GameScene::Update()
 {
+	static int frameCount = 0;
+	static int currentSpawnIndex = 1;
+
 	// 基底クラスの更新
 	BaseScene::Update();
 
@@ -325,6 +328,36 @@ void GameScene::Update()
 			return;
 		}
 
+		frameCount++;
+
+		if (frameCount == 300 || frameCount == 600 || frameCount == 900 || frameCount == 1200 || frameCount == 1500 ||
+			frameCount == 1800 || frameCount == 2100 || frameCount == 2400 || frameCount == 2700 || frameCount == 3000)
+		{
+			currentSpawnIndex++;
+
+			SpawnManager spawnManager;
+
+			std::vector<Kouro::Vector3> enemies = spawnManager.LoadFile("config/game/spawnPattern1.json", "EnemyGroup" + std::to_string(currentSpawnIndex));
+
+			for (size_t i = 0; i < enemies.size(); i++)
+			{
+				std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
+				enemy->Initialize(lineModelManager_->FindLineModel("enemy/enemy.obj"));
+				enemy->SetGoalOffset(enemies[i]);
+				enemy->SetTarget(player_.get());
+				enemy->SetParent(&enemyRail_.GetWorldTransform());
+				enemy->SetColliderManager(colliderManager_.get());
+				enemy->SetLineModelManager(lineModelManager_.get());
+				enemy->SetEmitter(mEmitter.get());
+				std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
+				enemy->SetCameraManager(cameraManager_.get());
+				enemy->ChangeState(std::move(state));
+				colliderManager_->AddCollider(enemy);
+				enemy->Update();
+				enemies_.push_back(std::move(enemy));
+			}
+		}
+
 		if (player_->GetIsAlive())
 		{
 			UpdateAllObjects(1.0f / 60.0f);
@@ -361,7 +394,7 @@ void GameScene::Update()
 		}
 
 		// 敵が全滅したらフェードアウトへ
-		if (enemyCount == 0)
+		if (enemyCount == 0 && currentSpawnIndex >= 10)
 		{
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
 			spriteManager_->SetGroupVisibility("pause_ui", false);
