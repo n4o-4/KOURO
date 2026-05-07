@@ -49,8 +49,6 @@ public:
 
 private:
 
-	// ワールド変換情報
-	//std::unique_ptr<Kouro::WorldTransform> worldTransform_ = nullptr;
 	
 	bool isMove_ = false;
 

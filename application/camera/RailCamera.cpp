@@ -10,7 +10,6 @@ void RailCamera::Initialize()
 	worldTransform_->Initialize();
 
 	worldTransform_->SetTranslate({ 0.0f, 5.0f, 0.0f });
-	//worldTransform_->useQuaternion_ = false;
 }
 
 void RailCamera::Update()
@@ -18,8 +17,6 @@ void RailCamera::Update()
 	if(target_)
 	{
 		Kouro::Vector2 playerPosXY = { target_->GetTranslate().x, target_->GetTranslate().y };
-
-		followRate_;
 
 		Kouro::Vector3 position = worldTransform_->GetTranslate();
 

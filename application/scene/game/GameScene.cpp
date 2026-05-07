@@ -531,16 +531,16 @@ void GameScene::UpdateAllObjects(const float deltaTime)
 
 	colliderManager_->Update();
 
-	for (auto& enemy : enemies_)
-	{
-		if (!enemy->GetIsAlive())
+	std::erase_if(enemies_, [this](const std::shared_ptr<Enemy>& enemy)
 		{
-			++eliminatedEnemyCount_;
-		}
-	}
+			if (!enemy->GetIsAlive())
+			{
+				++eliminatedEnemyCount_;
+				return true;
+			}
 
-	// 生存していない敵をリストから削除
-	std::erase_if(enemies_, [](const std::shared_ptr<Enemy>& enemy) {return !enemy->GetIsAlive(); });
+			return false;
+		});
 }
 
 void GameScene::ChangeState(std::unique_ptr<Kouro::ISceneState> newState)
