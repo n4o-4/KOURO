@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../SpriteAnimator.h"
+#include "SpriteAnimator.h"
 #include <string>
 #include <memory>
 #include <vector>

@@ -118,6 +118,12 @@ namespace Kouro
 		*/
 		bool TriggerMouseButton(MouseButton mouseButton);
 
+		/**
+		* \brief  GetMouseMove マウスの移動量を取得
+		* \return マウスの移動量
+		*/
+		Vector3 GetMouseMove() { return Vector3(static_cast<float>(mouseState.lX), static_cast<float>(mouseState.lY), static_cast<float>(mouseState.lZ)); }
+
 		///===============================
 		/// ゲームパッド
 
@@ -176,8 +182,6 @@ namespace Kouro
 		BYTE key[256] = {};
 
 		BYTE keyPre[256] = {};
-
-	public:
 
 		// マウスデバイス
 		ComPtr<IDirectInputDevice8> mouse;

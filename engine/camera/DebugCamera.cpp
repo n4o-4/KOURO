@@ -21,16 +21,18 @@ namespace Kouro
         // 計算用のオフセット  
         Vector3 offSet = { 0.0f,0.0f,0.0f };
 
-        if (Input::GetInstance()->mouseState.lZ != 0.0f)
+		Vector3 mouseMove = Input::GetInstance()->GetMouseMove();
+
+        if (mouseMove.z != 0.0f)
         {
-            float scrollAmount = static_cast<float>(Input::GetInstance()->mouseState.lZ) * kScrollSensitivity;
+            float scrollAmount = mouseMove.z * kScrollSensitivity;
 
             // マウスホイールの回転量でオフセットを変更  
             offset.z += scrollAmount;
 
             offset.z = std::clamp(offset.z, kMinZoomDistance, kMaxZoomDistance);
 
-            Input::GetInstance()->mouseState.lZ = static_cast<LONG>(0.0f);
+            mouseMove.z = 0.0f;
         }
 
         // カメラの角度から回転行列を計算  
@@ -47,9 +49,8 @@ namespace Kouro
         {
             Vector3 rotate =
             {
-
-                static_cast<float>(Input::GetInstance()->mouseState.lY) * kMouseRotateSensitivity,
-                static_cast<float>(Input::GetInstance()->mouseState.lX) * kMouseRotateSensitivity,
+                mouseMove.y * kMouseRotateSensitivity,
+                mouseMove.x * kMouseRotateSensitivity,
                 0.0f
             };
 
