@@ -580,6 +580,7 @@
     <ClCompile Include="application\system\lockon\IdleState.cpp" />
     <ClCompile Include="application\system\lockon\LockingState.cpp" />
     <ClCompile Include="application\system\lockon\ReleaseState.cpp" />
+    <ClCompile Include="SpriteAnimationController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -1079,6 +1080,8 @@
     <ClInclude Include="application\system\lockon\IdleState.h" />
     <ClInclude Include="application\system\lockon\LockingState.h" />
     <ClInclude Include="application\system\lockon\ReleaseState.h" />
+    <ClInclude Include="SpriteAnimationController.h" />
+    <ClInclude Include="engine\2d\SpriteGroup.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

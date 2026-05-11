@@ -1,23 +1,21 @@
 #pragma once
+// Standard Library
 #include <string>
-#include <memory>
-#include <vector>
 #include <unordered_map>
 
-#include "Sprite.h"
+// Engine
+#include "SpriteGroup.h"
+
+// Forward Declarations
+namespace Kouro
+{
+	class Sprite;
+}
 
 namespace Kouro
 {
 	class SpriteManager
 	{
-	public:
-
-		struct SpriteGroup
-		{
-			std::unordered_map < std::string, std::tuple<std::unique_ptr<Kouro::Sprite>, std::function<void(Kouro::Sprite&)>>> sprites; //!< スプライトのリスト
-			bool isVisible = false;                               //!< グループの表示フラグ
-		};
-
 	public:
 		 
 		/**
@@ -43,14 +41,6 @@ namespace Kouro
 		void SetGroupVisibility(const std::string& groupName, bool isVisible);
 
 		/**
-		* \brief  指定したグループ内のスプライトに更新関数を設定する
-		* \param  groupName グループ名
-		* \param  spriteName スプライト名
-		* \param  updateFunc スプライトの更新関数
-		*/
-		void SetSpriteUpdateFunction(const std::string& groupName, const std::string& spriteName, std::function<void(Kouro::Sprite&)> updateFunc);
-
-		/**
 		* \brief  指定したグループ内のスプライトを取得する
 		* \param  groupName グループ名
 		* \param  spriteName スプライト名
@@ -65,5 +55,3 @@ namespace Kouro
 	}; // class SpriteManager
 
 } // namespace Kouro
-
-

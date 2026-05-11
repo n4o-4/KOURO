@@ -177,12 +177,14 @@
     <ClCompile Include="application\system\lockon\ReleaseState.cpp" />
     <ClCompile Include="engine\2d\SpriteAnimator.cpp" />
     <ClCompile Include="application\editor\SpriteAnimationEditor.cpp" />
+    <ClCompile Include="SpriteAnimationController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\system\Event.h" />
     <ClInclude Include="application\system\EventController.h" />
     <ClInclude Include="application\camera\title\FollowCameraState.h" />
     <ClInclude Include="application\camera\title\LookAtPlayerState.h" />
+    <ClInclude Include="engine\2d\SpriteGroup.h" />
     <ClInclude Include="engine\3d\particle\PointEmitter.h" />
     <ClInclude Include="application\system\SpriteMotionLibrary.h" />
     <ClInclude Include="application\scene\SceneCommand.h" />
@@ -357,6 +359,7 @@
     <ClInclude Include="application\system\lockon\ReleaseState.h" />
     <ClInclude Include="engine\2d\SpriteAnimator.h" />
     <ClInclude Include="application\editor\SpriteAnimationEditor.h" />
+    <ClInclude Include="SpriteAnimationController.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

@@ -140,9 +140,6 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	spriteManager_->SetGroupVisibility("play_ui", true);
 	spriteManager_->SetGroupVisibility("reticle_ui", true);
 
-	// 発砲UIの更新関数を設定
-	spriteManager_->SetSpriteUpdateFunction("play_ui","label_fire_hint",PlayerUI::FireUI(kDefaultUIColor_,{ 1.0,1.0f,1.0f,1.0f },player_.get()));
-
 	// ポーズUIの設定
 	spriteManager_->SetGroupVisibility("pause_ui", false);
 

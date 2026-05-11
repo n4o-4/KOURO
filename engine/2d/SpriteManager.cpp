@@ -1,6 +1,9 @@
 #include "SpriteManager.h"
+// library
 #include <filesystem>
 
+// engine
+#include "Sprite.h"
 #include "YamlLoader.h"
 #include "Vector2Yaml.h"
 #include "Vector3Yaml.h"
@@ -62,7 +65,7 @@ void Kouro::SpriteManager::LoadSpriteGroupsFromYaml(const std::string& YAMLFileP
             sprite->Update();
 
             // --- 名前で登録 ---
-            // 重複キーがある場合は上書きを警告できるようにしておくと安全
+            // 重複キーがある場合は上書きを警告
 #ifdef _DEBUG
             if (spriteGroup.sprites.contains(spriteName)) {
                 printf("Warning: Duplicate sprite name '%s' in group '%s'\n", spriteName.c_str(), groupName.c_str());
@@ -70,7 +73,7 @@ void Kouro::SpriteManager::LoadSpriteGroupsFromYaml(const std::string& YAMLFileP
 #endif
 
             // tupleにまとめる: second要素はまだnullptr
-            spriteGroup.sprites[spriteName] = std::make_tuple(std::move(sprite), nullptr);
+            spriteGroup.sprites[spriteName] = std::move(sprite);
         }
 
         // グループをマップに登録
@@ -84,12 +87,10 @@ void Kouro::SpriteManager::UpdateVisibleGroups()
     {
         if (!spriteGroup.isVisible) continue; // 非表示グループは先にスキップ
 
-        for (auto& [spriteName, spriteTuple] : spriteGroup.sprites)
+        for (auto& [spriteName, spritePtr] : spriteGroup.sprites)
         {
-            auto& [spritePtr, updateFunc] = spriteTuple;
             if (!spritePtr) continue;
 
-            if (updateFunc) updateFunc(*spritePtr);
             spritePtr->Update();
         }
     }
@@ -105,9 +106,8 @@ void Kouro::SpriteManager::DrawGroup(const std::string& groupName)
 		if (spriteGroup.isVisible)
 		{
             // グループ内の全スプライトを描画
-            for (auto& [spriteName, spriteTuple] : spriteGroup.sprites)
+            for (auto& [spriteName, spritePtr] : spriteGroup.sprites)
             {
-                auto& [spritePtr, updateFunc] = spriteTuple;
                 if (!spritePtr) continue;
 
                 spritePtr->Draw();
@@ -126,7 +126,7 @@ void Kouro::SpriteManager::SetGroupVisibility(const std::string& groupName, bool
 	}
 }
 
-void Kouro::SpriteManager::SetSpriteUpdateFunction(const std::string& groupName, const std::string& spriteName, std::function<void(Kouro::Sprite&)> updateFunc)
+Kouro::Sprite* Kouro::SpriteManager::GetSprite(const std::string& groupName, const std::string& spriteName)
 {
     auto groupIt = spriteGroups_.find(groupName);
     if (groupIt != spriteGroups_.end())
@@ -135,23 +135,7 @@ void Kouro::SpriteManager::SetSpriteUpdateFunction(const std::string& groupName,
         auto spriteIt = spriteGroup.sprites.find(spriteName);
         if (spriteIt != spriteGroup.sprites.end())
         {
-            auto& spriteTuple = spriteIt->second;
-            std::get<1>(spriteTuple) = updateFunc;
-        }
-    }
-}
-
-Kouro::Sprite* Kouro::SpriteManager::GetSprite(const std::string& groupName, const std::string& spriteName)
-{
-        auto groupIt = spriteGroups_.find(groupName);
-    if (groupIt != spriteGroups_.end())
-    {
-        auto& spriteGroup = groupIt->second;
-        auto spriteIt = spriteGroup.sprites.find(spriteName);
-        if (spriteIt != spriteGroup.sprites.end())
-        {
-            auto& spriteTuple = spriteIt->second;
-            return std::get<0>(spriteTuple).get();
+            return spriteIt->second.get();
         }
     }
 
