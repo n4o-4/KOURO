@@ -1,4 +1,4 @@
-﻿- group_name: start_ui
+- group_name: start_ui
   sprites:
     - name: label_start_hint
       texture_path: texture/StartButton.png
@@ -10,8 +10,9 @@
 - group_name: title_ui
   sprites:
     - name: label_title
-      texture_path: texture/Label_Title.png
+      texture_path: texture/Label_Title1.png
       position: [640, 360]      
       size: [1280, 720]         #テクスチャ描画サイズ
       anchor_point: [0.5, 0.5]
-      texture_size: [1280, 720] #テクスチャ切り出しサイズ
+      texture_size: [1280, 960] #テクスチャ切り出しサイズ
+      color: [0, 0, 0, 1] #RGBA]

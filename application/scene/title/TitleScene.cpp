@@ -178,9 +178,11 @@ void TitleScene::Update()
 		{
 			eventController_->ExecuteEvent("CameraTransitionToLookAtPlayer");
 
-			fade_->Start(Fade::Status::WhiteFadeOut, 1.0f);
+			fade_->Start(Fade::Status::WhiteFadeOut, 5.0f);
 
 			phase_ = Phase::kFadeOut;
+
+			spriteManager_->SetGroupVisibility("title_ui", true);
 		}
 
 		break;
@@ -301,10 +303,10 @@ void TitleScene::Draw()
 	/// 前景スプライト描画	
 
 	spriteManager_->DrawGroup("start_ui");
-	spriteManager_->DrawGroup("title_ui");
+	
 
 	fade_->Draw();
-
+	spriteManager_->DrawGroup("title_ui");
 }
 
 void TitleScene::CreateEvents()
