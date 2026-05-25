@@ -6,7 +6,12 @@
 // ロックオン状態の一つである「ロック中」の状態を表すクラス
 class LockingState : public ILockOnState
 {
-	public:
+public:
+
+	/**
+	* \brief  コンストラクタ
+	* \param  reticle ロックオン用のクロスヘア
+	*/
 
 	/// \brief  ロックオン状態の開始処理
 	virtual void OnEnter(Kouro::Input* input = Kouro::Input::GetInstance()) override;

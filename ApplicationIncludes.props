@@ -11,7 +11,11 @@
         $(ProjectDir)application\collider;
 
         $(ProjectDir)application\object\base;
+        
         $(ProjectDir)application\object\enemy;
+        $(ProjectDir)application\object\enemy\pattern1;
+        $(ProjectDir)application\object\enemy\pattern2;
+
         $(ProjectDir)application\object\player;
 
         $(ProjectDir)application\scene;

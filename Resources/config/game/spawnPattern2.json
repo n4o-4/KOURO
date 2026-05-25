@@ -1,0 +1,101 @@
+{
+  "EnemyGroup1": {
+    "enemis": [
+      { "goalOffset": [ 10, 30, 40 ] },
+      { "goalOffset": [ -20, -10, 40 ] },
+      { "goalOffset": [ -50, 30, 40 ] },
+      { "goalOffset": [ 40, 20, 40 ] },
+      { "goalOffset": [ 50, -20, 40 ] }
+    ]
+  },
+
+  "EnemyGroup2": {
+    "enemis": [
+      { "goalOffset": [ 0, 50, 40 ] },
+      { "goalOffset": [ 20, 20, 40 ] },
+      { "goalOffset": [ -20, 20, 40 ] },
+      { "goalOffset": [ 30, -30, 40 ] },
+      { "goalOffset": [ -30, -30, 40 ] }
+    ]
+  },
+
+  "EnemyGroup3": {
+    "enemis": [
+      { "goalOffset": [ 60, 0, 40 ] },
+      { "goalOffset": [ 30, 30, 40 ] },
+      { "goalOffset": [ -30, 30, 40 ] },
+      { "goalOffset": [ -60, 0, 40 ] },
+      { "goalOffset": [ 0, -40, 40 ] }
+    ]
+  },
+
+  "EnemyGroup4": {
+    "enemis": [
+      { "goalOffset": [ 10, 10, 40 ] },
+      { "goalOffset": [ 20, 20, 40 ] },
+      { "goalOffset": [ 30, 30, 40 ] },
+      { "goalOffset": [ -10, -10, 40 ] },
+      { "goalOffset": [ -20, -20, 40 ] }
+    ]
+  },
+
+  "EnemyGroup5": {
+    "enemis": [
+      { "goalOffset": [ 0, 60, 40 ] },
+      { "goalOffset": [ 20, 40, 40 ] },
+      { "goalOffset": [ -20, 40, 40 ] },
+      { "goalOffset": [ 10, -50, 40 ] },
+      { "goalOffset": [ -10, -50, 40 ] }
+    ]
+  },
+
+  "EnemyGroup6": {
+    "enemis": [
+      { "goalOffset": [ 50, 50, 40 ] },
+      { "goalOffset": [ -50, 50, 40 ] },
+      { "goalOffset": [ 50, -50, 40 ] },
+      { "goalOffset": [ -50, -50, 40 ] },
+      { "goalOffset": [ 0, 0, 40 ] }
+    ]
+  },
+
+  "EnemyGroup7": {
+    "enemis": [
+      { "goalOffset": [ 70, 10, 40 ] },
+      { "goalOffset": [ 40, -20, 40 ] },
+      { "goalOffset": [ 0, 30, 40 ] },
+      { "goalOffset": [ -40, -20, 40 ] },
+      { "goalOffset": [ -70, 10, 40 ] }
+    ]
+  },
+
+  "EnemyGroup8": {
+    "enemis": [
+      { "goalOffset": [ 20, 60, 40 ] },
+      { "goalOffset": [ -20, 60, 40 ] },
+      { "goalOffset": [ 40, 0, 40 ] },
+      { "goalOffset": [ -40, 0, 40 ] },
+      { "goalOffset": [ 0, -60, 40 ] }
+    ]
+  },
+
+  "EnemyGroup9": {
+    "enemis": [
+      { "goalOffset": [ 30, 10, 40 ] },
+      { "goalOffset": [ 60, -10, 40 ] },
+      { "goalOffset": [ -30, 10, 40 ] },
+      { "goalOffset": [ -60, -10, 40 ] },
+      { "goalOffset": [ 0, 40, 40 ] }
+    ]
+  },
+
+  "EnemyGroup10": {
+    "enemis": [
+      { "goalOffset": [ 10, 70, 40 ] },
+      { "goalOffset": [ -10, 70, 40 ] },
+      { "goalOffset": [ 30, -40, 40 ] },
+      { "goalOffset": [ -30, -40, 40 ] },
+      { "goalOffset": [ 0, 0, 40 ] }
+    ]
+  }
+}

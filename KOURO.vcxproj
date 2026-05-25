@@ -13,8 +13,8 @@
   <ItemGroup>
     <ClCompile Include="application\scene\game\state\PauseState.cpp" />
     <ClCompile Include="application\scene\game\state\PlayState.cpp" />
-    <ClCompile Include="application\object\enemy\LissajousMoveState.cpp" />
-    <ClCompile Include="application\object\enemy\AttackState.cpp" />
+    <ClCompile Include="application\object\enemy\pattern1\LissajousMoveState.cpp" />
+    <ClCompile Include="application\object\enemy\pattern1\AttackState.cpp" />
     <ClCompile Include="application\camera\title\AlignCameraState.cpp" />
     <ClCompile Include="engine\core\GpuResourceInternal.cpp" />
     <ClCompile Include="engine\3d\particle\BaseParticleEmitter.cpp" />
@@ -157,7 +157,7 @@
     <ClCompile Include="engine\system\UavManager.cpp" />
     <ClCompile Include="engine\3d\particle\ModelEdgeEmitter.cpp" />
     <ClCompile Include="application\system\RailFollower.cpp" />
-    <ClCompile Include="application\object\enemy\RandomMoveState.cpp" />
+    <ClCompile Include="application\object\enemy\pattern1\RandomMoveState.cpp" />
     <ClCompile Include="engine\system\RandomGenerate.cpp" />
     <ClCompile Include="application\camera\title\RotateCameraState.cpp" />
     <ClCompile Include="engine\system\ShaderCompiler.cpp">
@@ -165,10 +165,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="application\system\SpawnManager.cpp" />
-    <ClCompile Include="application\object\enemy\TackleChargeState.cpp" />
-    <ClCompile Include="application\object\enemy\TackleState.cpp" />
+    <ClCompile Include="application\object\enemy\pattern1\TackleChargeState.cpp" />
+    <ClCompile Include="application\object\enemy\pattern1\TackleState.cpp" />
     <ClCompile Include="engine\2d\SpriteManager.cpp" />
-    <ClCompile Include="application\object\enemy\TackleRecoverState.cpp" />
+    <ClCompile Include="application\object\enemy\pattern1\TackleRecoverState.cpp" />
     <ClCompile Include="engine\3d\particle\PointEmitter.cpp" />
     <ClCompile Include="application\system\UIController.cpp" />
     <ClCompile Include="application\system\UIManager.cpp" />
@@ -196,8 +196,8 @@
     <ClInclude Include="engine\math\Vector2Yaml.h" />
     <ClInclude Include="application\scene\game\state\PauseState.h" />
     <ClInclude Include="application\scene\game\state\PlayState.h" />
-    <ClInclude Include="application\object\enemy\LissajousMoveState.h" />
-    <ClInclude Include="application\object\enemy\AttackState.h" />
+    <ClInclude Include="application\object\enemy\pattern1\LissajousMoveState.h" />
+    <ClInclude Include="application\object\enemy\pattern1\AttackState.h" />
     <ClInclude Include="engine\math\Vector3.h" />
     <ClInclude Include="engine\math\Vector3Yaml.h" />
     <ClInclude Include="engine\object\InitialLightSetting.h" />
@@ -310,7 +310,7 @@
     <ClInclude Include="application\camera\ICameraState.h" />
     <ClInclude Include="engine\3d\particle\ModelEdgeEmitter.h" />
     <ClInclude Include="application\system\RailFollower.h" />
-    <ClInclude Include="application\object\enemy\RandomMoveState.h" />
+    <ClInclude Include="application\object\enemy\pattern1\RandomMoveState.h" />
     <ClInclude Include="engine\system\RandomGenerate.h" />
     <ClInclude Include="application\camera\title\RotateCameraState.h" />
     <ClInclude Include="engine\system\ShaderCompiler.h">
@@ -343,10 +343,10 @@
     <ClInclude Include="externals\yaml-cpp\src\tag.h" />
     <ClInclude Include="externals\yaml-cpp\src\token.h" />
     <ClInclude Include="engine\system\JsonLoader.h" />
-    <ClInclude Include="application\object\enemy\TackleChargeState.h" />
-    <ClInclude Include="application\object\enemy\TackleState.h" />
+    <ClInclude Include="application\object\enemy\pattern1\TackleChargeState.h" />
+    <ClInclude Include="application\object\enemy\pattern1\TackleState.h" />
     <ClInclude Include="engine\2d\SpriteManager.h" />
-    <ClInclude Include="application\object\enemy\TackleRecoverState.h" />
+    <ClInclude Include="application\object\enemy\pattern1\TackleRecoverState.h" />
     <ClInclude Include="application\system\UIController.h" />
     <ClInclude Include="application\system\UIManager.h" />
     <ClInclude Include="engine\system\YamlLoader.h" />
@@ -365,6 +365,7 @@
     <None Include=".editorconfig" />
     <None Include="Resources\config\game\ui\countdown_ui.yaml" />
     <None Include="Resources\config\game\ui\scene_ui.yaml" />
+    <None Include="Resources\config\game\spawnPattern2.json" />
     <None Include="Resources\shaders\Fullscreen.hlsli" />
     <None Include="Resources\shaders\Object3d.hlsli" />
     <None Include="Resources\shaders\Particle.CS.hlsli" />

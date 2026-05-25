@@ -160,8 +160,8 @@ private: // 非公開メンバ変数
 	static constexpr float kDefaultOffset_ = 15.0f;
 
 
-	static constexpr float kDefaultPlayerSpeed_ = 1.4f;
-	static constexpr float kBoostPlayerSpeed_ = 1.5f;
+	static constexpr float kDefaultPlayerSpeed_ = 2.8f;
+	static constexpr float kBoostPlayerSpeed_ = 3.0f;
 
 	static constexpr float kDefaultFriction_ = 0.85f;
 	static constexpr float kBoostFriction_ = 0.99f;

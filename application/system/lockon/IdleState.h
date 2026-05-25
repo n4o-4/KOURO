@@ -9,6 +9,12 @@ class IdleState : public ILockOnState
 {
 public: // 公開メンバ関数
 
+	/**
+	* \brief  コンストラクタ
+	* \param  reticle ロックオン用のクロスヘア
+	*/
+	IdleState(Reticle* reticle) : ILockOnState(reticle) {}
+
 	/// \brief  ロックオン状態の開始処理
 	virtual void OnEnter(Kouro::Input* input = Kouro::Input::GetInstance()) override;
 

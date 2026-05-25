@@ -1,13 +1,22 @@
 #pragma once
 // standard Library
-#include <memory>
+#include <vector>
 
-//application
+// application
 #include "Enemy.h"
+
+// 
+class Reticle;
 
 class ILockOnState
 {
 public: // 公開メンバ関数
+
+	/**
+	* \brief  コンストラクタ
+	* \param  reticle ロックオン用のクロスヘア
+	*/
+	ILockOnState(Reticle* reticle) : reticle_(reticle) {}
 
 	/// \brief  デストラクタ
 	virtual ~ILockOnState() = default;
@@ -23,7 +32,8 @@ public: // 公開メンバ関数
 
 private: // 非公開メンバ関数
 
+	std::vector<Enemy*> lockedOnEnemies_; // ロックオンされている敵のリスト
 
-
+	Reticle* reticle_; // ロックオン用のクロスヘア
 };
 

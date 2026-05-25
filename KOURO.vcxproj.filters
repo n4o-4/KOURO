@@ -352,7 +352,7 @@
     <ClCompile Include="engine\effect\Absorb.cpp">
       <Filter>engine\effect</Filter>
     </ClCompile>
-    <ClCompile Include="application\object\enemy\AttackState.cpp">
+    <ClCompile Include="application\object\enemy\pattern1\AttackState.cpp">
       <Filter>application\object\enemy</Filter>
     </ClCompile>
     <ClCompile Include="engine\3d\particle\ModelEdgeEmitter.cpp">
@@ -367,7 +367,7 @@
     <ClCompile Include="engine\system\LineModelManager.cpp">
       <Filter>engine\system</Filter>
     </ClCompile>
-    <ClCompile Include="application\object\enemy\RandomMoveState.cpp">
+    <ClCompile Include="application\object\enemy\pattern1\RandomMoveState.cpp">
       <Filter>application\object\enemy</Filter>
     </ClCompile>
     <ClCompile Include="engine\system\ModelLoader.cpp">
@@ -520,16 +520,16 @@
     <ClCompile Include="application\scene\game\state\PlayState.cpp">
       <Filter>application\scene\game\state</Filter>
     </ClCompile>
-    <ClCompile Include="application\object\enemy\TackleRecoverState.cpp">
+    <ClCompile Include="application\object\enemy\pattern1\TackleRecoverState.cpp">
       <Filter>application\object\enemy</Filter>
     </ClCompile>
-    <ClCompile Include="application\object\enemy\TackleChargeState.cpp">
+    <ClCompile Include="application\object\enemy\pattern1\TackleChargeState.cpp">
       <Filter>application\object\enemy</Filter>
     </ClCompile>
-    <ClCompile Include="application\object\enemy\TackleState.cpp">
+    <ClCompile Include="application\object\enemy\pattern1\TackleState.cpp">
       <Filter>application\object\enemy</Filter>
     </ClCompile>
-    <ClCompile Include="application\object\enemy\LissajousMoveState.cpp">
+    <ClCompile Include="application\object\enemy\pattern1\LissajousMoveState.cpp">
       <Filter>application\object\enemy</Filter>
     </ClCompile>
     <ClCompile Include="engine\2d\SpriteManager.cpp">
@@ -835,7 +835,7 @@
     <ClInclude Include="engine\effect\Absorb.h">
       <Filter>engine\effect</Filter>
     </ClInclude>
-    <ClInclude Include="application\object\enemy\AttackState.h">
+    <ClInclude Include="application\object\enemy\pattern1\AttackState.h">
       <Filter>application\object\enemy</Filter>
     </ClInclude>
     <ClInclude Include="engine\3d\particle\ModelEdgeEmitter.h">
@@ -850,7 +850,7 @@
     <ClInclude Include="engine\system\LineModelManager.h">
       <Filter>engine\system</Filter>
     </ClInclude>
-    <ClInclude Include="application\object\enemy\RandomMoveState.h">
+    <ClInclude Include="application\object\enemy\pattern1\RandomMoveState.h">
       <Filter>application\object\enemy</Filter>
     </ClInclude>
     <ClInclude Include="engine\system\ModelLoader.h">
@@ -1012,16 +1012,16 @@
     <ClInclude Include="engine\math\Vector4Yaml.h">
       <Filter>engine\math</Filter>
     </ClInclude>
-    <ClInclude Include="application\object\enemy\TackleState.h">
+    <ClInclude Include="application\object\enemy\pattern1\TackleState.h">
       <Filter>application\object\enemy</Filter>
     </ClInclude>
-    <ClInclude Include="application\object\enemy\TackleRecoverState.h">
+    <ClInclude Include="application\object\enemy\pattern1\TackleRecoverState.h">
       <Filter>application\object\enemy</Filter>
     </ClInclude>
-    <ClInclude Include="application\object\enemy\TackleChargeState.h">
+    <ClInclude Include="application\object\enemy\pattern1\TackleChargeState.h">
       <Filter>application\object\enemy</Filter>
     </ClInclude>
-    <ClInclude Include="application\object\enemy\LissajousMoveState.h">
+    <ClInclude Include="application\object\enemy\pattern1\LissajousMoveState.h">
       <Filter>application\object\enemy</Filter>
     </ClInclude>
     <ClInclude Include="engine\2d\SpriteManager.h">
@@ -1118,6 +1118,7 @@
     <None Include="Resources\config\game\ui\countdown_ui.yaml">
       <Filter>resources\config</Filter>
     </None>
+    <None Include="Resources\config\game\spawnPattern2.json" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="application">

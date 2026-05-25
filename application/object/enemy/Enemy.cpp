@@ -44,6 +44,11 @@ void Enemy::Update()
 		objectLine_->SetColor({ 0.196f, 0.929f, 0.369f,1.0f });
 	}
 
+	//// 生存していない弾をリストから削除
+	//bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(),
+	//	[](const std::shared_ptr<EnemyBullet>& bullet) { return !bullet->IsAlive(); }),
+	//	bullets_.end());
+
 	for (auto& bullet : bullets_)
 	{
 		bullet->Update();

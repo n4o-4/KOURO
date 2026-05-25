@@ -6,7 +6,13 @@
 // ロックオン状態の一つである「解放中」の状態を表すクラス
 class ReleaseState : public ILockOnState
 {
-	public:
+public:
+
+	/**
+	* \brief  コンストラクタ
+	* \param  reticle ロックオン用のクロスヘア
+	*/
+	ReleaseState(Reticle* reticle) : ILockOnState(reticle) {}
 
 	/// \brief  ロックオン状態の開始処理
 	virtual void OnEnter(Kouro::Input* input = Kouro::Input::GetInstance()) override;

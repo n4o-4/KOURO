@@ -188,8 +188,6 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 		enemies_.push_back(std::move(enemy));
 	}
 
-	
-
 	pointEmitter_ = std::make_unique<Kouro::PointEmitter>();
 	pointEmitter_->Initialize("normal", context);
 	pointEmitter_->SetEmitterProperties({ 0.0f,0.0f,0.0f }, 100 ,{ -4.0f,-4.0f,-10.0f }, { 4.0f,4.0f,-1.0f }, 0.5f, 1.5f, 0.0f);
@@ -334,7 +332,7 @@ void GameScene::Update()
 
 			SpawnManager spawnManager;
 
-			std::vector<Kouro::Vector3> enemies = spawnManager.LoadFile("config/game/spawnPattern1.json", "EnemyGroup" + std::to_string(currentSpawnIndex));
+			std::vector<Kouro::Vector3> enemies = spawnManager.LoadFile("config/game/spawnPattern2.json", "EnemyGroup" + std::to_string(currentSpawnIndex));
 
 			for (size_t i = 0; i < enemies.size(); i++)
 			{

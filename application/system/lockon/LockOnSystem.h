@@ -8,8 +8,9 @@
 
 // application
 #include "Enemy.h"
-#include "Reticle.h"
 #include "ILockOnState.h"
+
+class Reticle;
 
 /// \brief  LockOnSystem ロックオンシステム
 class LockOnSystem
@@ -27,6 +28,14 @@ public: // 公開メンバ関数
 	* \param  enemies ロックオン対象の敵のリスト
 	*/
 	void Update(std::vector<Enemy*> enemies);
+
+private:
+
+	/**
+	* \brief  ロックオン状態の変更
+	* \param  newState 新しいロックオン状態のポインタ
+	*/
+	void ChangeState(std::unique_ptr<ILockOnState> newState);
 
 private:
 
