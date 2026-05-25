@@ -21,7 +21,7 @@ void RailCamera::Update()
 		Kouro::Vector3 position = worldTransform_->GetTranslate();
 
 		position.x = playerPosXY.x * followRate_;
-		position.y = playerPosXY.y * followRate_;
+		position.y = playerPosXY.y + 5.0f * followRate_;
 
 		shakeOffset_ = position;
 	}
