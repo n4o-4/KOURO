@@ -160,11 +160,11 @@ private: // 非公開メンバ変数
 	static constexpr float kDefaultOffset_ = 15.0f;
 
 
-	static constexpr float kDefaultPlayerSpeed_ = 2.8f;
-	static constexpr float kBoostPlayerSpeed_ = 3.0f;
+	static constexpr float kDefaultPlayerSpeed_ = 3.0f;
+	static constexpr float kBoostPlayerSpeed_ = 6.0f;
 
-	static constexpr float kDefaultFriction_ = 0.85f;
-	static constexpr float kBoostFriction_ = 0.99f;
+	static constexpr float kDefaultFriction_ = 0.9f;
+	static constexpr float kBoostFriction_ = 0.2f;
 
 	static constexpr float bulletSpeed_ = 5.0f;
 
@@ -172,7 +172,7 @@ private: // 非公開メンバ変数
 
 	Kouro::Vector3 targetTilt_ = { 0.0f,0.0f,0.0f }; // プレイヤーの傾きの目標角度
 
-	Kouro::Vector2 moveLimitMin_ = { -40.0f, -25.0f }; // プレイヤーの移動制限の最小値
-	Kouro::Vector2 moveLimitMax_ = { 40.0f, 25.0f }; // プレイヤーの移動制限の最大値
+	Kouro::Vector2 moveLimitMin_ = { -80.0f, -40.0f }; // プレイヤーの移動制限の最小値
+	Kouro::Vector2 moveLimitMax_ = { 80.0f, 40.0f }; // プレイヤーの移動制限の最大値
 };
 

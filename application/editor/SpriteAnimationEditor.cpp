@@ -25,7 +25,8 @@ namespace Kouro
 #ifdef _DEBUG
 		ImGui::SetNextWindowSize(ImVec2(1200, 700), ImGuiCond_FirstUseEver);
 
-		if (ImGui::Begin("Sprite Animation Editor", nullptr, ImGuiWindowFlags_NoMove))
+		ImGui::Begin("Sprite Animation Editor", nullptr);
+		if (ImGui::IsWindowAppearing() || true)
 		{
 			if (ImGui::InputText("filePath", &editingFilePath_, 
 				ImGuiInputTextFlags_EnterReturnsTrue) || 

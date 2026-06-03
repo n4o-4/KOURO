@@ -40,8 +40,8 @@ void Player::Initialize(Kouro::LineModel* model)
 	// ブースト用の構造体の生成と初期化
 	quickMoveData_ = std::make_unique<QuickMoveData>();
 	quickMoveData_->isQuickMoving = false;
-	quickMoveData_->duration = 1.0f;
-	quickMoveData_->coolTime = 3.0f;
+	quickMoveData_->duration = 0.3f;
+	quickMoveData_->coolTime = 1.0f;
 	quickMoveData_->actionTimer = 0.0f;
 }
 
@@ -109,7 +109,6 @@ void Player::Update()
 			// quickMove中に変更
 			quickMoveData_->isQuickMoving = true;
 		}
-
 	}
 
 	// 移動
