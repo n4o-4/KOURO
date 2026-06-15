@@ -44,10 +44,10 @@ void FollowCamera::Update()
 void FollowCamera::CalculationRotate()
 {
 	// スティックの入力取得
-    Kouro::Vector3 rightStickVector = Kouro::Input::GetInstance()->GetRightStick();
+    Kouro::Vector2 rightStick = Kouro::Input::GetInstance()->GetRightStick();
 
 	// 回転速度
-    Kouro::Vector3 rotate = { -rightStickVector.y * rotateSpeed_, rightStickVector.x * rotateSpeed_ ,0.0f };
+    Kouro::Vector3 rotate = { -rightStick.y * rotateSpeed_, rightStick.x * rotateSpeed_ ,0.0f };
 
 	// 目的の回転角度を計算
     destinationRotate += rotate;

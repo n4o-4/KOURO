@@ -147,7 +147,7 @@ void TitleScene::Update()
 	case Phase::kMain:
 
 		// スペースキーまたはゲームパッドのAボタンが押されたら
-		if (Kouro::Input::GetInstance()->TriggerKey(DIK_SPACE) || Kouro::Input::GetInstance()->TriggerGamePadButton(Kouro::Input::GamePadButton::A))
+		if (Kouro::Input::GetInstance()->TriggerKey(DIK_SPACE) || Kouro::Input::GetInstance()->TriggerButton(Kouro::GamePad::GamePadButton::A))
 		{
 			if (!isAlignCamera_)
 			{

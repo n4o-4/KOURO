@@ -24,7 +24,7 @@ void PauseState::OnEnter(Kouro::BaseScene* scene)
 	// ゲームシーンに型変換出来ているか確認
 	if (!gameScene)
 	{
-		return;
+		assert(0);
 	}
 }
 

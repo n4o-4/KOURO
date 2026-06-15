@@ -21,18 +21,17 @@ namespace Kouro
         // 計算用のオフセット  
         Vector3 offSet = { 0.0f,0.0f,0.0f };
 
-		Vector3 mouseMove = Input::GetInstance()->GetMouseMove();
+		float deltaWheel = Input::GetInstance()->GetMouseWheelDelta();
 
-        if (mouseMove.z != 0.0f)
+        if (deltaWheel != 0.0f)
         {
-            float scrollAmount = mouseMove.z * kScrollSensitivity;
-
+            float scrollAmount = deltaWheel * kScrollSensitivity;
             // マウスホイールの回転量でオフセットを変更  
             offset.z += scrollAmount;
 
             offset.z = std::clamp(offset.z, kMinZoomDistance, kMaxZoomDistance);
 
-            mouseMove.z = 0.0f;
+            deltaWheel = 0.0f;
         }
 
         // カメラの角度から回転行列を計算  
@@ -44,13 +43,16 @@ namespace Kouro
         // カメラの位置をターゲットの位置からオフセット分ずらす  
         worldTransform_->SetTranslate(targetTransform_->GetTranslate() + offSet);
 
-   // マウスの左ボタンが押されている間、カメラを回転
-        if (Input::GetInstance()->PushMouseButton(Input::MouseButton::LEFT))
+
+		Vector2 mouseDelta = Input::GetInstance()->GetMouseDelta();
+        // マウスの左ボタンが押されている間、カメラを回転
+        if (Input::GetInstance()->PushButton(Mouse::MouseButton::LEFT
+        ))
         {
             Vector3 rotate =
             {
-                mouseMove.y * kMouseRotateSensitivity,
-                mouseMove.x * kMouseRotateSensitivity,
+                mouseDelta.y * kMouseRotateSensitivity,
+                mouseDelta.x * kMouseRotateSensitivity,
                 0.0f
             };
 

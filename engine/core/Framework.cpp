@@ -89,8 +89,6 @@ namespace Kouro
 
 		TextureManager::GetInstance()->Finalize();
 
-		Input::GetInstance()->Finalize();
-
 		DirectXCommon::GetInstance()->Finalize();
 
 		winApp->Finalize();

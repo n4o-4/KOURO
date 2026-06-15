@@ -29,6 +29,21 @@ namespace Kouro
 		Vector3 axes[3]; //!< OBBの軸（X, Y, Z方向の単位ベクトル）
 	};
 
+	inline Vector2 Normalize(const Vector2& v)
+	{
+		Vector2 result;
+		// ベクトルの長さを計算
+		float length = sqrtf(v.x * v.x + v.y * v.y);
+		// 長さが 0 の場合、NaN を防ぐためにそのまま返す
+		if (length == 0.0f)
+		{
+			return v; // ゼロベクトルはそのまま返す
+		}
+		// 長さが 0 でない場合、正規化
+		result = { v.x / length, v.y / length };
+		return result;
+	}
+
 	inline Vector3 Normalize(const Vector3& v)
 	{
 		Vector3 result;
@@ -48,7 +63,8 @@ namespace Kouro
 		return result;
 	}
 
-	inline Vector3 Cross(const Vector3& v1, const Vector3& v2) {
+	inline Vector3 Cross(const Vector3& v1, const Vector3& v2)
+	{
 		return Vector3(
 			v1.y * v2.z - v1.z * v2.y,
 			v1.z * v2.x - v1.x * v2.z,
@@ -56,8 +72,14 @@ namespace Kouro
 		);
 	}
 
-	inline float Dot(const Vector3& v1, const Vector3& v2) {
+	inline float Dot(const Vector3& v1, const Vector3& v2)
+	{
 		return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+	}
+
+	inline float Length(const Vector2& v)
+	{
+		return sqrtf(v.x * v.x + v.y * v.y);
 	}
 
 	inline float Length(const Vector3& v) {
@@ -69,7 +91,8 @@ namespace Kouro
 		return v.x * v.x + v.y * v.y + v.z * v.z;
 	}
 
-	inline Vector3 Perpendicular(const Vector3& v) {
+	inline Vector3 Perpendicular(const Vector3& v)
+	{
 		// 垂直なベクトルを生成するための基準ベクトル
 		Vector3 reference = (std::fabs(v.x) > std::fabs(v.z)) ? Vector3(0, 0, 1) : Vector3(1, 0, 0);
 

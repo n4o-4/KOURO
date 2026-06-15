@@ -16,6 +16,9 @@
 #include "WinApp.h"
 #include "MyMath.h"	
 
+#include "KeyBoard.h"
+#include "Mouse.h"
+#include "GamePad.h"
 
 using namespace Microsoft::WRL;
 
@@ -27,36 +30,10 @@ namespace Kouro
 {
 	class Input
 	{
-
 	public:
 		template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-
 	public:
 
-		enum class MouseButton
-		{
-			LEFT = 0,
-			RIGHT = 1,
-			MIDDLE = 2,
-		};
-
-		enum class GamePadButton
-		{
-			A = XINPUT_GAMEPAD_A,
-			B = XINPUT_GAMEPAD_B,
-			X = XINPUT_GAMEPAD_X,
-			Y = XINPUT_GAMEPAD_Y,
-			START = XINPUT_GAMEPAD_START,
-			BACK = XINPUT_GAMEPAD_BACK,
-			LEFT_THUMB = XINPUT_GAMEPAD_LEFT_THUMB,
-			RIGHT_THUMB = XINPUT_GAMEPAD_RIGHT_THUMB,
-			LEFT_SHOULDER = XINPUT_GAMEPAD_LEFT_SHOULDER,
-			RIGHT_SHOULDER = XINPUT_GAMEPAD_RIGHT_SHOULDER,
-			DPAD_UP = XINPUT_GAMEPAD_DPAD_UP,
-			DPAD_DOWN = XINPUT_GAMEPAD_DPAD_DOWN,
-			DPAD_LEFT = XINPUT_GAMEPAD_DPAD_LEFT,
-			DPAD_RIGHT = XINPUT_GAMEPAD_DPAD_RIGHT,
-		};
 
 	public: // メンバ変数
 
@@ -69,9 +46,6 @@ namespace Kouro
 		*/
 		void Initialize(WinApp* winApp);
 
-		/// \brief  Finalize 終了処理
-		void Finalize();
-
 		/// \brief  Update 入力情報の更新
 		void Update();
 
@@ -81,86 +55,74 @@ namespace Kouro
 		*/
 		void SetIsReception(bool flag) { isReception_ = flag; }
 
-		///===============================
 		/// キーボード
-
 		/**
-		* \brief  引数のキーが現在押されているかを判定
+		* \brief  PushKey 引数のキーが現在押されているかを判定
 		* \param  keyNumber 判定するキーの番号
+		* \return キーが押されている場合はtrue、そうでない場合はfalse
 		*/
-		bool PushKey(BYTE keyNumber);
-
+		bool PushKey(BYTE keyNumber) { return keyBoard_->PushKey(keyNumber); }
+		
 		/**
-		* \brief 引数のキーが押された瞬間を判定
-		* \param keyNumber 判定するキーの番号
+		* \brief  TriggerKey 引数のキーが押された瞬間かを判定
+		* \param  keyNumber 判定するキーの番号
+		* \return キーが押された瞬間の場合はtrue、そうでない場合はfalse
 		*/
-		bool TriggerKey(BYTE keyNumber);
+		bool TriggerKey(BYTE keyNumber) { return keyBoard_->TriggerKey(keyNumber); }		
 
-
-		///===============================
 		/// マウス
-
 		/**
-		* \brief  GetMousePos マウスの座標取得
-		* \return マウスの座標
-		*/
-		Vector2 GetMousePos() { return Vector2(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)); }
-
-		/**
-		* \brief  PushMouseButton マウスのボタンが押されているかを判定
+		* \brief  PushButton 引数のマウスボタンが現在押されているかを判定
 		* \param  mouseButton 判定するマウスボタン
+		* \return マウスボタンが押されている場合はtrue、そうでない場合はfalse
 		*/
-		bool PushMouseButton(MouseButton mouseButton);
+		bool PushButton(Mouse::MouseButton mouseButton) { return mouse_->PushButton(mouseButton); }
 
 		/**
-		* \brief  TriggerMouseButton マウスのボタンが押された瞬間を判定
+		* \brief  TriggerButton 引数のマウスボタンが押された瞬間かを判定
 		* \param  mouseButton 判定するマウスボタン
+		* \return マウスボタンが押された瞬間の場合はtrue、そうでない場合はfalse
 		*/
-		bool TriggerMouseButton(MouseButton mouseButton);
+		bool TriggerButton(Mouse::MouseButton mouseButton) { return mouse_->TriggerButton(mouseButton); }
 
 		/**
-		* \brief  GetMouseMove マウスの移動量を取得
+		* \brief  GetMouseDelta マウスの移動量を取得
 		* \return マウスの移動量
 		*/
-		Vector3 GetMouseMove() { return Vector3(static_cast<float>(mouseState.lX), static_cast<float>(mouseState.lY), static_cast<float>(mouseState.lZ)); }
+		Vector2 GetMouseDelta() { return mouse_->GetDelta(); }
 
-		///===============================
+		/**
+		* \brief  GetMouseWheelDelta マウスホイールの回転量を取得
+		* \return マウスホイールの回転量
+		*/
+		float GetMouseWheelDelta() { return mouse_->GetWheelDelta(); }
+
 		/// ゲームパッド
+		/**
+		* \brief  PushButton 引数のゲームパッドボタンが現在押されているかを判定
+		* \param  button 判定するゲームパッドボタン
+		* \return ゲームパッドボタンが押されている場合はtrue、そうでない場合はfalse
+		*/
+		bool PushButton(GamePad::GamePadButton button) { return gamePad_->PushButton(button); }
 
 		/**
-		*\brief  PushGamePadButton ゲームパッドのボタンが押されているかを判定
+		* \brief  TriggerButton 引数のゲームパッドボタンが押された瞬間かを判定
 		* \param  button 判定するゲームパッドボタン
+		* \return ゲームパッドボタンが押された瞬間の場合はtrue、そうでない場合はfalse
 		*/
-		bool PushGamePadButton(GamePadButton button);
-
-		/**
-		* \brief  TriggerGamePadButton ゲームパッドのボタンが押された瞬間を判定
-		* \param  button 判定するゲームパッドボタン
-		*/
-		bool TriggerGamePadButton(GamePadButton button);
+		bool TriggerButton(GamePad::GamePadButton button) { return gamePad_->TriggerButton(button); }
 
 		/**
 		* \brief  GetLeftStick 左スティックの入力値を取得
 		* \return 左スティックの入力値
 		*/
-		Vector3 GetLeftStick() { return leftStick; }
+		Vector2 GetLeftStick() { return gamePad_->GetLeftStick(); }
 
 		/**
 		* \brief  GetRightStick 右スティックの入力値を取得
 		* \return 右スティックの入力値
 		*/
-		Vector3 GetRightStick() { return rightStick; }
-
-	private:
-
-		/// \brief MouseUpdate マウスの状態更新
-		void MouseUpdate();
-
-		/// \brief KeyBoardUpdate キーボードの状態更新
-		void KeyBoardUpdate();
-
-		/// \brief GamePadUpdate ゲームパッドの状態更新
-		void GamePadUpdate();
+		Vector2 GetRightStick() { return gamePad_->GetRightStick(); }
 
 	private:
 
@@ -174,37 +136,17 @@ namespace Kouro
 		Input(Input&) = delete;
 		Input& operator=(Input&) = delete;
 
-		// キーボードデバイス
-		ComPtr<IDirectInputDevice8> keyboard;
-
-		ComPtr<IDirectInput8> directInput;
-
-		BYTE key[256] = {};
-
-		BYTE keyPre[256] = {};
-
-		// マウスデバイス
-		ComPtr<IDirectInputDevice8> mouse;
-		DIMOUSESTATE2 mouseState = {};
-		DIMOUSESTATE2 mouseStatePre = {};
-
-		POINT mousePos = {};
-
-	private:
-
-		// ゲームパッド
-		XINPUT_STATE gamePadState = {};
-
-		XINPUT_STATE gamePadStatePre = {};
-
-		Vector3 leftStick = {};
-
-		Vector3 rightStick = {};
-
 		//　入力受付フラグ
 		bool isReception_ = true;
 
 		// WindowAPI
 		WinApp* winApp = nullptr;
+
+		ComPtr<IDirectInput8> directInput_;
+
+		std::unique_ptr<KeyBoard> keyBoard_ = nullptr; // キーボードデバイス
+		std::unique_ptr<Mouse> mouse_ = nullptr; // マウスデバイス
+		std::unique_ptr<GamePad> gamePad_ = nullptr; // ゲームパッドデバイス
+
 	};
 }

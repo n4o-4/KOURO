@@ -96,6 +96,19 @@ void Kouro::SpriteManager::UpdateVisibleGroups()
     }
 }
 
+void Kouro::SpriteManager::Draw()
+{
+    for (auto& [groupName, spriteGroup] : spriteGroups_)
+    {
+        if (!spriteGroup.isVisible) continue; // 非表示グループは先にスキップ
+        for (auto& [spriteName, spritePtr] : spriteGroup.sprites)
+        {
+            if (!spritePtr) continue;
+            spritePtr->Draw();
+        }
+    }
+}
+
 void Kouro::SpriteManager::DrawGroup(const std::string& groupName)
 {
 	// 指定されたグループ名のスプライトグループを描画

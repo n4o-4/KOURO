@@ -27,6 +27,9 @@ namespace Kouro
 		/// \brief 表示中の全グループのスプライトを更新する
 		void UpdateVisibleGroups();
 
+		/// \brief 表示中の全グループのスプライトを描画する
+		void Draw();
+
 		/**
 		* \brief  指定したグループのスプライトを描画する
 		* \param  groupName グループ名

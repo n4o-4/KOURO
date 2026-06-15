@@ -60,7 +60,7 @@ void GameOver::Update()
 	case Phase::kMain:
 
 		// エンターキーかAボタンを押してたら
-		if (Kouro::Input::GetInstance()->TriggerKey(DIK_RETURN) || Kouro::Input::GetInstance()->TriggerGamePadButton(Kouro::Input::GamePadButton::A))
+		if (Kouro::Input::GetInstance()->TriggerKey(DIK_RETURN) || Kouro::Input::GetInstance()->TriggerButton(Kouro::GamePad::GamePadButton::A))
 		{
 			// フェードのステータスを設定して始める
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
