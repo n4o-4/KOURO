@@ -584,6 +584,7 @@
     <ClCompile Include="engine\input\KeyBoard.cpp" />
     <ClCompile Include="engine\input\Mouse.cpp" />
     <ClCompile Include="engine\input\GamePad.cpp" />
+    <ClCompile Include="GameStateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -1088,6 +1089,7 @@
     <ClInclude Include="engine\input\KeyBoard.h" />
     <ClInclude Include="engine\input\Mouse.h" />
     <ClInclude Include="engine\input\GamePad.h" />
+    <ClInclude Include="GameStateMachine.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

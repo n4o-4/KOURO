@@ -124,6 +124,7 @@
     <ClCompile Include="application\system\lockon\LockingState.cpp" />
     <ClCompile Include="engine\input\KeyBoard.cpp" />
     <ClCompile Include="engine\input\GamePad.cpp" />
+    <ClCompile Include="GameStateMachine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\model\Model.cpp" />
     <ClCompile Include="engine\3d\model\ModelCommon.cpp" />
@@ -365,6 +366,7 @@
     <ClInclude Include="engine\input\KeyBoard.h" />
     <ClInclude Include="engine\input\Mouse.h" />
     <ClInclude Include="engine\input\GamePad.h" />
+    <ClInclude Include="GameStateMachine.h" />
     <ClInclude Include="SpriteAnimationController.h" />
   </ItemGroup>
   <ItemGroup>
