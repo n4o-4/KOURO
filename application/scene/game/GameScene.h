@@ -154,5 +154,6 @@ private:
 	RailFollower cameraRail_;
 
 	GameSceneUpdateFlags updateFlags = {true,true,true};
-
+	int frameCount = 0;
+	int currentSpawnIndex = 1;
 };

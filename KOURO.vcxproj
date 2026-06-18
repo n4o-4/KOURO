@@ -124,7 +124,7 @@
     <ClCompile Include="application\system\lockon\LockingState.cpp" />
     <ClCompile Include="engine\input\KeyBoard.cpp" />
     <ClCompile Include="engine\input\GamePad.cpp" />
-    <ClCompile Include="GameStateMachine.cpp" />
+    <ClCompile Include="application\scene\game\GameStateMachine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\3d\model\Model.cpp" />
     <ClCompile Include="engine\3d\model\ModelCommon.cpp" />
@@ -181,7 +181,7 @@
     <ClCompile Include="engine\2d\SpriteAnimator.cpp" />
     <ClCompile Include="application\editor\SpriteAnimationEditor.cpp" />
     <ClCompile Include="engine\input\Mouse.cpp" />
-    <ClCompile Include="SpriteAnimationController.cpp" />
+    <ClCompile Include="engine\2d\SpriteAnimationController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\system\Event.h" />
@@ -366,8 +366,8 @@
     <ClInclude Include="engine\input\KeyBoard.h" />
     <ClInclude Include="engine\input\Mouse.h" />
     <ClInclude Include="engine\input\GamePad.h" />
-    <ClInclude Include="GameStateMachine.h" />
-    <ClInclude Include="SpriteAnimationController.h" />
+    <ClInclude Include="application\scene\game\GameStateMachine.h" />
+    <ClInclude Include="engine\2d\SpriteAnimationController.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

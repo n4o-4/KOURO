@@ -209,9 +209,7 @@ void GameScene::Finalize()
 ///=============================================================================
 ///						更新
 void GameScene::Update()
-{
-	static int frameCount = 0;
-	static int currentSpawnIndex = 1;
+{	
 
 	// 基底クラスの更新
 	BaseScene::Update();
