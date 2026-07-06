@@ -13,7 +13,7 @@ void BaseCollider::Initialize(Kouro::WorldTransform* worldTransform, BaseEntity*
 
 void BaseCollider::Update()
 {
-	isAlive_ = owner_->IsAlive();
+	isAlive_ = owner_->IsValid();
 }
 
 void BaseCollider::AddCollision(BaseCollider* collider)

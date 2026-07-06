@@ -1,4 +1,6 @@
 #pragma once
+#include "Sprite.h"
+
 #include "BaseEntity.h"
 #include "CameraManager.h"
 

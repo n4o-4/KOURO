@@ -26,7 +26,8 @@ void BaseCharacter::Initialize(Kouro::LineModel* model)
 	velocity_ = { 0.0f,0.0f,0.0f };
 
 	// 有効フラグの初期化
-	isAlive_ = true;
+	isValid_ = true;
+	isActive_ = true;
 }
 
 void BaseCharacter::Update()
@@ -71,7 +72,4 @@ const Kouro::Vector3& BaseCharacter::GetWorldPosition()
 
 void BaseCharacter::DrawImGui()
 {
-#ifdef _DEBUG
-#endif 
-
 }

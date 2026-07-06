@@ -40,10 +40,13 @@ public: // 公開メンバ関数
 	*/
 	Kouro::WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
-
 	void SetColor(const Kouro::Vector4& color) { objectLine_->SetColor({color.x,color.y,color.z,color.w}); }
 
 	const Kouro::Vector3& GetWorldPosition();
+
+	const bool IsValid() const { return isValid_; }
+
+	const bool IsActive() const { return isActive_; }
 
 protected: // 派生用メンバ関数
 

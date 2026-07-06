@@ -1,5 +1,9 @@
 #pragma once
 #include "EnemyState.h"
+
+#include "Vector3.h"
+#include "WorldTransform.h"
+
 class LissajousMoveState : public EnemyState
 {
 public:

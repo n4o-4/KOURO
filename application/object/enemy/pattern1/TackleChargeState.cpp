@@ -5,10 +5,8 @@
 
 void TackleChargeState::OnEnter(Enemy* enemy)
 {
-	//enemy->SetDrawDummy(true);
 	randomGenerate.Initialize();
 	Kouro::Vector3 spawnPos = enemy->GetWorldPosition();
-	enemy->SetDummyPosition(spawnPos);
 	Kouro::Vector3 targetPos = enemy->GetTarget()->GetWorldPosition();
 	forward_ = Kouro::Normalize(targetPos - spawnPos);
 
@@ -43,6 +41,4 @@ void TackleChargeState::Update(Enemy* enemy)
 
 void TackleChargeState::OnExit(Enemy* enemy)
 {
-	Kouro::WorldTransform* enemyTransform = enemy->GetWorldTransform();
-	enemyTransform->SetTranslate(enemy->GetBasePosition());
 }

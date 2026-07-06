@@ -1,9 +1,10 @@
 #pragma once
 #include "EnemyState.h"
-
 #include "Vector3.h"
 
-class TackleState : public EnemyState
+class Enemy; // 前方宣言
+
+class SpawnState : public EnemyState
 {
 public:
 	/**
@@ -25,10 +26,10 @@ public:
 	void OnExit(Enemy* enemy) override;
 
 private:
-
-	Kouro::Vector3 direction_;   // 突進方向
-	float speed_ = 30.0f; // 突進速度
-	float timer_ = 0.0f;
-	float duration_ = 3.0f; // 突進時間
+	Kouro::Vector3 kInitialScale_ = { 0.0f, 0.0f, 0.0f }; // 初期スケール
+	Kouro::Vector3 kBaseScale_ = { 1.0f, 1.0f, 1.0f }; // 基本スケール
+	const float kSpawnDuration_ = 0.6f; // 出現時間
+	float timer_ = 0.0f; // 出現タイマー
+	const float kOvershoot_ = 5.0f; // オーバーシュートの量
 };
 

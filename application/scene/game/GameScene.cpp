@@ -9,7 +9,7 @@
 #include "Vector3Yaml.h"
 #include "Vector4Yaml.h"
 // 仮
-#include "ApproachState.h"
+#include "SpawnState.h"
 #include "GpuParticle.h"
 #include "SpawnManager.h"
 
@@ -163,7 +163,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 		std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
 		enemy->Initialize(lineModelManager_->FindLineModel("enemy/enemy.obj"));
 
-		enemy->SetGoalOffset(enemies[i]);
+		enemy->SetBasePosition(enemies[i]);
 
 		enemy->SetTarget(player_.get());
 
@@ -175,7 +175,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 		enemy->SetEmitter(mEmitter.get());
 
-		std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
+		std::unique_ptr<EnemyState> state = std::make_unique<SpawnState>();
 
 		enemy->SetCameraManager(cameraManager_.get());
 
@@ -336,13 +336,13 @@ void GameScene::Update()
 			{
 				std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
 				enemy->Initialize(lineModelManager_->FindLineModel("enemy/enemy.obj"));
-				enemy->SetGoalOffset(enemies[i]);
+				enemy->SetBasePosition(enemies[i]);
 				enemy->SetTarget(player_.get());
 				enemy->SetParent(&enemyRail_.GetWorldTransform());
 				enemy->SetColliderManager(colliderManager_.get());
 				enemy->SetLineModelManager(lineModelManager_.get());
 				enemy->SetEmitter(mEmitter.get());
-				std::unique_ptr<EnemyState> state = std::make_unique<ApproachState>();
+				std::unique_ptr<EnemyState> state = std::make_unique<SpawnState>();
 				enemy->SetCameraManager(cameraManager_.get());
 				enemy->ChangeState(std::move(state));
 				colliderManager_->AddCollider(enemy);

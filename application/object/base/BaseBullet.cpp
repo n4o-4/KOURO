@@ -29,7 +29,7 @@ void BaseBullet::Initialize(Kouro::LineModel* model, const Kouro::Vector3& spawn
 	velocity_ = { 0.0f,0.0f,0.0f };
 
 	// 有効フラグの初期化
-	isAlive_ = true;
+	isValid_ = true;
 }
 
 void BaseBullet::Update()
@@ -46,7 +46,7 @@ void BaseBullet::Update()
 	lifeTimer_ += 1.0f / 60.0f;
 	if (lifeTimer_ >= kLifeTime_)
 	{
- 		isAlive_ = false; // 寿命が尽きたら無効化
+ 		isValid_ = false; // 寿命が尽きたら無効化
 	}
 }
 

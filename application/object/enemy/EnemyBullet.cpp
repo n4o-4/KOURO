@@ -63,7 +63,7 @@ void EnemyBullet::OnCollisionEnter(BaseCollider* other)
 	// 衝突したオブジェクトがPlayerBulletの場合、弾を消す
 	if (PlayerBullet* playerBullet = dynamic_cast<PlayerBullet*>(other))
 	{
-		BaseEntity::isAlive_ = false; // 弾を消す
+		isValid_ = false; // 弾を消す
 	}
 }
 

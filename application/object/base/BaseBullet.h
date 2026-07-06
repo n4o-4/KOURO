@@ -32,10 +32,10 @@ public: // 公開メンバ関数
 	virtual void Draw();
 
 	/**
-	 * \brief  GetIsAlive
-	 * \return isAlive 生存フラグ
+	* \brief  存在の有効フラグを取得する
+	* \return isValid_  true:有効 false:無効
 	 */
-	bool GetIsAlive() const { return isAlive_; }
+	const bool IsValid() const { return isValid_; }
 
 	/**
 	 * \brief  GetDamage ダメージ量取得

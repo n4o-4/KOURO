@@ -133,9 +133,6 @@
     <ClCompile Include="application\object\enemy\EnemyState.cpp">
       <Filter>application\object\enemy</Filter>
     </ClCompile>
-    <ClCompile Include="application\object\enemy\ApproachState.cpp">
-      <Filter>application\object\enemy</Filter>
-    </ClCompile>
     <ClCompile Include="application\object\player\Player.cpp">
       <Filter>application\object\player</Filter>
     </ClCompile>
@@ -585,6 +582,10 @@
     <ClCompile Include="engine\input\Mouse.cpp" />
     <ClCompile Include="engine\input\GamePad.cpp" />
     <ClCompile Include="application\scene\game\GameStateMachine.cpp" />
+    <ClCompile Include="application\object\enemy\SpawnState.cpp" />
+    <ClCompile Include="engine\math\Easing.cpp" />
+    <ClCompile Include="RetreatState.cpp" />
+    <ClCompile Include="SceneObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -600,9 +601,6 @@
       <Filter>application\object\enemy</Filter>
     </ClInclude>
     <ClInclude Include="application\object\enemy\EnemyState.h">
-      <Filter>application\object\enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="application\object\enemy\ApproachState.h">
       <Filter>application\object\enemy</Filter>
     </ClInclude>
     <ClInclude Include="application\object\player\Player.h">
@@ -1090,6 +1088,9 @@
     <ClInclude Include="engine\input\Mouse.h" />
     <ClInclude Include="engine\input\GamePad.h" />
     <ClInclude Include="application\scene\game\GameStateMachine.h" />
+    <ClInclude Include="application\object\enemy\SpawnState.h" />
+    <ClInclude Include="RetreatState.h" />
+    <ClInclude Include="SceneObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

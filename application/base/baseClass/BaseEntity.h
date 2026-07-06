@@ -1,6 +1,8 @@
 #pragma once
+// Standard Library
+#include <memory>
 // Engine
-#include "Kouro.h"
+#include "WorldTransform.h"
 
 // 全てのオブジェクトの基底クラス
 
@@ -20,12 +22,22 @@ public: // 公開メンバ関数
 	void Update();
 
 	/**
-	 * \brief  GetWorldTransform ワールド変換情報を取得する
+	 * \brief  ワールド変換情報を取得する
 	 * \return worldTransform
 	 */
 	Kouro::WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
-	bool IsAlive() const { return isAlive_; }
+	/**
+	* \brief  有効かどうかを取得する
+	* \return isValid_  true:有効 false:無効
+	*/
+	bool IsValid() const { return isValid_; }
+
+	/**
+	* \brief  更新、描画が有効かどうかを取得する
+	* \return isActive_  true:有効 false:無効
+	*/
+	bool IsActive() const { return isActive_; }
 
 protected: // 派生用メンバ関数
 
@@ -37,7 +49,7 @@ protected: // 派生用メンバ変数
 	// ワールドトランスフォーム
 	std::unique_ptr<Kouro::WorldTransform> worldTransform_;
 
-	// 有効フラグ
-	bool isAlive_ = true;
+	bool isValid_ = true; // 存在の有効フラグ
+	bool isActive_ = true; // 更新、描画の有効フラグ
 };
 

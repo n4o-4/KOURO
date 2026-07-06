@@ -5,7 +5,6 @@
 #include "LineModelManager.h"
 
 #include "EnemyState.h"
-#include "ApproachState.h"
 
 #include "ModelEdgeEmitter.h"
 
@@ -34,17 +33,22 @@ public: // 公開メンバ関数
 	void SetPosition(const Kouro::Vector3& position);
 
 	/**
+	* \brief スケールの設定
+	* \param Vector3 スケールベクトル
+	*/
+	void SetScale(const Kouro::Vector3& scale);
+
+	/**
+	* \brief 回転の設定
+	* \param Vector3 回転ベクトル
+	*/
+	void SetRotate(const Kouro::Vector3& rotate);
+
+	/**
 	* \brief SetTarget ターゲットの設定
 	* \param BaseCharacter ターゲットのポインタ
 	*/
 	void SetTarget(BaseCharacter* target) { target_ = target; }
-
-	/**
-	* \brief SetColliderManager コライダーマネージャーを設定する
-	* \param ColliderManager コライダーマネージャーのポインタ
-	*/
-	void SetColliderManager(ColliderManager* colliderManager) { colliderManager_ = colliderManager; colliderManager_->AddCollider(dummy_);
-	}
 
 	/**
 	* \brief SetLineModelManager ラインモデルマネージャーを設定する
@@ -68,37 +72,31 @@ public: // 公開メンバ関数
 	* \brief  ゴールオフセットの設定
 	* \param  offset ゴールオフセット
 	*/
-	void SetGoalOffset(const Kouro::Vector3& offset) { kGoalOffset_ = offset; basePosition_ = kGoalOffset_; };
+	void SetBasePosition(const Kouro::Vector3& basePosition) { basePosition_ = basePosition; }
 
 	/**
 	* \brief  SetParent 親の設定
 	* \param  WorldTransform 親のワールドトランスフォームのポインタ
 	*/
-	void SetParent(const Kouro::WorldTransform* parent) { worldTransform_->SetParent(parent); }
+	void SetParent(const Kouro::WorldTransform* parent) { parent_ = parent; }
 
 	/**
-	* \brief ダミーキャラクターの描画フラグを設定する
-	* \param drawDummy ダミーキャラクターを描画するかどうか
+	* \brief  SetColliderManager コライダーマネージャーの設定
+	* \param  colliderManager コライダーマネージャーのポインタ
 	*/
-	void SetDrawDummy(bool drawDummy) { drawDummy_ = drawDummy; }
+	void SetColliderManager(ColliderManager* colliderManager) { colliderManager_ = colliderManager; }
 
 	/**
-	* \brief ダミーキャラクターの速度を設定する
-	* \param velocity 設定する速度
+	* \brief  SetVelocity 速度の設定
+	* \param  velocity 速度ベクトル
 	*/
-	void SetDummyVelocity(const Kouro::Vector3& velocity) { dummy_->SetVelocity(velocity); }
+	void SetVelocity(const Kouro::Vector3& velocity) { velocity_ = velocity; }
 
 	/**
-	* \brief ダミーキャラクターの位置を設定する
-	* \param position 設定する位置
+	* \brief  SetMoveOffset 移動オフセットの設定
+	* \param  offset 移動オフセット
 	*/
-	void SetDummyPosition(const Kouro::Vector3& position) { dummy_->SetPosition(position); }
-
-	/**
-	* \brief ダミーキャラクターの回転を設定する
-	* \param rotate 設定する回転
-	*/
-	void SetDummyRotate(const Kouro::Vector3& rotate) { dummy_->SetRotate(rotate); }
+	void SetMoveOffset(const Kouro::Vector3& offset) { moveOffset_ = offset; }
 
 	/**
 	* \brief  ターゲットを取得する
@@ -125,16 +123,10 @@ public: // 公開メンバ関数
 	const Kouro::Vector3& GetBasePosition() const { return basePosition_; }
 
 	/**
-	* \brief  ダミーキャラクターの回転の取得
-	* \return ダミーキャラクターの回転
+	* \brief  移動オフセットの取得
+	* \return 移動オフセット
 	*/
-	const Kouro::Vector3& GetDummyRotate() const { return dummy_->GetWorldTransform()->GetRotate(); }
-
-	/**
-	* \brief  ダミーキャラクターの位置の取得
-	* \return ダミーキャラクターの位置
-	*/
-	const Kouro::Vector3& GetDummyPosition() const { return dummy_->GetWorldTransform()->GetTranslate(); }
+	const Kouro::Vector3& GetMoveOffset() const { return moveOffset_; }
 
 	/**
 	* \brief ChangeState 状態を変える
@@ -169,6 +161,12 @@ private: // 非公開メンバ変数
 
 	ColliderManager* colliderManager_ = nullptr; //!< コライダーマネージャ
 	
+	const Kouro::WorldTransform* parent_ = nullptr; //!< 親ワールドトランスフォーム
+
+	Kouro::Vector3 baseRailPosition_ = { 0.0f,0.0f,0.0f }; //!< 基本位置
+
+	Kouro::Vector3 moveOffset_ = { 0.0f,0.0f,0.0f }; //!< 移動オフセット
+
 	BaseCharacter* target_ = nullptr; //!< ターゲットキャラクター
 
 	std::vector<std::shared_ptr<EnemyBullet>> bullets_; //!< 弾のリスト
@@ -190,9 +188,5 @@ private: // 非公開メンバ変数
 	Kouro::Vector3 kGoalOffset_ = {0.0f,0.0f,40.0f};
 
 	Kouro::Vector3 basePosition_ = { 0.0f,0.0f,0.0f };
-
-	std::shared_ptr<EnemyBullet> dummy_ = nullptr; //!< ダミー
-
-	bool drawDummy_ = false;
 };
 

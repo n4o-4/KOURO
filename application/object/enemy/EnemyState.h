@@ -1,5 +1,4 @@
 #pragma once
-#include "BaseCharacter.h"
 class Enemy; // 前方宣言
 
 // \brief EnemyState 敵の状態基底クラス

@@ -21,6 +21,7 @@
     <ClCompile Include="engine\effect\Absorb.cpp" />
     <ClCompile Include="engine\line\AABBLineObject.cpp" />
     <ClCompile Include="application\collider\AABBCollider.cpp" />
+    <ClCompile Include="engine\math\Easing.cpp" />
     <ClCompile Include="engine\scene\BaseScene.cpp" />
     <ClCompile Include="application\scene\game\GameScene.cpp" />
     <ClCompile Include="application\scene\SceneFactory.cpp" />
@@ -30,7 +31,6 @@
     <ClCompile Include="application\collider\BaseCollider.cpp" />
     <ClCompile Include="application\collider\ColliderManager.cpp" />
     <ClCompile Include="application\object\base\BaseBullet.cpp" />
-    <ClCompile Include="application\object\enemy\ApproachState.cpp" />
     <ClCompile Include="application\base\baseClass\BaseEntity.cpp" />
     <ClCompile Include="application\object\enemy\EnemyState.cpp" />
     <ClCompile Include="engine\math\CollisionMath.cpp" />
@@ -182,6 +182,9 @@
     <ClCompile Include="application\editor\SpriteAnimationEditor.cpp" />
     <ClCompile Include="engine\input\Mouse.cpp" />
     <ClCompile Include="engine\2d\SpriteAnimationController.cpp" />
+    <ClCompile Include="application\object\enemy\SpawnState.cpp" />
+    <ClCompile Include="RetreatState.cpp" />
+    <ClCompile Include="SceneObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\system\Event.h" />
@@ -224,7 +227,6 @@
     <ClInclude Include="application\collider\BaseCollider.h" />
     <ClInclude Include="application\collider\ColliderManager.h" />
     <ClInclude Include="application\object\base\BaseBullet.h" />
-    <ClInclude Include="application\object\enemy\ApproachState.h" />
     <ClInclude Include="application\base\baseClass\BaseEntity.h" />
     <ClInclude Include="application\object\enemy\EnemyState.h" />
     <ClInclude Include="engine\math\CollisionMath.h" />
@@ -368,6 +370,9 @@
     <ClInclude Include="engine\input\GamePad.h" />
     <ClInclude Include="application\scene\game\GameStateMachine.h" />
     <ClInclude Include="engine\2d\SpriteAnimationController.h" />
+    <ClInclude Include="application\object\enemy\SpawnState.h" />
+    <ClInclude Include="RetreatState.h" />
+    <ClInclude Include="SceneObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

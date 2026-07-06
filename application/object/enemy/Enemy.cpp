@@ -17,9 +17,6 @@ void Enemy::Initialize(Kouro::LineModel* model)
 	SetCollisionAttribute(0b1 << 1); // コリジョン属性を設定
 	SetCollisionMask(0b1); // コリジョンマスクを設定
 
-	dummy_ = std::make_shared<EnemyBullet>();
-	dummy_->Initialize(model, {});
-
 	fireTimer_ = 0.0f; // 弾の発射タイマー初期化
 
 	hp_ = 5;
@@ -54,15 +51,14 @@ void Enemy::Update()
 		bullet->Update();
 	}
 
-	if(drawDummy_)
-	{
-		dummy_->Update();
-	}
-
 	///=========================================
 	/// 親クラスA
 
+	baseRailPosition_ = parent_->GetWorldPosition();
+
 	state_->Update(this);
+
+	worldTransform_->SetTranslate(baseRailPosition_ + moveOffset_ + basePosition_);
 
 	// 更新
 	BaseCharacter::Update();
@@ -77,24 +73,25 @@ void Enemy::Draw()
 		bullet->Draw();
 	}
 
-	if (drawDummy_)
-	{
-		dummy_->Draw();
-	}
-	else
-	{
-		///=========================================
-	    /// 親クラス
-
-	    // 描画
-		BaseCharacter::Draw();
-	}
+	// 描画
+	BaseCharacter::Draw();
 }
 
 void Enemy::SetPosition(const Kouro::Vector3& position)
 {
 	worldTransform_->SetTranslate(position);
+	worldTransform_->UpdateMatrix();
+}
 
+void Enemy::SetScale(const Kouro::Vector3& scale)
+{
+	worldTransform_->SetScale(scale);
+	worldTransform_->UpdateMatrix();
+}
+
+void Enemy::SetRotate(const Kouro::Vector3& rotate)
+{
+	worldTransform_->SetRotate(rotate);
 	worldTransform_->UpdateMatrix();
 }
 
@@ -118,28 +115,6 @@ void Enemy::ChangeState(std::unique_ptr<EnemyState> state)
 
 void Enemy::Fire()
 {
-	//// 弾の生成
-	//std::shared_ptr<EnemyBullet> bullet = std::make_shared<EnemyBullet>();
-
-	//// 初期化
-	//bullet->Initialize(lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"), { worldTransform_->matWorld_.m[3][0],worldTransform_->matWorld_.m[3][1],worldTransform_->matWorld_.m[3][2] });
-
-
-	//Kouro::Matrix4x4 targetWMatrix= target_->GetWorldTransform()->matWorld_;
-
-	//// 目標のワールド行列から位置を取得し、弾の速度を計算
-	//Kouro::Vector3 velocity = Kouro::Normalize({
-	//	targetWMatrix.m[3][0] - worldTransform_->matWorld_.m[3][0],
-	//	targetWMatrix.m[3][1] - worldTransform_->matWorld_.m[3][1],
-	//	targetWMatrix.m[3][2] - worldTransform_->matWorld_.m[3][2]
-	//});
-
-	//bullet->SetVelocity(velocity);
-
-	//colliderManager_->AddCollider(bullet);
-
-	//bullets_.push_back(std::move(bullet));
-
 	const int bulletCount = 7;
 	const float spreadAngle = DirectX::XMConvertToRadians(60.0f);
 
@@ -200,7 +175,7 @@ void Enemy::Fire()
 
 void Enemy::OnCollisionEnter(BaseCollider* other)
 {
-	if (BaseEntity::isAlive_ == false) return;
+	if (isValid_ == false) return;
 
 	// 衝突したオブジェクトがPlayerBulletの場合、弾を消す
 	if (PlayerBullet* playerBullet = dynamic_cast<PlayerBullet*>(other))
@@ -252,8 +227,7 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 
 	if (hp_ == 0)
 	{
-		BaseEntity::isAlive_ = false;
-		//GpuParticle::GetInstance()->LineEmit(colliderTransform_->matWorld_);
+		isValid_ = false;
 	}
 }
 

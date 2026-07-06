@@ -1,5 +1,8 @@
 #pragma once
 #include "EnemyState.h"
+
+#include "Vector3.h"
+#include "WorldTransform.h"
 #include "RandomGenerate.h"
 
 class TackleChargeState : public EnemyState
@@ -26,7 +29,7 @@ public:
 
 private:
 
-	Kouro::RandomGenerate randomGenerate;
+	Kouro::RandomGenerate randomGenerate; // !< ランダム生成器
 
 	Kouro::WorldTransform* transform_ = nullptr; //!< 敵のワールドトランスフォーム
 

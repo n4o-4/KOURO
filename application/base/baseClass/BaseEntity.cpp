@@ -1,4 +1,4 @@
-﻿#include "BaseEntity.h"
+#include "BaseEntity.h"
 
 void BaseEntity::Initialize()
 {
@@ -6,6 +6,7 @@ void BaseEntity::Initialize()
 
 void BaseEntity::Update()
 {
+
 }
 
 void BaseEntity::DrawImGui()

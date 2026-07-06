@@ -15,7 +15,7 @@
 #include "GlobalVariables.h"
 #include "PointEmitter.h"
 #include "Reticle.h"
-
+#include "SceneObjectManager.h"
 
 // \brief GameScene ゲームシーンクラス
 
@@ -103,6 +103,8 @@ private:
 
 	std::unique_ptr<Kouro::ParticleEmitter> hitEffect2_Circle1_ = nullptr;
 	std::unique_ptr<Kouro::ParticleEmitter> hitEffect2_Circle2_ = nullptr;
+
+	std::unique_ptr<SceneObjectManager> sceneObjectManager_ = nullptr;
 
 	std::shared_ptr<Player> player_ = nullptr;
 
