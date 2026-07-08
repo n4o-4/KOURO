@@ -99,6 +99,12 @@ public: // 公開メンバ関数
 	void SetMoveOffset(const Kouro::Vector3& offset) { moveOffset_ = offset; }
 
 	/**
+	* \brief  有効フラグの設定
+	* \param  isValid 有効フラグ
+	*/
+	void SetIsValid(bool isValid) { isValid_ = isValid; }
+
+	/**
 	* \brief  ターゲットを取得する
 	* \return BaseCharacter キャラクターのポインタ
 	*/
@@ -127,6 +133,12 @@ public: // 公開メンバ関数
 	* \return 移動オフセット
 	*/
 	const Kouro::Vector3& GetMoveOffset() const { return moveOffset_; }
+
+	/**
+	* \brief  有効フラグの取得
+	* \return 有効フラグ
+	*/
+	const bool IsValid() const { return isValid_; }
 
 	/**
 	* \brief ChangeState 状態を変える
@@ -169,7 +181,7 @@ private: // 非公開メンバ変数
 
 	BaseCharacter* target_ = nullptr; //!< ターゲットキャラクター
 
-	std::vector<std::shared_ptr<EnemyBullet>> bullets_; //!< 弾のリスト
+	std::vector<std::unique_ptr<EnemyBullet>> bullets_; //!< 弾のリスト
 
 	const float kFireInterval = 2.0f; //!< 弾の発射間隔
 

@@ -84,8 +84,8 @@ public: /// 公開メンバ関数
 	uint32_t GetCollisionMask() const { return collisionMask_; }	
 	
 	/**
-	 * \brief  GetColor コライダーの色を取得する
-	 * \return color(コライダーの色)
+	 * \brief  コライダーの
+	 * \return isAlive
 	 */
 	bool GetIsAlive() const { return isAlive_; }
 

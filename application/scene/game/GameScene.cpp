@@ -42,6 +42,8 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	// 基底シーン
 	BaseScene::Initialize(context);
 
+	colliderManager_ = std::make_unique<ColliderManager>();
+
 	// postエフェクトの適用
 	sceneManager_->GetPostEffect()->ApplyEffect("dissolve",Kouro::PostEffect::EffectType::Dissolve);
 
@@ -55,9 +57,9 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 	rail.Initialize(controlPoints_);
 
-	enemyRail_.Initialize(rail,60.0f);
-	playerRail_.Initialize(rail, 60.0f);
-	cameraRail_.Initialize(rail, 60.0f);
+	enemyRail_.Initialize(rail,300.0f);
+	playerRail_.Initialize(rail, 300.0f);
+	cameraRail_.Initialize(rail, 300.0f);
 	
 	enemyRail_.SetDistanceTravelled(60.0f);
 	playerRail_.SetDistanceTravelled(30.0f);
@@ -91,31 +93,30 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	mEmitter->Initialize("normal", context);
 	mEmitter->CreateLineSegment("enemy/enemy.obj");
 
-	///========================================
-	///		プレイヤー
+	sceneObjectManager_ = std::make_unique<SceneObjectManager>();
+
+	std::unique_ptr<Player> player = std::make_unique<Player>();
+
+	// プレイヤーの生成、初期化、登録
+	player->Initialize(lineModelManager_->FindLineModel("player/player.obj"));
+	player->SetLineModelManager(lineModelManager_.get());
+	player->SetParentTransform(&playerRail_.GetWorldTransform());
+	sceneObjectManager_->RegisterPlayer(std::move(player));
+
+
 	
-	// 初期化と生成
-	player_ = std::make_shared<Player>();
-	player_->Initialize(lineModelManager_->FindLineModel("player/player.obj"));
-	player_->SetLineModelManager(lineModelManager_.get());
-
-	///========================================
-	/// 入力
-
-	// マウスの入力受付を有効
+	// Inputの受け取りを有効化
 	Kouro::Input::GetInstance()->SetIsReception(true);
 
+	// カメラの生成、初期化、カメラマネージャーに登録
 	std::unique_ptr<RailCamera> camera = std::make_unique<RailCamera>();
 	camera->Initialize();
 	camera->SetParent(&cameraRail_.GetWorldTransform());
-	camera->SetTarget(player_->GetWorldTransform());
+	camera->SetTarget(sceneObjectManager_->GetPlayer()->GetWorldTransform());
 	railCamera_ = camera.get();
 	cameraManager_->AddCamera("railCamera", std::move(camera));
 	cameraManager_->SetActiveCamera("railCamera");
 
-	player_->SetParentTransform(&playerRail_.GetWorldTransform());
-
-	colliderManager_ = std::make_unique<ColliderManager>();
 
 	for(uint32_t i = 0; i < 3; ++i)
 	{
@@ -143,10 +144,6 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	// ポーズUIの設定
 	spriteManager_->SetGroupVisibility("pause_ui", false);
 
-	colliderManager_->AddCollider(player_);
-
-	player_->SetColliderManager(colliderManager_.get());
-
 	fade_->Start(Fade::Status::WhiteFadeIn, 1.0f);
 
 	sceneManager_->GetPostEffect()->ApplyEffect("blur", Kouro::PostEffect::EffectType::RadialBlur);
@@ -158,59 +155,24 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 	std::vector<Kouro::Vector3> enemies = spawnManager.LoadFile("config/game/spawnPattern1.json", "EnemyGroup1");
 
-	for (size_t i = 0; i < enemies.size(); i++)
-	{
-		std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
-		enemy->Initialize(lineModelManager_->FindLineModel("enemy/enemy.obj"));
-
-		enemy->SetBasePosition(enemies[i]);
-
-		enemy->SetTarget(player_.get());
-
-		enemy->SetParent(&enemyRail_.GetWorldTransform());
-
-		enemy->SetColliderManager(colliderManager_.get());
-
-		enemy->SetLineModelManager(lineModelManager_.get());
-
-		enemy->SetEmitter(mEmitter.get());
-
-		std::unique_ptr<EnemyState> state = std::make_unique<SpawnState>();
-
-		enemy->SetCameraManager(cameraManager_.get());
-
-		enemy->ChangeState(std::move(state));
-
-		colliderManager_->AddCollider(enemy);
-
-		enemy->Update();
-
-		enemies_.push_back(std::move(enemy));
-	}
-
-	pointEmitter_ = std::make_unique<Kouro::PointEmitter>();
+	/*pointEmitter_ = std::make_unique<Kouro::PointEmitter>();
 	pointEmitter_->Initialize("normal", context);
 	pointEmitter_->SetEmitterProperties({ 0.0f,0.0f,0.0f }, 100 ,{ -4.0f,-4.0f,-10.0f }, { 4.0f,4.0f,-1.0f }, 0.5f, 1.5f, 0.0f);
-	pointEmitter_->GetWorldTransform()->SetParent(player_->GetWorldTransform());
+	pointEmitter_->GetWorldTransform()->SetParent(player_->GetWorldTransform());*/
 
 	auto reticleSprite = spriteManager_->GetSprite("reticle_ui", "icon_reticle");
 
-	reticle_ = std::make_unique<Reticle>(reticleSprite, player_->GetWorldTransform(),cameraManager_.get());
+	reticle_ = std::make_unique<Reticle>(reticleSprite, sceneObjectManager_->GetPlayer()->GetWorldTransform(),cameraManager_.get());
 	reticle_->Initialize();
 }
 
-///=============================================================================
-///						終了処理
+
 void GameScene::Finalize()
 {
-	BaseScene::Finalize();
 }
 
-///=============================================================================
-///						更新
 void GameScene::Update()
 {	
-
 	// 基底クラスの更新
 	BaseScene::Update();
 
@@ -221,7 +183,7 @@ void GameScene::Update()
 	Kouro::RadialBlur* blur = static_cast<Kouro::RadialBlur*>(sceneManager_->GetPostEffect()->GetEffectData("blur"));
 	Kouro::Radial::Material material = blur->GetMaterial();
 
-	const QuickMoveData* data = player_->GetQuickMoveData();
+	const QuickMoveData* data = sceneObjectManager_->GetPlayer()->GetQuickMoveData();
 	
 	if (state_)
 	{
@@ -259,9 +221,6 @@ void GameScene::Update()
 	blur->SetMaterialData(material);
 
 	transform_->UpdateMatrix();
-
-	// 敵の数を取得
-	size_t enemyCount = enemies_.size();
 
 	switch (phase_)
 	{
@@ -345,7 +304,7 @@ void GameScene::Update()
 				std::unique_ptr<EnemyState> state = std::make_unique<SpawnState>();
 				enemy->SetCameraManager(cameraManager_.get());
 				enemy->ChangeState(std::move(state));
-				colliderManager_->AddCollider(enemy);
+				colliderManager_->AddCollider(enemy.get());
 				enemy->Update();
 				enemies_.push_back(std::move(enemy));
 			}
@@ -355,15 +314,6 @@ void GameScene::Update()
 		{
 			UpdateAllObjects(1.0f / 60.0f);
 			pointEmitter_->Emit(player_->GetWorldTransform()->GetWorldMatrix());
-		}
-
-
-		for (auto& enemy : enemies_)
-		{
-			if (!enemy->GetIsAlive())
-			{
-				++eliminatedEnemyCount_;
-			}
 		}
 
 		// プレイヤーが死亡していたら
@@ -464,11 +414,6 @@ void GameScene::Draw()
 
 	player_->Draw();
 
-	// 生存していない敵をリストから削除
-	enemies_.erase(std::remove_if(enemies_.begin(), enemies_.end(),
-		[](const std::shared_ptr<Enemy>& enemy) { return !enemy->GetIsAlive(); }),
-		enemies_.end());
-
 	if (phase_ != Phase::kFadeIn)
 	{
 		// 敵の描画
@@ -526,7 +471,7 @@ void GameScene::UpdateAllObjects(const float deltaTime)
 
 	std::erase_if(enemies_, [this](const std::shared_ptr<Enemy>& enemy)
 		{
-			if (!enemy->GetIsAlive())
+			if (!enemy->IsValid())
 			{
 				++eliminatedEnemyCount_;
 				return true;

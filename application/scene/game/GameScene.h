@@ -15,7 +15,7 @@
 #include "GlobalVariables.h"
 #include "PointEmitter.h"
 #include "Reticle.h"
-#include "SceneObjectManager.h"
+#include "application/object/SceneObjectManager.h"
 
 // \brief GameScene ゲームシーンクラス
 
@@ -94,25 +94,16 @@ private:
 
 	Kouro::Dissolve* dissolve_ = nullptr;
 
-	std::unique_ptr<Kouro::Object3d> ground_ = nullptr;
-
 	std::unique_ptr<Kouro::WorldTransform> transform_ = nullptr;
 
 	std::unique_ptr<Kouro::ModelEdgeEmitter> mEmitter = nullptr;
 	std::unique_ptr<Kouro::PointEmitter> pointEmitter_ = nullptr;
 
-	std::unique_ptr<Kouro::ParticleEmitter> hitEffect2_Circle1_ = nullptr;
-	std::unique_ptr<Kouro::ParticleEmitter> hitEffect2_Circle2_ = nullptr;
-
 	std::unique_ptr<SceneObjectManager> sceneObjectManager_ = nullptr;
-
-	std::shared_ptr<Player> player_ = nullptr;
 
 	std::unique_ptr<Reticle> reticle_ = nullptr;
 
 	RailCamera* railCamera_ = nullptr;
-
-	std::vector<std::shared_ptr<Enemy>> enemies_;
 
 	std::unique_ptr<ColliderManager> colliderManager_ = nullptr;
 

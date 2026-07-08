@@ -85,8 +85,8 @@ void ColliderManager::CheckCollision(ColliderVariant a, ColliderVariant b)
             if (!colliderA || !colliderB) return;
 
             // BaseCollider* に変換
-            BaseCollider* baseA = colliderA.get();
-            BaseCollider* baseB = colliderB.get();
+            BaseCollider* baseA = colliderA;
+            BaseCollider* baseB = colliderB;
 
             // ダブルディスパッチで衝突判定
             if (baseA->CheckCollision(baseB))

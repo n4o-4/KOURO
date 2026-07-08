@@ -184,7 +184,7 @@
     <ClCompile Include="engine\2d\SpriteAnimationController.cpp" />
     <ClCompile Include="application\object\enemy\SpawnState.cpp" />
     <ClCompile Include="RetreatState.cpp" />
-    <ClCompile Include="SceneObjectManager.cpp" />
+    <ClCompile Include="application\object\SceneObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\system\Event.h" />
@@ -372,7 +372,7 @@
     <ClInclude Include="engine\2d\SpriteAnimationController.h" />
     <ClInclude Include="application\object\enemy\SpawnState.h" />
     <ClInclude Include="RetreatState.h" />
-    <ClInclude Include="SceneObjectManager.h" />
+    <ClInclude Include="application\object\SceneObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

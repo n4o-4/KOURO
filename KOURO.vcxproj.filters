@@ -585,7 +585,7 @@
     <ClCompile Include="application\object\enemy\SpawnState.cpp" />
     <ClCompile Include="engine\math\Easing.cpp" />
     <ClCompile Include="RetreatState.cpp" />
-    <ClCompile Include="SceneObjectManager.cpp" />
+    <ClCompile Include="application\object\SceneObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -1090,7 +1090,7 @@
     <ClInclude Include="application\scene\game\GameStateMachine.h" />
     <ClInclude Include="application\object\enemy\SpawnState.h" />
     <ClInclude Include="RetreatState.h" />
-    <ClInclude Include="SceneObjectManager.h" />
+    <ClInclude Include="application\object\SceneObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <variant>
 
@@ -10,9 +10,9 @@
 #include "OBBCollider.h"
 
 using ColliderVariant = std::variant<
-	std::shared_ptr<AABBCollider>,
-	std::shared_ptr<SphereCollider>,
-	std::shared_ptr<OBBCollider>
+	AABBCollider*,
+	SphereCollider*,
+	OBBCollider*
 >;
 
 // \brief ColliderManager collider管理クラス
@@ -29,9 +29,9 @@ public:  /// 公開メンバ関数
 	 * \param  collider コライダー
 	 */
 	template <typename T>
-	void AddCollider(std::shared_ptr<T> collider) 
+	void AddCollider(T collider) 
 	{
-		colliders_.emplace_back(std::move(collider));
+		colliders_.push_back(collider);
 	}
 
 	/**
@@ -45,14 +45,12 @@ private: /// 非公開メンバ関数
 	// \brief  ClearColliders コライダーのリストをクリアする
 	void ClearColliders() { colliders_.clear(); }
 
-	// \brief  ScanCplliders  コライダーリスト内のコライダー同士の当たり判定を呼び出す
+	// \brief  ScanColliders  コライダーリスト内のコライダー同士の当たり判定を呼び出す
 	void ScanColliders();
 
 	// \brief  CheckCollision コライダー同士の当たり判定をとる
 	void CheckCollision(ColliderVariant a, ColliderVariant b);
 
-private: /// 非公開メンバ関数
-public:  /// 公開メンバ変数
 private: /// 非公開メンバ変数
 
 	std::vector<ColliderVariant> colliders_; // コライダーのリスト

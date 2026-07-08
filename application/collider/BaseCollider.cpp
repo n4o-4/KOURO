@@ -13,6 +13,11 @@ void BaseCollider::Initialize(Kouro::WorldTransform* worldTransform, BaseEntity*
 
 void BaseCollider::Update()
 {
+	if (!owner_->IsValid())
+	{
+		int a = 0;
+	}
+
 	isAlive_ = owner_->IsValid();
 }
 

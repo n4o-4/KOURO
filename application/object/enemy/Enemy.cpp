@@ -26,10 +26,8 @@ void Enemy::Update()
 {
 	std::vector<ColliderVariant> colliders = colliderManager_->GetColliders();
 
-	std::erase_if(bullets_, [](const ColliderVariant& collider) {
-		return std::visit([](auto& ptr) {
-			return ptr && !ptr->GetIsAlive();
-			}, collider);
+	std::erase_if(bullets_, [](const std::unique_ptr<EnemyBullet>& bullet) {
+		return bullet && !bullet->GetIsAlive();
 		});
 
 	if (actionData_.hitIntervalTimer_ < actionData_.kHitInterval_)
@@ -158,8 +156,7 @@ void Enemy::Fire()
 		Kouro::Vector3 dir =
 			Kouro::Normalize(TransformNormal(centerDir, rot));
 
-		std::shared_ptr<EnemyBullet> bullet =
-			std::make_shared<EnemyBullet>();
+		std::unique_ptr<EnemyBullet> bullet = std::make_unique<EnemyBullet>();
 
 		bullet->Initialize(
 			lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"),
@@ -168,8 +165,8 @@ void Enemy::Fire()
 
 		bullet->SetVelocity(dir);
 
-		colliderManager_->AddCollider(bullet);
-		bullets_.push_back(bullet);
+		colliderManager_->AddCollider(bullet.get());
+		bullets_.push_back(std::move(bullet));
 	}
 }
 

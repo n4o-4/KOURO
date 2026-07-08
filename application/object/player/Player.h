@@ -109,7 +109,7 @@ private: // 非公開メンバ関数
 
 private: // 非公開メンバ変数
 
-	std::vector<std::shared_ptr<PlayerBullet>> bullets_; //!< 弾のリスト
+	std::vector<std::unique_ptr<PlayerBullet>> bullets_; //!< 弾のリスト
 
 	const float kMoveTime = 10.0f;
 

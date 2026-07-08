@@ -128,14 +128,6 @@ void Player::Update()
 		bullet->Update();
 	}
 
-	std::vector<ColliderVariant> colliders = colliderManager_->GetColliders();
-
-	std::erase_if(bullets_, [](const ColliderVariant& collider) {
-		return std::visit([](auto& ptr) {
-			return ptr && !ptr->GetIsAlive();
-			}, collider);
-		});
-
 	///=========================================
 	/// 親クラス
 
@@ -245,7 +237,7 @@ void Player::Fire()
 	fireTimer_ = 0.0f;
 
 	// 弾の生成
-	std::shared_ptr<PlayerBullet> bullet = std::make_shared<PlayerBullet>();
+	std::unique_ptr<PlayerBullet> bullet = std::make_unique<PlayerBullet>();
 
 	Kouro::Matrix4x4 matWorld = worldTransform_->GetWorldMatrix();
 
@@ -267,7 +259,7 @@ void Player::Fire()
 	bullet->GetWorldTransform()->SetRotate({ pitch, yaw, roll });
 
 	// コライダーマネージャーに弾を追加する
-	colliderManager_->AddCollider(bullet);
+	colliderManager_->AddCollider(bullet.get());
 
 	// 弾のリストに今回作った弾を移動する
 	bullets_.push_back(std::move(bullet));
