@@ -1091,6 +1091,7 @@
     <ClInclude Include="application\object\enemy\SpawnState.h" />
     <ClInclude Include="RetreatState.h" />
     <ClInclude Include="application\object\SceneObjectManager.h" />
+    <ClInclude Include="application\object\base\SpawnBulletRequest.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

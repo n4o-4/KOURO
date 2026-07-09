@@ -101,10 +101,15 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	player->Initialize(lineModelManager_->FindLineModel("player/player.obj"));
 	player->SetLineModelManager(lineModelManager_.get());
 	player->SetParentTransform(&playerRail_.GetWorldTransform());
+
+	pointEmitter_ = std::make_unique<Kouro::PointEmitter>();
+	pointEmitter_->Initialize("normal", context);
+	pointEmitter_->SetEmitterProperties({ 0.0f,0.0f,0.0f }, 100, { -4.0f,-4.0f,-10.0f }, { 4.0f,4.0f,-1.0f }, 0.5f, 1.5f, 0.0f);
+	pointEmitter_->GetWorldTransform()->SetParent(player->GetWorldTransform());
+	pointEmitter_->GetWorldTransform()->SetParent(player->GetWorldTransform());
+
 	sceneObjectManager_->RegisterPlayer(std::move(player));
 
-
-	
 	// Inputの受け取りを有効化
 	Kouro::Input::GetInstance()->SetIsReception(true);
 
@@ -116,7 +121,6 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	railCamera_ = camera.get();
 	cameraManager_->AddCamera("railCamera", std::move(camera));
 	cameraManager_->SetActiveCamera("railCamera");
-
 
 	for(uint32_t i = 0; i < 3; ++i)
 	{
@@ -155,11 +159,6 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 	std::vector<Kouro::Vector3> enemies = spawnManager.LoadFile("config/game/spawnPattern1.json", "EnemyGroup1");
 
-	/*pointEmitter_ = std::make_unique<Kouro::PointEmitter>();
-	pointEmitter_->Initialize("normal", context);
-	pointEmitter_->SetEmitterProperties({ 0.0f,0.0f,0.0f }, 100 ,{ -4.0f,-4.0f,-10.0f }, { 4.0f,4.0f,-1.0f }, 0.5f, 1.5f, 0.0f);
-	pointEmitter_->GetWorldTransform()->SetParent(player_->GetWorldTransform());*/
-
 	auto reticleSprite = spriteManager_->GetSprite("reticle_ui", "icon_reticle");
 
 	reticle_ = std::make_unique<Reticle>(reticleSprite, sceneObjectManager_->GetPlayer()->GetWorldTransform(),cameraManager_.get());
@@ -183,7 +182,9 @@ void GameScene::Update()
 	Kouro::RadialBlur* blur = static_cast<Kouro::RadialBlur*>(sceneManager_->GetPostEffect()->GetEffectData("blur"));
 	Kouro::Radial::Material material = blur->GetMaterial();
 
-	const QuickMoveData* data = sceneObjectManager_->GetPlayer()->GetQuickMoveData();
+	Player* player = sceneObjectManager_->GetPlayer();
+
+	const QuickMoveData* data = player->GetQuickMoveData();
 	
 	if (state_)
 	{
@@ -293,10 +294,10 @@ void GameScene::Update()
 
 			for (size_t i = 0; i < enemies.size(); i++)
 			{
-				std::shared_ptr<Enemy> enemy = std::make_shared<Enemy>();
+				std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
 				enemy->Initialize(lineModelManager_->FindLineModel("enemy/enemy.obj"));
 				enemy->SetBasePosition(enemies[i]);
-				enemy->SetTarget(player_.get());
+				enemy->SetTarget(player);
 				enemy->SetParent(&enemyRail_.GetWorldTransform());
 				enemy->SetColliderManager(colliderManager_.get());
 				enemy->SetLineModelManager(lineModelManager_.get());
@@ -306,18 +307,18 @@ void GameScene::Update()
 				enemy->ChangeState(std::move(state));
 				colliderManager_->AddCollider(enemy.get());
 				enemy->Update();
-				enemies_.push_back(std::move(enemy));
+				sceneObjectManager_->RegisterEnemy(std::move(enemy));
 			}
 		}
 
-		if (player_->GetIsAlive())
+		if (player->GetIsAlive())
 		{
 			UpdateAllObjects(1.0f / 60.0f);
-			pointEmitter_->Emit(player_->GetWorldTransform()->GetWorldMatrix());
+			pointEmitter_->Emit(player->GetWorldTransform()->GetWorldMatrix());
 		}
 
 		// プレイヤーが死亡していたら
-		if (!player_->GetIsAlive())
+		if (!player->GetIsAlive())
 		{
 			// Dissolveエフェクトの取得
 			auto* dissolve = static_cast<Kouro::Dissolve*>(sceneManager_->GetPostEffect()->GetEffectData("dissolve"));
@@ -337,7 +338,7 @@ void GameScene::Update()
 		}
 
 		// 敵が全滅したらフェードアウトへ
-		if (enemyCount == 0 && currentSpawnIndex >= 10)
+		if (sceneObjectManager_->GetEnemyCount() == 0 && currentSpawnIndex >= 10)
 		{
 			fade_->Start(Fade::Status::FadeOut, fadeTime_);
 			spriteManager_->SetGroupVisibility("pause_ui", false);
@@ -360,7 +361,7 @@ void GameScene::Update()
 			}
 
 			// 敵の数が0ならクリアシーンへ
-			if(enemyCount == 0)
+			if(sceneObjectManager_->GetEnemyCount() == 0 && currentSpawnIndex >= 10)
 			{
 				globalVariables_.SaveFile("ELIMINATED_ENEMY_COUNT", eliminatedEnemyCount_);
 
@@ -393,7 +394,7 @@ void GameScene::Update()
 
 	spriteManager_->UpdateVisibleGroups();
 
-	if (player_->GetIsHit())
+	if (player->GetIsHit())
 	{
 		cameraManager_->CameraShake(0.5f);
 	}
@@ -412,16 +413,7 @@ void GameScene::Draw()
 	// 線描画前設定
 	lineDrawer_->PreDraw(cameraManager_->GetActiveCamera()->GetViewProjection());
 
-	player_->Draw();
-
-	if (phase_ != Phase::kFadeIn)
-	{
-		// 敵の描画
-		for (auto& enemy : enemies_)
-		{
-			enemy->Draw();
-		}
-	}
+	sceneObjectManager_->Draw();
 
 	// ステージの描画
 	stage_->Draw(transform_.get());
@@ -460,25 +452,11 @@ void GameScene::UpdateAllObjects(const float deltaTime)
 	enemyRail_.Update(deltaTime);
 	cameraRail_.Update(deltaTime);
 
-	player_->Update();
-
-	for (auto& enemy : enemies_)
-	{
-		enemy->Update();
-	}
+	sceneObjectManager_->Update();
 
 	colliderManager_->Update();
 
-	std::erase_if(enemies_, [this](const std::shared_ptr<Enemy>& enemy)
-		{
-			if (!enemy->IsValid())
-			{
-				++eliminatedEnemyCount_;
-				return true;
-			}
-
-			return false;
-		});
+	sceneObjectManager_->CleanupObjects();
 }
 
 void GameScene::ChangeState(std::unique_ptr<Kouro::ISceneState> newState)

@@ -1,26 +1,38 @@
 #include "SceneObjectManager.h"
 
+#include "Player.h"
+#include "Enemy.h"
+#include "BaseBullet.h"
+
 void SceneObjectManager::Update()
 {
+	// プレイヤーの更新
 	player_->Update();
 
-	for (auto& enemy : enemies_)
-	{
-		// 有効でないキャラクターは更新しない
-		if (!enemy->IsActive()) continue;
-		enemy->Update();
-	}
+	// 敵と弾の更新
+	auto updateObjects = [](auto& objects)
+		{
+			for (auto& object : objects)
+			{
+				if (!object->IsActive()) continue;
+				object->Update();
+			}
+		};
 
-	for(auto& bullet : bullets_)
-	{
-		// 有効でない弾は更新しない
-		if (!bullet->IsActive()) continue;
-		bullet->Update();
-	}
+	updateObjects(enemies_);
+	updateObjects(bullets_);
 }
 
 void SceneObjectManager::CleanupObjects()
 {
+	auto countKill = [](const auto& object)
+		{
+			return object->GetDestroyReason() == Enemy::DestroyReason::CollisionWithBullet 
+				|| object->GetDestroyReason() == Enemy::DestroyReason::CollisionWithPlayer;
+		};
+
+	enemyKillCount_ += std::count_if(enemies_.begin(), enemies_.end(), countKill);
+
 	auto isDead = [](const auto& object)
 		{
 			return !object || !object->IsValid();

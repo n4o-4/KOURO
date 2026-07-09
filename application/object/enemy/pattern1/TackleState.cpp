@@ -25,5 +25,5 @@ void TackleState::Update(Enemy* enemy)
 
 void TackleState::OnExit(Enemy* enemy)
 {
-	enemy->SetIsValid(true);
+	enemy->Destroy(Enemy::DestroyReason::TimeOut);
 }

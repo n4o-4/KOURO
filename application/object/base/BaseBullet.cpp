@@ -2,28 +2,15 @@
 
 void BaseBullet::Initialize(Kouro::LineModel* model, const Kouro::Vector3& spawnPos)
 {
-	///========================================
-	/// オブジェクト3D
-
 	// 生成と初期化
 	objectLine_ = std::make_unique<Kouro::ObjectLine>();
 	objectLine_->Initialize(model);
-
-	///========================================
-	/// ワールドトランスフォーム
 
 	// 生成と初期化
 	worldTransform_ = std::make_unique<Kouro::WorldTransform>();
 	worldTransform_->Initialize();
 
-
-	//worldTransform_->useQuaternion_ = false;
-	// 初期値の設定
-
 	worldTransform_->SetTranslate(spawnPos);
-
-	///========================================
-	/// その他変数
 
 	// 速度の初期化
 	velocity_ = { 0.0f,0.0f,0.0f };

@@ -12,6 +12,14 @@
 
 class Enemy : public BaseCharacter, public AABBCollider
 {
+public:
+	enum class DestroyReason
+	{
+		None,
+		TimeOut,
+		CollisionWithPlayer,
+		CollisionWithBullet,
+	};
 public: // 公開メンバ関数
 
 	/**
@@ -25,6 +33,12 @@ public: // 公開メンバ関数
 
 	// \brief Draw 描画
 	void Draw() override;
+
+	/**
+	* \brief  敵の破壊
+	* \param  DestroyReason 破壊理由
+	*/
+	void Destroy(DestroyReason reason) {destroyReason_ = reason; isValid_ = false; }
 
 	/**
 	* \brief SetPosition
@@ -103,6 +117,12 @@ public: // 公開メンバ関数
 	* \param  isValid 有効フラグ
 	*/
 	void SetIsValid(bool isValid) { isValid_ = isValid; }
+
+	/**
+	* \brief  破壊理由の取得
+	* \return DestroyReason 破壊理由
+	*/
+	const Enemy::DestroyReason GetDestroyReason() const { return destroyReason_; }
 
 	/**
 	* \brief  ターゲットを取得する
@@ -191,8 +211,6 @@ private: // 非公開メンバ変数
 
 	Kouro::LineModelManager* lineModelManager_ = nullptr;
 
-	Kouro::ParticleEmitter emitter_;
-
 	Kouro::ModelEdgeEmitter* mEmitter_ = nullptr;
 
 	Kouro::CameraManager* cameraManager_ = nullptr;
@@ -200,5 +218,7 @@ private: // 非公開メンバ変数
 	Kouro::Vector3 kGoalOffset_ = {0.0f,0.0f,40.0f};
 
 	Kouro::Vector3 basePosition_ = { 0.0f,0.0f,0.0f };
+
+	DestroyReason destroyReason_ = DestroyReason::None; //!< 破壊理由
 };
 

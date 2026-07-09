@@ -187,6 +187,7 @@
     <ClCompile Include="application\object\SceneObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="application\object\base\SpawnBulletRequest.h" />
     <ClInclude Include="application\system\Event.h" />
     <ClInclude Include="application\system\EventController.h" />
     <ClInclude Include="application\camera\title\FollowCameraState.h" />

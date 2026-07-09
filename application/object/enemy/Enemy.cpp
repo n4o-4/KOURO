@@ -173,12 +173,13 @@ void Enemy::Fire()
 void Enemy::OnCollisionEnter(BaseCollider* other)
 {
 	if (isValid_ == false) return;
+	if (actionData_.hitIntervalTimer_ <= actionData_.kHitInterval_) return;
 
 	// 衝突したオブジェクトがPlayerBulletの場合、弾を消す
 	if (PlayerBullet* playerBullet = dynamic_cast<PlayerBullet*>(other))
 	{
 		// プレイヤーの弾のダメージよりhpが大きかったら && ヒットインターバル計測用タイマーがヒットインターバルの定数以上だった場合
-		if(hp_ > playerBullet->GetDamage() && actionData_.hitIntervalTimer_ >= actionData_.kHitInterval_)
+		if(hp_ > playerBullet->GetDamage())
 		{
 			// ヒットインターバル計測用タイマーを0に設定
 			actionData_.hitIntervalTimer_ = 0.0f;
@@ -188,30 +189,6 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 
 			// hpをプレイヤーの弾のダメージ分減算
 			hp_ -= playerBullet->GetDamage();
-			
-			//emitter_.SetPosition(worldTransform_->transform.translate);
-			//emitter_.SetParticleCount(1);
-			//emitter_.SetVelocityRange({ {0.0f,0.0f,0.0f },{0.0f,0.0f,0.0f} });
-			//emitter_.SetStartScaleRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
-			//emitter_.SetFinishScaleRange({ {3.0f,3.0f,3.0f},{3.0f,3.0f,3.0f} });
-			//emitter_.SetRotateRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
-
-			emitter_.Initialize("ray");
-			emitter_.SetParticleCount(10);
-			emitter_.SetVelocityRange({ {-10.0f,-10.0f,-10.0f },{10.0f,10.0f,10.0f} });
-			emitter_.SetStartScaleRange({ {0.3f,0.3f,0.3f},{0.3f,0.3f,0.3f} });
-			emitter_.SetFinishScaleRange({ {0.1f,0.1f,0.1f},{0.1f,0.1f,0.1f} });
-			emitter_.SetRotateRange({ {0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} });
-
-
-			emitter_.SetTranslateRange({ { 0.0f,0.0f,0.0f },{ 0.0f,0.0f,0.0f } });
-
-			emitter_.SetStartColorRange({ {0.667f, 0.169f, 1.0f, 1.0f}, {0.667f, 0.169f, 1.0f, 1.0f} });
-			emitter_.SetFinishColorRange({ {0.667f, 0.169f, 1.0f, 1.0f}, {0.667f, 0.169f, 1.0f, 1.0f} }); /*{ 1.0f, 0.72f, 0.19f, 1.0f }*/
-			emitter_.SetLifeTimeRange({ 0.5f,0.5f });
-			emitter_.SetFrequency(0.01f);
-
-			emitter_.Emit();
 		}
 
 		else if(hp_ <= playerBullet->GetDamage() && actionData_.hitIntervalTimer_ >= actionData_.kHitInterval_)
@@ -219,12 +196,9 @@ void Enemy::OnCollisionEnter(BaseCollider* other)
 			mEmitter_->Emit(worldTransform_->GetWorldMatrix());
 
 			hp_ = 0;
-		}
-	}
 
-	if (hp_ == 0)
-	{
-		isValid_ = false;
+			Destroy(Enemy::DestroyReason::CollisionWithBullet);
+		}
 	}
 }
 
