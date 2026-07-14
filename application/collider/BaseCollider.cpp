@@ -13,17 +13,12 @@ void BaseCollider::Initialize(Kouro::WorldTransform* worldTransform, BaseEntity*
 
 void BaseCollider::Update()
 {
-	if (!owner_->IsValid())
-	{
-		int a = 0;
-	}
-
 	isAlive_ = owner_->IsValid();
 }
 
 void BaseCollider::AddCollision(BaseCollider* collider)
 {
-	// 前回の衝突情報にコライダーを追加
+	// 衝突情報にコライダーを追加
 
 	currentCollisions_.insert(collider);
 }

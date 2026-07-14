@@ -94,6 +94,9 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	mEmitter->CreateLineSegment("enemy/enemy.obj");
 
 	sceneObjectManager_ = std::make_unique<SceneObjectManager>();
+	sceneObjectManager_->Initialize();
+	sceneObjectManager_->SetColliderManager(colliderManager_.get());
+	sceneObjectManager_->SetLineModelManager(lineModelManager_.get());
 
 	std::unique_ptr<Player> player = std::make_unique<Player>();
 
@@ -101,6 +104,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	player->Initialize(lineModelManager_->FindLineModel("player/player.obj"));
 	player->SetLineModelManager(lineModelManager_.get());
 	player->SetParentTransform(&playerRail_.GetWorldTransform());
+	player->SetSpawnRequestQueue(sceneObjectManager_->GetSpawnRequestQueue());
 
 	pointEmitter_ = std::make_unique<Kouro::PointEmitter>();
 	pointEmitter_->Initialize("normal", context);
@@ -302,6 +306,7 @@ void GameScene::Update()
 				enemy->SetColliderManager(colliderManager_.get());
 				enemy->SetLineModelManager(lineModelManager_.get());
 				enemy->SetEmitter(mEmitter.get());
+				enemy->SetSpawnRequestQueue(sceneObjectManager_->GetSpawnRequestQueue());
 				std::unique_ptr<EnemyState> state = std::make_unique<SpawnState>();
 				enemy->SetCameraManager(cameraManager_.get());
 				enemy->ChangeState(std::move(state));

@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseBullet.h"
+#include "BaseCollider.h"
 
 // \brief PlayerBullet プレイヤーの弾クラス
 
@@ -27,11 +28,7 @@ public: // 公開メンバ関数
 	*/
 	void SetCameraManager(Kouro::CameraManager* cameraManager) { cameraManager_ = cameraManager; }
 
-	/**
-	 * \brief  SetVelocity 速度を設定
-	 * \param  velocity 速度
-	*/
-	void SetVelocity(const Kouro::Vector3& velocity) { velocity_ = velocity; }
+	BaseCollider* GetCollider() override { return this; }
 
 private: // 非公開メンバ関数
 

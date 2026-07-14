@@ -236,33 +236,20 @@ void Player::Fire()
 	// 計測用のタイマーをインターバルタイマーの定数に設定
 	fireTimer_ = 0.0f;
 
-	// 弾の生成
-	std::unique_ptr<PlayerBullet> bullet = std::make_unique<PlayerBullet>();
-
 	Kouro::Matrix4x4 matWorld = worldTransform_->GetWorldMatrix();
-
-	// 初期化
-	bullet->Initialize(lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"), { matWorld.m[3][0],matWorld.m[3][1],matWorld.m[3][2] });
 
 	// プレイヤーが向いている方向にvelocityを変換する
 	Kouro::Vector3 velocity = TransformNormal({ 0.0f,0.0f,bulletSpeed_ }, matWorld);
 
-	// 弾に計算したvelocityを設定する
-	bullet->SetVelocity(velocity);
+	SpawnRequestQueue::BulletSpawnInfo spawnInfo;
 
-	// forward ベクトルからオイラー角を計算
-	Kouro::Vector3 forward = Normalize(velocity);
-	float yaw = std::atan2(forward.x, forward.z);
-	float pitch = std::asin(-forward.y);
-	float roll = 0.0f;
+	spawnInfo.creator = []() { return std::make_unique<PlayerBullet>(); };
+	spawnInfo.modelName = "playerbullet/playerbullet.obj";
+	spawnInfo.position = worldTransform_->GetWorldPosition();
+	spawnInfo.velocity = TransformNormal({ 0.0f,0.0f,bulletSpeed_ }, worldTransform_->GetWorldMatrix());
 
-	bullet->GetWorldTransform()->SetRotate({ pitch, yaw, roll });
-
-	// コライダーマネージャーに弾を追加する
-	colliderManager_->AddCollider(bullet.get());
-
-	// 弾のリストに今回作った弾を移動する
-	bullets_.push_back(std::move(bullet));
+	// 生成要求キューに弾の生成要求を追加
+	spawnRequestQueue_->Push(spawnInfo);
 }
 
 void Player::OnCollisionEnter(BaseCollider* other)

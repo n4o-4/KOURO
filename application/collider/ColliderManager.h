@@ -28,12 +28,7 @@ public:  /// 公開メンバ関数
 	 * \brief  AddCollider コライダーを追加する
 	 * \param  collider コライダー
 	 */
-	template <typename T>
-	void AddCollider(T collider) 
-	{
-		colliders_.push_back(collider);
-	}
-
+	void AddCollider(BaseCollider* collider);
 	/**
 	* \brief  GetColliders コライダーリストを取得する
 	* \return colliders_ コライダーリスト

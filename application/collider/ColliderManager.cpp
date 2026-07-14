@@ -12,6 +12,23 @@ void ColliderManager::Update()
     ScanColliders();
 }
 
+void ColliderManager::AddCollider(BaseCollider* collider)
+{
+    if (auto* aabb = dynamic_cast<AABBCollider*>(collider))
+    {
+        colliders_.emplace_back(aabb);
+    }
+    else if (auto* sphere = dynamic_cast<SphereCollider*>(collider))
+    {
+        colliders_.emplace_back(sphere);
+    }
+    else if (auto* obb = dynamic_cast<OBBCollider*>(collider))
+    {
+        colliders_.emplace_back(obb);
+    }
+
+}
+
 void ColliderManager::ScanColliders()
 {
 	int checkCount = 0;

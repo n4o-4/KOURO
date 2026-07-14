@@ -1,5 +1,9 @@
 #pragma once
-// Engine
+/// Application
+
+#include "SpawnRequestQueue.h"
+
+/// Engine
 #include "Kouro.h"
 #include "ObjectLine.h"
 #include "BaseEntity.h"
@@ -23,24 +27,32 @@ public: // 公開メンバ関数
 	virtual ~BaseCharacter() = default;
 
 	/**
-	* \brief  Initialize 初期化
+	* \brief  初期化
 	* \param  LineModel 線モデル
 	*/
 	virtual void Initialize(Kouro::LineModel* model);
 
-	// \brief Update 更新
+	// \brief 更新
 	virtual void Update();
 
 	// \brief 描画
 	virtual void Draw();
 
+	void SetColor(const Kouro::Vector4& color) { objectLine_->SetColor({ color.x,color.y,color.z,color.w }); }
+
 	/**
-	* \brief  GetWorldTransform
+	* \brief  生成要求キューの設定
+	* \param  spawnRequestQueue 生成要求キューのポインタ
+	*/
+	void SetSpawnRequestQueue(SpawnRequestQueue* spawnRequestQueue) { spawnRequestQueue_ = spawnRequestQueue; }
+
+	/**
+	* \brief  ワールドトランスフォームの取得
 	* \return WorldTransform* ワールドトランスフォームのポインタ
 	*/
 	Kouro::WorldTransform* GetWorldTransform() { return worldTransform_.get(); }
 
-	void SetColor(const Kouro::Vector4& color) { objectLine_->SetColor({color.x,color.y,color.z,color.w}); }
+	
 
 	const Kouro::Vector3& GetWorldPosition();
 
@@ -66,5 +78,7 @@ protected: // 派生用メンバ変数
 	uint32_t hp_ = 0;
 
 	HitActionData actionData_ = {};
+
+	SpawnRequestQueue* spawnRequestQueue_ = nullptr;
 };
 

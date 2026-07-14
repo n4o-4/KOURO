@@ -1,8 +1,18 @@
 #include "SceneObjectManager.h"
 
+/// Application
 #include "Player.h"
 #include "Enemy.h"
 #include "BaseBullet.h"
+#include "SpawnRequestQueue.h"
+
+/// Engine
+#include "LineModelManager.h"
+
+void SceneObjectManager::Initialize()
+{
+	spawnRequestQueue_ = std::make_unique<SpawnRequestQueue>();
+}
 
 void SceneObjectManager::Update()
 {
@@ -20,6 +30,9 @@ void SceneObjectManager::Update()
 		};
 
 	updateObjects(enemies_);
+
+	ProcessSpawnRequests();
+
 	updateObjects(bullets_);
 }
 
@@ -75,4 +88,18 @@ void SceneObjectManager::RegisterBullet(std::unique_ptr<BaseBullet> bullet)
 {
 	// 弾を追加
 	bullets_.push_back(std::move(bullet));
+}
+
+void SceneObjectManager::ProcessSpawnRequests()
+{
+	auto requests = spawnRequestQueue_->Consume();
+
+	for (const auto& request : requests)
+	{
+		std::unique_ptr<BaseBullet> bullet = request.creator();
+		bullet->Initialize(lineModelManager_->FindLineModel(request.modelName), request.position);
+		bullet->SetVelocity(request.velocity);
+		colliderManager_->AddCollider(bullet->GetCollider());
+		bullets_.push_back(std::move(bullet));
+	}
 }
