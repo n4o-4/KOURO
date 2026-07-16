@@ -29,6 +29,8 @@ void SceneObjectManager::Update()
 			}
 		};
 
+	enemyCount_ = static_cast<uint32_t>(enemies_.size());
+
 	updateObjects(enemies_);
 
 	ProcessSpawnRequests();
@@ -82,12 +84,6 @@ void SceneObjectManager::RegisterEnemy(std::unique_ptr<Enemy> enemy)
 {
 	// キャラクターを追加
 	enemies_.push_back(std::move(enemy));
-}
-
-void SceneObjectManager::RegisterBullet(std::unique_ptr<BaseBullet> bullet)
-{
-	// 弾を追加
-	bullets_.push_back(std::move(bullet));
 }
 
 void SceneObjectManager::ProcessSpawnRequests()

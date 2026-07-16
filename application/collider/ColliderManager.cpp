@@ -2,12 +2,7 @@
 
 void ColliderManager::Update()
 {
-    // 生きていないコライダーをリストから削除する
-    std::erase_if(colliders_, [](const ColliderVariant& collider) {
-        return std::visit([](auto& ptr) {
-            return ptr && !ptr->GetIsAlive();
-            }, collider);
-    });
+	CleanUpColliders();
 
     ScanColliders();
 }
@@ -27,6 +22,48 @@ void ColliderManager::AddCollider(BaseCollider* collider)
         colliders_.emplace_back(obb);
     }
 
+}
+
+void ColliderManager::CleanUpColliders()
+{
+    // 他のコライダーの衝突リストから削除
+    for (const auto& collider : colliders_)
+    {
+        BaseCollider* deadCollider = std::visit([](auto* ptr) -> BaseCollider*
+            {
+                return ptr;
+            }, collider);
+
+        if (!deadCollider || deadCollider->GetIsAlive())
+        {
+            continue;
+        }
+
+        // 他の全コライダーから削除
+        for (const auto& other : colliders_)
+        {
+            BaseCollider* otherCollider = std::visit([](auto* ptr) -> BaseCollider*
+                {
+                    return ptr;
+                }, other);
+
+            if (!otherCollider || otherCollider == deadCollider)
+            {
+                continue;
+            }
+
+            otherCollider->RemoveCollision(deadCollider);
+        }
+    }
+
+    // 生きていないコライダーを削除
+    std::erase_if(colliders_, [](const ColliderVariant& collider)
+        {
+            return std::visit([](auto* ptr)
+                {
+                    return ptr && !ptr->GetIsAlive();
+                }, collider);
+        });
 }
 
 void ColliderManager::ScanColliders()
@@ -67,11 +104,14 @@ void ColliderManager::ScanColliders()
     {
         std::visit([](auto& collider)
             {
-                if (collider) { // nullptr チェック（shared_ptrが空でないか）
+                if (collider)
+                {
                     collider->UpdateCollisionStates();
                 }
             }, colliders_[i]);
     }
+
+	CleanUpColliders();
 }
 
 void ColliderManager::CheckCollision(ColliderVariant a, ColliderVariant b)
@@ -104,6 +144,16 @@ void ColliderManager::CheckCollision(ColliderVariant a, ColliderVariant b)
             // BaseCollider* に変換
             BaseCollider* baseA = colliderA;
             BaseCollider* baseB = colliderB;
+
+           /* char buf[128];
+            sprintf_s(buf,
+                "baseA=%p baseB=%p\n",
+                baseA,
+                baseB);
+            OutputDebugStringA(buf);
+
+            OutputDebugStringA(typeid(*baseA).name());
+            OutputDebugStringA("\n");*/
 
             // ダブルディスパッチで衝突判定
             if (baseA->CheckCollision(baseB))

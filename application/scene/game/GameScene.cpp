@@ -287,8 +287,8 @@ void GameScene::Update()
 
 		frameCount++;
 
-		if (frameCount == 300 || frameCount == 600 || frameCount == 900 || frameCount == 1200 || frameCount == 1500 ||
-			frameCount == 1800 || frameCount == 2100 || frameCount == 2400 || frameCount == 2700 || frameCount == 3000)
+		if (frameCount == 1 || frameCount == 300 || frameCount == 600 || frameCount == 900 || frameCount == 1200 ||
+			frameCount == 1500 || frameCount == 1800 || frameCount == 2100 || frameCount == 2400 || frameCount == 2700)
 		{
 			currentSpawnIndex++;
 
@@ -368,7 +368,7 @@ void GameScene::Update()
 			// 敵の数が0ならクリアシーンへ
 			if(sceneObjectManager_->GetEnemyCount() == 0 && currentSpawnIndex >= 10)
 			{
-				globalVariables_.SaveFile("ELIMINATED_ENEMY_COUNT", eliminatedEnemyCount_);
+				globalVariables_.SaveFile("ELIMINATED_ENEMY_COUNT", sceneObjectManager_->GetEnemyKillCount());
 
 				sceneManager_->ChangeScene("CLEAR");
 
@@ -453,7 +453,7 @@ void GameScene::Draw()
 
 void GameScene::UpdateAllObjects(const float deltaTime)
 {
-	playerRail_.Update(deltaTime);
+ 	playerRail_.Update(deltaTime);
 	enemyRail_.Update(deltaTime);
 	cameraRail_.Update(deltaTime);
 

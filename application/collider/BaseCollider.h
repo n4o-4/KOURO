@@ -89,6 +89,8 @@ public: /// 公開メンバ関数
 	 */
 	bool GetIsAlive() const { return isAlive_; }
 
+	void RemoveCollision(BaseCollider* collider);
+
 	///================================================================================
 	///                                        当たり判定
 

@@ -15,6 +15,8 @@ using ColliderVariant = std::variant<
 	OBBCollider*
 >;
 
+using CollisionPair = std::pair<BaseCollider*, BaseCollider*>;
+
 // \brief ColliderManager collider管理クラス
 
 class ColliderManager
@@ -34,6 +36,10 @@ public:  /// 公開メンバ関数
 	* \return colliders_ コライダーリスト
 	*/
 	std::vector<ColliderVariant> GetColliders() { return colliders_; }
+
+private:
+
+	void CleanUpColliders();
 
 private: /// 非公開メンバ関数
 

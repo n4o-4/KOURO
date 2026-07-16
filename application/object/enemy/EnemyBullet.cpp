@@ -64,6 +64,7 @@ void EnemyBullet::OnCollisionEnter(BaseCollider* other)
 	if (PlayerBullet* playerBullet = dynamic_cast<PlayerBullet*>(other))
 	{
 		isValid_ = false; // 弾を消す
+		BaseCollider::Update();
 	}
 }
 

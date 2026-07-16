@@ -63,6 +63,7 @@ void PlayerBullet::OnCollisionEnter(BaseCollider* other)
 		isValid_ = false; // 弾を消す
 	}
 
+	BaseCollider::Update();
 	emitter_->SetPosition(worldTransform_->GetTranslate());
 	//emitter_->Emit();
 }

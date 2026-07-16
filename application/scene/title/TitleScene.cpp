@@ -164,6 +164,8 @@ void TitleScene::Update()
 
 			TitleCamera* titleCamera = dynamic_cast<TitleCamera*>(activeCamera);
 
+			spriteManager_->SetGroupVisibility("start_ui", false);
+
 			if (titleCamera && titleCamera->GetStateIsFinished())
 			{
 				isMoveActive_ = true;

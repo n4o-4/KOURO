@@ -156,17 +156,15 @@ void Enemy::Fire()
 		Kouro::Vector3 dir =
 			Kouro::Normalize(TransformNormal(centerDir, rot));
 
-		std::unique_ptr<EnemyBullet> bullet = std::make_unique<EnemyBullet>();
+		SpawnRequestQueue::BulletSpawnInfo spawnInfo;
 
-		bullet->Initialize(
-			lineModelManager_->FindLineModel("playerbullet/playerbullet.obj"),
-			enemyPos
-		);
+		spawnInfo.creator = []() { return std::make_unique<EnemyBullet>(); };
+		spawnInfo.modelName = "playerbullet/playerbullet.obj";
+		spawnInfo.position = worldTransform_->GetWorldPosition();
+		spawnInfo.velocity = TransformNormal({dir }, worldTransform_->GetWorldMatrix());
 
-		bullet->SetVelocity(dir);
-
-		colliderManager_->AddCollider(bullet.get());
-		bullets_.push_back(std::move(bullet));
+		// 生成要求キューに弾の生成要求を追加
+		spawnRequestQueue_->Push(spawnInfo);
 	}
 }
 

@@ -46,3 +46,10 @@ void BaseCollider::UpdateCollisionStates()
 	prevCollisions_ = std::move(currentCollisions_);
 	currentCollisions_.clear();
 }
+
+void BaseCollider::RemoveCollision(BaseCollider* collider)
+{
+	// 衝突情報からコライダーを削除
+	currentCollisions_.erase(collider);
+	prevCollisions_.erase(collider);
+}

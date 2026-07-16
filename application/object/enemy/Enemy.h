@@ -38,7 +38,7 @@ public: // 公開メンバ関数
 	* \brief  敵の破壊
 	* \param  DestroyReason 破壊理由
 	*/
-	void Destroy(DestroyReason reason) {destroyReason_ = reason; isValid_ = false; }
+	void Destroy(DestroyReason reason) { destroyReason_ = reason; isValid_ = false; BaseCollider::Update(); }
 
 	/**
 	* \brief SetPosition
