@@ -124,6 +124,9 @@ namespace Kouro
 		*/
 		Vector2 GetRightStick() { return gamePad_->GetRightStick(); }
 
+		bool GetLeftTrigger() { return gamePad_->PushLeftTrigger(); }
+		bool GetRightTrigger() { return gamePad_->PushRightTrigger(); }
+
 	private:
 
 		static std::unique_ptr<Input> instance;

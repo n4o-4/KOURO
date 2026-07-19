@@ -19,7 +19,7 @@ void Enemy::Initialize(Kouro::LineModel* model)
 
 	fireTimer_ = 0.0f; // 弾の発射タイマー初期化
 
-	hp_ = 5;
+	hp_ = 2;
 }
 
 void Enemy::Update()
