@@ -181,8 +181,8 @@ void Player::Move()
 	if (input->PushKey(DIK_W)) { inputVelocity.y += 1.0f; }
 	if (input->PushKey(DIK_S)) { inputVelocity.y -= 1.0f; }
 
-	inputVelocity.x = input->GetLeftStick().x;
-	inputVelocity.y = input->GetLeftStick().y;
+	//inputVelocity.x = input->GetLeftStick().x;
+	//inputVelocity.y = input->GetLeftStick().y;
 
 	// 速度の正規化とスピードの適用
 	float length = Kouro::Length(inputVelocity);
