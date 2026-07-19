@@ -106,6 +106,9 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 	player->SetParentTransform(&playerRail_.GetWorldTransform());
 	player->SetSpawnRequestQueue(sceneObjectManager_->GetSpawnRequestQueue());
 
+
+	colliderManager_->AddCollider(player.get());
+
 	pointEmitter_ = std::make_unique<Kouro::PointEmitter>();
 	pointEmitter_->Initialize("normal", context);
 	pointEmitter_->SetEmitterProperties({ 0.0f,0.0f,0.0f }, 100, { -4.0f,-4.0f,-10.0f }, { 4.0f,4.0f,-1.0f }, 0.5f, 1.5f, 0.0f);
@@ -158,6 +161,7 @@ void GameScene::Initialize(Kouro::EngineContext context) {
 
 	stage_ = std::make_unique<Kouro::ObjectLine>();
 	stage_->Initialize(lineModelManager_->FindLineModel("stage.obj"));
+	stage_->SetColor({ 0.5f,0.5f,0.5f,1.0f });
 
 	SpawnManager spawnManager;
 
@@ -190,10 +194,7 @@ void GameScene::Update()
 
 	const QuickMoveData* data = player->GetQuickMoveData();
 	
-	if (state_)
-	{
-		state_->Update();
-	}
+	
 
 	if (data->isQuickMoving)
 	{
@@ -271,7 +272,7 @@ void GameScene::Update()
 		break;
 	case Phase::kMain:
 
-		if (Kouro::Input::GetInstance()->TriggerKey(DIK_ESCAPE))
+		if (Kouro::Input::GetInstance()->TriggerKey(DIK_ESCAPE) || Kouro::Input::GetInstance()->TriggerButton(Kouro::GamePad::GamePadButton::START))
 		{
 			std::unique_ptr<PauseState> newState = std::make_unique<PauseState>();
 
@@ -386,15 +387,20 @@ void GameScene::Update()
 		break;
 	case Phase::kPose:
 
-		if (Kouro::Input::GetInstance()->TriggerKey(DIK_ESCAPE))
-		{
-			// ポーズシーンへ
-			phase_ = Phase::kMain;
-			spriteManager_->SetGroupVisibility("pause_ui", false);
-			return;
-		}
+		//if (Kouro::Input::GetInstance()->TriggerKey(DIK_ESCAPE) || Kouro::Input::GetInstance()->TriggerButton(Kouro::GamePad::GamePadButton::START))
+		//{
+		//	// ポーズシーンへ
+		//	phase_ = Phase::kMain;
+		//	spriteManager_->SetGroupVisibility("pause_ui", false);
+		//	return;
+		//}
 		
 		break;
+	}
+
+	if (state_)
+	{
+		state_->Update();
 	}
 
 	spriteManager_->UpdateVisibleGroups();
@@ -485,6 +491,9 @@ void GameScene::OnPauseExit(const std::string& result)
 	{
 		// ポーズ解除 → ゲーム再開
 		/*ChangeState(std::make_unique<>());*/
+			// ポーズシーンへ
+		phase_ = Phase::kMain;
+		spriteManager_->SetGroupVisibility("pause_ui", false);
 		ResetState();
 	}
 	else if (result == SceneCommand::Title) {

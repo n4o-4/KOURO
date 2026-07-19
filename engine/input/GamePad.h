@@ -75,6 +75,10 @@ namespace Kouro
 		*/
 		Vector2 GetRightStick() const { return rightStick_; }
 
+		bool PushLeftTrigger() const { return currentState_.Gamepad.bLeftTrigger > 0; }
+
+		bool PushRightTrigger() const { return currentState_.Gamepad.bRightTrigger > 0; }
+
 	private:
 		/**
 		* \brief スティックの入力値を計算する関数

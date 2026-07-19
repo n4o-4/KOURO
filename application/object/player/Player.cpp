@@ -60,7 +60,8 @@ void Player::Update()
 	else
 	{
 		// スペースキーを押していたら
-		if (Kouro::Input::GetInstance()->TriggerKey(DIK_SPACE) || Kouro::Input::GetInstance()->PushKey(DIK_SPACE))
+		if (Kouro::Input::GetInstance()->TriggerKey(DIK_SPACE) || Kouro::Input::GetInstance()->PushKey(DIK_SPACE)
+			|| Kouro::Input::GetInstance()->GetRightTrigger())
 		{
 			// 発射処理
 			Fire();
@@ -104,7 +105,7 @@ void Player::Update()
 		float length = Kouro::Length(velocity_);
 
 		// lShiftを押していたら
-		if (Kouro::Input::GetInstance()->TriggerKey(DIK_LSHIFT) && length != 0.0f)
+		if ((Kouro::Input::GetInstance()->TriggerKey(DIK_LSHIFT) || Kouro::Input::GetInstance()->PushButton(Kouro::GamePad::GamePadButton::LEFT_SHOULDER)) && length != 0.0f)
 		{
 			// quickMove中に変更
 			quickMoveData_->isQuickMoving = true;
@@ -179,6 +180,9 @@ void Player::Move()
 	// 縦方向
 	if (input->PushKey(DIK_W)) { inputVelocity.y += 1.0f; }
 	if (input->PushKey(DIK_S)) { inputVelocity.y -= 1.0f; }
+
+	inputVelocity.x = input->GetLeftStick().x;
+	inputVelocity.y = input->GetLeftStick().y;
 
 	// 速度の正規化とスピードの適用
 	float length = Kouro::Length(inputVelocity);

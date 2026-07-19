@@ -35,11 +35,11 @@ void PauseState::Update()
 	// シーンをゲームシーンに型変換
 	GameScene* gameScene = dynamic_cast<GameScene*>(scene_);
 
-	if (input->TriggerKey(DIK_ESCAPE))
+	if (input->TriggerKey(DIK_ESCAPE) || input->TriggerButton(Kouro::GamePad::GamePadButton::START))
 	{
 		onExitCallback_(SceneCommand::Resume);
 	}
-	else if (input->TriggerKey(DIK_T))
+	else if (input->TriggerKey(DIK_T) || input->TriggerButton(Kouro::GamePad::GamePadButton::BACK))
 	{
 		onExitCallback_(SceneCommand::Title);
 	}

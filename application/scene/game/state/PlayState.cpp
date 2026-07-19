@@ -33,7 +33,7 @@ void PlayState::Update()
 	if (!gameScene) return;
 
 	// 全オブジェクトの更新
-	gameScene->UpdateAllObjects(1.0f / 60.0f);
+	//gameScene->UpdateAllObjects(1.0f / 60.0f);
 }
 
 void PlayState::Draw()
