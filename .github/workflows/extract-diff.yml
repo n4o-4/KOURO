@@ -1,0 +1,27 @@
+name: Extract Git Diff
+
+on:
+  push:
+
+jobs:
+  extract-diff:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # 前回のコミットも取得する
+
+      - name: Show commit information
+        run: |
+          echo "Before: ${{ github.event.before }}"
+          echo "After : ${{ github.sha }}"
+
+      - name: Show changed files
+        run: |
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }}
+
+      - name: Show patch
+        run: |
+          git diff ${{ github.event.before }} ${{ github.sha }}
