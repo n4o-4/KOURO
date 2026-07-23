@@ -19,6 +19,7 @@
     <ClCompile Include="engine\core\GpuResourceInternal.cpp" />
     <ClCompile Include="engine\3d\particle\BaseParticleEmitter.cpp" />
     <ClCompile Include="engine\effect\Absorb.cpp" />
+    <ClCompile Include="engine\GithubActionsTest.cpp" />
     <ClCompile Include="engine\line\AABBLineObject.cpp" />
     <ClCompile Include="application\collider\AABBCollider.cpp" />
     <ClCompile Include="engine\math\Easing.cpp" />
