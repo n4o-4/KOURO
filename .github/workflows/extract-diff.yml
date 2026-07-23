@@ -18,9 +18,9 @@ jobs:
           echo "Before: ${{ github.event.before }}"
           echo "After : ${{ github.sha }}"
 
-      - name: Show changed files and changed functions
+      - name: Show changed files
         run: |
-          for file in $(git diff --name-only ${{ github.event.before }} ${{ github.sha }}); do
+          git diff --name-status ${{ github.event.before }} ${{ github.sha }} | while read status file; do
 
             # Visual Studio関連ファイルはスキップ
             case "$file" in
@@ -32,15 +32,40 @@ jobs:
 
             echo ""
             echo "=================================================="
-            echo "File : $file"
+            echo "File   : $file"
+            echo "Status : $status"
             echo "=================================================="
 
-            case "$file" in
-              *.cpp|*.c|*.cc|*.h|*.hpp)
+            case "$status" in
+              A)
                 echo ""
-                echo "----- Changed Function -----"
-                git diff -W ${{ github.event.before }} ${{ github.sha }} -- "$file"
+                echo "----- New File -----"
+                if [ -f "$file" ]; then
+                  cat "$file"
+                fi
                 ;;
+
+              M)
+                case "$file" in
+                  *.cpp|*.c|*.cc|*.h|*.hpp)
+                    echo ""
+                    echo "----- Changed Function -----"
+                    git diff -W ${{ github.event.before }} ${{ github.sha }} -- "$file"
+                    ;;
+                  *)
+                    echo ""
+                    echo "----- Diff -----"
+                    git diff ${{ github.event.before }} ${{ github.sha }} -- "$file"
+                    ;;
+                esac
+                ;;
+
+              D)
+                echo ""
+                echo "----- Deleted File -----"
+                echo "$file was deleted."
+                ;;
+
               *)
                 echo ""
                 echo "----- Diff -----"
