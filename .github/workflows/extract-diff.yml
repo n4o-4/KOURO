@@ -4,24 +4,41 @@ on:
   push:
 
 jobs:
-  extract-diff:
+ extract-diff:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2   # 前回のコミットも取得する
+          fetch-depth: 0   # 全履歴を取得
 
       - name: Show commit information
         run: |
           echo "Before: ${{ github.event.before }}"
           echo "After : ${{ github.sha }}"
 
-      - name: Show changed files
+      - name: Show changed files, diff and current source
         run: |
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }}
+          for file in $(git diff --name-only ${{ github.event.before }} ${{ github.sha }}); do
 
-      - name: Show patch
-        run: |
-          git diff ${{ github.event.before }} ${{ github.sha }}
+            echo ""
+            echo "=================================================="
+            echo "File : $file"
+            echo "=================================================="
+
+            echo ""
+            echo "----- Diff -----"
+            git diff ${{ github.event.before }} ${{ github.sha }} -- "$file"
+
+            echo ""
+            echo "----- Current Source -----"
+
+            if [ -f "$file" ]; then
+              cat "$file"
+            else
+              echo "File was deleted."
+            fi
+
+            echo ""
+          done
