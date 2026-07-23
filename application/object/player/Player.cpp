@@ -184,6 +184,7 @@ void Player::Move()
 	inputVelocity.x += input->GetLeftStick().x;
 	inputVelocity.y += input->GetLeftStick().y;
 
+
 	// 速度の正規化とスピードの適用
 	float length = Kouro::Length(inputVelocity);
 
