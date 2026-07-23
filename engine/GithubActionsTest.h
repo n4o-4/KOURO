@@ -6,6 +6,4 @@ class GithubActionsTest
 {
 private:
 	virtual void Test() = 0;
-
-	virtual void AddTest() = 0;	
 };
