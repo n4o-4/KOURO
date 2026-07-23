@@ -1093,6 +1093,7 @@
     <ClInclude Include="RetreatState.h" />
     <ClInclude Include="application\object\SceneObjectManager.h" />
     <ClInclude Include="application\object\base\SpawnRequestQueue.h" />
+    <ClInclude Include="engine\GithubActionsTest.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
