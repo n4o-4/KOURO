@@ -22,15 +22,31 @@ jobs:
         run: |
           for file in $(git diff --name-only ${{ github.event.before }} ${{ github.sha }}); do
 
+            # Visual Studio関連ファイルはスキップ
+            case "$file" in
+              *.vcxproj|*.filters|*.user)
+                echo "Skip: $file"
+                continue
+                ;;
+            esac
+
             echo ""
             echo "=================================================="
             echo "File : $file"
             echo "=================================================="
 
-            echo ""
-            echo "----- Changed Function -----"
-            git diff -W ${{ github.event.before }} ${{ github.sha }} -- "$file"
+            case "$file" in
+              *.cpp|*.c|*.cc|*.h|*.hpp)
+                echo ""
+                echo "----- Changed Function -----"
+                git diff -W ${{ github.event.before }} ${{ github.sha }} -- "$file"
+                ;;
+              *)
+                echo ""
+                echo "----- Diff -----"
+                git diff ${{ github.event.before }} ${{ github.sha }} -- "$file"
+                ;;
+            esac
 
             echo ""
-
           done
