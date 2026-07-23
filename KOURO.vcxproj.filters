@@ -587,7 +587,6 @@
     <ClCompile Include="RetreatState.cpp" />
     <ClCompile Include="application\object\SceneObjectManager.cpp" />
     <ClCompile Include="application\object\base\SpawnRequestQueue.cpp" />
-    <ClCompile Include="engine\GithubActionsTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\object\base\BaseCharacter.h">
@@ -1094,7 +1093,6 @@
     <ClInclude Include="RetreatState.h" />
     <ClInclude Include="application\object\SceneObjectManager.h" />
     <ClInclude Include="application\object\base\SpawnRequestQueue.h" />
-    <ClInclude Include="engine\GithubActionsTest.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

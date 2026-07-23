@@ -19,7 +19,6 @@
     <ClCompile Include="engine\core\GpuResourceInternal.cpp" />
     <ClCompile Include="engine\3d\particle\BaseParticleEmitter.cpp" />
     <ClCompile Include="engine\effect\Absorb.cpp" />
-    <ClCompile Include="engine\GithubActionsTest.cpp" />
     <ClCompile Include="engine\line\AABBLineObject.cpp" />
     <ClCompile Include="application\collider\AABBCollider.cpp" />
     <ClCompile Include="engine\math\Easing.cpp" />
@@ -198,7 +197,6 @@
     <ClInclude Include="application\system\SpriteMotionLibrary.h" />
     <ClInclude Include="application\scene\SceneCommand.h" />
     <ClInclude Include="engine\audio\SoundStruct.h" />
-    <ClInclude Include="engine\GithubActionsTest.h" />
     <ClInclude Include="engine\math\Vector4.h" />
     <ClInclude Include="engine\math\Vector4Yaml.h" />
     <ClInclude Include="engine\scene\ISceneState.h" />
